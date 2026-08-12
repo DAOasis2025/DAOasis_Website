@@ -1,0 +1,2038 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DAOasis — Rest. Learn. Earn. Return.</title>
+<meta name="description" content="DAOasis is a wellness and accountability ecosystem — a daily habit app, a token that rewards consistency, and real-world sanctuary retreats, all in one connected journey." />
+<meta property="og:title" content="DAOasis — Rest. Learn. Earn. Return." />
+<meta property="og:description" content="A wellness and accountability ecosystem that rewards consistent habits, real learning, and long-term community — with premium real-world retreats as the immersive entry point." />
+<meta property="og:image" content="images/img-01.jpg" />
+<meta property="og:type" content="website" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Frank+Ruhl+Libre:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+  :root{
+    --warm-white:#F7F4EE; --charcoal:#2B2623; --mineral:#171412;
+    --sanctuary:#31463F; --gold:#C48A5A; --purple:#9B8CA8; --blue:#7F97A2; --warm-stone:#E8E1D6;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{background:var(--mineral);font-family:'Frank Ruhl Libre',serif;}
+
+  /* INTRO */
+  .intro{position:fixed;inset:0;background:var(--mineral);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:100;
+    opacity:1;transition:opacity 1s ease;}
+  .intro.fade-out{opacity:0;}
+  .logo{width:min(52vw,680px);opacity:0;transform:scale(0.4);filter:blur(10px);animation:logoIn 2.4s cubic-bezier(0.16,1,0.3,1) forwards;animation-delay:0.2s;}
+  .logo img{width:100%;height:auto;display:block;}
+  @keyframes logoIn{0%{opacity:0;transform:scale(0.4);filter:blur(16px);}28%{opacity:1;transform:scale(1.02);filter:blur(0px);}40%{transform:scale(1);}100%{opacity:1;transform:scale(1);filter:blur(0px);}}
+  .headline{position:relative;max-width:820px;text-align:center;padding:0 2rem;opacity:0;filter:blur(6px);
+    font-family:'Cormorant Garamond',serif;font-size:clamp(26px,4.4vw,50px);color:var(--warm-white);line-height:1.25;
+    transition:opacity 0.7s ease, filter 0.7s ease;}
+  .headline.show{opacity:1;filter:blur(0px);}
+  .headline em{font-style:italic;color:var(--gold);}
+  .type-cursor{display:inline-block;width:2px;height:0.85em;background:var(--gold);margin-left:3px;vertical-align:-0.08em;animation:blink 0.85s steps(1) infinite;}
+  @keyframes blink{50%{opacity:0;}}
+
+  /* SCROLL-PIN CONTAINER */
+  .pin-container{position:relative;height:380vh;}
+  .hero{position:sticky;top:0;height:100vh;overflow:hidden;opacity:0;transition:opacity 1.1s ease;}
+  .hero.reveal{opacity:1;}
+  #heroH1{opacity:0;transition:opacity 0.5s ease;}
+  #heroH1.settled{opacity:1;}
+
+  .bg{position:absolute;inset:0;z-index:0;background-image:linear-gradient(180deg, rgba(15,13,11,0.72) 0%, rgba(15,13,11,0.6) 30%, rgba(15,13,11,0.55) 55%, rgba(15,13,11,0.85) 100%), url('images/img-01.jpg');background-size:cover;background-position:center 30%;}
+  .app-title-card{position:absolute;inset:0;z-index:15;background:var(--mineral);display:flex;align-items:center;justify-content:center;pointer-events:none;opacity:0;}
+  .app-title-text{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(42px,8.5vw,120px);color:var(--warm-white);text-align:center;letter-spacing:0.01em;padding:0 6%;}
+  .app-title-text em{font-style:italic;color:var(--gold);}
+
+  .nav{position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;
+    padding:22px 4%;color:var(--warm-white);font-size:14px;}
+  .nav .brand{display:flex;align-items:center;}
+  .nav .brand img{height:26px;width:auto;display:block;}
+  .nav .links{display:flex;gap:28px;opacity:0.9;}
+  .nav .links a{color:inherit;text-decoration:none;}
+  .nav .links a:hover{opacity:0.75;}
+  .nav .cta{background:var(--warm-white);color:var(--mineral);padding:9px 18px;border-radius:20px;font-size:13px;text-decoration:none;}
+  .burger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:6px;margin-right:8px;}
+  .burger span{width:22px;height:2px;background:var(--warm-white);display:block;transition:transform 0.25s ease, opacity 0.25s ease;}
+  .burger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+  .burger.open span:nth-child(2){opacity:0;}
+  .burger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+  @media (max-width:800px){
+    .nav .links{display:none;}
+    .nav .links.open{display:flex;flex-direction:column;position:absolute;top:100%;left:0;right:0;
+      background:rgba(23,20,18,0.97);padding:18px 6% 22px;gap:16px;z-index:15;}
+    .burger{display:flex;}
+  }
+
+  .content{position:relative;z-index:10;padding:2vh 6% 3vh;display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;
+    transition:opacity 0.15s linear, transform 0.15s linear;}
+
+  .kicker{font-size:11px;letter-spacing:0.14em;color:var(--gold);text-transform:uppercase;opacity:0;
+    animation:fadeUp 1.3s ease-out forwards;animation-delay:6.3s;}
+  .h1{font-family:'Cormorant Garamond',serif;font-weight:400;color:var(--warm-white);font-size:clamp(32px,5.2vw,58px);
+    line-height:1.18;max-width:1140px;opacity:0;animation:fadeUp 1.3s ease-out forwards;animation-delay:6.3s;}
+  .h1 .nowrap{white-space:nowrap;}
+  .h1 em{font-style:italic;color:var(--warm-white);}
+  .sub{color:#e6e0d5;font-size:14px;line-height:1.6;max-width:520px;opacity:0;animation:fadeUp 1.3s ease-out forwards;animation-delay:6.5s;}
+  .ctas{display:flex;gap:12px;margin:6px 0 1vh;opacity:0;animation:fadeUp 1.3s ease-out forwards;animation-delay:6.65s;}
+  .btn-primary{background:var(--warm-white);color:var(--mineral);padding:11px 22px;border-radius:24px;font-size:13px;text-decoration:none;}
+  .btn-secondary{border:1px solid rgba(247,244,238,0.5);color:var(--warm-white);padding:11px 22px;border-radius:24px;font-size:13px;text-decoration:none;}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+  .scroll-hint{position:relative;z-index:10;text-align:center;color:var(--warm-white);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;opacity:0;
+    animation:fadeUp 1.3s ease-out forwards;animation-delay:6.8s;}
+
+  /* JOURNEY */
+  .journey-wrap{position:relative;width:100%;max-width:1300px;margin:1vh auto 0;opacity:0;
+    animation:fadeUp 1.6s ease-out forwards;animation-delay:6.9s;transition:opacity 0.15s linear;}
+  .journey-wrap svg{width:100%;height:auto;display:block;}
+  .wp-label{font-family:'Frank Ruhl Libre',serif;font-size:13px;letter-spacing:0.05em;fill:var(--warm-white);text-transform:uppercase;}
+  .wp-sub{font-family:'Frank Ruhl Libre',serif;font-size:10px;fill:#cfc8be;opacity:0.85;}
+
+  /* Mobile fallback: vertical list instead of the scaled-down curve (SVG text becomes unreadably small below ~800px) */
+  .journey-mobile{display:none;flex-direction:column;gap:0;width:100%;max-width:360px;margin:1.5vh auto 0;
+    opacity:0;animation:fadeUp 1.6s ease-out forwards;animation-delay:6.3s;}
+  .journey-mobile .stop{position:relative;padding:0 0 18px 26px;border-left:1px dashed rgba(196,138,90,0.5);}
+  .journey-mobile .stop:last-child{border-left:1px solid transparent;padding-bottom:0;}
+  .journey-mobile .dot{position:absolute;left:-5px;top:2px;width:10px;height:10px;border-radius:50%;background:var(--gold);}
+  .journey-mobile .dot.end{background:none;border:1.5px solid var(--warm-white);}
+  .journey-mobile .stop-title{font-family:'Frank Ruhl Libre',serif;font-size:13px;color:var(--warm-white);letter-spacing:0.03em;text-transform:uppercase;}
+  .journey-mobile .stop-sub{font-family:'Frank Ruhl Libre',serif;font-size:11px;color:#cfc8be;margin-top:2px;}
+  @media (max-width:800px){
+    .journey-wrap{display:none;}
+    .journey-mobile{display:flex;}
+  }
+
+  /* PHONE — positioned/animated via JS on scroll, hidden until scroll begins */
+  .phone-shot{position:absolute;z-index:20;width:260px;top:50%;left:50%;
+    transform:translate(-50%,-50%) perspective(900px) rotateY(0deg) rotateX(0deg) rotateZ(0deg);
+    filter:drop-shadow(0 24px 50px rgba(0,0,0,0.55));border-radius:26px;
+    opacity:0;pointer-events:none;transition:opacity 0.2s ease-out;
+    will-change:transform,width,top,left,opacity;}
+
+  .next-section{position:relative;z-index:30;background:var(--mineral);min-height:100vh;
+    display:flex;align-items:center;justify-content:center;color:var(--warm-white);
+    font-family:'Cormorant Garamond',serif;font-size:28px;text-align:center;padding:4rem 2rem;}
+
+  @media (max-width:800px){
+    .h1{font-size:24px;line-height:1.28;}
+    .h1 .nowrap{white-space:normal;}
+    .nav{padding-top:34px;padding-bottom:8px;}
+    .content{padding-top:14vh;gap:18px;}
+    .kicker{margin-top:6px;}
+    .journey-mobile{margin-top:5vh;}
+    .scroll-hint{margin-top:3vh;}
+  }
+
+  .section{background:var(--warm-white);padding:9vh 4% 10vh;max-width:none;margin:0;}
+  .section > *{max-width:1560px;margin-left:auto;margin-right:auto;}
+  .eco-kicker{text-align:center;font-size:11px;letter-spacing:0.16em;color:var(--gold);text-transform:uppercase;
+    opacity:0;transform:translateY(14px);transition:opacity 0.8s ease, transform 0.8s ease;}
+  .eco-headline{text-align:center;font-family:'Cormorant Garamond',serif;font-weight:400;color:var(--charcoal);
+    font-size:clamp(32px,4.6vw,54px);line-height:1.18;max-width:900px;margin:18px auto 0;
+    opacity:0;transform:translateY(18px);transition:opacity 0.9s ease 0.1s, transform 0.9s ease 0.1s;}
+  .eco-sub{text-align:center;color:#5c554c;font-size:15px;line-height:1.7;max-width:640px;margin:20px auto 0;
+    opacity:0;transform:translateY(14px);transition:opacity 0.9s ease 0.2s, transform 0.9s ease 0.2s;}
+
+  .section.in-view .eco-kicker,.section.in-view .eco-headline,.section.in-view .eco-sub,.section.in-view .click-cue{opacity:1;transform:translateY(0);}
+
+  .click-cue{text-align:center;font-size:12px;font-style:italic;color:var(--gold);margin-top:14px;
+    opacity:0;transform:translateY(14px);transition:opacity 0.9s ease 0.3s, transform 0.9s ease 0.3s;}
+  .click-cue::before{content:'';display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--gold);
+    margin-right:8px;vertical-align:middle;animation:pulse 1.8s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{opacity:0.4;transform:scale(0.8);}50%{opacity:1;transform:scale(1.15);}}
+
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:7vh;}
+  @media (max-width:900px){.cards{grid-template-columns:1fr;gap:22px;}}
+
+  .card{opacity:0;transform:translateY(40px);transition:opacity 0.8s ease, transform 0.8s ease;}
+  .card.in-view{opacity:1;transform:translateY(0);}
+  .card:hover{transform:translateY(-8px);}
+  .card.in-view:hover{transition:transform 0.35s ease;}
+
+  .card-media{position:relative;aspect-ratio:3/2;border-radius:4px;overflow:hidden;background:var(--charcoal);cursor:pointer;
+    border:1px solid rgba(196,138,90,0.3);box-shadow:0 20px 45px rgba(43,38,35,0.16);}
+  .card-media::after{content:'Click for details ↗';position:absolute;bottom:0;left:0;right:0;padding:10px 12px 8px;
+    background:linear-gradient(to top, rgba(0,0,0,0.6), transparent);color:var(--warm-white);font-size:10px;
+    letter-spacing:0.05em;text-transform:uppercase;opacity:0.65;transition:opacity 0.25s ease;}
+  .card:hover .card-media::after{opacity:1;}
+  .card-media img{width:100%;height:112%;object-fit:cover;display:block;will-change:transform;transition:transform 0.4s ease;}
+  .card-media .wallet-mock{position:absolute;inset:0;background:linear-gradient(160deg,#1c2b24,#0f1712);padding:22px;color:var(--warm-white);}
+  .wallet-mock{position:absolute;inset:0;background:linear-gradient(160deg,#1c2b24,#0f1712);padding:14px;color:var(--warm-white);overflow:hidden;display:flex;flex-direction:column;}
+  .leaf-header{position:relative;margin:-14px -14px 12px;padding:14px;overflow:hidden;}
+  .leaf-header::before{content:'';position:absolute;inset:0;background:
+      linear-gradient(180deg, rgba(15,23,18,0.15) 0%, rgba(15,23,18,0.75) 100%),
+      radial-gradient(ellipse at 85% 0%, #2f4a34 0%, #17281c 70%);}
+  .leaf-header svg{position:absolute;top:-14px;right:-18px;width:120px;height:120px;opacity:0.5;z-index:0;}
+  .wallet-mock .row{position:relative;z-index:1;display:flex;align-items:center;gap:9px;margin-bottom:0;}
+  .wallet-mock .avatar{width:24px;height:24px;border-radius:50%;background:#7F97A2;flex-shrink:0;}
+  .wallet-mock .brand-title{font-size:12px;color:var(--warm-white);}
+  .wallet-mock .brand-sub{font-size:8.5px;color:#c3ccc6;}
+  .wallet-mock .balance-block{background:rgba(255,255,255,0.04);border-radius:8px;padding:8px 10px;margin-bottom:7px;position:relative;}
+  .wallet-mock .balance-label{font-size:8.5px;color:#8a9690;}
+  .wallet-mock .balance-row{display:flex;align-items:center;justify-content:space-between;margin-top:2px;}
+  .wallet-mock .balance-value{font-family:'Cormorant Garamond',serif;font-size:19px;color:var(--gold);}
+  .wallet-mock .balance-unit{font-size:8px;color:#8a9690;margin-top:1px;}
+  .coin-icon{width:22px;height:22px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+  .coin-icon.leaf{background:radial-gradient(circle,#4a9a68,#2f6e46);}
+  .coin-icon.dvt{background:radial-gradient(circle,#8a7355,#5c4a35);}
+  .coin-icon svg{width:11px;height:11px;}
+  .graph{width:100%;height:18px;margin-top:6px;}
+  .actions-row{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:7px;}
+  .action-btn{background:rgba(255,255,255,0.04);border-radius:6px;padding:6px 3px;text-align:center;}
+  .action-btn svg{width:12px;height:12px;margin-bottom:2px;color:#a6b3ac;}
+  .action-btn .a-label{font-size:7px;color:#d9d4c8;}
+  .tx-list{border-top:1px solid rgba(255,255,255,0.1);padding-top:6px;flex:1;}
+  .tx{display:flex;justify-content:space-between;align-items:center;padding:3px 0;font-size:8.5px;}
+  .tx-name{color:#c9c3b6;}
+  .tx-amt{color:#8fbf9a;font-weight:500;}
+
+  .card-body{padding:22px 2px 0;}
+  .card-step{font-size:11px;letter-spacing:0.12em;color:var(--gold);text-transform:uppercase;}
+  .card-title{font-family:'Cormorant Garamond',serif;font-size:26px;color:var(--charcoal);margin-top:8px;}
+  .card-desc{font-size:13px;color:#6b6459;line-height:1.6;margin-top:8px;}
+  .card-learn{display:inline-block;margin-top:10px;font-size:12px;color:var(--sanctuary);text-decoration:none;
+    border-bottom:1px solid rgba(49,70,63,0.4);padding-bottom:1px;}
+  .card-learn:hover{border-bottom-color:var(--sanctuary);}
+
+  .footer-note{text-align:center;color:#8a8377;font-size:12px;margin-top:8vh;padding-bottom:4vh;}
+
+  .divider{background:var(--warm-white);padding:5vh 8%;}
+  .divider-inner{display:flex;align-items:center;gap:24px;max-width:1200px;margin:0 auto;}
+  .divider-line{flex:1;height:1px;background:#d8d2c4;}
+  .divider-mark{width:26px;height:26px;object-fit:contain;opacity:0.85;flex-shrink:0;}
+  .divider.dark{background:var(--mineral);}
+  .divider.dark .divider-line{background:rgba(247,244,238,0.16);}
+  .divider.dark .divider-mark{opacity:0.9;}
+
+  .lightbox{position:fixed;inset:0;background:rgba(15,13,11,0.92);display:flex;align-items:center;justify-content:center;
+    z-index:100;opacity:0;pointer-events:none;transition:opacity 0.3s ease;padding:4vh 4vw;}
+  .lightbox.open{opacity:1;pointer-events:auto;}
+  .lightbox-panel{background:var(--warm-white);border-radius:8px;max-width:900px;width:100%;max-height:90vh;overflow-y:auto;
+    padding:18px 18px 0;
+    transform:scale(0.96);transition:transform 0.3s ease;}
+  .lightbox.open .lightbox-panel{transform:scale(1);}
+  .lightbox-panel img{width:100%;aspect-ratio:3/2;object-fit:cover;display:block;
+    border-radius:6px;border:1px solid rgba(43,38,35,0.1);box-shadow:0 16px 34px rgba(43,38,35,0.22);}
+  .lightbox-body{padding:26px 18px 36px;}
+  .lightbox-step{font-size:11px;letter-spacing:0.12em;color:var(--gold);text-transform:uppercase;}
+  .lightbox-title{font-family:'Cormorant Garamond',serif;font-size:32px;color:var(--charcoal);margin-top:8px;}
+  .lightbox-text{font-size:14px;color:#5c554c;line-height:1.75;margin-top:14px;}
+  .lightbox-features{margin-top:18px;padding-top:18px;border-top:1px solid #e4ddd0;display:grid;grid-template-columns:1fr 1fr;gap:10px 20px;}
+  .lightbox-features div{font-size:12.5px;color:#5c554c;padding-left:14px;position:relative;}
+  .lightbox-features div::before{content:'—';position:absolute;left:0;color:var(--gold);}
+  .lightbox-cta{display:inline-block;margin-top:22px;background:var(--charcoal);color:var(--warm-white);padding:11px 24px;
+    border-radius:24px;font-size:13px;text-decoration:none;}
+  .lightbox-close{position:absolute;top:24px;right:28px;color:var(--warm-white);font-size:14px;cursor:pointer;
+    letter-spacing:0.05em;opacity:0.8;}
+  .lightbox-close:hover{opacity:1;}
+  @media (max-width:700px){.lightbox-features{grid-template-columns:1fr;}.lightbox-body{padding:22px 22px 28px;}}
+  .spacer{height:60vh;}
+
+
+  .pin{position:relative;height:520vh;}
+  .stage{position:sticky;top:0;height:100vh;overflow:hidden;
+    background:radial-gradient(ellipse at 45% 28%, #0d1a26 0%, #060c12 55%, #030609 100%);}
+  #starfield{position:absolute;inset:0;z-index:0;}
+  #canvas{position:absolute;inset:0;z-index:1;}
+
+  .overlay{position:relative;z-index:10;height:100%;display:flex;flex-direction:column;justify-content:center;
+    padding:0 8%;pointer-events:none;}
+
+  .why-kicker{font-size:11px;letter-spacing:0.18em;color:var(--gold);text-transform:uppercase;
+    opacity:0;transition:opacity 0.5s ease;}
+  .why-headline{font-family:'Cormorant Garamond',serif;font-weight:400;color:var(--warm-white);
+    font-size:clamp(32px,5vw,58px);line-height:1.14;margin-top:14px;max-width:760px;
+    opacity:0;transition:opacity 0.5s ease;}
+  .why-headline em{font-style:italic;color:var(--gold);}
+  .lede{font-family:'Cormorant Garamond',serif;font-style:italic;color:#cfc8be;font-size:18px;line-height:1.55;
+    margin-top:18px;max-width:520px;opacity:0;transition:opacity 0.5s ease;}
+  .body-copy{margin-top:22px;max-width:480px;opacity:0;transition:opacity 0.5s ease;}
+  .body-copy p{font-size:14px;color:#b8b1a4;line-height:1.75;margin-bottom:12px;}
+  .body-copy p.accent{font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--gold);font-size:17px;}
+
+  .panels{position:absolute;top:8%;bottom:8%;right:9%;left:auto;width:400px;z-index:15;pointer-events:none;
+    display:flex;flex-direction:column;justify-content:space-between;}
+  .panel{position:relative;width:100%;background:rgba(30,26,22,0.6);backdrop-filter:blur(14px);
+    border:1px solid rgba(247,244,238,0.14);border-radius:10px;padding:26px 28px;color:var(--warm-white);
+    opacity:0;transform-style:preserve-3d;pointer-events:auto;will-change:transform,opacity;
+    transition:box-shadow 0.4s ease, border-color 0.4s ease;}
+  .panel .bar{width:44px;height:2px;background:var(--gold);margin-bottom:16px;}
+  .panel .stat{font-family:'Cormorant Garamond',serif;font-size:34px;color:var(--warm-white);}
+  .panel .desc{font-size:13px;color:#b8b1a4;line-height:1.6;margin-top:12px;}
+  .panel .source{font-size:10px;color:#7a746a;font-style:italic;margin-top:14px;}
+  .panel.panel-active{box-shadow:0 30px 90px rgba(0,0,0,0.55);border-color:rgba(196,138,90,0.55);}
+
+  @media (max-width:1500px){
+    .panels{width:340px;}
+    .panel{padding:22px 24px;}
+    .panel .stat{font-size:28px;}
+  }
+  @media (max-width:900px){
+    .panels{width:88vw;left:50%;right:auto;transform:translateX(-50%);top:40%;bottom:1%;gap:9px;}
+    .panel{padding:14px 16px;}
+    .panel .bar{margin-bottom:8px;}
+    .panel .stat{font-size:20px;}
+    .panel .desc{font-size:11px;line-height:1.5;margin-top:8px;}
+    .panel .source{font-size:9px;margin-top:10px;}
+    .panel .desc.compact-hidden,.panel .source.compact-hidden{display:none;}
+    .overlay{padding:0 6%;align-items:flex-start;justify-content:flex-start;text-align:left;padding-top:8vh;}
+    .headline,.lede,.body-copy{max-width:100%;}
+  }
+
+  .scroll-progress{position:absolute;bottom:5%;left:8%;z-index:16;display:flex;align-items:center;gap:10px;
+    opacity:0;transition:opacity 0.5s ease;}
+  .scroll-progress-track{width:120px;height:1px;background:rgba(247,244,238,0.2);position:relative;}
+  .scroll-progress-fill{position:absolute;left:0;top:0;height:100%;background:var(--gold);width:0%;}
+  .scroll-progress-label{font-size:10px;letter-spacing:0.08em;color:#7a746a;text-transform:uppercase;}
+
+  /* TRACK WHAT MATTERS — pinned annotated-dashboard section */
+  .pin3{position:relative;height:260vh;}
+  .stage3{position:sticky;top:0;height:100vh;overflow:visible;
+    background:radial-gradient(ellipse at 50% 40%, #211b16 0%, var(--mineral) 72%);
+    display:flex;align-items:center;justify-content:center;gap:4vw;padding:0 4%;}
+
+  .track-overlay{position:relative;z-index:10;max-width:360px;flex-shrink:0;align-self:flex-start;margin-top:14vh;}
+  .track-kicker{font-size:11px;letter-spacing:0.18em;color:var(--gold);text-transform:uppercase;opacity:0;transition:opacity 0.6s ease;}
+  .track-headline{font-family:'Cormorant Garamond',serif;font-weight:400;color:var(--warm-white);
+    font-size:clamp(28px,3.6vw,44px);line-height:1.18;margin-top:14px;opacity:0;transition:opacity 0.6s ease;}
+  .track-headline em{font-style:italic;color:var(--gold);}
+  .track-lede{font-size:14px;color:#b8b1a4;line-height:1.75;margin-top:18px;max-width:320px;opacity:0;transition:opacity 0.6s ease;}
+
+  .dash-wrap{position:relative;z-index:10;width:min(580px,42vw);aspect-ratio:1004/901;flex-shrink:0;
+    opacity:0;transform:scale(0.94);transition:opacity 0.7s ease, transform 0.7s ease;}
+  .dash-wrap.appear{opacity:1;transform:scale(1);}
+  .dash-img{width:100%;height:100%;object-fit:cover;border-radius:14px;display:block;
+    box-shadow:0 30px 90px rgba(0,0,0,0.55);}
+
+  .callout{position:absolute;display:flex;align-items:center;z-index:20;opacity:0;
+    transition:opacity 0.6s ease;pointer-events:none;}
+  .co-dot{width:9px;height:9px;border-radius:50%;background:var(--gold);flex-shrink:0;position:relative;}
+  .co-dot::after{content:'';position:absolute;inset:-7px;border-radius:50%;border:1px solid rgba(196,138,90,0.55);opacity:0;}
+  .callout.show .co-dot::after{animation:coPulse 1.6s ease-out 0.15s 1;}
+  @keyframes coPulse{0%{transform:scale(0.5);opacity:0.9;}100%{transform:scale(2.6);opacity:0;}}
+  .co-line{flex-shrink:0;}
+  .co-card{width:330px;background:rgba(30,26,22,0.76);backdrop-filter:blur(14px);
+    border:1px solid rgba(247,244,238,0.14);border-radius:12px;padding:18px 22px;color:var(--warm-white);flex-shrink:0;}
+  .co-label{font-size:13px;letter-spacing:0.08em;color:var(--gold);text-transform:uppercase;}
+  .co-text{font-size:15px;color:#cfc8be;line-height:1.6;margin-top:8px;}
+  .callout.show{opacity:1;}
+
+  .callout.co-dir-right{flex-direction:row;}
+  .callout.co-dir-right .co-line{width:22px;height:1px;background:repeating-linear-gradient(90deg, rgba(196,138,90,0.65) 0 4px, transparent 4px 8px);}
+  .callout.co-dir-left{flex-direction:row-reverse;}
+  .callout.co-dir-left .co-line{width:22px;height:1px;background:repeating-linear-gradient(90deg, rgba(196,138,90,0.65) 0 4px, transparent 4px 8px);}
+  .callout.co-dir-up{flex-direction:column-reverse;align-items:flex-start;}
+  .callout.co-dir-up .co-line{width:1px;height:30px;background:repeating-linear-gradient(180deg, rgba(196,138,90,0.65) 0 4px, transparent 4px 8px);}
+  .callout.co-dir-down{flex-direction:column;align-items:center;}
+  .callout.co-dir-down .co-line{width:1px;height:30px;background:repeating-linear-gradient(180deg, rgba(196,138,90,0.65) 0 4px, transparent 4px 8px);}
+
+  .co1{left:58%;top:12%;transform:translate(-50%,-100%);}
+  .co2{left:17%;top:62%;transform:translate(-100%,-50%);}
+  .co3{left:76%;top:47%;transform:translate(0,-50%);}
+  .co4{left:50%;top:92%;transform:translate(-50%,0);}
+
+  .track-dots{position:absolute;bottom:6%;left:6%;z-index:16;display:flex;gap:8px;opacity:0;transition:opacity 0.5s ease;}
+  .track-dots.show{opacity:1;}
+  .track-dot{width:6px;height:6px;border-radius:50%;background:rgba(247,244,238,0.25);transition:background 0.4s ease;}
+  .track-dot.active{background:var(--gold);}
+
+  @media (max-width:1100px){
+    .pin3{display:none;}
+  }
+  .track-mobile-section{display:none;}
+  @media (max-width:1100px){
+    .track-mobile-section{display:block;background:var(--mineral);}
+    .track-mobile-section .eco-kicker,.track-mobile-section .eco-headline{color:var(--gold);}
+    .track-mobile-section .eco-headline{color:var(--warm-white);}
+    .track-mobile-section .eco-sub{color:#b8b1a4;}
+    .tm-dash{width:min(320px,80vw);aspect-ratio:1004/901;margin:5vh auto 0;border-radius:14px;overflow:hidden;
+      box-shadow:0 24px 60px rgba(0,0,0,0.5);opacity:0;transform:translateY(24px);transition:opacity 0.8s ease, transform 0.8s ease;}
+    .track-mobile-section.in-view .tm-dash{opacity:1;transform:translateY(0);}
+    .tm-dash img{width:100%;height:100%;object-fit:cover;display:block;}
+    .tm-list{max-width:480px;margin:5vh auto 0;display:flex;flex-direction:column;gap:0;}
+    .tm-item{padding:16px 0;border-top:1px solid rgba(247,244,238,0.12);
+      opacity:0;transform:translateY(16px);transition:opacity 0.7s ease, transform 0.7s ease;}
+    .track-mobile-section.in-view .tm-item{opacity:1;transform:translateY(0);}
+    .tm-item:last-child{border-bottom:1px solid rgba(247,244,238,0.12);}
+    .tm-label{font-size:11px;letter-spacing:0.08em;color:var(--gold);text-transform:uppercase;}
+    .tm-text{font-size:13px;color:#cfc8be;line-height:1.6;margin-top:5px;}
+  }
+
+  /* THE JOURNEY — luxury 3D scroll-driven path */
+  .pin4{position:relative;height:520vh;}
+  .stage4{position:sticky;top:0;height:100vh;overflow:visible;
+    background:radial-gradient(ellipse at 50% 45%, #221c16 0%, var(--mineral) 75%);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 5%;}
+
+  .journey-header{text-align:center;position:relative;z-index:10;margin-bottom:16vh;}
+  .j-kicker{font-size:11px;letter-spacing:0.18em;color:var(--gold);text-transform:uppercase;}
+  .j-headline{font-family:'Cormorant Garamond',serif;font-weight:400;color:var(--warm-white);
+    font-size:clamp(28px,4vw,50px);margin-top:14px;}
+  .j-headline em{font-style:italic;color:var(--gold);}
+
+  .j-track-wrap{position:relative;width:min(1400px,92vw);perspective:1400px;z-index:10;}
+  .j-track{position:relative;height:120px;transform-style:preserve-3d;transition:transform 0.15s ease-out;}
+
+  .j-line-base{position:absolute;left:0;right:0;top:34px;height:1px;background:rgba(247,244,238,0.14);}
+  .j-line-fill{position:absolute;left:0;top:34px;height:1px;width:0%;
+    background:linear-gradient(90deg, var(--gold), #e0b083);
+    box-shadow:0 0 12px rgba(196,138,90,0.6);}
+  .j-comet{position:absolute;top:34px;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;
+    background:radial-gradient(circle, #ffe4c2 0%, var(--gold) 55%, transparent 75%);
+    filter:blur(0.5px);pointer-events:none;}
+
+  .j-node{position:absolute;top:0;transform:translateX(-50%);text-align:center;width:150px;}
+  .j-dot{width:52px;height:52px;border-radius:50%;margin:0 auto;display:flex;align-items:center;justify-content:center;
+    border:1.5px solid rgba(247,244,238,0.28);color:#8a8377;font-family:'Cormorant Garamond',serif;font-size:14px;
+    letter-spacing:0.03em;position:relative;background:rgba(30,26,22,0.4);
+    transition:all 0.55s cubic-bezier(0.34,1.56,0.64,1);}
+  .j-dot::after{content:'';position:absolute;inset:-10px;border-radius:50%;border:1px solid rgba(196,138,90,0.5);
+    opacity:0;transform:scale(0.7);}
+  .j-node.done .j-dot{border-color:transparent;color:var(--mineral);font-weight:600;
+    background:radial-gradient(circle at 35% 30%, #e0b083, #a8703f);
+    box-shadow:0 6px 18px rgba(196,138,90,0.4);}
+  .j-node.active .j-dot{border-color:transparent;color:var(--mineral);font-weight:600;
+    background:radial-gradient(circle at 35% 30%, #f0c39a, #c48a5a);
+    box-shadow:0 10px 30px rgba(196,138,90,0.55);transform:scale(1.22);}
+  .j-node.active .j-dot::after{opacity:1;animation:jPulse 1.7s ease-out infinite;}
+  @keyframes jPulse{0%{transform:scale(0.75);opacity:0.8;}100%{transform:scale(1.7);opacity:0;}}
+
+  .j-title{font-size:14px;color:#8a8377;margin-top:16px;transition:color 0.5s ease;}
+  .j-sub{font-size:11.5px;color:#5f5a52;line-height:1.5;margin-top:5px;transition:color 0.5s ease, opacity 0.5s ease;opacity:0.7;}
+  .j-node.done .j-title,.j-node.active .j-title{color:var(--warm-white);}
+  .j-node.active .j-title{font-weight:500;}
+  .j-node.done .j-sub,.j-node.active .j-sub{color:#b8b1a4;opacity:1;}
+
+  .j-popcard{position:absolute;bottom:calc(100% + 26px);left:0%;transform:translateX(-50%);width:250px;
+    background:rgba(30,26,22,0.82);backdrop-filter:blur(16px);border:1px solid rgba(196,138,90,0.35);
+    border-radius:12px;padding:16px 18px;z-index:20;opacity:0;transition:left 0.55s cubic-bezier(0.34,1.2,0.64,1), opacity 0.4s ease;
+    box-shadow:0 24px 60px rgba(0,0,0,0.5);pointer-events:none;}
+  .j-popcard.pop{animation:jPop 0.55s cubic-bezier(0.34,1.56,0.64,1);}
+  @keyframes jPop{0%{transform:translateX(-50%) translateY(8px) scale(0.92);}60%{transform:translateX(-50%) translateY(-3px) scale(1.02);}100%{transform:translateX(-50%) translateY(0) scale(1);}}
+  .j-pop-eyebrow{font-size:10px;letter-spacing:0.1em;color:var(--gold);text-transform:uppercase;}
+  .j-pop-text{font-size:12.5px;color:#e6e0d5;line-height:1.6;margin-top:6px;}
+  .j-pop-arrow{position:absolute;bottom:-6px;left:50%;transform:translateX(-50%) rotate(45deg);width:12px;height:12px;
+    background:rgba(30,26,22,0.82);border-right:1px solid rgba(196,138,90,0.35);border-bottom:1px solid rgba(196,138,90,0.35);}
+
+  @media (max-width:1100px){
+    .pin4{display:none;}
+  }
+  .journey-mobile-section{display:none;}
+  @media (max-width:1100px){
+    .journey-mobile-section{display:block;background:var(--mineral);}
+    .journey-mobile-section .eco-headline{color:var(--warm-white);}
+    .journey-mobile-section .eco-sub{color:#b8b1a4;}
+  }
+
+  /* PRINCIPLE — "Clarity over Noise" — pure time-based, zero scroll dependency */
+  .pin5{position:relative;height:300vh;}
+  .stage5{position:sticky;top:0;height:100vh;overflow:hidden;
+    background:linear-gradient(135deg,#1a1410 0%,#0e0b08 60%,#141008 100%);
+    display:flex;align-items:center;justify-content:center;}
+
+  /* Ambient light blobs */
+  .pr-blob{position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none;}
+  .pr-blob1{width:600px;height:400px;top:-10%;left:-8%;
+    background:radial-gradient(ellipse,rgba(196,138,90,0.18),transparent 70%);}
+  .pr-blob2{width:500px;height:500px;bottom:-15%;right:-5%;
+    background:radial-gradient(ellipse,rgba(49,70,63,0.22),transparent 70%);}
+
+  /* Left: headline block */
+  .pr-left{position:relative;z-index:10;flex:1;max-width:560px;padding:0 5% 0 8%;}
+
+  .pr-kicker{font-size:11px;letter-spacing:0.2em;color:var(--gold);text-transform:uppercase;
+    opacity:0;animation:prFadeUp 0.6s ease forwards;}
+  .pr-headline{font-family:'Cormorant Garamond',serif;font-weight:400;color:var(--warm-white);
+    font-size:clamp(38px,5.5vw,68px);line-height:1.1;margin-top:14px;
+    white-space:nowrap;overflow:hidden;border-right:2px solid var(--gold);
+    width:0;opacity:1;
+    animation: prType 1.4s steps(20,end) 0.8s forwards, prCursor 0.8s step-end 0.8s 3;}
+  .pr-headline em{font-style:italic;color:var(--gold);}
+  /* After typing, remove cursor */
+  .pr-headline.done{border-right:none;}
+
+  @keyframes prFadeUp{to{opacity:1;transform:translateY(0);}from{opacity:0;transform:translateY(10px);}}
+  @keyframes prType{to{width:100%;}from{width:0;}}
+  @keyframes prCursor{50%{border-color:transparent;}}
+
+  /* Right: 3D floating glass card */
+  .pr-card-wrap{position:relative;z-index:10;flex:0 0 420px;perspective:900px;
+    opacity:0;animation:prCardIn 1s cubic-bezier(0.16,1,0.3,1) 2.8s forwards;}
+  @keyframes prCardIn{
+    from{opacity:0;transform:translateY(30px);}
+    to{opacity:1;transform:translateY(0);}
+  }
+  .pr-card{
+    background:rgba(247,244,238,0.06);
+    backdrop-filter:blur(18px);
+    border:1px solid rgba(247,244,238,0.13);
+    border-radius:16px;
+    padding:40px 36px;
+    transform:rotateY(-8deg) rotateX(3deg);
+    transform-style:preserve-3d;
+    box-shadow:0 30px 80px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08);
+    animation:prFloat 6s ease-in-out 3.8s infinite;}
+  @keyframes prFloat{
+    0%,100%{transform:rotateY(-8deg) rotateX(3deg) translateY(0);}
+    50%{transform:rotateY(-6deg) rotateX(1deg) translateY(-8px);}
+  }
+  .pr-card-line{width:36px;height:2px;background:var(--gold);margin-bottom:28px;}
+  .pr-card p{font-size:15px;color:#c8c0b4;line-height:1.8;margin-bottom:18px;}
+  .pr-card p:last-child{margin-bottom:0;}
+  .pr-card p strong{color:var(--warm-white);font-weight:500;}
+
+  /* Shine sweep across card */
+  .pr-card::before{content:'';position:absolute;inset:0;border-radius:16px;
+    background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,0.04) 50%,transparent 60%);
+    animation:prShine 5s ease-in-out 4s infinite;}
+  @keyframes prShine{0%,100%{background-position:-200% 0;}50%{background-position:200% 0;}}
+
+  .principle-mobile-section{display:none;}
+  @media (max-width:900px){
+    .principle-mobile-section{display:block;background:var(--warm-stone);}
+    .principle-mobile-section .eco-headline{color:var(--charcoal);}
+    .principle-mobile-section .pr-para{font-size:14px;color:#5c554c;line-height:1.7;max-width:520px;margin:14px auto 0;
+      opacity:0;transform:translateY(14px);transition:opacity 0.7s ease, transform 0.7s ease;}
+    .principle-mobile-section.in-view .pr-para{opacity:1;transform:translateY(0);}
+    .pin5{display:none;}
+  }
+
+  /* WAITLIST CTA */
+  .waitlist-section{background:var(--warm-stone);text-align:center;padding:14vh 6% 16vh;}
+  .wl-kicker{font-size:11px;letter-spacing:0.18em;color:#8a7f6d;text-transform:uppercase;margin-bottom:18px;}
+  .wl-tagline{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(16px,2vw,22px);
+    color:var(--gold);margin-bottom:22px;}
+  .wl-headline{font-family:'Cormorant Garamond',serif;font-weight:400;color:var(--charcoal);
+    font-size:clamp(32px,5vw,60px);line-height:1.1;margin-bottom:20px;}
+  .wl-sub{font-size:16px;color:#6b6358;max-width:480px;margin:0 auto 40px;line-height:1.7;}
+  .wl-btn{display:inline-block;background:var(--charcoal);color:var(--warm-white);
+    font-size:15px;letter-spacing:0.04em;padding:16px 44px;border-radius:40px;text-decoration:none;
+    transition:background 0.3s ease,transform 0.2s ease;}
+  .wl-btn:hover{background:#3a3530;transform:translateY(-1px);}
+
+  /* FOOTER */
+  .site-footer{background:var(--mineral);color:#8a8377;padding:7vh 8% 4vh;}
+  .footer-top{display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;gap:40px;padding-bottom:5vh;
+    border-bottom:1px solid rgba(247,244,238,0.1);}
+  .footer-brand{grid-column:1;}
+  .footer-brand-logo{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+  .footer-brand-logo img{width:28px;opacity:0.9;}
+  .footer-brand-logo span{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--warm-white);}
+  .footer-tagline{font-size:13px;line-height:1.6;color:#7a746a;margin-bottom:20px;}
+  .footer-tagline strong{display:block;color:#b8b1a4;font-weight:500;}
+  .footer-tagline em{font-style:italic;color:#8a8377;}
+  .footer-appearance{margin-top:22px;}
+  .footer-appearance-label{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#5f5a52;margin-bottom:8px;}
+  .footer-toggle{display:inline-flex;background:rgba(247,244,238,0.08);border-radius:20px;padding:3px;gap:0;}
+  .footer-toggle button{background:none;border:none;color:#7a746a;font-size:12px;padding:6px 14px;
+    border-radius:16px;cursor:pointer;transition:all 0.2s ease;letter-spacing:0.04em;text-transform:uppercase;}
+  .footer-toggle button.active{background:rgba(247,244,238,0.14);color:var(--warm-white);}
+  .footer-col-label{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:#5f5a52;
+    margin-bottom:18px;}
+  .footer-col a{display:block;font-size:13.5px;color:#8a8377;text-decoration:none;margin-bottom:11px;
+    transition:color 0.2s ease;}
+  .footer-col a:hover{color:var(--warm-white);}
+  .footer-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:4vh;
+    font-size:12px;color:#4a4540;}
+  @media(max-width:900px){
+    .footer-top{grid-template-columns:1fr 1fr;gap:30px;}
+    .footer-brand{grid-column:1/-1;}
+  }
+
+</style>
+</head>
+<body>
+
+  <div class="intro">
+    <div class="logo"><img src="images/img-02.png" alt="DAOasis logo" /></div>
+    <div class="headline" id="headline"></div>
+  </div>
+
+  <div class="pin-container" id="pinContainer">
+    <div class="hero">
+      <div class="bg"></div>
+      <div class="app-title-card" id="appTitleCard"><div class="app-title-text" id="appTitleText">Meet <em>the App.</em></div></div>
+
+      <div class="nav">
+        <div class="brand"><img src="images/img-02.png" alt="DAOasis" /></div>
+        <div class="links" id="navLinks"><a href="app.html">The App</a><span>The Sanctuary</span><span>The Web3 Layer</span><span>About Us</span><span>Investors</span></div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div class="burger" id="burger"><span></span><span></span><span></span></div>
+          <a class="cta" href="#waitlistSection">Join the waitlist</a>
+        </div>
+      </div>
+
+      <div class="content" id="heroContent">
+        <div class="kicker">A behavioural wellness ecosystem</div>
+        <div class="h1" id="heroH1"><span class="nowrap">Traditional wellness apps create users.</span><br><em>DAOasis creates stakeholders.</em></div>
+        <div class="sub">Wellness, learning, accountability and ownership — one connected journey.</div>
+        <div class="ctas">
+          <a class="btn-primary" href="#waitlistSection">Join the waitlist</a>
+          <a class="btn-secondary" href="#ecoSection">Explore the ecosystem</a>
+        </div>
+
+        <div class="journey-wrap" id="journeyWrap">
+          <svg viewBox="0 0 1000 320" fill="none" id="journeySvg">
+            <path id="route" d="M100,190 C190,100 300,270 460,150 C560,70 660,240 780,140 C840,90 870,170 900,110"
+              stroke="#C48A5A" stroke-width="2.5" stroke-dasharray="5 7" opacity="0.65" fill="none"/>
+          </svg>
+        </div>
+        <div class="journey-mobile">
+          <div class="stop"><span class="dot"></span><div class="stop-title">Bangkok</div><div class="stop-sub">Day 1 · Begins the journey</div></div>
+          <div class="stop"><span class="dot"></span><div class="stop-title">Hua Hin</div><div class="stop-sub">Day 6 · First 3-day streak</div></div>
+          <div class="stop"><span class="dot"></span><div class="stop-title">Krabi</div><div class="stop-sub">Day 14 · Learn module complete</div></div>
+          <div class="stop"><span class="dot"></span><div class="stop-title">Phang Nga</div><div class="stop-sub">Day 22 · Community quest unlocked</div></div>
+          <div class="stop"><span class="dot end"></span><div class="stop-title">Phuket</div><div class="stop-sub">Day 30 · Arrives at the Sanctuary</div></div>
+        </div>
+        <div class="scroll-hint">Scroll to continue ↓</div>
+      </div>
+
+      <img class="phone-shot" id="phoneLeft" src="images/img-03.png" alt="DAOasis learning screen" />
+      <img class="phone-shot" id="phone" src="images/img-04.png" alt="DAOasis wallet screen" />
+      <img class="phone-shot" id="phoneRight" src="images/img-05.png" alt="DAOasis app screenshot" />
+    </div>
+  </div>
+
+  <div class="divider dark">
+    <div class="divider-inner">
+      <div class="divider-line"></div>
+      <img src="images/img-09-white.png" alt="" class="divider-mark" />
+      <div class="divider-line"></div>
+    </div>
+  </div>
+
+  <div class="pin">
+  <div class="stage" id="stage">
+    <canvas id="starfield"></canvas>
+    <canvas id="canvas"></canvas>
+
+    <div class="overlay">
+      <div class="why-kicker" id="oKicker">The wellness shift</div>
+      <div class="why-headline" id="oHeadline">Why DAOasis <em>matters now.</em></div>
+      <div class="lede" id="oLede">Wellness, digital behaviour, and human performance are converging into one of the biggest shifts of the decade.</div>
+      <div class="body-copy" id="oBody">
+        <p>Modern life has become an endless cycle of notifications, screens, distraction, and information overload.</p>
+        <p class="accent">This is more than a wellness trend. It is a behavioural shift.</p>
+      </div>
+    </div>
+
+    <div class="panels">
+      <div class="panel panel1" id="p1">
+        <div class="bar"></div>
+        <div class="stat">$6.8 Trillion</div>
+        <div class="desc">Wellness is now bigger than IT, tourism, and pharma — the wellness economy hit a record $6.8T in 2024.</div>
+        <div class="source">Source: Global Wellness Institute, Global Wellness Economy Monitor 2025</div>
+      </div>
+      <div class="panel panel2" id="p2">
+        <div class="bar"></div>
+        <div class="stat">2× Faster Growth</div>
+        <div class="desc">Mental wellness is growing at roughly 2x the pace of the wellness economy overall — the exact space our Companion App and Sanctuary experience are designed around.</div>
+        <div class="source">Source: Global Wellness Institute, Global Wellness Economy Monitor 2025</div>
+      </div>
+      <div class="panel panel3" id="p3">
+        <div class="bar"></div>
+        <div class="stat">~9 Hours a Day</div>
+        <div class="desc">Average daily screen time for Gen Z — most of it not working for their wellbeing. We aim to help turn some of that time into behaviour that actually compounds.</div>
+        <div class="source">Source: cross-referenced screen-time research, 2025</div>
+      </div>
+    </div>
+
+    <div class="scroll-progress" id="scrollProgress">
+      <div class="scroll-progress-label">Noise</div>
+      <div class="scroll-progress-track"><div class="scroll-progress-fill" id="progressFill"></div></div>
+      <div class="scroll-progress-label">Order</div>
+    </div>
+  </div>
+</div>
+
+<div class="divider dark">
+  <div class="divider-inner">
+    <div class="divider-line"></div>
+    <img src="images/img-09-white.png" alt="" class="divider-mark" />
+    <div class="divider-line"></div>
+  </div>
+</div>
+
+<div class="section" id="ecoSection">
+  <div class="eco-kicker">The DAOasis ecosystem</div>
+  <div class="eco-headline">One ecosystem. Three connected experiences.</div>
+  <div class="eco-sub">DAOasis combines a daily wellness app, premium real-world sanctuaries and digital ownership into one connected ecosystem that helps people build healthier habits, meaningful relationships and long-term wellbeing.</div>
+  <div class="click-cue">Click any card to explore each experience in detail</div>
+
+  <div class="cards">
+    <div class="card" id="card1">
+      <div class="card-media"><img src="images/img-06.jpg" alt="DAOasis Companion App" style="object-position:center;"/></div>
+      <div class="card-body">
+        <div class="card-step">Step one</div>
+        <div class="card-title">Companion App</div>
+        <div class="card-desc">Daily rituals, learning, and quests that turn wellbeing into a consistent practice.</div>
+        <a class="card-learn" href="/app">Learn more →</a>
+      </div>
+    </div>
+
+    <div class="card" id="card2">
+      <div class="card-media"><img src="images/img-07.jpg" alt="DAOasis Sanctuary" style="object-position:38% 55%;"/></div>
+      <div class="card-body">
+        <div class="card-step">Step two</div>
+        <div class="card-title">DAOasis Sanctuaries</div>
+        <div class="card-desc">Immersive real-world retreats where the journey becomes tangible, starting in Phuket.</div>
+        <a class="card-learn" href="/sanctuary">Learn more →</a>
+      </div>
+    </div>
+
+    <div class="card" id="card3">
+      <div class="card-media"><img src="images/img-08.jpg" alt="DAOasis Wallet" style="object-position:center top;"/></div>
+      <div class="card-body">
+        <div class="card-step">Step three</div>
+        <div class="card-title">Digital Ownership</div>
+        <div class="card-desc">Participation and consistency are rewarded and reflected in something you actually own.</div>
+        <a class="card-learn" href="/web3">Learn more →</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="divider">
+  <div class="divider-inner">
+    <div class="divider-line"></div>
+    <img src="images/img-09.png" alt="" class="divider-mark" />
+    <div class="divider-line"></div>
+  </div>
+</div>
+
+<div class="pin3" id="pin3">
+  <div class="stage3" id="stage3">
+    <div class="track-overlay">
+      <div class="track-kicker" id="tKicker">The daily experience</div>
+      <div class="track-headline" id="tHeadline">Track what matters. <em>Thrive every day.</em></div>
+      <div class="track-lede" id="tLede">Your daily wellness, at a glance. Every ring, streak, and credit here is doing more than one job — see how, as you scroll.</div>
+    </div>
+
+    <div class="dash-wrap" id="dashWrap">
+      <img class="dash-img" src="images/img-10.jpg" alt="DAOasis Companion App daily dashboard" />
+
+      <div class="callout co-dir-up co1" id="co1">
+        <div class="co-dot"></div>
+        <div class="co-line"></div>
+        <div class="co-card">
+          <div class="co-label">Reward Credits</div>
+          <div class="co-text">Every ritual you complete earns real Reward Credits — a balance that grows in value as your consistency compounds, not just a points tally.</div>
+        </div>
+      </div>
+
+      <div class="callout co-dir-left co2" id="co2">
+        <div class="co-dot"></div>
+        <div class="co-line"></div>
+        <div class="co-card">
+          <div class="co-label">Daily Wellness Metrics</div>
+          <div class="co-text">Steps, hydration, calories and sleep, rolled into one ring — so you can feel on top of your day at a glance, without manually logging any of it.</div>
+        </div>
+      </div>
+
+      <div class="callout co-dir-right co3" id="co3">
+        <div class="co-dot"></div>
+        <div class="co-line"></div>
+        <div class="co-card">
+          <div class="co-label">Progress</div>
+          <div class="co-text">Earnings, streak, level and quests completed — the tangible record of your consistency, so effort turns into visible status, not just good intentions.</div>
+        </div>
+      </div>
+
+      <div class="callout co-dir-down co4" id="co4">
+        <div class="co-dot"></div>
+        <div class="co-line"></div>
+        <div class="co-card">
+          <div class="co-label">Keep It Up</div>
+          <div class="co-text">The weekly goal keeps you honest and the streak keeps you accountable — small daily wins are the whole design, not a side effect.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="track-dots" id="trackDots">
+      <div class="track-dot"></div><div class="track-dot"></div><div class="track-dot"></div><div class="track-dot"></div>
+    </div>
+  </div>
+</div>
+
+<div class="section track-mobile-section" id="trackMobileSection">
+  <div class="eco-kicker">The daily experience</div>
+  <div class="eco-headline">Track what matters. Thrive every day.</div>
+  <div class="eco-sub">Your daily wellness, at a glance. Build better habits, earn rewards, and grow toward a healthier you.</div>
+  <div class="tm-dash"><img src="images/img-10.jpg" alt="DAOasis Companion App daily dashboard" /></div>
+  <div class="tm-list">
+    <div class="tm-item">
+      <div class="tm-label">Reward Credits</div>
+      <div class="tm-text">Every ritual you complete earns real Reward Credits — a balance that grows in value as your consistency compounds.</div>
+    </div>
+    <div class="tm-item">
+      <div class="tm-label">Daily Wellness Metrics</div>
+      <div class="tm-text">Steps, hydration, calories and sleep, rolled into one ring — feel on top of your day without manually logging any of it.</div>
+    </div>
+    <div class="tm-item">
+      <div class="tm-label">Progress</div>
+      <div class="tm-text">Earnings, streak, level and quests completed — effort turns into visible status, not just good intentions.</div>
+    </div>
+    <div class="tm-item">
+      <div class="tm-label">Keep It Up</div>
+      <div class="tm-text">The weekly goal keeps you honest and the streak keeps you accountable — small daily wins are the whole design.</div>
+    </div>
+  </div>
+</div>
+
+<div class="divider dark">
+  <div class="divider-inner">
+    <div class="divider-line"></div>
+    <img src="images/img-09-white.png" alt="" class="divider-mark" />
+    <div class="divider-line"></div>
+  </div>
+</div>
+
+<div class="pin4" id="pin4">
+  <div class="stage4" id="stage4">
+    <div class="journey-header">
+      <div class="j-kicker">The journey</div>
+      <div class="j-headline">A path that unfolds <em>at your own pace.</em></div>
+    </div>
+
+    <div class="j-track-wrap">
+      <div class="j-track" id="jTrack">
+        <div class="j-line-base"></div>
+        <div class="j-line-fill" id="jLineFill"></div>
+        <div class="j-comet" id="jComet"></div>
+
+        <div class="j-popcard" id="jPopcard">
+          <div class="j-pop-eyebrow" id="jPopEyebrow">Stage 01</div>
+          <div class="j-pop-text" id="jPopText"></div>
+          <div class="j-pop-arrow"></div>
+        </div>
+
+        <div class="j-node" id="jNode0" style="left:0%;">
+          <div class="j-dot">01</div>
+          <div class="j-title">Download the App</div>
+          <div class="j-sub">Your journey starts with a single tap.</div>
+        </div>
+        <div class="j-node" id="jNode1" style="left:16.667%;">
+          <div class="j-dot">02</div>
+          <div class="j-title">Build Healthy Habits</div>
+          <div class="j-sub">Small daily actions, tracked and rewarded.</div>
+        </div>
+        <div class="j-node" id="jNode2" style="left:33.333%;">
+          <div class="j-dot">03</div>
+          <div class="j-title">Join the Community</div>
+          <div class="j-sub">Connect with others building the same habits.</div>
+        </div>
+        <div class="j-node" id="jNode3" style="left:50%;">
+          <div class="j-dot">04</div>
+          <div class="j-title">Earn Reward Credits</div>
+          <div class="j-sub">Quests, learning, and referrals turn effort into credits.</div>
+        </div>
+        <div class="j-node" id="jNode4" style="left:66.667%;">
+          <div class="j-dot">05</div>
+          <div class="j-title">Own DVT (Optional)</div>
+          <div class="j-sub">Go deeper — hold the token, unlock governance.</div>
+        </div>
+        <div class="j-node" id="jNode5" style="left:83.333%;">
+          <div class="j-dot">06</div>
+          <div class="j-title">Help Shape DAOasis</div>
+          <div class="j-sub">Vote, propose, and steer where DAOasis goes next.</div>
+        </div>
+        <div class="j-node" id="jNode6" style="left:100%;">
+          <div class="j-dot">07</div>
+          <div class="j-title">Visit the DAOasis Sanctuary</div>
+          <div class="j-sub">For the few who go all the way: a real-world retreat, earned.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section journey-mobile-section" id="journeyMobileSection">
+  <div class="eco-kicker">The journey</div>
+  <div class="eco-headline">A path that unfolds at your own pace.</div>
+  <div class="tm-list">
+    <div class="tm-item">
+      <div class="tm-label">01 — Download the App</div>
+      <div class="tm-text">Your journey starts with a single tap.</div>
+    </div>
+    <div class="tm-item">
+      <div class="tm-label">02 — Build Healthy Habits</div>
+      <div class="tm-text">Small daily actions, tracked and rewarded.</div>
+    </div>
+    <div class="tm-item">
+      <div class="tm-label">03 — Join the Community</div>
+      <div class="tm-text">Connect with others building the same habits.</div>
+    </div>
+    <div class="tm-item">
+      <div class="tm-label">04 — Earn Reward Credits</div>
+      <div class="tm-text">Quests, learning, and referrals turn effort into credits.</div>
+    </div>
+    <div class="tm-item">
+      <div class="tm-label">05 — Own DVT (Optional)</div>
+      <div class="tm-text">Go deeper — hold the token, unlock governance.</div>
+    </div>
+    <div class="tm-item">
+      <div class="tm-label">06 — Help Shape DAOasis</div>
+      <div class="tm-text">Vote, propose, and steer where DAOasis goes next.</div>
+    </div>
+    <div class="tm-item">
+      <div class="tm-label">07 — Visit the DAOasis Sanctuary</div>
+      <div class="tm-text">For the few who go all the way: a real-world retreat, earned.</div>
+    </div>
+  </div>
+</div>
+
+<div class="divider dark">
+  <div class="divider-inner">
+    <div class="divider-line"></div>
+    <img src="images/img-09-white.png" alt="" class="divider-mark" />
+    <div class="divider-line"></div>
+  </div>
+</div>
+
+<div class="pin5" id="pin5">
+  <div class="stage5">
+    <div class="pr-blob pr-blob1"></div>
+    <div class="pr-blob pr-blob2"></div>
+
+    <div class="pr-left">
+      <div class="pr-kicker">Principle</div>
+      <div class="pr-headline" id="prHeadline">Clarity <em>over</em> Noise.</div>
+    </div>
+
+    <div class="pr-card-wrap" id="prCardWrap">
+      <div class="pr-card" id="prCard">
+        <div class="pr-card-line"></div>
+        <p>Modern life creates constant <strong>attention demand</strong>, cognitive load and pressure without structure.</p>
+        <p>DAOasis is designed to <strong>remove what distracts</strong> before adding what improves.</p>
+        <p>Built for founders, traders, technical professionals, solo operators, creators and <strong>location independent digital nomads</strong> seeking clarity, structure and long term sustainability.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section principle-mobile-section" id="principleMobileSection">
+  <div class="eco-kicker">Principle</div>
+  <div class="eco-headline">Clarity over Noise.</div>
+  <div class="pr-para">Modern life creates constant attention demand, cognitive load and pressure without structure.</div>
+  <div class="pr-para">DAOasis is designed to remove what distracts before adding what improves.</div>
+  <div class="pr-para">Built for founders, traders, technical professionals, solo operators, creators and location independent digital nomads seeking clarity, structure and long term sustainability.</div>
+</div>
+
+<div class="divider">
+  <div class="divider-inner">
+    <div class="divider-line"></div>
+    <img src="images/img-09.png" alt="" class="divider-mark" />
+    <div class="divider-line"></div>
+  </div>
+</div>
+
+<section class="waitlist-section" id="waitlistSection">
+  <div class="wl-kicker">Early Access</div>
+  <div class="wl-tagline">Small actions. Consistent practice. Lasting change.</div>
+  <div class="wl-headline">Be among the first.</div>
+  <div class="wl-sub">Join a community building a more intentional way to live, learn and grow.</div>
+  <a class="wl-btn" href="#">Join the Waitlist</a>
+</section>
+
+<footer class="site-footer">
+  <div class="footer-top">
+    <div class="footer-brand">
+      <div class="footer-brand-logo">
+        <img src="images/img-09-white.png" alt="DAOasis mark" />
+        <span>DAOasis</span>
+      </div>
+      <div class="footer-tagline">
+        <strong>Wellness meets Web3.</strong>
+        <em>Built for long term impact.</em>
+      </div>
+      <div class="footer-appearance">
+        <div class="footer-appearance-label">Appearance</div>
+        <div class="footer-toggle">
+          <button class="active" id="ftLight">Light</button>
+          <button id="ftDark">Dark</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-col">
+      <div class="footer-col-label">Explore</div>
+      <a href="app.html">The App</a>
+      <a href="#">The Sanctuary</a>
+      <a href="#">The Web3 Layer</a>
+      <a href="#waitlistSection">Waitlist</a>
+      <a href="#">FAQ</a>
+    </div>
+
+    <div class="footer-col">
+      <div class="footer-col-label">Company</div>
+      <a href="#">About</a>
+      <a href="#">Team</a>
+      <a href="#">Careers</a>
+      <a href="#">Investors</a>
+      <a href="#">Contact</a>
+    </div>
+
+    <div class="footer-col">
+      <div class="footer-col-label">Legal</div>
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Service</a>
+      <a href="#">Risk Disclaimer</a>
+    </div>
+
+    <div class="footer-col">
+      <div class="footer-col-label">Follow Us</div>
+      <a href="#">X</a>
+      <a href="#">Instagram</a>
+      <a href="#">LinkedIn</a>
+      <a href="#">YouTube</a>
+      <a href="#">Email</a>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <span>© 2026 DAOasis. All rights reserved.</span>
+    <span>Phuket · Global</span>
+  </div>
+</footer>
+
+<div class="lightbox" id="lightbox">
+  <div class="lightbox-close" id="lightboxClose">Close ✕</div>
+  <div class="lightbox-panel">
+    <img id="lightboxImg" src="" alt="" />
+    <div class="lightbox-body">
+      <div class="lightbox-step" id="lightboxStep"></div>
+      <div class="lightbox-title" id="lightboxTitle"></div>
+      <div class="lightbox-text" id="lightboxText"></div>
+      <div class="lightbox-features" id="lightboxFeatures"></div>
+      <a class="lightbox-cta" id="lightboxCta" href="#">Visit page →</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Journey waypoint data — placed exactly on the path via getPointAtLength
+  const waypoints = [
+    { frac: 0.0,  color:'#4a9a68', title:'Bangkok',    sub:'Day 1 · Begins the journey' },
+    { frac: 0.24, color:'#7F97A2', title:'Hua Hin',    sub:'Day 6 · First 3-day streak' },
+    { frac: 0.5,  color:'#C48A5A', title:'Krabi',      sub:'Day 14 · Learn module complete' },
+    { frac: 0.76, color:'#9B8CA8', title:'Phang Nga',  sub:'Day 22 · Community quest unlocked' },
+    { frac: 1.0,  color:'#F7F4EE', title:'Phuket',     sub:'Day 30 · Arrives at the Sanctuary', end:true }
+  ];
+
+  function buildJourney(){
+    const path = document.getElementById('route');
+    const svg = document.getElementById('journeySvg');
+    const len = path.getTotalLength();
+    waypoints.forEach(wp => {
+      const p = path.getPointAtLength(len * wp.frac);
+      const g = document.createElementNS('http://www.w3.org/2000/svg','g');
+      const circle = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      circle.setAttribute('cx', p.x); circle.setAttribute('cy', p.y);
+      circle.setAttribute('r', wp.end ? 9 : 7);
+      circle.setAttribute('fill', wp.end ? 'none' : wp.color);
+      if(wp.end){ circle.setAttribute('stroke', '#F7F4EE'); circle.setAttribute('stroke-width','1.5'); }
+      g.appendChild(circle);
+      if(wp.end){
+        const dot = document.createElementNS('http://www.w3.org/2000/svg','circle');
+        dot.setAttribute('cx', p.x); dot.setAttribute('cy', p.y); dot.setAttribute('r', 3.5); dot.setAttribute('fill', '#F7F4EE');
+        g.appendChild(dot);
+      }
+      const ySign = wp.frac < 0.5 ? 1 : -1; // alternate label side to avoid path collision where possible
+      const labelY = p.y + (wp.frac === 0 ? 32 : (wp.frac >= 0.9 ? 32 : (p.y > 150 ? 32 : -22)));
+      const subY = labelY + (labelY > p.y ? 16 : -16);
+      const label = document.createElementNS('http://www.w3.org/2000/svg','text');
+      label.setAttribute('x', p.x); label.setAttribute('y', labelY);
+      label.setAttribute('class','wp-label'); label.setAttribute('text-anchor','middle');
+      label.textContent = wp.title;
+      const sub = document.createElementNS('http://www.w3.org/2000/svg','text');
+      sub.setAttribute('x', p.x); sub.setAttribute('y', subY);
+      sub.setAttribute('class','wp-sub'); sub.setAttribute('text-anchor','middle');
+      sub.textContent = wp.sub;
+      g.appendChild(label); g.appendChild(sub);
+      svg.appendChild(g);
+    });
+
+    const traveler = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    traveler.setAttribute('r','5.5'); traveler.setAttribute('fill','#F7F4EE'); traveler.id='traveler';
+    svg.appendChild(traveler);
+
+    let start = null;
+    function animateTraveler(ts){
+      if(!start) start = ts;
+      const t = ((ts - start) / 8000) % 1;
+      const p = path.getPointAtLength(len * t);
+      traveler.setAttribute('cx', p.x); traveler.setAttribute('cy', p.y);
+      requestAnimationFrame(animateTraveler);
+    }
+    requestAnimationFrame(animateTraveler);
+  }
+  buildJourney();
+
+  // Burger menu toggle (mobile)
+  (function(){
+    const burger = document.getElementById('burger');
+    const links = document.getElementById('navLinks');
+    burger.addEventListener('click', () => {
+      burger.classList.toggle('open');
+      links.classList.toggle('open');
+    });
+  })();
+
+  // Lock scroll during the intro so early scrolling can't outrun the reveal timing
+  document.documentElement.style.overflow = 'hidden';
+  document.body.style.overflow = 'hidden';
+  function unlockScroll(){
+    document.documentElement.style.overflow = '';
+    document.body.style.overflow = '';
+  }
+
+  // Typewriter intro headline
+  (function(){
+    const el = document.getElementById('headline');
+    const segments = [
+      { text: 'Traditional wellness apps create users.', em: false },
+      { br: true },
+      { text: 'DAOasis creates stakeholders.', em: true }
+    ];
+    const speed = 45; // ms per character (slowed down)
+
+    function typeText(onDone){
+      let segIndex = 0, charIndex = 0, currentEmSpan = null;
+      const cursor = document.createElement('span');
+      cursor.className = 'type-cursor';
+
+      function step(){
+        if(segIndex >= segments.length){
+          cursor.remove();
+          onDone && onDone();
+          return;
+        }
+        const seg = segments[segIndex];
+        if(seg.br){
+          if(cursor.parentNode) cursor.remove();
+          el.appendChild(document.createElement('br'));
+          el.appendChild(cursor);
+          segIndex++; charIndex = 0;
+          setTimeout(step, speed);
+          return;
+        }
+        if(charIndex === 0 && seg.em){
+          currentEmSpan = document.createElement('em');
+          el.insertBefore(currentEmSpan, cursor);
+        }
+        const char = seg.text[charIndex];
+        const target = seg.em ? currentEmSpan : el;
+        if(seg.em){ target.appendChild(document.createTextNode(char)); }
+        else { el.insertBefore(document.createTextNode(char), cursor); }
+        charIndex++;
+        if(charIndex >= seg.text.length){ segIndex++; charIndex = 0; }
+        setTimeout(step, speed);
+      }
+      el.appendChild(cursor);
+      step();
+    }
+
+    function dockLogo(){
+      const logoEl = document.querySelector('.logo');
+      const curRect = logoEl.getBoundingClientRect();
+      logoEl.style.animation = 'none';
+      logoEl.style.opacity = '1';
+      logoEl.style.filter = 'blur(0px)';
+      logoEl.style.transform = 'none';
+      logoEl.style.width = curRect.width + 'px';
+      logoEl.getBoundingClientRect(); // force reflow before transition kicks in
+      requestAnimationFrame(() => {
+        logoEl.style.transition = 'width 1.1s cubic-bezier(0.22,1,0.36,1), margin-bottom 1.1s ease';
+        logoEl.style.width = (curRect.width * 0.5) + 'px';
+        logoEl.style.marginBottom = '22px';
+      });
+    }
+
+    setTimeout(() => {
+      dockLogo();
+      el.classList.add('show');
+      typeText(() => {
+        setTimeout(flyToHero, 500);
+      });
+    }, 2450);
+
+    function flyToHero(){
+      const introEl = document.querySelector('.intro');
+      const heroH1 = document.getElementById('heroH1');
+      const heroEl = document.querySelector('.hero');
+
+      // reveal hero underneath (bg, nav, etc.) as the clone flies
+      heroEl.classList.add('reveal');
+
+      const r1 = el.getBoundingClientRect();
+      const r2 = heroH1.getBoundingClientRect();
+      const startSize = parseFloat(getComputedStyle(el).fontSize);
+      const scale = r2.width / r1.width;
+
+      el.style.transition = 'none';
+      el.style.position = 'fixed';
+      el.style.margin = '0';
+      el.style.left = r1.left + 'px';
+      el.style.top = r1.top + 'px';
+      el.style.width = r1.width + 'px';
+      el.style.filter = 'blur(0px)';
+      // force reflow before enabling transition
+      el.getBoundingClientRect();
+
+      requestAnimationFrame(() => {
+        el.style.transition = 'left 1.4s cubic-bezier(0.22,1,0.36,1), top 1.4s cubic-bezier(0.22,1,0.36,1), width 1.4s cubic-bezier(0.22,1,0.36,1), font-size 1.4s cubic-bezier(0.22,1,0.36,1), opacity 0.6s ease 0.9s';
+        el.style.left = r2.left + 'px';
+        el.style.top = r2.top + 'px';
+        el.style.width = r2.width + 'px';
+        el.style.fontSize = (startSize * scale) + 'px';
+      });
+
+      setTimeout(() => { introEl.style.transition = 'opacity 1.4s ease'; introEl.classList.add('fade-out'); }, 50);
+      setTimeout(() => { el.style.opacity = '0'; }, 900);
+      setTimeout(() => { heroH1.classList.add('settled'); }, 1150);
+      setTimeout(() => { introEl.style.visibility = 'hidden'; introEl.style.pointerEvents = 'none'; unlockScroll(); }, 1500);
+    }
+  })();
+
+  // Scroll-driven phone zoom while hero is pinned — smoothed with a trailing lerp loop
+  const pinContainer = document.getElementById('pinContainer');
+  const phoneCenter = document.getElementById('phone');
+  const phoneLeft = document.getElementById('phoneLeft');
+  const phoneRight = document.getElementById('phoneRight');
+  const heroContent = document.getElementById('heroContent');
+  const appTitleCard = document.getElementById('appTitleCard');
+  const appTitleText = document.getElementById('appTitleText');
+
+  function lerp(a,b,t){ return a + (b-a)*t; }
+  function ease(t){ return t<0.5 ? 2*t*t : 1-Math.pow(-2*t+2,2)/2; }
+  function clamp01(v){ return Math.max(0, Math.min(1, v)); }
+
+  let targetRaw = 0;
+  let currentRaw = 0;
+
+  function measureRaw(){
+    const rect = pinContainer.getBoundingClientRect();
+    const scrollable = pinContainer.offsetHeight - window.innerHeight;
+    let raw = -rect.top / scrollable;
+    return clamp01(raw);
+  }
+
+  function applyFrame(raw){
+    const isMobile = window.innerWidth <= 800;
+
+    // "Meet the App" title card holds the screen first, on its own black frame
+    // "Meet the App" title card: small delay before it appears, a real hold so it
+    // can be read, then a fade that overlaps with the phones arriving (no dead gap)
+    // "Meet the App" black backdrop: longer delay so people actually see the hero first,
+    // then the card sweeps in. The BACKGROUND stays solid black through the whole phone
+    // reveal (never fades back to the photo) — only the text itself fades out once read.
+    const titleIn = ease(clamp01((raw - 0.11) / 0.06));
+    const titleTextOut = ease(clamp01((raw - 0.30) / 0.07));
+    appTitleCard.style.opacity = titleIn;
+    appTitleText.style.opacity = Math.min(titleIn, 1 - titleTextOut);
+
+    // everything below (phones + hero copy) is remapped onto the scroll that's
+    // left over once the title card has had its moment and cleared away
+    raw = clamp01((raw - 0.37) / (1 - 0.37));
+
+    // phone appears only once scrolling has begun
+    const appearT = ease(clamp01(raw / 0.14));
+
+    // zoom completes over first 68% of pinned scroll (slower), then holds
+    const zoomT = ease(clamp01(raw / 0.68));
+
+    const startWidth = isMobile ? 170 : 240;
+    const endWidthCenter = Math.min(window.innerWidth * (isMobile ? 0.5 : 0.264), isMobile ? 560 : 336);
+    const widthCenter = lerp(startWidth, endWidthCenter, zoomT);
+
+    const gap = isMobile ? window.innerWidth * 0.02 : window.innerWidth * 0.02;
+    // side phones settle into an overlapping convergence rather than full separation
+    const sideOffset = lerp(0, endWidthCenter * 0.42, zoomT);
+
+    // center phone: starts small/centered/flat, ends centered/flat but larger
+    phoneCenter.style.opacity = appearT;
+    phoneCenter.style.width = widthCenter + 'px';
+    phoneCenter.style.top = '50%';
+    phoneCenter.style.left = '50%';
+    phoneCenter.style.transform = `translate(-50%,-50%) perspective(900px) rotateY(0deg) rotateX(0deg) rotateZ(0deg)`;
+
+    if(!isMobile){
+      // side phones: start hidden/tucked behind center, fan out and fade in as zoom progresses
+      const sideAppear = clamp01((raw - 0.08) / 0.4);
+      phoneLeft.style.opacity = appearT * sideAppear;
+      phoneRight.style.opacity = appearT * sideAppear;
+
+      const sideWidth = widthCenter * 0.94;
+      phoneLeft.style.width = sideWidth + 'px';
+      phoneRight.style.width = sideWidth + 'px';
+
+      phoneLeft.style.top = '50%';
+      phoneRight.style.top = '50%';
+      phoneLeft.style.left = `calc(50% - ${sideOffset}px)`;
+      phoneRight.style.left = `calc(50% + ${sideOffset}px)`;
+
+      const sideRotate = lerp(0, 10, 1 - sideAppear); // settle flat once fully appeared
+      phoneLeft.style.transform = `translate(-50%,-50%) perspective(900px) rotateY(${sideRotate}deg) rotateX(0deg)`;
+      phoneRight.style.transform = `translate(-50%,-50%) perspective(900px) rotateY(${-sideRotate}deg) rotateX(0deg)`;
+    } else {
+      // Mobile: sequential full-screen swipe through the three app screens.
+      // Phase 1: center phone zooms to near full-screen. Phase 2: Learning screen swipes
+      // in from the left, pushing the center screen out to the right. Phase 3: Wallet
+      // screen swipes in from the left the same way.
+      const p1 = clamp01(raw / 0.4);
+      const p2 = clamp01((raw - 0.45) / 0.22);
+      const p3 = clamp01((raw - 0.68) / 0.22);
+      const easeP1 = ease(p1), easeP2 = ease(p2), easeP3 = ease(p3);
+
+      const phoneAspect = 901/1830; // width/height of the cropped screenshots
+      const maxW = window.innerWidth * 0.94;
+      const maxH = window.innerHeight * 0.84;
+      const mobileFull = Math.min(maxW, maxH * phoneAspect);
+      phoneCenter.style.width = mobileFull + 'px';
+      phoneLeft.style.width = mobileFull + 'px';
+      phoneRight.style.width = mobileFull + 'px';
+
+      phoneCenter.style.opacity = appearT;
+      phoneCenter.style.top = '52%';
+      phoneCenter.style.left = `calc(50% + ${easeP2 * 120}vw)`;
+      phoneCenter.style.transform = `translate(-50%,-50%) scale(1)`;
+
+      const leftOpacity = ease(easeP2);
+      phoneLeft.style.opacity = leftOpacity;
+      phoneLeft.style.top = '52%';
+      phoneLeft.style.left = `calc(50% + ${lerp(-120,0,easeP2) + easeP3*120}vw)`;
+      phoneLeft.style.transform = `translate(-50%,-50%) scale(1)`;
+
+      const rightOpacity = ease(easeP3);
+      phoneRight.style.opacity = rightOpacity;
+      phoneRight.style.top = '52%';
+      phoneRight.style.left = `calc(50% + ${lerp(-120,0,easeP3)}vw)`;
+      phoneRight.style.transform = `translate(-50%,-50%) scale(1)`;
+    }
+
+    // fade out surrounding hero copy + journey as phones take over
+    const fadeT = clamp01(raw / 0.45);
+    heroContent.style.opacity = 1 - fadeT;
+    heroContent.style.transform = `translateY(${lerp(0,-20,fadeT)}px)`;
+  }
+
+  function tick(){
+    targetRaw = measureRaw();
+    currentRaw = lerp(currentRaw, targetRaw, 0.12);
+    if(Math.abs(currentRaw - targetRaw) < 0.0005) currentRaw = targetRaw;
+    applyFrame(currentRaw);
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+  window.addEventListener('resize', () => { targetRaw = measureRaw(); });
+</script>
+
+<script>
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        entry.target.classList.add('in-view');
+      }
+    });
+  }, { threshold: 0.2 });
+
+  observer.observe(document.getElementById('ecoSection'));
+
+  const cardObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if(entry.isIntersecting){
+        const idx = [...document.querySelectorAll('.card')].indexOf(entry.target);
+        setTimeout(() => entry.target.classList.add('in-view'), idx * 150);
+        cardObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.25 });
+
+  document.querySelectorAll('.card').forEach(c => cardObserver.observe(c));
+
+  // (count-up animation removed — wallet card is now a real screenshot, not a CSS mockup)
+
+  // Subtle parallax on card images as they scroll through the viewport, plus hover scale
+  const mediaImgs = document.querySelectorAll('.card-media img');
+  const hoverState = new Map();
+  mediaImgs.forEach(img => {
+    hoverState.set(img, 1);
+    img.parentElement.addEventListener('mouseenter', () => hoverState.set(img, 1.04));
+    img.parentElement.addEventListener('mouseleave', () => hoverState.set(img, 1));
+  });
+  function updateParallax(){
+    mediaImgs.forEach(img => {
+      const rect = img.parentElement.getBoundingClientRect();
+      const center = rect.top + rect.height / 2;
+      const viewportCenter = window.innerHeight / 2;
+      const offset = (center - viewportCenter) / window.innerHeight;
+      img.style.transform = `translateY(${offset * -30}px) scale(${hoverState.get(img)})`;
+    });
+  }
+  window.addEventListener('scroll', () => requestAnimationFrame(updateParallax), { passive: true });
+  updateParallax();
+
+  // Click-to-expand detail modal
+  const cardData = {
+    card1: {
+      step: 'Step one', title: 'Companion App',
+      text: 'The DAOasis Companion App turns wellbeing into a daily practice instead of a one-time decision. Rituals, learning, and quests are woven into your everyday routine, so consistency builds naturally over time.',
+      features: ['Daily wellness metrics', 'Quests and streaks', 'Guided learning', 'Community connection', 'Progress tracking', 'Reward credits'],
+      url: '/app'
+    },
+    card2: {
+      step: 'Step two', title: 'DAOasis Sanctuaries',
+      text: 'Real-world retreats where the daily practice becomes tangible. Starting in Phuket, each Sanctuary is an immersive environment for recovery, clarity, and renewal — the place the journey leads to, not the destination itself.',
+      features: ['Immersive retreat design', 'Rest and recovery focus', 'Guided practices on-site', 'Community gatherings'],
+      url: '/sanctuary'
+    },
+    card3: {
+      step: 'Step three', title: 'Digital Ownership',
+      text: 'Consistency and participation are recognised and reflected in something you actually own. This layer strengthens community alignment and rewards meaningful, long-term involvement — not speculation.',
+      features: ['Reward credits', 'Governance participation', 'Staking', 'Ecosystem alignment'],
+      url: '/web3'
+    }
+  };
+
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightboxImg');
+  const lightboxStep = document.getElementById('lightboxStep');
+  const lightboxTitle = document.getElementById('lightboxTitle');
+  const lightboxText = document.getElementById('lightboxText');
+  const lightboxFeatures = document.getElementById('lightboxFeatures');
+  const lightboxCta = document.getElementById('lightboxCta');
+
+  document.querySelectorAll('.card').forEach(card => {
+    card.querySelector('.card-media').addEventListener('click', () => {
+      const data = cardData[card.id];
+      if(!data) return;
+      lightboxImg.src = card.querySelector('.card-media img').src;
+      lightboxStep.textContent = data.step;
+      lightboxTitle.textContent = data.title;
+      lightboxText.textContent = data.text;
+      lightboxFeatures.innerHTML = data.features.map(f => `<div>${f}</div>`).join('');
+      lightboxCta.href = data.url;
+      lightbox.classList.add('open');
+    });
+  });
+  function closeLightbox(){ lightbox.classList.remove('open'); }
+  document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+  lightbox.addEventListener('click', (e) => { if(e.target === lightbox) closeLightbox(); });
+  document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeLightbox(); });
+
+</script>
+<script>
+// ---- STARFIELD: 2D canvas star layer behind the WebGL particles ----
+(function(){
+  const sc = document.getElementById('starfield');
+  if(!sc) return;
+  const ctx = sc.getContext('2d');
+
+  const STAR_COUNT = 320;
+  const stars = [];
+
+  function resize(){
+    sc.width  = window.innerWidth;
+    sc.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  // Seed deterministic so stars don't jump on resize
+  function srand(seed){ return ((seed ^ (seed >>> 9)) * 0x5851f42d + 0xc4ceb5e) >>> 0; }
+  let s = 0x9e3779b9;
+  for(let i = 0; i < STAR_COUNT; i++){
+    s = srand(s + i * 7919);
+    const rand = () => { s = srand(s); return (s >>> 0) / 0xffffffff; };
+    const size   = rand() < 0.1 ? rand() * 1.4 + 0.9      // a few bright stars
+                 : rand() < 0.4 ? rand() * 0.7 + 0.35      // mid
+                 :                rand() * 0.35 + 0.1;      // faint dust
+    const baseA  = rand() * 0.55 + 0.25;
+    // colour tint: most are blue-white, a handful warm gold
+    const warm   = rand() < 0.12;
+    stars.push({
+      x: rand(),
+      y: rand(),
+      size,
+      baseA,
+      phase: rand() * Math.PI * 2,
+      speed: rand() * 0.6 + 0.3,
+      warm
+    });
+  }
+
+  // Optional Milky Way: soft diagonal haze
+  function drawMilkyWay(){
+    const w = sc.width, h = sc.height;
+    const grad = ctx.createLinearGradient(w * 0.1, h * 0.0, w * 0.85, h * 1.0);
+    grad.addColorStop(0,   'rgba(140,175,210,0)');
+    grad.addColorStop(0.3, 'rgba(140,175,210,0.028)');
+    grad.addColorStop(0.5, 'rgba(160,190,220,0.045)');
+    grad.addColorStop(0.7, 'rgba(140,175,210,0.028)');
+    grad.addColorStop(1,   'rgba(140,175,210,0)');
+    ctx.save();
+    ctx.translate(w/2, h/2);
+    ctx.rotate(-0.38);
+    ctx.translate(-w/2, -h/2);
+    ctx.fillStyle = grad;
+    ctx.fillRect(-w, -h, w*3, h*3);
+    ctx.restore();
+  }
+
+  let lastTime = 0;
+  function draw(now){
+    requestAnimationFrame(draw);
+    const dt  = Math.min((now - lastTime) / 1000, 0.05);
+    lastTime  = now;
+    const w   = sc.width, h = sc.height;
+
+    ctx.clearRect(0, 0, w, h);
+    drawMilkyWay();
+
+    for(let i = 0; i < stars.length; i++){
+      const st = stars[i];
+      st.phase += st.speed * dt;
+      const a   = st.baseA * (0.72 + 0.28 * Math.sin(st.phase));
+      const px  = st.x * w;
+      const py  = st.y * h;
+
+      // glow for brighter stars
+      if(st.size > 0.8){
+        const glow = ctx.createRadialGradient(px, py, 0, px, py, st.size * 4);
+        const col  = st.warm ? `rgba(196,160,90,${a*0.3})` : `rgba(180,210,255,${a*0.25})`;
+        glow.addColorStop(0,   col);
+        glow.addColorStop(1,   'rgba(0,0,0,0)');
+        ctx.beginPath();
+        ctx.arc(px, py, st.size * 4, 0, Math.PI * 2);
+        ctx.fillStyle = glow;
+        ctx.fill();
+      }
+
+      ctx.beginPath();
+      ctx.arc(px, py, st.size, 0, Math.PI * 2);
+      ctx.fillStyle = st.warm
+        ? `rgba(255,220,150,${a})`
+        : `rgba(220,235,255,${a})`;
+      ctx.fill();
+    }
+  }
+  requestAnimationFrame(draw);
+})();
+</script>
+<script>
+(function(){
+  const canvas = document.getElementById('canvas');
+  const stage = document.getElementById('stage');
+  const pin = document.querySelector('.pin');
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(55, window.innerWidth/window.innerHeight, 0.1, 100);
+  camera.position.z = 24;
+
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(window.innerWidth, window.innerHeight);
+
+  // ---- Build particle system ----
+  const COUNT = 2600;
+  const positions = new Float32Array(COUNT * 3);
+  const chaosPositions = new Float32Array(COUNT * 3);
+  const orderPositions = new Float32Array(COUNT * 3);
+  const colors = new Float32Array(COUNT * 3);
+  const sizes = new Float32Array(COUNT);
+
+  const colGold = new THREE.Color('#C48A5A');
+  const colGreen = new THREE.Color('#4a9a68');
+  const colWhite = new THREE.Color('#F7F4EE');
+
+  // palm-tree formation: thick tapered trunk + feathery fanning fronds, no ground plane
+  const NUM_FRONDS = 7;
+  const TRUNK_SHARE = 0.22;
+  const trunkCount = Math.floor(COUNT * TRUNK_SHARE);
+  const frondCount = COUNT - trunkCount;
+  const perFrond = Math.floor(frondCount / NUM_FRONDS);
+  const LEAFLETS_PER_FROND = 16;
+
+  function leafPoint(i, total){
+    if(i < trunkCount){
+      // trunk centerline, gently swaying, tapering from a thick base to a slender neck
+      const s = i / trunkCount;
+      const cx = Math.sin(s * 1.4) * 0.25;
+      const cy = -s * 7 + 1.5;
+      const cz = -0.3;
+      const radius = 0.5 * (1 - s * s * 0.75); // thick at base, still substantial near top
+      const ang = (i * 2654435761 % 1000) / 1000 * Math.PI * 2;
+      const rr = Math.sqrt((i * 40503 % 1000) / 1000) * radius;
+      const x = cx + Math.cos(ang) * rr;
+      const y = cy;
+      const z = cz + Math.sin(ang) * rr * 0.7;
+      return [x, y, z];
+    }
+    const fIdx = i - trunkCount;
+    const frond = Math.min(NUM_FRONDS - 1, Math.floor(fIdx / perFrond));
+    const s = (fIdx % perFrond) / perFrond;
+
+    const baseAngle = (frond / (NUM_FRONDS - 1) - 0.5) * 2.2; // ~63deg spread each side
+    const length = 5.6 - Math.abs(baseAngle) * 0.5;
+    const dirX = Math.sin(baseAngle);
+    const dirY = Math.cos(baseAngle);
+    const topY = 1.5;
+
+    // rib centerline: arches outward then droops down elegantly like a real palm frond
+    const arch = 0.3;
+    const droop = 0.62;
+    const centerX = dirX * s * length + arch * Math.sin(s * Math.PI) * dirY * length * 0.25;
+    const centerY = topY + dirY * s * length - droop * Math.pow(s, 1.6) * length;
+    const centerZ = Math.cos(baseAngle * 0.5) * 0.6 - 0.3;
+
+    // leaflets: width oscillates periodically along the rib (comb pattern) instead of
+    // one smooth blade, so it reads as many small feathered leaflets, not a solid triangle
+    const perpX = dirY, perpY = -dirX;
+    const envelope = Math.sin(Math.min(1, s * 1.05) * Math.PI); // overall taper, full length to tip
+    const leafletPhase = Math.abs(Math.sin(s * LEAFLETS_PER_FROND * Math.PI));
+    const maxWidth = 0.62 * (1 - Math.abs(baseAngle) / 1.6);
+    const widthAtS = envelope * maxWidth * (0.35 + 0.65 * leafletPhase);
+    const wOffset = ((fIdx * 2654435761 % 1000) / 1000 - 0.5) * 2 * widthAtS;
+
+    // leaflets angle slightly back toward the base (like real pinnate fronds), not purely perpendicular
+    const sweepBack = 0.3;
+    const x = centerX + perpX * wOffset - dirX * Math.abs(wOffset) * sweepBack;
+    const y = centerY + perpY * wOffset * 0.4 - dirY * Math.abs(wOffset) * sweepBack * 0.3;
+    const z = centerZ + (((fIdx * 40503 % 1000) / 1000) - 0.5) * 0.14;
+
+    return [x, y, z];
+  }
+
+  for(let i = 0; i < COUNT; i++){
+    // chaotic starting position: scattered cloud
+    chaosPositions[i*3]   = (Math.random() - 0.5) * 34;
+    chaosPositions[i*3+1] = (Math.random() - 0.5) * 20;
+    chaosPositions[i*3+2] = (Math.random() - 0.5) * 20;
+
+    const [ox, oy, oz] = leafPoint(i, COUNT);
+    orderPositions[i*3] = ox + (Math.random()-0.5)*0.3;
+    orderPositions[i*3+1] = oy + (Math.random()-0.5)*0.3;
+    orderPositions[i*3+2] = oz + (Math.random()-0.5)*0.3;
+
+    positions[i*3] = chaosPositions[i*3];
+    positions[i*3+1] = chaosPositions[i*3+1];
+    positions[i*3+2] = chaosPositions[i*3+2];
+
+    const mix = Math.random();
+    const c = mix < 0.5 ? colGold.clone().lerp(colWhite, mix*2) : colGreen.clone().lerp(colGold, (mix-0.5)*2);
+    colors[i*3] = c.r; colors[i*3+1] = c.g; colors[i*3+2] = c.b;
+    sizes[i] = Math.random() * 0.14 + 0.05;
+  }
+
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+  geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+
+  const material = new THREE.PointsMaterial({
+    size: 0.16, vertexColors: true, transparent: true, opacity: 0.85,
+    depthWrite: false, blending: THREE.AdditiveBlending
+  });
+
+  const points = new THREE.Points(geometry, material);
+  scene.add(points);
+
+  // ---- Scroll-driven progress ----
+  let targetProgress = 0, currentProgress = 0;
+  let targetMouseX = 0, targetMouseY = 0, mouseX = 0, mouseY = 0;
+
+  function computeProgress(){
+    const rect = pin.getBoundingClientRect();
+    const scrollable = pin.offsetHeight - window.innerHeight;
+    let p = -rect.top / scrollable;
+    return Math.max(0, Math.min(1, p));
+  }
+
+  window.addEventListener('mousemove', (e) => {
+    targetMouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+    targetMouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+  });
+
+  const posAttr = geometry.attributes.position;
+
+  // ---- "Why DAOasis" stat panels: pop to center → next replaces it → all return to stack ----
+  const p1 = document.getElementById('p1');
+  const p2 = document.getElementById('p2');
+  const p3 = document.getElementById('p3');
+  const panelEls = [p1, p2, p3];
+
+  let panelSlots = [];
+  function measurePanelSlots(){
+    // measure each panel's natural (in-flow, untransformed) center so we can
+    // interpolate a translate/scale from that slot to viewport-center and back
+    panelEls.forEach(el => { el.style.transform = 'none'; });
+    panelSlots = panelEls.map(el => {
+      const r = el.getBoundingClientRect();
+      return { cx: r.left + r.width / 2, cy: r.top + r.height / 2 };
+    });
+  }
+  let slotsMeasured = false;
+  window.addEventListener('resize', () => {
+    if(currentProgress > 0.001) measurePanelSlots();
+    else slotsMeasured = false;
+  });
+
+  function rampT(t, start, end){
+    if(end <= start) return t >= end ? 1 : 0;
+    return Math.max(0, Math.min(1, (t - start) / (end - start)));
+  }
+
+  // scroll-progress windows (as fractions of the pinned section, 0..1)
+  // Widened hold windows + clear breathing gaps between panels (previously they
+  // handed off almost back-to-back, which read as rushed). Pin height was also
+  // increased so each of these fractions maps to more real scroll distance.
+  const PANEL_TIMELINE = {
+    p1: { inStart: 0.09, inEnd: 0.15, holdEnd: 0.31, outEnd: 0.36 },
+    // gap 0.36–0.41: nothing centered, just the ambient scene — a beat to reset
+    p2: { inStart: 0.41, inEnd: 0.47, holdEnd: 0.63, outEnd: 0.68 },
+    // gap 0.68–0.73
+    p3: { inStart: 0.73, inEnd: 0.79, holdEnd: 0.91 }, // panel3 holds until stack begins
+    stackStart: 0.88,
+    stackEnd: 0.93
+    // 0.93–1.0 held pause on the settled stack, now a longer real-scroll distance
+    // since the pin itself is taller too
+    // 0.96–1.0 is a held pause on the settled stack before the section releases
+  };
+  const CENTER_SCALE_DESKTOP = 1.22;
+  const CENTER_SCALE_MOBILE = 1.08;
+
+  function animate(){
+    targetProgress = computeProgress();
+    currentProgress += (targetProgress - currentProgress) * 0.05;
+    mouseX += (targetMouseX - mouseX) * 0.04;
+    mouseY += (targetMouseY - mouseY) * 0.04;
+
+    const t = currentProgress;
+    if(!slotsMeasured && t > 0.001){ measurePanelSlots(); slotsMeasured = true; }
+    const time = performance.now() * 0.0002;
+
+    for(let i = 0; i < COUNT; i++){
+      const idx = i * 3;
+      const driftX = Math.sin(time + i) * 0.15 * (1 - t);
+      const driftY = Math.cos(time * 1.3 + i) * 0.15 * (1 - t);
+      const cx = chaosPositions[idx] + driftX;
+      const cy = chaosPositions[idx+1] + driftY;
+      const cz = chaosPositions[idx+2];
+      const ox = orderPositions[idx];
+      const oy = orderPositions[idx+1];
+      const oz = orderPositions[idx+2];
+      posAttr.array[idx]   = cx + (ox - cx) * t;
+      posAttr.array[idx+1] = cy + (oy - cy) * t;
+      posAttr.array[idx+2] = cz + (oz - cz) * t;
+    }
+    posAttr.needsUpdate = true;
+
+    // auto-spin fades out as the palm finishes forming; only subtle mouse parallax remains
+    points.rotation.y = time * 0.3 * (1 - t) + mouseX * (0.25 - 0.16 * t);
+    points.rotation.x = mouseY * 0.12 * (1 - 0.5 * t);
+    camera.position.x = mouseX * 1.2;
+    camera.position.y = 0.5 - mouseY * 0.8;
+    camera.lookAt(0, 0, 0);
+
+    // overlay text reveal
+    const kicker = document.getElementById('oKicker');
+    const headline = document.getElementById('oHeadline');
+    const lede = document.getElementById('oLede');
+    const body = document.getElementById('oBody');
+    const progressUI = document.getElementById('scrollProgress');
+    const fill = document.getElementById('progressFill');
+
+    kicker.style.opacity = Math.min(1, t * 6);
+    headline.style.opacity = Math.min(1, Math.max(0, (t - 0.02) * 6));
+    lede.style.opacity = Math.min(1, Math.max(0, (t - 0.06) * 6));
+    body.style.opacity = Math.min(1, Math.max(0, (t - 0.1) * 6));
+    progressUI.style.opacity = t > 0.02 ? 1 : 0;
+    fill.style.width = (t * 100) + '%';
+
+    // Panels: each pops up to center + zooms in, the next one replaces it,
+    // then once the 3rd has had its turn, all three settle back into their
+    // stacked slot on the right (mobile: centered column) at the same time.
+    const isMobile = window.innerWidth <= 900;
+    const centerScale = isMobile ? CENTER_SCALE_MOBILE : CENTER_SCALE_DESKTOP;
+    const tl = PANEL_TIMELINE;
+    const stackT = rampT(t, tl.stackStart, tl.stackEnd);
+
+    // trapezoid: fade/move in, hold, fade/move out (used for panels 1 & 2)
+    function trapezoid(t, win){
+      const rise = rampT(t, win.inStart, win.inEnd);
+      const fall = 1 - rampT(t, win.holdEnd, win.outEnd);
+      return Math.min(rise, fall);
+    }
+
+    // panel1 & panel2: pop to center for their turn, fade out, then quietly
+    // reappear directly in their stacked slot once stacking begins
+    [{ el: p1, win: tl.p1, slot: panelSlots[0] }, { el: p2, win: tl.p2, slot: panelSlots[1] }]
+      .forEach(({ el, win, slot }) => {
+        const centerP = trapezoid(t, win); // 0..1, drives both position + opacity while "on stage"
+        const stackOpacity = stackT; // fades in directly at rest, no movement
+        const opacity = Math.max(centerP, stackOpacity);
+        const posP = centerP; // only move toward center during its own turn
+        applyPanelTransform(el, slot, posP, opacity, centerScale, centerP > 0.5, isMobile);
+      });
+
+    // panel3: pops to center, holds, then — instead of fading — physically
+    // shrinks back into its slot as the other two reappear
+    (function(){
+      const win = tl.p3;
+      const inP = rampT(t, win.inStart, win.inEnd);
+      const posP = t < tl.stackStart ? inP : (1 - stackT);
+      const opacity = Math.max(inP, stackT); // stays visible once shown, never fades out
+      applyPanelTransform(p3, panelSlots[2], posP, opacity, centerScale, posP > 0.5, isMobile);
+    })();
+
+    function applyPanelTransform(el, slot, posP, opacity, scale, isActive, mobile){
+      const rY = mouseX * 6 * (1 - posP);
+      const rX = -mouseY * 6 * (1 - posP);
+      let dx = 0, dy = 0;
+      if(slot){
+        dx = (window.innerWidth / 2 - slot.cx) * posP;
+        dy = (window.innerHeight / 2 - slot.cy) * posP;
+      }
+      const s = 1 + (scale - 1) * posP;
+      el.style.opacity = opacity;
+      el.style.zIndex = posP > 0.05 ? 20 : 1;
+      el.style.transform = `translate(${dx}px, ${dy}px) scale(${s}) perspective(600px) rotateY(${rY}deg) rotateX(${rX}deg)`;
+      el.classList.toggle('panel-active', isActive);
+
+      // on mobile, only show the full stat description while the card is
+      // centered/active — the compact stacked card just shows the headline stat
+      if(mobile){
+        const desc = el.querySelector('.desc');
+        const source = el.querySelector('.source');
+        const showDetail = posP > 0.4;
+        if(desc) desc.classList.toggle('compact-hidden', !showDetail);
+        if(source) source.classList.toggle('compact-hidden', !showDetail);
+      } else {
+        const desc = el.querySelector('.desc');
+        const source = el.querySelector('.source');
+        if(desc) desc.classList.remove('compact-hidden');
+        if(source) source.classList.remove('compact-hidden');
+      }
+    }
+
+    renderer.render(scene, camera);
+    requestAnimationFrame(animate);
+  }
+  requestAnimationFrame(animate);
+
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+})();
+</script>
+
+<script>
+(function(){
+  // ---- "Track What Matters" pinned dashboard section: callouts build up one at a
+  // time and stay visible, with a long hold at the end once all four are showing ----
+  const pin3 = document.getElementById('pin3');
+  if(!pin3) return;
+
+  const dashWrap = document.getElementById('dashWrap');
+  const tKicker = document.getElementById('tKicker');
+  const tHeadline = document.getElementById('tHeadline');
+  const tLede = document.getElementById('tLede');
+  const trackDots = document.getElementById('trackDots');
+  const dots = trackDots ? [...trackDots.querySelectorAll('.track-dot')] : [];
+  const callouts = [document.getElementById('co1'), document.getElementById('co2'),
+                     document.getElementById('co3'), document.getElementById('co4')];
+
+  // scroll-progress windows (fractions of the pinned section); each callout appears
+  // and stays — with a clear gap before the next one gets its turn — then the fully
+  // annotated view holds from ~0.64 all the way to the end of the pin.
+  const CO_TIMELINE = [
+    { inStart: 0.06, inEnd: 0.12 },
+    { inStart: 0.22, inEnd: 0.28 },
+    { inStart: 0.38, inEnd: 0.44 },
+    { inStart: 0.54, inEnd: 0.60 }
+  ];
+
+  function computeT(){
+    const rect = pin3.getBoundingClientRect();
+    const scrollable = pin3.offsetHeight - window.innerHeight;
+    if(scrollable <= 0) return 0;
+    return Math.max(0, Math.min(1, -rect.top / scrollable));
+  }
+
+  let cur = 0, target = 0;
+  function tick(){
+    target = computeT();
+    cur += (target - cur) * 0.08;
+    if(Math.abs(target - cur) < 0.0008) cur = target;
+
+    tKicker.style.opacity = Math.min(1, cur * 26);
+    tHeadline.style.opacity = Math.max(0, Math.min(1, (cur - 0.006) * 26));
+    tLede.style.opacity = Math.max(0, Math.min(1, (cur - 0.012) * 26));
+    dashWrap.classList.toggle('appear', cur > 0.05);
+    if(trackDots) trackDots.classList.toggle('show', cur > 0.1);
+
+    callouts.forEach((el, i) => {
+      if(!el) return;
+      const win = CO_TIMELINE[i];
+      const risen = cur >= (win.inStart + win.inEnd) / 2;
+      el.classList.toggle('show', risen);
+      if(dots[i]) dots[i].classList.toggle('active', risen);
+    });
+
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+  window.addEventListener('resize', () => { target = computeT(); });
+})();
+
+(function(){
+  // Mobile fallback: static (non-pinned) stacked version, revealed on scroll-into-view
+  const section = document.getElementById('trackMobileSection');
+  if(!section) return;
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting) entry.target.classList.add('in-view');
+    });
+  }, { threshold: 0.15 });
+  obs.observe(section);
+})();
+
+(function(){
+  // Mobile fallback for the Journey section too
+  const section = document.getElementById('journeyMobileSection');
+  if(!section) return;
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting) entry.target.classList.add('in-view');
+    });
+  }, { threshold: 0.15 });
+  obs.observe(section);
+})();
+
+(function(){
+  // ---- THE JOURNEY: scroll-driven gold line + pop-out stage card ----
+  const pin4 = document.getElementById('pin4');
+  if(!pin4) return;
+
+  const lineFill = document.getElementById('jLineFill');
+  const comet = document.getElementById('jComet');
+  const jTrack = document.getElementById('jTrack');
+  const nodes = [0,1,2,3,4,5,6].map(i => document.getElementById('jNode'+i));
+  const popcard = document.getElementById('jPopcard');
+  const popEyebrow = document.getElementById('jPopEyebrow');
+  const popText = document.getElementById('jPopText');
+
+  const DETAILS = [
+    'No paperwork, no onboarding friction — install and your first ritual is already waiting.',
+    'Steps, water, sleep and mindful moments — logged automatically and reflected back in a ring you actually want to fill.',
+    'Quests and streaks are more fun, and stickier, shared. Find your circle inside the app.',
+    'Every completed ritual has real value attached — credits that grow as your consistency does.',
+    'For those who want more than a badge: DVT turns participation into actual ownership.',
+    "Token holders don't just use the ecosystem — they help decide what it becomes.",
+    'The physical culmination of the digital journey — Phuket, and beyond.'
+  ];
+
+  function computeT(){
+    const rect = pin4.getBoundingClientRect();
+    const scrollable = pin4.offsetHeight - window.innerHeight;
+    if(scrollable <= 0) return 0;
+    return Math.max(0, Math.min(1, -rect.top / scrollable));
+  }
+
+  let cur = 0, target = 0;
+  let mouseX = 0, mouseY = 0, tMouseX = 0, tMouseY = 0;
+  window.addEventListener('mousemove', (e) => {
+    tMouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+    tMouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+  });
+
+  let lastActive = -1;
+  function tick(){
+    target = computeT();
+    cur += (target - cur) * 0.07;
+    if(Math.abs(target - cur) < 0.0008) cur = target;
+    mouseX += (tMouseX - mouseX) * 0.05;
+    mouseY += (tMouseY - mouseY) * 0.05;
+
+    const fillPct = cur * 100;
+    lineFill.style.width = fillPct + '%';
+    comet.style.left = fillPct + '%';
+    comet.style.opacity = cur > 0.005 && cur < 0.999 ? 1 : 0;
+
+    const activeIndex = Math.max(0, Math.min(6, Math.floor(cur * 7)));
+    nodes.forEach((el, i) => {
+      el.classList.toggle('done', i < activeIndex);
+      el.classList.toggle('active', i === activeIndex);
+    });
+
+    if(activeIndex !== lastActive){
+      lastActive = activeIndex;
+      popEyebrow.textContent = 'Stage 0' + (activeIndex + 1);
+      popText.textContent = DETAILS[activeIndex];
+      popcard.style.left = (activeIndex / 6 * 100) + '%';
+      popcard.classList.remove('pop');
+      void popcard.offsetWidth;
+      popcard.classList.add('pop');
+    }
+    popcard.style.opacity = cur > 0.01 ? 1 : 0;
+
+    jTrack.style.transform = `rotateX(${mouseY * -3}deg) rotateY(${mouseX * 3}deg)`;
+
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
+(function(){
+  // Mobile fallback for the Principle section
+  const section = document.getElementById('principleMobileSection');
+  if(!section) return;
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting) entry.target.classList.add('in-view');
+    });
+  }, { threshold: 0.15 });
+  obs.observe(section);
+})();
+
+(function(){
+  // PRINCIPLE — CSS handles all animation timing. JS only adds mouse-parallax tilt to the card.
+  const card = document.getElementById('prCard');
+  if(!card) return;
+  const stage = card.closest('.stage5');
+  let mx = 0, my = 0, cx = 0, cy = 0;
+  stage.addEventListener('mousemove', e => {
+    const r = stage.getBoundingClientRect();
+    mx = ((e.clientX - r.left) / r.width  - 0.5) * 2;
+    my = ((e.clientY - r.top)  / r.height - 0.5) * 2;
+  });
+  stage.addEventListener('mouseleave', () => { mx = 0; my = 0; });
+  (function tick(){
+    cx += (mx - cx) * 0.08;
+    cy += (my - cy) * 0.08;
+    card.style.transform = `rotateY(${-8 + cx * 6}deg) rotateX(${3 - cy * 4}deg)`;
+    requestAnimationFrame(tick);
+  })();
+})();
+
+(function(){
+  // Footer appearance toggle — placeholder, wire to real theme system when ready
+  const btnLight = document.getElementById('ftLight');
+  const btnDark = document.getElementById('ftDark');
+  if(!btnLight) return;
+  btnLight.addEventListener('click', () => {
+    btnLight.classList.add('active'); btnDark.classList.remove('active');
+  });
+  btnDark.addEventListener('click', () => {
+    btnDark.classList.add('active'); btnLight.classList.remove('active');
+  });
+})();
+</script>
+</body>
+</html>

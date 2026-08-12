@@ -1,0 +1,1537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Companion App — DAOasis</title>
+<meta name="description" content="The DAOasis Companion App: track daily habits, complete learning quests, and earn real rewards for the consistency you build — wellness, accountability and community in one app." />
+<meta property="og:title" content="The Companion App — DAOasis" />
+<meta property="og:description" content="Track daily habits, complete learning quests, and earn real rewards for the consistency you build." />
+<meta property="og:image" content="images/img-10.jpg" />
+<meta property="og:type" content="website" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Frank+Ruhl+Libre:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --warm-white:#F7F4EE; --charcoal:#2B2623; --mineral:#171412;
+    --sanctuary:#31463F; --gold:#C48A5A; --purple:#9B8CA8; --blue:#7F97A2; --warm-stone:#E8E1D6;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{font-family:'Frank Ruhl Libre',serif;background:var(--mineral);color:var(--warm-white);}
+  body{overflow-x:clip;} /* clip not hidden — doesn't break sticky */
+
+  /* ── NAV ── */
+  .nav{position:fixed;top:0;left:0;right:0;z-index:90;display:flex;align-items:center;
+    justify-content:space-between;padding:18px 5%;background:rgba(23,20,18,0.88);
+    backdrop-filter:blur(12px);border-bottom:1px solid rgba(247,244,238,0.07);}
+  .nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0;}
+  .nav-brand img{width:26px;opacity:0.9;}
+  .nav-brand span{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--warm-white);}
+  .nav-links{display:flex;gap:28px;}
+  .nav-links a{font-size:13px;color:#8a8377;text-decoration:none;letter-spacing:0.04em;
+    transition:color 0.2s ease;}
+  .nav-links a:hover,.nav-links a.active{color:var(--warm-white);}
+  .nav-cta{background:var(--warm-white);color:var(--charcoal);font-size:13px;padding:10px 24px;
+    border-radius:24px;text-decoration:none;letter-spacing:0.03em;transition:opacity 0.2s ease;
+    flex-shrink:0;}
+  .nav-cta:hover{opacity:0.88;}
+
+  /* Hamburger */
+  .nav-burger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;
+    background:none;border:none;}
+  .nav-burger span{display:block;width:22px;height:1.5px;background:var(--warm-white);
+    transition:all 0.3s ease;}
+  .nav-burger.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg);}
+  .nav-burger.open span:nth-child(2){opacity:0;}
+  .nav-burger.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg);}
+
+  /* Mobile drawer */
+  .nav-drawer{position:fixed;top:0;left:0;right:0;bottom:0;z-index:89;
+    background:rgba(23,20,18,0.97);backdrop-filter:blur(16px);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:32px;
+    opacity:0;pointer-events:none;transition:opacity 0.35s ease;}
+  .nav-drawer.open{opacity:1;pointer-events:auto;}
+  .nav-drawer a{font-family:'Cormorant Garamond',serif;font-size:28px;color:#8a8377;
+    text-decoration:none;letter-spacing:0.04em;transition:color 0.2s ease;}
+  .nav-drawer a:hover{color:var(--warm-white);}
+  .nav-drawer .nav-cta{font-family:'Frank Ruhl Libre',serif;font-size:15px;
+    margin-top:16px;padding:14px 40px;}
+
+  @media(max-width:900px){
+    .nav-links,.nav-cta{display:none;}
+    .nav-burger{display:flex;}
+  }
+
+  /* ── MOBILE JOURNEY ── */
+  @media(max-width:900px){
+    .journey-pin{height:auto;}
+    .journey-stage{position:relative;height:auto;flex-direction:column;}
+    .journey-text{width:100%;padding:10vw 6% 6%;}
+    .journey-intro{position:relative;top:auto;left:auto;transform:none;max-width:none;}
+    .journey-map-wrap{width:100%;height:60vw;min-height:320px;flex:none;}
+    .journey-map-img{top:0;left:-10%;height:100%;width:auto;max-width:none;}
+    .wp-panel{position:relative;top:auto;left:auto;transform:none;
+      padding:6% 6% 8%;max-width:none;opacity:1 !important;}
+    .wp-panel:not(.active){display:none;}
+  }
+
+  /* ── HERO ── */
+  .app-hero{height:100vh;display:flex;align-items:center;justify-content:center;
+    text-align:center;padding:0 6%;position:relative;
+    background:radial-gradient(ellipse at 50% 60%, #221c16 0%, var(--mineral) 70%);}
+  .app-hero-kicker{font-size:11px;letter-spacing:0.18em;color:var(--gold);text-transform:uppercase;margin-bottom:20px;}
+  .app-hero-h1{font-family:'Cormorant Garamond',serif;font-weight:300;
+    font-size:clamp(38px,6vw,80px);line-height:1.08;color:var(--warm-white);margin-bottom:22px;}
+  .app-hero-h1 em{font-style:italic;color:var(--gold);}
+  .app-hero-sub{font-size:16px;color:#b8b1a4;max-width:540px;margin:0 auto 40px;line-height:1.75;}
+  .app-hero-ctas{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;}
+  .btn-primary{background:var(--warm-white);color:var(--charcoal);padding:15px 36px;
+    border-radius:40px;text-decoration:none;font-size:14px;letter-spacing:0.03em;
+    transition:opacity 0.2s;}
+  .btn-primary:hover{opacity:0.88;}
+  .btn-secondary{border:1px solid rgba(247,244,238,0.3);color:var(--warm-white);
+    padding:15px 36px;border-radius:40px;text-decoration:none;font-size:14px;
+    letter-spacing:0.03em;transition:border-color 0.2s;}
+  .btn-secondary:hover{border-color:rgba(247,244,238,0.7);}
+  .hero-scroll{position:absolute;bottom:5%;left:50%;transform:translateX(-50%);
+    font-size:10px;letter-spacing:0.14em;color:#5f5a52;text-transform:uppercase;}
+
+  /* ── SECTION SHARED ── */
+  .s-dark{background:var(--mineral);padding:14vh 8%;}
+  .s-light{background:var(--warm-stone);padding:14vh 8%;}
+  .s-sanctuary{background:var(--sanctuary);padding:14vh 8%;}
+  .s-kicker{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:18px;}
+  .s-dark .s-kicker{color:var(--gold);}
+  .s-light .s-kicker{color:#8a7f6d;}
+  .s-sanctuary .s-kicker{color:rgba(247,244,238,0.6);}
+  .s-headline{font-family:'Cormorant Garamond',serif;font-weight:400;line-height:1.15;
+    margin-bottom:28px;}
+  .s-dark .s-headline{color:var(--warm-white);font-size:clamp(30px,4vw,52px);}
+  .s-light .s-headline{color:var(--charcoal);font-size:clamp(30px,4vw,52px);}
+  .s-sanctuary .s-headline{color:var(--warm-white);font-size:clamp(30px,4vw,52px);}
+  .s-headline em{font-style:italic;}
+  .s-body{font-size:16px;line-height:1.8;max-width:680px;}
+  .s-dark .s-body{color:#b8b1a4;}
+  .s-light .s-body{color:#5c554c;}
+  .s-sanctuary .s-body{color:rgba(247,244,238,0.75);}
+  .s-body p+p{margin-top:20px;}
+  .s-body strong{color:var(--gold);}
+
+  /* ── THE PROBLEM ── */
+  .problem-layout{display:grid;grid-template-columns:1fr 1fr;gap:8vw;align-items:start;max-width:1400px;margin:0 auto;}
+  .problem-quote{font-family:'Cormorant Garamond',serif;font-size:clamp(22px,3vw,36px);
+    color:var(--charcoal);line-height:1.35;font-style:italic;
+    border-left:2px solid var(--gold);padding-left:28px;}
+
+  /* ── JOURNEY: full-screen cinematic scroll-story ── */
+  .journey-pin{position:relative;height:420vh;overflow:clip;}
+
+  .journey-stage{
+    position:sticky;top:0;width:100%;height:100vh;
+    background:#0f0d0b;
+  }
+
+  .journey-map-full{
+    position:absolute;inset:0;z-index:1;overflow:hidden;
+  }
+  /* Image: 900x1200px, positioned so Bangkok→Phuket route fills the right 60% of screen.
+     left:40% keeps image in right portion; top:-264px puts Bangkok near 280px from top. */
+  .journey-map-full img{
+    position:absolute;
+    width:900px; height:1200px;
+    top:-344px; left:40%;
+  }
+  .journey-map-full::after{
+    content:'';position:absolute;inset:0;z-index:2;
+    background:
+      linear-gradient(to right,
+        #0f0d0b 0%, #0f0d0b 28%,
+        rgba(15,13,11,0.85) 42%,
+        rgba(15,13,11,0.4) 58%,
+        rgba(15,13,11,0) 75%
+      );
+  }
+
+  .journey-svg-layer{
+    position:absolute;inset:0;z-index:3;overflow:visible;
+  }
+
+  /* Copy: fixed left position, proper padding, no max-width fighting percentage */
+  .journey-copy{
+    position:absolute;
+    top:36%;left:80px;width:40%;
+    transform:translateY(-50%);
+    z-index:10;
+    box-sizing:border-box;
+    padding-right:30px;
+  }
+
+  /* Each section's copy block */
+  .j-section{
+    position:absolute;top:0;left:0;width:100%;
+    opacity:0;
+    transition:opacity 0.5s ease;
+    pointer-events:none;
+  }
+  .j-section.visible{opacity:1;pointer-events:auto;}
+
+  .j-eyebrow{
+    font-size:10px;letter-spacing:0.22em;text-transform:uppercase;
+    color:var(--gold);margin-bottom:18px;
+    display:flex;align-items:center;gap:10px;
+  }
+  .j-eyebrow::before{content:'';width:28px;height:1px;background:var(--gold);display:inline-block;}
+
+  .j-copy-headline{
+    font-family:'Cormorant Garamond',serif;font-weight:400;
+    font-size:clamp(30px,3.8vw,50px);line-height:1.12;
+    color:var(--warm-white);margin-bottom:24px;
+  }
+  /* Opening section headline is much larger — the entry statement */
+  #js0 .j-copy-headline{
+    font-size:clamp(56px,8vw,110px);line-height:0.95;letter-spacing:-0.02em;
+    margin-bottom:36px;
+  }
+  #js0 .j-copy-headline{
+    font-size:clamp(52px,7vw,96px);line-height:1.0;
+    margin-bottom:32px;
+  }
+  .j-copy-headline em{font-style:italic;color:var(--gold);}
+
+  .j-copy-body{
+    font-size:16px;line-height:1.9;color:#b8b1a4;
+    max-width:440px;
+  }
+  .j-copy-body p{margin-bottom:12px;}
+
+  /* Final section — centred, no map movement */
+  .j-final{text-align:center;padding:0 15%;}
+  .j-final .j-copy-headline{font-size:clamp(34px,5vw,62px);}
+  .j-final .j-copy-body{margin:0 auto;}
+  .j-final-mantra{
+    margin-top:36px;font-family:'Cormorant Garamond',serif;
+    font-size:clamp(18px,2.4vw,28px);font-style:italic;
+    color:var(--gold);letter-spacing:0.04em;
+  }
+
+  /* Map dots */
+  .jdot{r:8;fill:rgba(247,244,238,0.25);stroke:rgba(196,138,90,0.4);stroke-width:1.5;
+    transition:all 0.5s ease;}
+  .jdot.lit{r:8;fill:var(--gold);stroke:none;
+    filter:drop-shadow(0 0 8px rgba(196,138,90,0.8));}
+  .jdot.active{r:12;fill:#fff;stroke:var(--gold);stroke-width:2.5;
+    filter:drop-shadow(0 0 16px rgba(255,220,150,1));
+    animation:jPulse 1.8s ease-out infinite;}
+  @keyframes jPulse{
+    0%,100%{filter:drop-shadow(0 0 8px rgba(196,138,90,0.9));}
+    50%{filter:drop-shadow(0 0 22px rgba(255,220,150,1));}
+  }
+
+  /* City labels — large, readable, backed */
+  .jlbl-bg{fill:rgba(15,13,11,0.78);rx:5;}
+  .jlbl-city{font-size:15px;fill:#F7F4EE;font-family:'Frank Ruhl Libre',serif;font-weight:500;}
+  .jlbl-km{font-size:11px;fill:#C48A5A;font-family:'Frank Ruhl Libre',serif;}
+  .jlbl-group{opacity:0;transition:opacity 0.6s ease;}
+  .jlbl-group.show{opacity:1;}
+
+  /* Route segments — each drawn separately so we can animate one at a time */
+  .jseg{fill:none;stroke:#C48A5A;stroke-width:3;stroke-dasharray:9 12;
+    stroke-dashoffset:500;stroke-linecap:round;
+    transition:stroke-dashoffset 1.8s cubic-bezier(0.4,0,0.2,1);}
+  .jseg.draw{stroke-dashoffset:0;}
+  .jseg-glow{fill:none;stroke:rgba(196,138,90,0.4);stroke-width:9;stroke-dasharray:9 12;
+    stroke-dashoffset:500;stroke-linecap:round;filter:blur(5px);
+    transition:stroke-dashoffset 1.8s cubic-bezier(0.4,0,0.2,1);}
+  .jseg-glow.draw{stroke-dashoffset:0;}
+  /* Ghost: all segments dimly visible from start */
+  .jseg-ghost{fill:none;stroke:rgba(196,138,90,0.18);stroke-width:2;stroke-linecap:round;}
+
+  /* Scroll hint */
+  .j-scroll-hint{position:absolute;bottom:4%;left:50%;transform:translateX(-50%);
+    font-size:10px;letter-spacing:0.14em;color:#4a4540;text-transform:uppercase;z-index:10;}
+
+  /* Progress bar — thin line along bottom */
+  .j-progress-bar{position:absolute;bottom:0;left:0;height:2px;
+    background:var(--gold);width:0%;transition:width 0.1s linear;z-index:10;
+    box-shadow:0 0 8px rgba(196,138,90,0.6);}
+
+  @media(max-width:900px){
+    .journey-pin{height:auto;}
+    .journey-stage{position:relative;height:auto;}
+    .journey-copy{position:relative;top:auto;left:auto;transform:none;
+      width:100%;max-width:none;padding:12vw 6% 8%;}
+    .j-section{position:relative;opacity:1;margin-bottom:8vh;}
+    .journey-map-full{display:none;}
+    .journey-svg-layer{display:none;}
+  }
+
+    /* ── ECOSYSTEM ── */
+  .eco-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;max-width:1400px;margin:6vh auto 0;}
+  .eco-card{padding:40px 36px;background:rgba(247,244,238,0.03);border:1px solid rgba(247,244,238,0.07);
+    opacity:0;transform:translateY(20px);transition:opacity 0.6s ease, transform 0.6s ease;}
+  .eco-card.show{opacity:1;transform:translateY(0);}
+  .eco-icon{font-size:24px;margin-bottom:16px;}
+  .eco-metric{font-size:11px;letter-spacing:0.14em;color:var(--gold);text-transform:uppercase;margin-bottom:10px;}
+  .eco-env{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--warm-white);
+    margin-bottom:14px;font-style:italic;}
+  .eco-text{font-size:13.5px;color:#7a746a;line-height:1.65;}
+  .eco-anim{height:80px;margin-bottom:24px;display:flex;align-items:center;justify-content:center;}
+  .eco-anim svg{overflow:visible;}
+
+  /* Steps: dot along path */
+  @keyframes stepsDot{0%{offset-distance:0%}100%{offset-distance:100%}}
+  @keyframes stepsPath{0%{stroke-dashoffset:200}100%{stroke-dashoffset:0}}
+
+  /* Breathing: pulse rings */
+  @keyframes breathIn{0%,100%{r:8;opacity:0.9}50%{r:28;opacity:0.2}}
+  @keyframes breathIn2{0%,100%{r:16;opacity:0.5}50%{r:36;opacity:0}}
+
+  /* Hydration: wave fill */
+  @keyframes waveFlow{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+  @keyframes fillRise{0%{y:70;height:0}100%{y:20;height:50}}
+
+  /* Sleep: stars twinkling in */
+  @keyframes starAppear{0%{opacity:0;r:0}80%{opacity:1}100%{opacity:0.8;r:2.5}}
+  @keyframes twinkle{0%,100%{opacity:0.3}50%{opacity:1}}
+
+  /* Nutrition: plant growing */
+  @keyframes stemGrow{0%{stroke-dashoffset:80}100%{stroke-dashoffset:0}}
+  @keyframes leafGrow{0%{transform:scale(0);opacity:0}100%{transform:scale(1);opacity:1}}
+
+  /* Streaks: path extending with glow */
+  @keyframes trailDraw{0%{stroke-dashoffset:200}100%{stroke-dashoffset:0}}
+  @keyframes trailGlow{0%,100%{opacity:0.3}50%{opacity:1}}
+
+  /* ── NORMAL DAY ── */
+  .day-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:48px;max-width:1200px;margin:7vh auto 0;}
+  .day-col{opacity:0;transform:translateY(18px);transition:opacity 0.7s ease,transform 0.7s ease;}
+  .day-col.show{opacity:1;transform:translateY(0);}
+  .day-time{font-size:11px;letter-spacing:0.14em;color:var(--gold);text-transform:uppercase;margin-bottom:14px;}
+  .day-title{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--charcoal);margin-bottom:14px;}
+  .day-text{font-size:14px;color:#5c554c;line-height:1.75;}
+
+  /* ── COMMUNITY / SANCTUARY ── */
+  .bullet-list{margin-top:32px;display:flex;flex-direction:column;gap:16px;}
+  .bullet-item{display:flex;gap:16px;align-items:flex-start;font-size:14px;line-height:1.65;}
+  .s-dark .bullet-item{color:#8a8377;}
+  .s-light .bullet-item{color:#5c554c;}
+  .s-sanctuary .bullet-item{color:rgba(247,244,238,0.7);}
+  .bullet-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:7px;}
+
+  .before-during-after{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;margin-top:48px;}
+  .bda-card{padding:32px;border:1px solid rgba(247,244,238,0.1);border-radius:8px;}
+  .bda-label{font-size:11px;letter-spacing:0.14em;color:rgba(247,244,238,0.5);text-transform:uppercase;margin-bottom:14px;}
+  .bda-text{font-size:14px;color:rgba(247,244,238,0.7);line-height:1.7;}
+
+  /* ── REWARD CREDITS ── */
+  .reward-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:5vh;}
+  .reward-card{padding:36px;background:rgba(247,244,238,0.03);border:1px solid rgba(247,244,238,0.08);}
+  .reward-icon{font-size:20px;margin-bottom:14px;}
+  .reward-label{font-size:11px;letter-spacing:0.14em;color:var(--gold);text-transform:uppercase;margin-bottom:10px;}
+  .reward-text{font-size:14px;color:#7a746a;line-height:1.65;}
+
+  /* ── INTEGRATIONS ── */
+  .integrations-grid{display:flex;flex-wrap:wrap;gap:16px;margin-top:5vh;max-width:700px;}
+  .int-pill{padding:14px 24px;border:1px solid rgba(247,244,238,0.15);border-radius:40px;
+    font-size:13px;color:#b8b1a4;display:flex;align-items:center;gap:8px;}
+  .int-dot{width:7px;height:7px;border-radius:50%;background:var(--gold);}
+
+  /* ── ROADMAP ── */
+  .roadmap-list{margin-top:5vh;max-width:700px;display:flex;flex-direction:column;gap:0;}
+  .rm-item{display:flex;gap:28px;align-items:flex-start;padding:26px 0;
+    border-top:1px solid rgba(247,244,238,0.1);}
+  .rm-item:last-child{border-bottom:1px solid rgba(247,244,238,0.1);}
+  .rm-num{font-family:'Cormorant Garamond',serif;font-size:28px;color:rgba(196,138,90,0.4);
+    flex-shrink:0;width:44px;line-height:1;}
+  .rm-label{font-size:15px;color:#b8b1a4;padding-top:6px;}
+  .rm-status{font-size:11px;letter-spacing:0.1em;color:#4a4540;text-transform:uppercase;
+    margin-top:6px;}
+
+  /* ── FINAL CTA ── */
+  .final-cta{text-align:center;padding:16vh 6%;background:var(--mineral);}
+  .final-cta .s-headline{font-size:clamp(28px,4vw,52px);color:var(--warm-white);max-width:600px;margin:14px auto 20px;}
+  .final-cta .s-body{color:#8a8377;margin:0 auto 40px;}
+  .final-note{font-size:12px;color:#4a4540;letter-spacing:0.06em;margin-top:16px;}
+
+  /* ── FOOTER (shared) ── */
+  .site-footer{background:var(--mineral);color:#8a8377;padding:7vh 8% 4vh;
+    border-top:1px solid rgba(247,244,238,0.07);}
+  .footer-top{display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;gap:40px;padding-bottom:5vh;
+    border-bottom:1px solid rgba(247,244,238,0.1);}
+  .footer-brand-logo{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+  .footer-brand-logo img{width:28px;opacity:0.9;}
+  .footer-brand-logo span{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--warm-white);}
+  .footer-tagline{font-size:13px;line-height:1.6;color:#7a746a;}
+  .footer-tagline strong{display:block;color:#b8b1a4;font-weight:500;}
+  .footer-tagline em{font-style:italic;color:#8a8377;}
+  .footer-col-label{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:#5f5a52;margin-bottom:18px;}
+  .footer-col a{display:block;font-size:13.5px;color:#8a8377;text-decoration:none;margin-bottom:11px;transition:color 0.2s;}
+  .footer-col a:hover{color:var(--warm-white);}
+  .footer-bottom{display:flex;justify-content:space-between;padding-top:4vh;font-size:12px;color:#4a4540;}
+
+  /* ── DIVIDER ── */
+  .divider-dark{background:var(--mineral);padding:4vh 8%;}
+  .divider-light{background:var(--warm-stone);padding:4vh 8%;}
+  .divider-inner{display:flex;align-items:center;gap:24px;max-width:1200px;margin:0 auto;}
+  .divider-line-d{flex:1;height:1px;background:rgba(247,244,238,0.12);}
+  .divider-line-l{flex:1;height:1px;background:#d8d2c4;}
+  .divider-mark{width:24px;height:24px;object-fit:contain;flex-shrink:0;}
+
+  /* ── REVEAL UTILITY ── */
+  .reveal{opacity:0;transform:translateY(18px);transition:opacity 0.7s ease,transform 0.7s ease;}
+  .reveal.show{opacity:1;transform:translateY(0);}
+  .reveal-delay-1{transition-delay:0.1s;}
+  .reveal-delay-2{transition-delay:0.2s;}
+  .reveal-delay-3{transition-delay:0.3s;}
+
+  /* ── TYPEWRITER SECTIONS ── */
+  .tw-pin{position:relative;height:280vh;}
+  .tw-stage{position:sticky;top:0;height:100vh;display:flex;align-items:center;
+    justify-content:center;overflow:hidden;}
+  .tw-stage.light{background:var(--warm-stone);}
+  .tw-stage.dark{background:var(--mineral);}
+
+  .tw-content{max-width:780px;padding:0 8%;text-align:center;}
+  .tw-pre{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;
+    margin-bottom:28px;opacity:0;transition:opacity 0.6s ease;}
+  .tw-stage.light .tw-pre{color:#8a7f6d;}
+  .tw-stage.dark .tw-pre{color:var(--gold);}
+  .tw-pre.show{opacity:1;}
+
+  .tw-text{font-family:'Cormorant Garamond',serif;font-weight:400;line-height:1.2;
+    min-height:2.5em;}
+  .tw-stage.light .tw-text{color:var(--charcoal);}
+  .tw-stage.dark .tw-text{color:var(--warm-white);}
+
+  /* Cursor blink */
+  .tw-cursor{display:inline-block;width:2px;margin-left:2px;
+    background:currentColor;animation:cursorBlink 0.7s step-end infinite;vertical-align:middle;}
+  @keyframes cursorBlink{0%,100%{opacity:1;}50%{opacity:0;}}
+  .tw-cursor.done{animation:none;opacity:0;}
+
+  .tw-post{font-size:16px;line-height:1.75;margin-top:32px;
+    opacity:0;transition:opacity 0.8s ease;}
+  .tw-stage.light .tw-post{color:#5c554c;}
+  .tw-stage.dark .tw-post{color:#8a8377;}
+  .tw-post.show{opacity:1;}
+
+  /* Progress bar at bottom */
+  .tw-progress{position:absolute;bottom:0;left:0;height:2px;
+    background:var(--gold);width:0%;transition:width 0.05s linear;opacity:0.5;}
+
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a class="nav-brand" href="index.html">
+    <img src="images/img-09-white.png" alt="DAOasis" />
+    <span>DAOasis</span>
+  </a>
+  <div class="nav-links">
+    <a href="app.html" class="active">The App</a>
+    <a href="#">The Sanctuary</a>
+    <a href="#">The Web3 Layer</a>
+    <a href="#">About Us</a>
+    <a href="#">Investors</a>
+  </div>
+  <a class="nav-cta" href="#">Join the waitlist</a>
+  <button class="nav-burger" id="navBurger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="nav-drawer" id="navDrawer">
+  <a href="app.html">The App</a>
+  <a href="#">The Sanctuary</a>
+  <a href="#">The Web3 Layer</a>
+  <a href="#">About Us</a>
+  <a href="#">Investors</a>
+  <a class="nav-cta" href="#">Join the waitlist</a>
+</div>
+
+<!-- HERO -->
+<section class="app-hero">
+  <div>
+    <div class="app-hero-kicker">The DAOasis Companion App</div>
+    <h1 class="app-hero-h1">The system your habits<br><em>have been waiting for.</em></h1>
+    <p class="app-hero-sub">Track your habits, learning and wellness in one place — and earn real rewards for every day you show up. Consistency, gamified and accounted for.</p>
+    <div class="app-hero-ctas">
+      <a class="btn-primary" href="#">Join the Waitlist</a>
+      <a class="btn-secondary" href="#journey">See how it works</a>
+    </div>
+  </div>
+  <div class="hero-scroll">Scroll to explore ↓</div>
+</section>
+
+<!-- DIVIDER -->
+<div class="divider-dark"><div class="divider-inner">
+  <div class="divider-line-d"></div>
+  <img src="images/img-09-white.png" class="divider-mark" alt="" />
+  <div class="divider-line-d"></div>
+</div></div>
+
+<!-- THE PROBLEM -->
+<div class="tw-pin" id="twProblemPin">
+  <div class="tw-stage light" id="twProblemStage">
+    <div class="tw-content">
+      <div class="tw-pre" id="twProblemPre">The Problem</div>
+      <div class="tw-text" id="twProblemText" style="font-size:clamp(26px,3.4vw,46px);"></div><span class="tw-cursor" id="twProblemCursor"></span>
+      <div class="tw-post" id="twProblemPost">
+        Sleep more. Move daily. Learn continuously. Be more intentional.<br><br>
+        The systems that were supposed to help keep pulling you back to the screen instead of forward into your life.<br><br>
+        <strong style="color:var(--charcoal);">DAOasis was built for that gap.</strong>
+      </div>
+    </div>
+    <div class="tw-progress" id="twProblemBar"></div>
+  </div>
+</div>
+
+<!-- DIVIDER -->
+<div class="divider-dark"><div class="divider-inner">
+  <div class="divider-line-d"></div>
+  <img src="images/img-09-white.png" class="divider-mark" alt="" />
+  <div class="divider-line-d"></div>
+</div></div>
+
+<!-- THE JOURNEY — scroll-driven Thailand map -->
+<div class="journey-pin" id="journey">
+  <div class="journey-stage" id="journeyStage">
+
+    <!-- Full-screen map background -->
+    <div class="journey-map-full">
+      <img id="mapImg" src="images/img-map.jpg" alt="Thailand terrain map" />
+    </div>
+
+    <!-- SVG route layer (sits above map, below copy) -->
+    <svg class="journey-svg-layer" id="journeySvg"
+         xmlns="http://www.w3.org/2000/svg">
+
+      <!--
+        Map image: 1200x1600 source, rendered at 1440x900 via object-fit:cover object-position:28% 32%
+        At 1440x900 with cover on 0.75-ratio portrait:
+          Height-constrained: rendered w=1440*(1600/1200... no, width-constrained
+          Actually: 1440/1200=1.2 vs 900/1600=0.5625 → width is binding
+          Rendered: w=1440, h=1440/0.75=1920px, cropped to 900px tall
+          y-offset = (1920-900)*0.32 = 326px cropped from top
+          x-offset = (1440-1440)*0.28 = 0
+        So: real_x = wrap_x, real_y = wrap_y + 326  (all /1440*1200, /1900*1600 to get pct)
+
+        Waypoint real image positions (pct of 1200x1600):
+          Bangkok:    37.0%, 45.4%  → real px (444, 726)
+          Ayutthaya:  37.8%, 41.6%  → real px (454, 666)
+          Hua Hin:    31.2%, 53.0%  → real px (374, 848)
+          Surat Thani:25.5%, 75.1%  → real px (306, 1202)
+          Khao Lak:   20.5%, 78.0%  → real px (246, 1248)
+          Phuket:     21.5%, 82.8%  → real px (258, 1325)
+
+        rendered_x = real_x/1200*1440
+        rendered_y = real_y/1600*1920 - 326
+      -->
+
+      <!-- Ghost route (always visible, very dim) -->
+      <polyline class="jseg-ghost" points="909,201 916,155 857,292 806,557 760,592 770,650"/>
+
+      <!-- Animated route segments, one per waypoint pair -->
+      <polyline class="jseg-glow" id="seg0g" points="909,201 916,155"/>
+      <polyline class="jseg"      id="seg0"  points="909,201 916,155"/>
+      <polyline class="jseg-glow" id="seg1g" points="916,155 857,292"/>
+      <polyline class="jseg"      id="seg1"  points="916,155 857,292"/>
+      <polyline class="jseg-glow" id="seg2g" points="857,292 806,557"/>
+      <polyline class="jseg"      id="seg2"  points="857,292 806,557"/>
+      <polyline class="jseg-glow" id="seg3g" points="806,557 760,592"/>
+      <polyline class="jseg"      id="seg3"  points="806,557 760,592"/>
+      <polyline class="jseg-glow" id="seg4g" points="760,592 770,650"/>
+      <polyline class="jseg"      id="seg4"  points="760,592 770,650"/>
+
+      <!-- Waypoint dots -->
+      <circle class="jdot" id="jd0" cx="909" cy="201"/>
+      <circle class="jdot" id="jd1" cx="916" cy="155"/>
+      <circle class="jdot" id="jd2" cx="857" cy="292"/>
+      <circle class="jdot" id="jd3" cx="806" cy="557"/>
+      <circle class="jdot" id="jd4" cx="760" cy="592"/>
+      <circle class="jdot" id="jd5" cx="770" cy="650"/>
+
+      <!-- City labels with dark backing -->
+      <g class="jlbl-group" id="jl0">
+          <rect class="jlbl-bg" x="927" y="188" width="96" height="36" rx="5"/>
+          <text class="jlbl-city" x="935" y="203">Bangkok</text>
+          <text class="jlbl-km"   x="935" y="217">0 km</text>
+        </g>
+      <g class="jlbl-group" id="jl1">
+          <rect class="jlbl-bg" x="934" y="142" width="106" height="36" rx="5"/>
+          <text class="jlbl-city" x="942" y="157">Ayutthaya</text>
+          <text class="jlbl-km"   x="942" y="171">76 km</text>
+        </g>
+      <g class="jlbl-group" id="jl2">
+          <rect class="jlbl-bg" x="875" y="279" width="86" height="36" rx="5"/>
+          <text class="jlbl-city" x="883" y="294">Hua Hin</text>
+          <text class="jlbl-km"   x="883" y="308">199 km</text>
+        </g>
+      <g class="jlbl-group" id="jl3">
+          <rect class="jlbl-bg" x="824" y="544" width="114" height="36" rx="5"/>
+          <text class="jlbl-city" x="832" y="559">Surat Thani</text>
+          <text class="jlbl-km"   x="832" y="573">544 km</text>
+        </g>
+      <g class="jlbl-group" id="jl4">
+          <rect class="jlbl-bg" x="640" y="579" width="96" height="36" rx="5"/>
+          <text class="jlbl-city" x="648" y="594">Khao Lak</text>
+          <text class="jlbl-km"   x="648" y="608">782 km</text>
+        </g>
+      <g class="jlbl-group" id="jl5">
+          <rect class="jlbl-bg" x="788" y="637" width="80" height="36" rx="5"/>
+          <text class="jlbl-city" x="796" y="652">Phuket</text>
+          <text class="jlbl-km"   x="796" y="666">900 km ✦</text>
+        </g>
+    </svg>
+
+    <!-- Copy column -->
+    <div class="journey-copy" id="journeyCopy">
+
+      <!-- Section 0: Opening -->
+      <div class="j-section" id="js0">
+        <div class="j-eyebrow">The Journey</div>
+        <h2 class="j-copy-headline">Imagine this.</h2>
+        <div class="j-copy-body">
+          <p>You open DAOasis.</p>
+          <p>Your steps are logged, just like any other wellness app.</p>
+          <p>But here, they are not simply numbers on a screen.</p>
+          <p><em style="color:var(--gold);font-style:italic;">They take you somewhere.</em></p>
+        </div>
+      </div>
+
+      <!-- Section 1: Bangkok → Ayutthaya -->
+      <div class="j-section" id="js1">
+        <div class="j-eyebrow">Bangkok → Ayutthaya · 76 km</div>
+        <h2 class="j-copy-headline">Every step moves you forward.</h2>
+        <div class="j-copy-body">
+          <p>Not towards another badge.</p>
+          <p>Not towards another meaningless streak.</p>
+          <p>Towards somewhere real.</p>
+          <p>Your progress becomes a journey across Thailand.</p>
+        </div>
+      </div>
+
+      <!-- Section 2: Ayutthaya → Hua Hin -->
+      <div class="j-section" id="js2">
+        <div class="j-eyebrow">Ayutthaya → Hua Hin · 199 km</div>
+        <h2 class="j-copy-headline">There is more to do<br>than walk.</h2>
+        <div class="j-copy-body">
+          <p>Complete quests.</p>
+          <p>Build healthier habits.</p>
+          <p>Learn something new.</p>
+          <p>Show up consistently.</p>
+          <p>Every action moves your journey forward.</p>
+        </div>
+      </div>
+
+      <!-- Section 3: Hua Hin → Surat Thani -->
+      <div class="j-section" id="js3">
+        <div class="j-eyebrow">Hua Hin → Surat Thani · 544 km</div>
+        <h2 class="j-copy-headline">Progress you<br><em>can see.</em></h2>
+        <div class="j-copy-body">
+          <p>You are learning.</p>
+          <p>You are moving.</p>
+          <p>You are building consistency.</p>
+          <p>And the app recognises the effort you are putting in.</p>
+          <p>Your daily actions become meaningful progress.</p>
+        </div>
+      </div>
+
+      <!-- Section 4: Surat Thani → Khao Lak -->
+      <div class="j-section" id="js4">
+        <div class="j-eyebrow">Surat Thani → Khao Lak · 782 km</div>
+        <h2 class="j-copy-headline">And then<br><em>there is the reward.</em></h2>
+        <div class="j-copy-body">
+          <p>Not because you clicked a button.</p>
+          <p>Not because you opened the app.</p>
+          <p>Because you actually did something.</p>
+          <p>Move. Learn. Complete. Contribute.</p>
+          <p>Earn Reward Credits for the progress you make.</p>
+        </div>
+      </div>
+
+      <!-- Section 5: Khao Lak → Phuket -->
+      <div class="j-section" id="js5">
+        <div class="j-eyebrow">Khao Lak → Phuket · 900 km</div>
+        <h2 class="j-copy-headline">What started as a few steps<br>has become something bigger.</h2>
+        <div class="j-copy-body">
+          <p>A journey.</p>
+          <p>A challenge.</p>
+          <p>A system that keeps you moving forward.</p>
+          <p>And you are not just watching your progress.</p>
+          <p><em style="color:var(--gold);font-style:italic;">You are living it.</em></p>
+        </div>
+      </div>
+
+      <!-- Section 6: Final -->
+      <div class="j-section j-final" id="js6">
+        <h2 class="j-copy-headline">This is DAOasis.</h2>
+        <div class="j-copy-body">
+          <p>A place where wellness becomes a journey.</p>
+          <p>Where learning becomes progress.</p>
+          <p>Where consistency becomes reward.</p>
+          <p>And where the distance between where you are and where you want to be is measured one step at a time.</p>
+        </div>
+        <div class="j-final-mantra">Rest. Learn. Earn. Return.</div>
+      </div>
+
+    </div><!-- /journey-copy -->
+
+    <!-- Bottom progress bar -->
+    <div class="j-progress-bar" id="jProgressBar"></div>
+
+    <div class="j-scroll-hint" id="jScrollHint">Scroll to begin the journey ↓</div>
+
+  </div><!-- /journey-stage -->
+</div><!-- /journey-pin -->
+
+<!-- DIVIDER -->
+<div class="divider-dark"><div class="divider-inner">
+  <div class="divider-line-d"></div>
+  <img src="images/img-09-white.png" class="divider-mark" alt="" />
+  <div class="divider-line-d"></div>
+</div></div>
+
+<!-- THE LIVING ECOSYSTEM -->
+<section class="s-dark" id="ecosystem">
+  <div class="s-kicker reveal">The Living Ecosystem</div>
+  <h2 class="s-headline reveal reveal-delay-1">Six metrics.<br><em>One living world.</em></h2>
+  <p class="s-body reveal reveal-delay-2">Everything you track shapes the environment around you.</p>
+  <div class="eco-grid" id="ecoGrid">
+
+    <!-- STEPS: dot travelling a winding path -->
+    <div class="eco-card">
+      <div class="eco-anim">
+        <svg width="200" height="80" viewBox="0 0 200 80">
+          <defs>
+            <path id="stepsPath" d="M10,65 C30,65 40,15 70,15 C100,15 110,55 140,45 C160,38 175,20 190,20"/>
+          </defs>
+          <!-- Trail -->
+          <use href="#stepsPath" fill="none" stroke="rgba(196,138,90,0.2)" stroke-width="1.5"/>
+          <use href="#stepsPath" fill="none" stroke="#C48A5A" stroke-width="1.5"
+            stroke-dasharray="200" stroke-dashoffset="200"
+            style="animation:stepsPath 3s ease-in-out infinite alternate;"/>
+          <!-- Moving dot -->
+          <circle r="5" fill="#C48A5A" filter="url(#dotGlow)"
+            style="offset-path:path('M10,65 C30,65 40,15 70,15 C100,15 110,55 140,45 C160,38 175,20 190,20');offset-distance:0%;animation:stepsDot 3s ease-in-out infinite alternate;">
+          </circle>
+          <defs><filter id="dotGlow"><feGaussianBlur stdDeviation="2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+        </svg>
+      </div>
+      <div class="eco-metric">Steps</div>
+      <div class="eco-env">The Journey</div>
+      <div class="eco-text">Your daily movement becomes distance on the map. Every step carries you further toward your destination.</div>
+    </div>
+
+    <!-- BREATHING: expanding/contracting concentric rings -->
+    <div class="eco-card">
+      <div class="eco-anim">
+        <svg width="100" height="80" viewBox="0 0 100 80">
+          <defs>
+            <radialGradient id="breathGrad" cx="50%" cy="50%">
+              <stop offset="0%" stop-color="#7F97A2" stop-opacity="0.9"/>
+              <stop offset="100%" stop-color="#7F97A2" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <circle cx="50" cy="40" r="36" fill="none" stroke="rgba(127,151,162,0.15)" stroke-width="1"/>
+          <circle cx="50" cy="40" r="24" fill="none" stroke="rgba(127,151,162,0.2)" stroke-width="1"/>
+          <circle cx="50" cy="40" r="8" fill="none"
+            stroke="#7F97A2" stroke-width="1.5" opacity="0.9"
+            style="animation:breathIn 4s ease-in-out infinite;"/>
+          <circle cx="50" cy="40" r="16" fill="none"
+            stroke="#7F97A2" stroke-width="1" opacity="0.5"
+            style="animation:breathIn 4s ease-in-out infinite 0.3s;"/>
+          <circle cx="50" cy="40" r="26" fill="none"
+            stroke="#7F97A2" stroke-width="0.7" opacity="0.2"
+            style="animation:breathIn2 4s ease-in-out infinite 0.6s;"/>
+          <!-- Sky gradient wash -->
+          <circle cx="50" cy="40" r="36" fill="url(#breathGrad)"
+            style="animation:breathIn 4s ease-in-out infinite;"/>
+          <!-- Core dot -->
+          <circle cx="50" cy="40" r="4" fill="#7F97A2"/>
+        </svg>
+      </div>
+      <div class="eco-metric">Breathing</div>
+      <div class="eco-env">The Weather</div>
+      <div class="eco-text">Consistent breathwork clears the sky. Miss sessions and the atmosphere shifts — subtle, never punishing.</div>
+    </div>
+
+    <!-- HYDRATION: water level filling a vessel with animated wave -->
+    <div class="eco-card">
+      <div class="eco-anim">
+        <svg width="60" height="80" viewBox="0 0 60 80">
+          <defs>
+            <clipPath id="vesselClip">
+              <path d="M8,10 L6,72 Q6,76 10,76 L50,76 Q54,76 54,72 L52,10 Z"/>
+            </clipPath>
+          </defs>
+          <!-- Vessel outline -->
+          <path d="M8,10 L6,72 Q6,76 10,76 L50,76 Q54,76 54,72 L52,10 Z"
+            fill="none" stroke="rgba(42,106,138,0.4)" stroke-width="1.5"/>
+          <!-- Water fill with animated wave -->
+          <g clip-path="url(#vesselClip)">
+            <rect x="0" y="30" width="60" height="50" fill="rgba(42,106,138,0.25)"/>
+            <g style="animation:waveFlow 2s linear infinite;">
+              <path d="M-60,30 Q-45,24 -30,30 Q-15,36 0,30 Q15,24 30,30 Q45,36 60,30 Q75,24 90,30 Q105,36 120,30 L120,80 L-60,80 Z"
+                fill="rgba(42,106,138,0.5)"/>
+              <path d="M-60,33 Q-45,27 -30,33 Q-15,39 0,33 Q15,27 30,33 Q45,39 60,33 Q75,27 90,33 Q105,39 120,33 L120,80 L-60,80 Z"
+                fill="rgba(42,106,138,0.3)"/>
+            </g>
+          </g>
+          <!-- Drop icon at top -->
+          <path d="M30,4 Q34,12 34,16 Q34,22 30,22 Q26,22 26,16 Q26,12 30,4 Z"
+            fill="rgba(42,106,138,0.7)"/>
+          <!-- Level lines -->
+          <line x1="12" y1="45" x2="18" y2="45" stroke="rgba(42,106,138,0.5)" stroke-width="1"/>
+          <line x1="12" y1="55" x2="18" y2="55" stroke="rgba(42,106,138,0.5)" stroke-width="1"/>
+          <line x1="12" y1="65" x2="18" y2="65" stroke="rgba(42,106,138,0.5)" stroke-width="1"/>
+        </svg>
+      </div>
+      <div class="eco-metric">Hydration</div>
+      <div class="eco-env">The River</div>
+      <div class="eco-text">Each water log feeds a river in your app. Full days make it flow. The river never disappears — it waits.</div>
+    </div>
+
+    <!-- SLEEP: stars appearing across a dark sky -->
+    <div class="eco-card">
+      <div class="eco-anim">
+        <svg width="200" height="80" viewBox="0 0 200 80">
+          <rect width="200" height="80" rx="6" fill="rgba(15,13,11,0.6)"/>
+          <!-- Moon -->
+          <path d="M168,18 Q160,26 160,36 Q160,46 168,54 Q156,52 150,43 Q144,34 148,24 Q152,14 162,12 Q165,14 168,18 Z"
+            fill="rgba(155,140,168,0.6)"/>
+          <!-- Stars with staggered appear animations -->
+          <circle cx="20" cy="15" r="1.5" fill="#9B8CA8" style="animation:starAppear 4s ease-out infinite;animation-delay:0s"/>
+          <circle cx="45" cy="30" r="2"   fill="#b8b0c8" style="animation:starAppear 4s ease-out infinite;animation-delay:0.4s"/>
+          <circle cx="70" cy="12" r="1.5" fill="#9B8CA8" style="animation:starAppear 4s ease-out infinite;animation-delay:0.8s"/>
+          <circle cx="90" cy="40" r="2.5" fill="#d0c8e0" style="animation:starAppear 4s ease-out infinite;animation-delay:1.2s"/>
+          <circle cx="115" cy="20" r="1.5" fill="#9B8CA8" style="animation:starAppear 4s ease-out infinite;animation-delay:1.6s"/>
+          <circle cx="130" cy="55" r="2"  fill="#b8b0c8" style="animation:starAppear 4s ease-out infinite;animation-delay:2.0s"/>
+          <circle cx="30" cy="55" r="1.5" fill="#9B8CA8" style="animation:starAppear 4s ease-out infinite;animation-delay:2.4s"/>
+          <circle cx="58" cy="62" r="1"   fill="#9B8CA8" style="animation:starAppear 4s ease-out infinite;animation-delay:2.8s"/>
+          <circle cx="100" cy="65" r="2"  fill="#b8b0c8" style="animation:starAppear 4s ease-out infinite;animation-delay:3.2s"/>
+          <!-- Twinkling existing stars -->
+          <circle cx="55" cy="18" r="1.5" fill="#d0c8e0" style="animation:twinkle 2.1s ease-in-out infinite;"/>
+          <circle cx="140" cy="35" r="2"  fill="#b8b0c8" style="animation:twinkle 3.3s ease-in-out infinite 0.5s;"/>
+          <circle cx="15" cy="38" r="1"   fill="#9B8CA8" style="animation:twinkle 1.8s ease-in-out infinite 1s;"/>
+        </svg>
+      </div>
+      <div class="eco-metric">Sleep</div>
+      <div class="eco-env">The Night Sky</div>
+      <div class="eco-text">Quality sleep builds constellations. A 30-day streak fills the sky. Stars never disappear — they simply stop growing.</div>
+    </div>
+
+    <!-- NUTRITION: plant growing from soil -->
+    <div class="eco-card">
+      <div class="eco-anim">
+        <svg width="100" height="80" viewBox="0 0 100 80">
+          <!-- Soil -->
+          <rect x="10" y="68" width="80" height="8" rx="3" fill="rgba(74,154,104,0.25)"/>
+          <!-- Main stem -->
+          <line x1="50" y1="68" x2="50" y2="20"
+            stroke="#4a9a68" stroke-width="2" stroke-linecap="round"
+            stroke-dasharray="80" stroke-dashoffset="80"
+            style="animation:stemGrow 3s ease-out infinite alternate 0.5s;"/>
+          <!-- Left leaf -->
+          <ellipse cx="34" cy="42" rx="14" ry="7" fill="rgba(74,154,104,0.7)"
+            transform="rotate(-30,34,42)"
+            style="transform-origin:50px 68px;animation:leafGrow 3s ease-out infinite alternate 1s;"/>
+          <!-- Right leaf -->
+          <ellipse cx="66" cy="36" rx="14" ry="7" fill="rgba(90,170,120,0.7)"
+            transform="rotate(30,66,36)"
+            style="transform-origin:50px 68px;animation:leafGrow 3s ease-out infinite alternate 1.5s;"/>
+          <!-- Top leaf -->
+          <ellipse cx="50" cy="18" rx="10" ry="6" fill="rgba(74,154,104,0.9)"
+            style="transform-origin:50px 68px;animation:leafGrow 3s ease-out infinite alternate 2s;"/>
+          <!-- Small dots = nutrients -->
+          <circle cx="25" cy="62" r="2" fill="rgba(196,138,90,0.5)" style="animation:twinkle 2s ease-in-out infinite;"/>
+          <circle cx="50" cy="60" r="2" fill="rgba(196,138,90,0.5)" style="animation:twinkle 2s ease-in-out infinite 0.5s;"/>
+          <circle cx="75" cy="62" r="2" fill="rgba(196,138,90,0.5)" style="animation:twinkle 2s ease-in-out infinite 1s;"/>
+        </svg>
+      </div>
+      <div class="eco-metric">Nutrition</div>
+      <div class="eco-env">The Garden</div>
+      <div class="eco-text">Log nourishment — not calories. A varied diet grows a garden. It responds to everything else you do.</div>
+    </div>
+
+    <!-- STREAKS: path extending with glowing trail -->
+    <div class="eco-card">
+      <div class="eco-anim">
+        <svg width="200" height="80" viewBox="0 0 200 80">
+          <!-- Grid dots (calendar-like) -->
+          <g fill="rgba(196,138,90,0.2)">
+            <circle cx="20" cy="40" r="3"/> <circle cx="40" cy="40" r="3"/>
+            <circle cx="60" cy="40" r="3"/> <circle cx="80" cy="40" r="3"/>
+            <circle cx="100" cy="40" r="3"/><circle cx="120" cy="40" r="3"/>
+            <circle cx="140" cy="40" r="3"/><circle cx="160" cy="40" r="3"/>
+            <circle cx="180" cy="40" r="3"/>
+          </g>
+          <!-- Filled streak dots -->
+          <circle cx="20" cy="40" r="5" fill="#C48A5A"/>
+          <circle cx="40" cy="40" r="5" fill="#C48A5A"/>
+          <circle cx="60" cy="40" r="5" fill="#C48A5A"/>
+          <circle cx="80" cy="40" r="5" fill="#C48A5A"/>
+          <circle cx="100" cy="40" r="5" fill="#C48A5A"/>
+          <circle cx="120" cy="40" r="5" fill="#C48A5A"/>
+          <!-- Trail line connecting them -->
+          <line x1="20" y1="40" x2="120" y2="40"
+            stroke="#C48A5A" stroke-width="2"
+            stroke-dasharray="200" stroke-dashoffset="200"
+            style="animation:trailDraw 3s ease-out infinite alternate;"/>
+          <!-- Glow on trail -->
+          <line x1="20" y1="40" x2="120" y2="40"
+            stroke="rgba(196,138,90,0.6)" stroke-width="8" filter="url(#dotGlow)"
+            stroke-dasharray="200" stroke-dashoffset="200"
+            style="animation:trailDraw 3s ease-out infinite alternate;"/>
+          <!-- Active pulsing dot -->
+          <circle cx="120" cy="40" r="8" fill="none" stroke="#C48A5A" stroke-width="1.5"
+            style="animation:breathIn 2s ease-in-out infinite;"/>
+          <circle cx="120" cy="40" r="5" fill="#fff"/>
+          <!-- Day labels -->
+          <text x="20" y="62" text-anchor="middle" font-size="8" fill="rgba(196,138,90,0.6)" font-family="sans-serif">M</text>
+          <text x="40" y="62" text-anchor="middle" font-size="8" fill="rgba(196,138,90,0.6)" font-family="sans-serif">T</text>
+          <text x="60" y="62" text-anchor="middle" font-size="8" fill="rgba(196,138,90,0.6)" font-family="sans-serif">W</text>
+          <text x="80" y="62" text-anchor="middle" font-size="8" fill="rgba(196,138,90,0.6)" font-family="sans-serif">T</text>
+          <text x="100" y="62" text-anchor="middle" font-size="8" fill="rgba(196,138,90,0.6)" font-family="sans-serif">F</text>
+          <text x="120" y="62" text-anchor="middle" font-size="8" fill="rgba(196,138,90,0.8)" font-family="sans-serif">S</text>
+          <text x="140" y="62" text-anchor="middle" font-size="8" fill="rgba(196,138,90,0.3)" font-family="sans-serif">S</text>
+          <!-- Streak counter -->
+          <text x="180" y="35" text-anchor="middle" font-size="18" fill="#C48A5A" font-family="serif" font-style="italic">7</text>
+          <text x="180" y="48" text-anchor="middle" font-size="7" fill="rgba(196,138,90,0.6)" font-family="sans-serif">DAYS</text>
+        </svg>
+      </div>
+      <div class="eco-metric">Streaks</div>
+      <div class="eco-env">The Path Behind You</div>
+      <div class="eco-text">See how far you have come, not just how far you have left. Progress stays. The path is always there.</div>
+    </div>
+  </div>
+</section>
+
+<!-- DIVIDER -->
+<div class="divider-light"><div class="divider-inner">
+  <div class="divider-line-l"></div>
+  <img src="images/img-09.png" class="divider-mark" alt="" />
+  <div class="divider-line-l"></div>
+</div></div>
+
+<!-- A NORMAL DAY -->
+<section class="s-light" id="normalday">
+  <div class="s-kicker reveal">A Normal Day</div>
+  <div id="twDayInline">
+    <div class="tw-text" id="twDayText" style="font-family:'Cormorant Garamond',serif;font-size:clamp(26px,3.4vw,46px);color:var(--charcoal);line-height:1.2;margin-bottom:28px;"></div><span class="tw-cursor" id="twDayCursor" style="background:var(--charcoal);"></span>
+  </div>
+  <p class="s-body reveal reveal-delay-2">Everything else happens quietly.</p>
+  <div class="day-cols" id="dayCols">
+    <div class="day-col">
+      <div class="day-time">Morning</div>
+      <div class="day-title">Open. See. Intend.</div>
+      <div class="day-text">Open the app. See where you are on the journey. Set one intention for the day. The rest runs in the background.</div>
+    </div>
+    <div class="day-col">
+      <div class="day-time">During the Day</div>
+      <div class="day-title">Steps. Sips. Breaths.</div>
+      <div class="day-text">Steps accumulate. The dot moves. A tap logs your water. Your breathwork takes three minutes and clears the sky.</div>
+    </div>
+    <div class="day-col">
+      <div class="day-time">Evening</div>
+      <div class="day-title">Review. Note. Rest.</div>
+      <div class="day-text">See how far you moved. Note one thing that brought clarity. Watch your Reward Credits update. Rest.</div>
+    </div>
+  </div>
+</section>
+
+<!-- DIVIDER -->
+<div class="divider-dark"><div class="divider-inner">
+  <div class="divider-line-d"></div>
+  <img src="images/img-09-white.png" class="divider-mark" alt="" />
+  <div class="divider-line-d"></div>
+</div></div>
+
+<!-- COMMUNITY -->
+<section class="s-dark" id="community">
+  <div class="s-kicker reveal">The Community</div>
+  <h2 class="s-headline reveal reveal-delay-1">You are not<br><em>walking alone.</em></h2>
+  <div class="s-body reveal reveal-delay-2">
+    <p>The DAOasis community walks the journey with you. A shared marker moves south with your collective steps. Your consistency affects everyone's world — and theirs affects yours.</p>
+    <p>Weekly community quests require collective action to complete. The campfire grows when the community shows up. Your individual contribution is always visible — and always valued.</p>
+  </div>
+  <div class="bullet-list reveal">
+    <div class="bullet-item"><div class="bullet-dot"></div><span>Cohorts of 10–20 members at similar journey stages</span></div>
+    <div class="bullet-item"><div class="bullet-dot"></div><span>Community quests with shared Reward Credits — earned together</span></div>
+    <div class="bullet-item"><div class="bullet-dot"></div><span>Accountability pairs — one other person who sees your progress</span></div>
+  </div>
+</section>
+
+<!-- DIVIDER -->
+<div class="divider-dark"><div class="divider-inner">
+  <div class="divider-line-d"></div>
+  <img src="images/img-09-white.png" class="divider-mark" alt="" />
+  <div class="divider-line-d"></div>
+</div></div>
+
+<!-- THE SANCTUARY -->
+<section class="s-sanctuary" id="sanctuary">
+  <div class="s-kicker reveal">The Sanctuary</div>
+  <h2 class="s-headline reveal reveal-delay-1">The journey leads<br><em>somewhere real.</em></h2>
+  <div class="s-body reveal reveal-delay-2">
+    <p>Phuket, Thailand. The DAOasis Sanctuary is the physical destination your daily habits are walking toward.</p>
+    <p>A member who has spent 150 days walking to Phuket in the app does not arrive as a stranger. They know the routines, the community, and the philosophy. The app prepared them. The Sanctuary deepens it. The app carries it home.</p>
+    <p>Reward Credits earned through daily participation contribute toward a Sanctuary stay. The digital journey and the physical one are the same journey.</p>
+  </div>
+  <div class="before-during-after reveal">
+    <div class="bda-card">
+      <div class="bda-label">Before</div>
+      <div class="bda-text">Arrive prepared. Sleep, hydration and intention quests begin weeks ahead.</div>
+    </div>
+    <div class="bda-card">
+      <div class="bda-label">During</div>
+      <div class="bda-text">A daily sanctuary schedule — every session, ritual and gathering in one view.</div>
+    </div>
+    <div class="bda-card">
+      <div class="bda-label">After</div>
+      <div class="bda-text">Integration pathways carry the experience into everyday life.</div>
+    </div>
+  </div>
+</section>
+
+<!-- DIVIDER -->
+<div class="divider-dark"><div class="divider-inner">
+  <div class="divider-line-d"></div>
+  <img src="images/img-09-white.png" class="divider-mark" alt="" />
+  <div class="divider-line-d"></div>
+</div></div>
+
+<!-- REWARD CREDITS -->
+<section class="s-dark" id="rewards">
+  <div class="s-kicker reveal">Reward Credits</div>
+  <h2 class="s-headline reveal reveal-delay-1">Participation<br><em>creates value.</em></h2>
+  <div class="s-body reveal reveal-delay-2">
+    <p>Every completed quest, community check-in, learning module, and consistent streak earns Reward Credits — the in-app recognition layer that reflects genuine participation.</p>
+    <p>Reward Credits are not a cryptocurrency. They are the app's way of acknowledging that you showed up — and making that mean something.</p>
+  </div>
+  <div class="reward-cols reveal">
+    <div class="reward-card">
+      <div class="reward-icon">🔓</div>
+      <div class="reward-label">Unlock</div>
+      <div class="reward-text">Premium content and waypoint stories — earned, not purchased.</div>
+    </div>
+    <div class="reward-card">
+      <div class="reward-icon">🏝</div>
+      <div class="reward-label">Sanctuary</div>
+      <div class="reward-text">Contribute toward a DAOasis Sanctuary stay.</div>
+    </div>
+    <div class="reward-card">
+      <div class="reward-icon">🛍</div>
+      <div class="reward-label">Marketplace</div>
+      <div class="reward-text">Wellness products, experiences, and partner offers.</div>
+    </div>
+  </div>
+</section>
+
+<!-- DIVIDER -->
+<div class="divider-dark"><div class="divider-inner">
+  <div class="divider-line-d"></div>
+  <img src="images/img-09-white.png" class="divider-mark" alt="" />
+  <div class="divider-line-d"></div>
+</div></div>
+
+<!-- DEVICE INTEGRATIONS -->
+<section class="s-dark" id="integrations">
+  <div class="s-kicker reveal">Device Integrations</div>
+  <h2 class="s-headline reveal reveal-delay-1">Works with what<br><em>you already use.</em></h2>
+  <p class="s-body reveal reveal-delay-2">DAOasis connects with your existing health platforms so the data does the work — you just live your life.</p>
+  <div class="integrations-grid reveal">
+    <div class="int-pill"><div class="int-dot"></div>Apple Health</div>
+    <div class="int-pill"><div class="int-dot"></div>Health Connect</div>
+    <div class="int-pill"><div class="int-dot"></div>Whoop</div>
+    <div class="int-pill"><div class="int-dot"></div>Oura</div>
+    <div class="int-pill"><div class="int-dot"></div>Garmin</div>
+    <div class="int-pill"><div class="int-dot"></div>Fitbit</div>
+  </div>
+</section>
+
+<!-- DIVIDER -->
+<div class="divider-dark"><div class="divider-inner">
+  <div class="divider-line-d"></div>
+  <img src="images/img-09-white.png" class="divider-mark" alt="" />
+  <div class="divider-line-d"></div>
+</div></div>
+
+<!-- ROADMAP -->
+<section class="s-dark" id="roadmap">
+  <div class="s-kicker reveal">Roadmap</div>
+  <h2 class="s-headline reveal reveal-delay-1">Built deliberately.<br><em>Released when ready.</em></h2>
+  <div class="roadmap-list reveal">
+    <div class="rm-item"><div class="rm-num">01</div><div><div class="rm-label">Wearable Integration</div><div class="rm-status">In Development</div></div></div>
+    <div class="rm-item"><div class="rm-num">02</div><div><div class="rm-label">AI and Intelligence</div><div class="rm-status">In Development</div></div></div>
+    <div class="rm-item"><div class="rm-num">03</div><div><div class="rm-label">Web3 Wallet Integration</div><div class="rm-status">In Development</div></div></div>
+    <div class="rm-item"><div class="rm-num">04</div><div><div class="rm-label">Events and Sanctuary Bookings</div><div class="rm-status">In Development</div></div></div>
+    <div class="rm-item"><div class="rm-num">05</div><div><div class="rm-label">More Rewards and Quests</div><div class="rm-status">In Development</div></div></div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta">
+  <div class="s-kicker" style="color:var(--gold);">Early Access</div>
+  <h2 class="s-headline">Your journey starts when you decide it does.</h2>
+  <p class="s-body">Join a community building better habits, one deliberate day at a time.</p>
+  <a class="btn-primary" href="#">Join the Waitlist</a>
+  <div class="final-note">Free to join. No crypto knowledge required.</div>
+</section>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-top">
+    <div>
+      <div class="footer-brand-logo">
+        <img src="images/img-09-white.png" alt="DAOasis mark" />
+        <span>DAOasis</span>
+      </div>
+      <div class="footer-tagline">
+        <strong>Wellness meets Web3.</strong>
+        <em>Built for long term impact.</em>
+      </div>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-label">Explore</div>
+      <a href="app.html">The App</a>
+      <a href="#">The Sanctuary</a>
+      <a href="#">The Web3 Layer</a>
+      <a href="#">Waitlist</a>
+      <a href="#">FAQ</a>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-label">Company</div>
+      <a href="#">About</a>
+      <a href="#">Team</a>
+      <a href="#">Careers</a>
+      <a href="#">Investors</a>
+      <a href="#">Contact</a>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-label">Legal</div>
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Service</a>
+      <a href="#">Risk Disclaimer</a>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-label">Follow Us</div>
+      <a href="#">X</a>
+      <a href="#">Instagram</a>
+      <a href="#">LinkedIn</a>
+      <a href="#">YouTube</a>
+      <a href="#">Email</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 DAOasis. All rights reserved.</span>
+    <span>Phuket · Global</span>
+  </div>
+</footer>
+
+<script>
+// ── JOURNEY: narrative scroll-story ─────────────────────────────────────
+(function(){
+  // Set SVG to use pixel coordinates matching actual viewport
+  const svg = document.getElementById('journeySvg');
+  function setSvgSize(){
+    const W = window.innerWidth, H = window.innerHeight;
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    svg.setAttribute('width', W);
+    svg.setAttribute('height', H);
+    positionDots();
+  }
+
+  // Waypoint real image coordinates as % of source image (1200x1600)
+  // Verified against actual Thailand geography
+  const WP_PCT = [
+    {name:'Bangkok',    px:37.0, py:45.4, km:'0 km',    w:96,  dx:18,  lbl:'Bangkok'},
+    {name:'Ayutthaya',  px:37.8, py:41.6, km:'76 km',   w:106, dx:18,  lbl:'Ayutthaya'},
+    {name:'Hua Hin',    px:31.2, py:53.0, km:'199 km',  w:86,  dx:18,  lbl:'Hua Hin'},
+    {name:'Surat Thani',px:25.5, py:75.1, km:'544 km',  w:114, dx:18,  lbl:'Surat Thani'},
+    {name:'Khao Lak',   px:20.5, py:78.0, km:'782 km',  w:96,  dx:-114,lbl:'Khao Lak'},
+    {name:'Phuket',     px:21.5, py:82.8, km:'900 km ✦',w:80,  dx:18,  lbl:'Phuket'},
+  ];
+
+  let computedCoords = [];
+
+  function positionDots(){
+    const img = document.querySelector('.journey-map-full img');
+    if(!img) return;
+    const ir = img.getBoundingClientRect();
+    const stageRect = document.querySelector('.journey-stage').getBoundingClientRect();
+
+    // ir.top/left are relative to viewport, but stage is sticky so stage top = 0
+    // Image position relative to stage:
+    const imgLeft = ir.left - stageRect.left;
+    const imgTop  = ir.top  - stageRect.top;
+    const imgW = ir.width, imgH = ir.height;
+
+    computedCoords = WP_PCT.map(wp => ({
+      x: Math.round(imgLeft + wp.px/100 * imgW),
+      y: Math.round(imgTop  + wp.py/100 * imgH),
+      ...wp
+    }));
+
+    // Update all SVG elements
+    const route = computedCoords.map(c=>`${c.x},${c.y}`).join(' ');
+    ['routeBg','routeLine','routeGlow'].forEach(id=>{
+      const el = document.getElementById(id);
+      if(el) el.setAttribute('points', route);
+    });
+    // Ghost
+    const ghost = document.querySelector('.jseg-ghost');
+    if(ghost) ghost.setAttribute('points', route);
+
+    // Segments
+    for(let i=0;i<5;i++){
+      const pts = `${computedCoords[i].x},${computedCoords[i].y} ${computedCoords[i+1].x},${computedCoords[i+1].y}`;
+      const seg  = document.getElementById('seg'+i);
+      const segg = document.getElementById('seg'+i+'g');
+      if(seg)  seg.setAttribute('points', pts);
+      if(segg) segg.setAttribute('points', pts);
+      // Re-measure and set dasharray
+      if(seg){
+        const dx = computedCoords[i+1].x-computedCoords[i].x;
+        const dy = computedCoords[i+1].y-computedCoords[i].y;
+        const len = Math.ceil(Math.hypot(dx,dy)) + 20;
+        seg.style.strokeDasharray = len;
+        if(!seg.classList.contains('draw')) seg.style.strokeDashoffset = len;
+        if(segg){
+          segg.style.strokeDasharray = len;
+          if(!segg.classList.contains('draw')) segg.style.strokeDashoffset = len;
+        }
+      }
+    }
+
+    // Dots
+    computedCoords.forEach((c,i)=>{
+      const dot = document.getElementById('jd'+i);
+      if(dot){ dot.setAttribute('cx',c.x); dot.setAttribute('cy',c.y); }
+    });
+
+    // Label groups
+    computedCoords.forEach((c,i)=>{
+      const grp = document.getElementById('jl'+i);
+      if(!grp) return;
+      const rx = c.x + c.dx;
+      const ry = c.y - 13;
+      const rect = grp.querySelector('rect');
+      const city = grp.querySelectorAll('text')[0];
+      const km   = grp.querySelectorAll('text')[1];
+      if(rect){ rect.setAttribute('x',rx); rect.setAttribute('y',ry); rect.setAttribute('width',c.w); }
+      if(city){ city.setAttribute('x',rx+8); city.setAttribute('y',ry+15); }
+      if(km){   km.setAttribute('x',  rx+8); km.setAttribute('y',  ry+29); }
+    });
+  }
+
+  // Run on load and resize
+  window.addEventListener('resize', setSvgSize);
+  setSvgSize();
+
+  // Expose coords for the scroll controller below
+  window._journeyCoords = ()=>computedCoords;
+})();
+
+(function(){
+  const pin   = document.getElementById('journey');
+  const stage = document.getElementById('journeyStage');
+  if(!pin || !stage) return;
+
+  // 7 copy sections (0=opening, 1-5=segments, 6=final)
+  const sections  = [0,1,2,3,4,5,6].map(i=>document.getElementById('js'+i));
+  // 5 route segments
+  const segs      = [0,1,2,3,4].map(i=>([
+    document.getElementById('seg'+i),
+    document.getElementById('seg'+i+'g')
+  ]));
+  // 6 dots + label groups
+  const dots      = [0,1,2,3,4,5].map(i=>document.getElementById('jd'+i));
+  const lbls      = [0,1,2,3,4,5].map(i=>document.getElementById('jl'+i));
+  const progBar   = document.getElementById('jProgressBar');
+  const scrollHint= document.getElementById('jScrollHint');
+
+  // Pre-measure each segment's polyline length for dashoffset
+  function polyLen(el){
+    if(!el) return 300;
+    // rough: sum of point-to-point distances
+    const pts = el.getAttribute('points').trim().split(/\s+/).map(p=>{
+      const [x,y]=p.split(','); return {x:+x,y:+y};
+    });
+    let d=0;
+    for(let i=1;i<pts.length;i++) d+=Math.hypot(pts[i].x-pts[i-1].x,pts[i].y-pts[i-1].y);
+    return d;
+  }
+
+  // Set initial dashoffsets so segments are invisible
+  segs.forEach(([s,g])=>{
+    if(!s) return;
+    const len = polyLen(s) + 20;
+    // Set dasharray to segment length so it starts invisible, draws solid when offset→0
+    s.style.strokeDasharray  = len;
+    s.style.strokeDashoffset = len;
+    if(g){
+      g.style.strokeDasharray  = len;
+      g.style.strokeDashoffset = len;
+    }
+  });
+
+  function computeT(){
+    const rect = pin.getBoundingClientRect();
+    const scrollable = pin.offsetHeight - window.innerHeight;
+    if(scrollable<=0) return 0;
+    return Math.max(0,Math.min(1,-rect.top/scrollable));
+  }
+
+  // Each of 7 sections gets an equal share of scroll progress
+  // Sections: 0=0-14%, 1=14-28%, 2=28-42%, 3=42-56%, 4=56-70%, 5=70-84%, 6=84-100%
+  const N = 7;
+  const SHARE = 1/N;
+
+  let lastSection = -1;
+  let drawnSegs = new Set();
+
+  function update(){
+    const t = computeT();
+    const activeSection = Math.min(N-1, Math.floor(t/SHARE));
+
+    // Progress bar
+    if(progBar) progBar.style.width = (t*100)+'%';
+
+    // Scroll hint fades out
+    if(scrollHint) scrollHint.style.opacity = Math.max(0,1-t*15);
+
+    // Show/hide copy sections
+    sections.forEach((s,i)=>{
+      if(!s) return;
+      s.classList.toggle('visible', i===activeSection);
+    });
+
+    // Route and dots logic:
+    // Section 0: just Bangkok dot appears
+    // Section 1: seg0 draws (BKK→AYU), Ayutthaya dot
+    // Section 2: seg1 draws (AYU→HUA), Hua Hin dot
+    // Section 3: seg2 draws (HUA→SUR), Surat Thani dot
+    // Section 4: seg3 draws (SUR→KLK), Khao Lak dot
+    // Section 5: seg4 draws (KLK→PHU), Phuket dot
+    // Section 6: all done
+
+    // Dots
+    dots.forEach((d,i)=>{
+      if(!d) return;
+      const revealed = i <= activeSection;
+      const isActive = i === activeSection;
+      d.classList.remove('lit','active');
+      if(revealed && !isActive) d.classList.add('lit');
+      if(isActive) d.classList.add('active');
+    });
+
+    // Label groups
+    lbls.forEach((l,i)=>{
+      if(!l) return;
+      l.classList.toggle('show', i <= activeSection);
+    });
+
+    // Draw route segments on section change
+    if(activeSection !== lastSection){
+      lastSection = activeSection;
+      // Draw all segments up to activeSection-1
+      segs.forEach(([s,g],i)=>{
+        const shouldDraw = i < activeSection;
+        if(shouldDraw && !drawnSegs.has(i)){
+          drawnSegs.add(i);
+          if(s) s.style.strokeDashoffset = '0';
+          if(g) g.style.strokeDashoffset = '0';
+        }
+      });
+    }
+
+    requestAnimationFrame(update);
+  }
+
+  requestAnimationFrame(update);
+})();
+
+// ── SCROLL REVEAL ──────────────────────────────────────────────────────────
+(function(){
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        entry.target.classList.add('show');
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+  // Ecosystem cards staggered
+  const ecoObs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        const cards = entry.target.querySelectorAll('.eco-card');
+        cards.forEach((card, i) => {
+          setTimeout(() => card.classList.add('show'), i * 120);
+        });
+        ecoObs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  const grid = document.getElementById('ecoGrid');
+  if(grid) ecoObs.observe(grid);
+
+  // Day cols staggered
+  const dayObs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        const cols = entry.target.querySelectorAll('.day-col');
+        cols.forEach((col, i) => {
+          setTimeout(() => col.classList.add('show'), i * 150);
+        });
+        dayObs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.2 });
+  const dayCols = document.getElementById('dayCols');
+  if(dayCols) dayObs.observe(dayCols);
+})();
+// ── TYPEWRITER CONTROLLERS ────────────────────────────────────────────────
+
+// Generic typewriter: scroll-driven, sticky, with pre-pause and post-hold
+function makeTypewriter(opts){
+  const {pinId, textId, cursorId, preId, postId, barId, text, fontSize} = opts;
+  const pin  = document.getElementById(pinId);
+  if(!pin) return;
+  const textEl   = document.getElementById(textId);
+  const cursor   = document.getElementById(cursorId);
+  const preEl    = preId   ? document.getElementById(preId)   : null;
+  const postEl   = postId  ? document.getElementById(postId)  : null;
+  const barEl    = barId   ? document.getElementById(barId)   : null;
+
+  // Scroll windows (as fraction of pin scroll distance):
+  // 0.00–0.08  → pre-pause (nothing shown)
+  // 0.08–0.12  → kicker fades in
+  // 0.12–0.70  → typewriter types the text
+  // 0.70–0.80  → cursor holds, post-content fades in
+  // 0.80–1.00  → everything holds until section exits
+
+  const PRE_FADE_START = 0.06;
+  const TYPE_START     = 0.12;
+  const TYPE_END       = 0.68;
+  const POST_START     = 0.72;
+
+  let lastChars = -1;
+
+  function computeT(){
+    const rect = pin.getBoundingClientRect();
+    const scrollable = pin.offsetHeight - window.innerHeight;
+    if(scrollable <= 0) return 0;
+    return Math.max(0, Math.min(1, -rect.top / scrollable));
+  }
+
+  function update(){
+    const t = computeT();
+
+    if(barEl) barEl.style.width = (t * 100) + '%';
+
+    // Kicker
+    if(preEl) preEl.classList.toggle('show', t >= PRE_FADE_START);
+
+    // Typewriter
+    const typeProgress = Math.max(0, Math.min(1, (t - TYPE_START) / (TYPE_END - TYPE_START)));
+    const totalChars   = text.length;
+    const charsToShow  = Math.floor(typeProgress * totalChars);
+
+    if(charsToShow !== lastChars){
+      lastChars = charsToShow;
+      // Build HTML — preserve line breaks marked as \n in text
+      const shown = text.substring(0, charsToShow);
+      textEl.innerHTML = shown
+        .replace(/\n/g, '<br>')
+        .replace(/\[gold\](.*?)\[\/gold\]/g, '<em style="color:var(--gold);font-style:italic;">$1</em>');
+    }
+
+    // Cursor — hide once fully typed
+    const done = charsToShow >= totalChars;
+    if(cursor) cursor.classList.toggle('done', done && t > POST_START);
+
+    // Post content
+    if(postEl) postEl.classList.toggle('show', t >= POST_START);
+
+    requestAnimationFrame(update);
+  }
+
+  requestAnimationFrame(update);
+}
+
+// Problem section
+makeTypewriter({
+  pinId:    'twProblemPin',
+  textId:   'twProblemText',
+  cursorId: 'twProblemCursor',
+  preId:    'twProblemPre',
+  postId:   'twProblemPost',
+  barId:    'twProblemBar',
+  text:     'The information has never been the problem.\nThe problem is the gap\nbetween knowing and doing.'
+});
+
+// Normal Day inline typewriter (no sticky pin — just types as section scrolls into view)
+(function(){
+  const el = document.getElementById('twDayText');
+  const cursor = document.getElementById('twDayCursor');
+  if(!el) return;
+  const text = 'Two minutes in the morning.\nTwo minutes in the evening.';
+  let typed = false;
+  let charIdx = 0;
+  let interval = null;
+
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting && !typed){
+        typed = true;
+        // Short pre-pause before typing begins
+        setTimeout(() => {
+          interval = setInterval(() => {
+            if(charIdx < text.length){
+              charIdx++;
+              const shown = text.substring(0, charIdx).replace(/\n/g, '<br>');
+              el.innerHTML = shown;
+            } else {
+              clearInterval(interval);
+              // Hold cursor for 1.2s then hide
+              setTimeout(() => {
+                if(cursor) cursor.classList.add('done');
+              }, 1200);
+            }
+          }, 42); // ~24 chars/sec — deliberate but not slow
+        }, 400);
+      }
+    });
+  }, { threshold: 0.4 });
+
+  obs.observe(document.getElementById('normalday'));
+})();
+
+
+(function(){
+  const burger = document.getElementById('navBurger');
+  const drawer = document.getElementById('navDrawer');
+  if(!burger) return;
+  burger.addEventListener('click', () => {
+    const open = drawer.classList.toggle('open');
+    burger.classList.toggle('open', open);
+    document.body.style.overflow = open ? 'hidden' : '';
+  });
+  drawer.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      drawer.classList.remove('open');
+      burger.classList.remove('open');
+      document.body.style.overflow = '';
+    });
+  });
+})();
+</script>
+</body>
+</html>
