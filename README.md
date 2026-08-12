@@ -8,9 +8,9 @@ Read this before asking Claude (or anyone else) to redeploy. It exists so we sto
 - No CLI, no tokens, no API keys used anywhere in this workflow. Everything below is browser clicks only.
 
 ## What's live where
-- GitHub repo: **[fill in repo name/URL here once created]**
-- Vercel project: imported from that repo — once this exists, pushing changed files to the repo auto-redeploys. Nobody needs to touch the Vercel dashboard for routine updates.
-- Live URL: **[fill in once deployed]**
+- GitHub repo: **DAOasis2025/DAOasis_Website** — https://github.com/DAOasis2025/DAOasis_Website
+- Vercel project: **da-oasis-website** — imported from that repo. Once this exists, pushing changed files to the repo auto-redeploys. Nobody needs to touch the Vercel dashboard for routine updates.
+- Live URL: **https://da-oasis-website.vercel.app**
 
 ## How to ship an update (every time, after this first setup)
 1. Get the updated files (this README plus `index.html`, `app.html`, `images/`, `vercel.json`).
