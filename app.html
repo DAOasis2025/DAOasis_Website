@@ -42,7 +42,9 @@ body { overflow-x: clip; }
   padding: 18px 5%;
   background: rgba(23,20,18,0.88); backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(247,244,238,0.07);
+  transition: transform 0.35s ease;
 }
+.nav.nav-hidden { transform: translateY(-100%); }
 .nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0; }
 .nav-brand img { width: 26px; opacity: 0.9; }
 .nav-brand span { font-family: 'Cormorant Garamond', serif; font-size: 18px; color: var(--warm-white); }
@@ -209,7 +211,7 @@ body { overflow-x: clip; }
 ══════════════════════════════════════════════ */
 
 /* Scroll-pin container — same pattern as homepage */
-.hero-outer { position: relative; height: 480vh; }
+.hero-outer { position: relative; height: 580vh; }
 
 .hero {
   position: sticky; top: 0; height: 100vh; overflow: hidden;
@@ -217,10 +219,10 @@ body { overflow-x: clip; }
   /* Beach image — lightened overlay */
   background-image:
     linear-gradient(180deg,
-      rgba(12,10,8,0.28) 0%,
-      rgba(12,10,8,0.18) 30%,
-      rgba(12,10,8,0.22) 60%,
-      rgba(12,10,8,0.55) 100%),
+      rgba(12,10,8,0.45) 0%,
+      rgba(12,10,8,0.55) 35%,
+      rgba(12,10,8,0.52) 65%,
+      rgba(12,10,8,0.65) 100%),
     url('images/pexels-jayasankar24-9819827.jpg');
   background-size: cover;
   background-position: center 38%;
@@ -245,27 +247,28 @@ body { overflow-x: clip; }
 .hero-content {
   position: absolute; z-index: 10;
   top: 50%; left: 50%; transform: translate(-50%, -50%);
-  width: 100%; padding: 0 6%;
+  width: 100%; padding: 48px 6%;
   display: flex; flex-direction: column;
   align-items: center; text-align: center; gap: 10px;
   transition: opacity 0.15s linear, transform 0.15s linear;
+  background: rgba(12,10,8,0.42); backdrop-filter: blur(2px);
 }
 .hero-kicker {
   font-size: 11px; letter-spacing: 0.14em;
-  color: var(--gold); text-transform: uppercase;
+  color: rgba(247,244,238,0.75); text-transform: uppercase;
 }
 .hero-h1 {
   font-family: 'Cormorant Garamond', serif; font-weight: 400;
-  color: var(--warm-white); font-size: clamp(32px,5.2vw,58px);
+  color: #ffffff; font-size: clamp(32px,5.2vw,58px);
   line-height: 1.18; max-width: 1140px;
 }
 .hero-tagline {
   font-family: 'Cormorant Garamond', serif; font-style: italic;
-  color: var(--gold); font-size: clamp(17px,1.7vw,24px);
+  color: rgba(247,244,238,0.9); font-size: clamp(17px,1.7vw,24px);
   letter-spacing: 0.02em;
 }
 .hero-sub {
-  color: #e6e0d5; font-size: 14px; line-height: 1.6; max-width: 520px;
+  color: #ffffff; font-size: 14px; line-height: 1.6; max-width: 520px;
 }
 .hero-ctas { display: flex; gap: 12px; margin: 6px 0 1vh; }
 .hero-scroll-hint {
@@ -323,11 +326,12 @@ body { overflow-x: clip; }
 }
 .hero-bridge-text {
   font-family: 'Cormorant Garamond', serif; font-weight: 300; font-style: italic;
-  font-size: clamp(20px,2.2vw,34px); color: rgba(247,244,238,0.7);
+  font-size: clamp(42px,7.5vw,110px); color: rgba(247,244,238,0.95);
+  line-height: 1.1;
 }
 .hero-bridge-sub {
-  font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase;
-  color: rgba(196,138,90,0.5); margin-top: 14px;
+  font-size: 13px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: rgba(196,138,90,0.8); margin-top: 24px;
 }
 
 @media(max-width:900px){
@@ -433,130 +437,116 @@ body { overflow-x: clip; }
 @media(max-width:768px) { .how-grid { grid-template-columns: 1fr; } .how-orbit-bg { display:none; } }
 
 /* ══════════════════════════════════════════════
-   SECTION 3 — LIVING ECOSYSTEM (sticky scroll)
+   SECTION 3 — LIVING ECOSYSTEM (interactive tabs)
 ══════════════════════════════════════════════ */
 .eco-outer {
-  height: 800vh; position: relative;
-  background: var(--mineral);
+  background: var(--mineral); padding: 12vh 0 0;
 }
-.eco-sticky {
-  position: sticky; top: 0; height: 100vh;
-  display: flex; overflow: hidden;
-  background: radial-gradient(ellipse at 22% 55%, #1e1a14 0%, var(--mineral) 60%);
+.eco-header { text-align: center; padding: 0 8%; margin-bottom: 8vh; }
+.eco-layout {
+  display: grid; grid-template-columns: 1fr 1fr;
+  min-height: 80vh; max-width: 1400px; margin: 0 auto;
+  background: radial-gradient(ellipse at 22% 55%, #1e1a14 0%, var(--mineral) 65%);
 }
 
-/* Left column */
+/* Left: phone */
 .eco-left {
-  width: 48%; height: 100vh; position: relative; flex-shrink: 0;
+  position: relative; display: flex; align-items: center; justify-content: center;
+  padding: 6vh 4% 6vh 8%; min-height: 60vh;
 }
 .eco-phone-wrap-lg {
-  position: absolute; top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  width: min(320px, 30vw);
-  z-index: 2;
+  width: min(400px, 38vw); position: relative; z-index: 2;
 }
 .eco-phone-wrap-lg img {
-  width: 100%; border-radius: 50px; display: block;
-  filter: drop-shadow(0 50px 120px rgba(0,0,0,0.9));
+  width: 100%; border-radius: 44px; display: block;
+  filter: drop-shadow(0 40px 100px rgba(0,0,0,0.85));
+}
+/* Habit colour glow behind phone */
+.eco-phone-glow {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60%; height: 60%; border-radius: 50%;
+  background: radial-gradient(ellipse, var(--eco-glow, rgba(196,138,90,0.12)) 0%, transparent 70%);
+  transition: background 0.6s ease; z-index: 1; pointer-events: none;
 }
 
-/* Orbiting habit badges */
-.eco-badge {
-  position: absolute; z-index: 3;
-  background: rgba(18,15,12,0.92);
-  border: 1px solid rgba(247,244,238,0.12); border-radius: 40px;
-  padding: 9px 16px; display: flex; align-items: center; gap: 8px;
-  font-size: 12px; color: var(--warm-white); backdrop-filter: blur(12px);
-  white-space: nowrap; cursor: default;
-  opacity: 0; transform: scale(0.8);
-  transition: opacity 0.5s ease, transform 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
-}
-.eco-badge.show { opacity: 0.55; transform: scale(1); }
-.eco-badge.eco-badge-active {
-  opacity: 1 !important; transform: scale(1.1) !important;
-  border-color: rgba(247,244,238,0.3);
-  box-shadow: 0 4px 24px rgba(0,0,0,0.5);
-}
-.eco-badge.eco-badge-dim { opacity: 0.18 !important; transform: scale(0.95) !important; }
-.eco-badge-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
-.eco-badge-1 { top: 15%; left: 5%; }
-.eco-badge-2 { top: 25%; right: 0%; }
-.eco-badge-3 { top: 46%; left: 1%; }
-.eco-badge-4 { top: 61%; right: 1%; }
-.eco-badge-5 { bottom: 20%; left: 6%; }
-.eco-badge-6 { bottom: 12%; right: 0%; }
-
-/* Right column */
+/* Right: tiles + detail */
 .eco-right {
-  flex: 1; height: 100vh; position: relative;
-  display: flex; align-items: center;
-  padding: 80px 7% 80px 3%;
-  overflow: hidden;
-}
-
-/* Intro copy */
-.eco-intro-copy {
-  position: absolute; inset: 0;
   display: flex; flex-direction: column; justify-content: center;
-  padding: 80px 7% 80px 3%;
-  transition: opacity 0.5s ease, transform 0.5s ease;
+  padding: 6vh 8% 6vh 4%; gap: 0;
 }
-.eco-scroll-hint {
-  margin-top: 32px; font-size: 12px; color: #5f5a52; letter-spacing: 0.1em;
-  animation: hintPulse 2.5s ease-in-out infinite;
-}
-@keyframes hintPulse { 0%,100%{opacity:0.4;} 50%{opacity:0.9;} }
+.eco-intro { margin-bottom: 36px; }
 
-/* Habit spotlight */
-.eco-habit-spotlight {
-  position: absolute; inset: 0;
-  display: flex; flex-direction: column; justify-content: center;
-  padding: 80px 7% 80px 3%;
-  opacity: 0; pointer-events: none;
-  transition: opacity 0.4s ease, transform 0.4s ease;
-  will-change: opacity, transform;
+/* Habit tile grid */
+.eco-tile-grid {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  gap: 3px; margin-bottom: 3px;
 }
-.eco-spot-icon { font-size: 52px; margin-bottom: 12px; line-height: 1; }
-.eco-spot-tag {
-  display: inline-block; padding: 5px 16px; border-radius: 24px;
+.eco-tile {
+  display: flex; align-items: center; gap: 12px;
+  padding: 16px 18px; cursor: pointer;
+  background: rgba(247,244,238,0.02);
+  border: 1px solid rgba(247,244,238,0.06);
+  transition: background 0.25s, border-color 0.25s;
+  position: relative; overflow: hidden;
+}
+.eco-tile::after {
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+  background: var(--tile-color, var(--gold)); transform: scaleX(0);
+  transform-origin: left; transition: transform 0.35s ease;
+}
+.eco-tile.active::after { transform: scaleX(1); }
+.eco-tile.active { background: rgba(247,244,238,0.05); border-color: rgba(247,244,238,0.12); }
+.eco-tile:hover { background: rgba(247,244,238,0.04); }
+.eco-tile-icon { width: 20px; height: 20px; flex-shrink: 0; transition: opacity 0.25s; opacity: 0.5; }
+.eco-tile.active .eco-tile-icon { opacity: 1; }
+.eco-tile-name { font-size: 13px; color: #8a8377; letter-spacing: 0.04em; transition: color 0.25s; }
+.eco-tile.active .eco-tile-name { color: var(--warm-white); }
+
+/* Detail panel */
+.eco-detail {
+  background: var(--dark-surface); border: 1px solid rgba(247,244,238,0.07);
+  padding: 32px 36px; min-height: 200px;
+  position: relative; overflow: hidden;
+}
+.eco-detail-inner {
+  opacity: 0; transform: translateY(12px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+.eco-detail-inner.show { opacity: 1; transform: translateY(0); }
+.eco-detail-tag {
+  display: inline-block; padding: 4px 14px; border-radius: 24px;
   font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
-  margin-bottom: 14px; border: 1px solid;
+  border: 1px solid; margin-bottom: 14px;
 }
-.eco-spot-name {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(38px,3.8vw,58px); font-weight: 300;
-  color: var(--warm-white); line-height: 1.05; margin-bottom: 28px;
+.eco-detail-name {
+  font-family: 'Cormorant Garamond', serif; font-size: clamp(26px,2.8vw,40px);
+  font-weight: 300; color: var(--warm-white); line-height: 1.05; margin-bottom: 16px;
 }
-.eco-spot-section { margin-bottom: 18px; }
-.eco-spot-label {
-  font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+.eco-detail-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 16px; }
+.eco-detail-label {
+  font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase;
   color: var(--gold); margin-bottom: 6px;
 }
-.eco-spot-text { font-size: 14.5px; color: #b0a99b; line-height: 1.72; }
+.eco-detail-text { font-size: 13px; color: #8a8377; line-height: 1.7; }
 
-/* Progress dots */
-.eco-progress {
-  position: absolute; bottom: 36px; left: 50%;
-  transform: translateX(-50%);
-  display: flex; gap: 10px; z-index: 10;
+/* Auto-cycle bar */
+.eco-cycle-bar {
+  height: 2px; background: rgba(247,244,238,0.06);
+  margin-bottom: 3px; position: relative; overflow: hidden;
 }
-.eco-prog-dot {
-  width: 6px; height: 6px; border-radius: 50%;
-  background: rgba(247,244,238,0.18);
-  transition: background 0.4s, transform 0.4s;
+.eco-cycle-progress {
+  position: absolute; left: 0; top: 0; height: 100%;
+  background: var(--gold); width: 0%;
+  transition: width linear;
 }
-.eco-prog-dot.active { background: var(--gold); transform: scale(1.5); }
 
 @media(max-width:900px) {
-  .eco-outer { height: auto; }
-  .eco-sticky { position: relative; flex-direction: column; height: auto; padding: 10vh 6%; }
-  .eco-left { width: 100%; height: auto; min-height: 380px; margin-bottom: 40px; }
-  .eco-phone-wrap-lg { position: relative; top: auto; left: auto; transform: none; margin: 0 auto; width: min(240px, 58vw); }
-  .eco-badge { display: none; }
-  .eco-right { padding: 0; height: auto; }
-  .eco-intro-copy { position: relative; padding: 0; }
-  .eco-habit-spotlight { display: none; }
-  .eco-progress { display: none; }
+  .eco-layout { grid-template-columns: 1fr; }
+  .eco-left { min-height: 50vw; padding: 4vh 8%; }
+  .eco-phone-wrap-lg { width: min(240px, 55vw); }
+  .eco-tile-grid { grid-template-columns: 1fr 1fr; }
+  .eco-detail-row { grid-template-columns: 1fr; }
 }
 
 /* ══════════════════════════════════════════════
@@ -641,7 +631,7 @@ body { overflow-x: clip; }
 }
 
 /* Booster mechanic */
-.booster-wrap { margin-bottom: 8vh; }
+.booster-wrap { margin-bottom: 8vh; perspective: 1000px; }
 .booster-label {
   font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
   color: #5f5a52; margin-bottom: 24px; text-align: center;
@@ -653,11 +643,13 @@ body { overflow-x: clip; }
 .booster-card {
   padding: 32px 24px; background: rgba(247,244,238,0.02);
   border: 1px solid rgba(247,244,238,0.07);
-  opacity: 0; transform: translateY(16px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
+  opacity: 0;
+  transform: perspective(800px) rotateX(38deg) translateY(60px) translateZ(-60px);
+  transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.16,1,0.3,1), box-shadow 0.3s ease;
 }
-.booster-card.show { opacity: 1; transform: translateY(0); }
-.booster-icon { font-size: 28px; margin-bottom: 12px; }
+.booster-card.show { opacity: 1; transform: perspective(800px) rotateX(0deg) translateY(0) translateZ(0); }
+.booster-card:hover { box-shadow: 0 20px 60px rgba(0,0,0,0.5); transform: perspective(800px) rotateX(-2deg) translateY(-4px) translateZ(8px); border-color: rgba(247,244,238,0.14); }
+.booster-icon { width: 28px; height: 28px; margin-bottom: 14px; display: block; }
 .booster-metric {
   font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
   color: var(--gold); margin-bottom: 6px;
@@ -735,106 +727,178 @@ body { overflow-x: clip; }
 /* ══════════════════════════════════════════════
    SECTION 6 — LEARN & EARN
 ══════════════════════════════════════════════ */
-.learn-layout {
-  display: grid; grid-template-columns: 1fr 1fr;
-  gap: 8vw; align-items: center; max-width: 1300px; margin: 0 auto;
+.learn-header { text-align: center; max-width: 760px; margin: 0 auto 8vh; }
+.learn-header .s-kicker { text-align: center; }
+.learn-header .s-headline { font-size: clamp(36px,5vw,68px); }
+.learn-track-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; max-width: 1200px; margin: 0 auto; }
+.learn-track-card {
+  background: var(--dark-surface); border: 1px solid rgba(247,244,238,0.07);
+  padding: 56px 52px; opacity: 0;
+  transform: perspective(700px) rotateX(22deg) translateY(40px);
+  transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.16,1,0.3,1);
+  position: relative; overflow: hidden;
 }
-.learn-phones { display: flex; gap: 20px; align-items: flex-end; justify-content: center; }
-.learn-phone { width: 190px; }
-.learn-phone img {
-  width: 100%; border-radius: 32px; display: block;
-  box-shadow: 0 20px 60px rgba(43,38,35,0.25);
-}
-.learn-phone.main { width: 260px; }
-.learn-phone.main img { border-radius: 38px; }
-
-.learn-tracks { margin-top: 36px; display: flex; flex-direction: column; gap: 16px; }
-.learn-track {
-  display: flex; align-items: center; gap: 16px; padding: 18px 20px;
-  border: 1px solid rgba(43,38,35,0.14); border-radius: 8px;
-  background: rgba(255,255,255,0.55);
-}
-.track-icon { font-size: 22px; flex-shrink: 0; }
-.track-name { font-size: 15px; color: var(--charcoal); margin-bottom: 3px; }
-.track-desc { font-size: 13px; color: #4a3f38; }
-.track-earn { margin-left: auto; font-size: 12px; color: var(--sanctuary); flex-shrink: 0; letter-spacing: 0.06em; }
-
+.learn-track-card::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at 0% 0%, rgba(196,138,90,0.05) 0%, transparent 60%); pointer-events:none; }
+.learn-track-card.web3-card::before { background:radial-gradient(ellipse at 0% 0%, rgba(127,151,162,0.07) 0%, transparent 60%); }
+.learn-track-card.show { opacity: 1; transform: perspective(700px) rotateX(0deg) translateY(0); }
+.learn-track-card:hover { border-color: rgba(247,244,238,0.14); }
+.learn-track-icon { width: 48px; height: 48px; margin-bottom: 32px; display: block; }
+.learn-track-number { font-family:'Cormorant Garamond',serif; font-size:clamp(54px,6vw,88px); font-weight:300; line-height:1; color:rgba(247,244,238,0.08); position:absolute; top:40px; right:44px; pointer-events:none; }
+.learn-track-tag { display:inline-block; padding:5px 14px; border-radius:24px; font-size:10px; letter-spacing:0.14em; text-transform:uppercase; border:1px solid; margin-bottom:20px; }
+.learn-track-name { font-family:'Cormorant Garamond',serif; font-weight:300; font-size:clamp(32px,3.2vw,48px); color:var(--warm-white); line-height:1.08; margin-bottom:18px; }
+.learn-track-desc { font-size:15px; color:#8a8377; line-height:1.75; margin-bottom:32px; max-width:400px; }
+.learn-topic-pills { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:36px; }
+.learn-topic-pill { padding:7px 16px; border:1px solid rgba(247,244,238,0.1); border-radius:40px; font-size:12px; color:#8a8377; }
+.learn-earn-callout { display:flex; align-items:center; gap:12px; padding-top:28px; border-top:1px solid rgba(247,244,238,0.08); }
+.learn-earn-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+.learn-earn-text { font-size:13px; letter-spacing:0.06em; }
+.learn-earn-amount { margin-left:auto; font-family:'Cormorant Garamond',serif; font-size:22px; color:var(--warm-white); font-weight:300; }
+.learn-stat-bar { display:flex; align-items:center; justify-content:center; max-width:1200px; margin:3px auto 0; background:var(--dark-surface); border:1px solid rgba(247,244,238,0.07); }
+.learn-stat { flex:1; text-align:center; padding:32px 24px; border-right:1px solid rgba(247,244,238,0.07); }
+.learn-stat:last-child { border-right:none; }
+.learn-stat-num { font-family:'Cormorant Garamond',serif; font-size:clamp(32px,3.5vw,48px); color:var(--warm-white); font-weight:300; line-height:1; margin-bottom:8px; }
+.learn-stat-label { font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#5f5a52; }
 @media(max-width:900px) {
-  .learn-layout { grid-template-columns: 1fr; }
-  .learn-phones { margin-top: 40px; }
+  .learn-track-grid { grid-template-columns:1fr; }
+  .learn-track-card { padding:40px 32px; }
+  .learn-stat-bar { flex-direction:column; }
+  .learn-stat { border-right:none; border-bottom:1px solid rgba(247,244,238,0.07); width:100%; }
+  .learn-stat:last-child { border-bottom:none; }
 }
 
 /* ══════════════════════════════════════════════
    SECTION 7 — REWARDS
 ══════════════════════════════════════════════ */
-.reward-flow {
-  max-width: 900px; margin: 6vh auto 0;
-  display: flex; align-items: center; justify-content: center;
-  gap: 0; flex-wrap: wrap;
+.reward-pipeline { display:flex; align-items:stretch; max-width:1200px; margin:8vh auto 10vh; gap:3px; }
+.reward-pipe-node { flex:1; background:var(--dark-surface); border:1px solid rgba(247,244,238,0.07); padding:44px 40px; opacity:0; transform:perspective(600px) rotateX(20deg) translateY(30px); transition:opacity 0.65s ease, transform 0.65s cubic-bezier(0.16,1,0.3,1); }
+.reward-pipe-node.show { opacity:1; transform:perspective(600px) rotateX(0deg) translateY(0); }
+.reward-pipe-icon { width:40px; height:40px; margin-bottom:24px; display:block; }
+.reward-pipe-label { font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:var(--gold); margin-bottom:10px; }
+.reward-pipe-name { font-family:'Cormorant Garamond',serif; font-size:clamp(26px,2.8vw,38px); font-weight:300; color:var(--warm-white); line-height:1.05; margin-bottom:16px; }
+.reward-pipe-desc { font-size:14px; color:#7a736a; line-height:1.72; }
+.reward-pipe-arrow { display:flex; align-items:center; padding:0 4px; flex-shrink:0; color:rgba(196,138,90,0.4); font-size:22px; align-self:center; }
+.reward-uses { display:grid; grid-template-columns:repeat(3,1fr); gap:3px; max-width:1200px; margin:0 auto; }
+.reward-use { padding:44px 40px; background:var(--dark-surface); border:1px solid rgba(247,244,238,0.07); opacity:0; transform:perspective(700px) rotateX(22deg) translateY(40px); transition:opacity 0.7s ease, transform 0.7s cubic-bezier(0.16,1,0.3,1); position:relative; overflow:hidden; }
+.reward-use::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at 0% 0%, rgba(196,138,90,0.04) 0%, transparent 55%); pointer-events:none; }
+.reward-use.show { opacity:1; transform:perspective(700px) rotateX(0deg) translateY(0); }
+.reward-use:hover { border-color:rgba(247,244,238,0.14); }
+.reward-use-icon { width:36px; height:36px; margin-bottom:24px; display:block; }
+.reward-use-title { font-family:'Cormorant Garamond',serif; font-size:clamp(24px,2.4vw,34px); color:var(--warm-white); margin-bottom:14px; font-weight:300; line-height:1.1; }
+.reward-use-text { font-size:14px; color:#7a736a; line-height:1.75; margin-bottom:20px; }
+.reward-use-tag { display:inline-block; font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); border-top:1px solid rgba(196,138,90,0.25); padding-top:16px; width:100%; }
+@media(max-width:900px) {
+  .reward-pipeline { flex-direction:column; }
+  .reward-pipe-arrow { transform:rotate(90deg); align-self:flex-start; padding:8px 0; }
+  .reward-uses { grid-template-columns:1fr; }
 }
-.flow-node {
-  text-align: center; padding: 32px 28px;
-  opacity: 0; transform: translateY(16px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
-}
-.flow-node.show { opacity: 1; transform: translateY(0); }
-.flow-icon { font-size: 32px; margin-bottom: 12px; }
-.flow-name { font-family: 'Cormorant Garamond', serif; font-size: 22px; color: var(--charcoal); margin-bottom: 6px; }
-.flow-desc { font-size: 13px; color: #4a3f38; line-height: 1.6; max-width: 160px; margin: 0 auto; }
-.flow-arrow {
-  font-size: 20px; color: var(--sanctuary); padding: 0 8px;
-  opacity: 0; transition: opacity 0.6s ease 0.3s;
-  align-self: center;
-}
-.flow-arrow.show { opacity: 1; }
 
-.reward-uses {
-  display: grid; grid-template-columns: repeat(3,1fr); gap: 2px;
-  max-width: 1100px; margin: 6vh auto 0;
-}
-.reward-use {
-  padding: 40px 32px;
-  background: rgba(255,255,255,0.55);
-  border: 1px solid rgba(43,38,35,0.12);
-  opacity: 0; transform: translateY(16px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
-}
-.reward-use.show { opacity: 1; transform: translateY(0); }
-.reward-use-icon { font-size: 26px; margin-bottom: 16px; }
-.reward-use-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; color: var(--charcoal); margin-bottom: 10px; }
-.reward-use-text { font-size: 14px; color: #4a3f38; line-height: 1.7; }
-.reward-use-tag { margin-top: 16px; font-size: 11px; color: var(--sanctuary); letter-spacing: 0.1em; text-transform: uppercase; }
 
-.reward-phone-row { display: flex; justify-content: center; margin-top: 7vh; }
-.reward-phone { width: min(280px, 55vw); }
-.reward-phone img { width: 100%; border-radius: 38px; display: block; box-shadow: 0 24px 70px rgba(43,38,35,0.25); }
-
-@media(max-width:768px) { .reward-uses { grid-template-columns: 1fr; } }
 
 /* ══════════════════════════════════════════════
-   SECTION 8 — MARKETPLACE
+   SECTION 8 — MARKETPLACE (sticky scroll)
 ══════════════════════════════════════════════ */
-.market-layout {
+.market-outer { height: 500vh; position: relative; background: var(--mineral); }
+.market-sticky {
+  position: sticky; top: 0; height: 100vh; overflow: hidden;
   display: grid; grid-template-columns: 1fr 1fr;
-  gap: 8vw; align-items: center; max-width: 1300px; margin: 0 auto;
+  background: var(--mineral);
 }
-.market-phone {
-  width: min(300px, 40vw); border-radius: 44px; display: block;
-  margin: 0 auto; box-shadow: 0 20px 60px rgba(43,38,35,0.25);
+
+/* Left — fixed copy */
+.market-left {
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 10vh 8% 10vh 8%; border-right: 1px solid rgba(247,244,238,0.06);
+  position: relative; z-index: 2;
 }
-@media(max-width:900px) { .market-layout { grid-template-columns: 1fr; } .market-phone { width: min(240px,60vw); } }
+.market-kicker { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); margin-bottom: 20px; }
+.market-headline {
+  font-family: 'Cormorant Garamond', serif; font-weight: 400;
+  font-size: clamp(32px,4vw,54px); color: var(--warm-white);
+  line-height: 1.1; margin-bottom: 20px;
+}
+.market-headline em { font-style: italic; color: var(--gold); }
+.market-intro { font-size: 15px; color: #7a736a; line-height: 1.75; margin-bottom: 36px; max-width: 420px; }
+.market-progress { display: flex; gap: 8px; }
+.market-prog-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: rgba(247,244,238,0.15);
+  transition: background 0.4s, transform 0.4s;
+}
+.market-prog-dot.active { background: var(--gold); transform: scale(1.5); }
+.market-launching {
+  margin-top: 40px; display: inline-block; padding: 9px 22px;
+  border: 1px solid rgba(196,138,90,0.3); border-radius: 24px;
+  font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold);
+}
+
+/* Right — sliding panels */
+.market-right { position: relative; overflow: hidden; }
+.market-panel {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 10vh 10% 10vh 8%;
+  opacity: 0; transform: translateY(40px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  pointer-events: none;
+}
+.market-panel.active { opacity: 1; transform: translateY(0); pointer-events: auto; }
+.market-panel-icon { width: 80px; height: 80px; margin-bottom: 36px; display: block; }
+.market-panel-tag {
+  display: inline-block; padding: 5px 16px; border-radius: 24px;
+  font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+  border: 1px solid rgba(196,138,90,0.35); color: var(--gold);
+  background: rgba(196,138,90,0.08); margin-bottom: 20px;
+}
+.market-panel-name {
+  font-family: 'Cormorant Garamond', serif; font-weight: 300;
+  font-size: clamp(34px,4vw,56px); color: var(--warm-white);
+  line-height: 1.05; margin-bottom: 20px;
+}
+.market-panel-desc { font-size: 15px; color: #8a8377; line-height: 1.75; max-width: 440px; margin-bottom: 28px; }
+.market-panel-dvt {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: #5f5a52;
+}
+.market-panel-dvt::before {
+  content: ''; display: block; width: 24px; height: 1px; background: rgba(196,138,90,0.4);
+}
+
+@media(max-width:900px) {
+  .market-outer { height: auto; }
+  .market-sticky { position: relative; grid-template-columns: 1fr; height: auto; }
+  .market-right { min-height: 60vh; }
+  .market-panel { position: relative; opacity: 1; transform: none; padding: 6vh 8%; }
+  .market-panel + .market-panel { display: none; }
+}
 
 /* ══════════════════════════════════════════════
    SECTION 9 — INTEGRATIONS
 ══════════════════════════════════════════════ */
-.int-grid { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 5vh; max-width: 720px; }
-.int-pill {
-  padding: 13px 22px; border: 1px solid rgba(247,244,238,0.14); border-radius: 40px;
-  font-size: 13px; color: #b8b1a4; display: flex; align-items: center; gap: 8px;
-  transition: border-color 0.2s;
+.int-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 3px; margin-top: 6vh; max-width: 1100px;
 }
-.int-pill:hover { border-color: rgba(247,244,238,0.32); }
-.int-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--gold); }
+.int-card {
+  background: var(--dark-surface); border: 1px solid rgba(247,244,238,0.07);
+  padding: 40px 36px; display: flex; flex-direction: column; align-items: flex-start;
+  opacity: 0; transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease, border-color 0.3s;
+}
+.int-card.show { opacity: 1; transform: translateY(0); }
+.int-card:hover { border-color: rgba(247,244,238,0.18); }
+.int-logo { height: 28px; width: auto; margin-bottom: 24px; display: block; }
+.int-card-name {
+  font-family: 'Cormorant Garamond', serif; font-size: 22px;
+  color: var(--warm-white); font-weight: 300; margin-bottom: 8px;
+}
+.int-card-desc { font-size: 13px; color: #5f5a52; line-height: 1.6; }
+.int-card-tag {
+  margin-top: auto; padding-top: 20px; font-size: 10px;
+  letter-spacing: 0.14em; text-transform: uppercase; color: rgba(196,138,90,0.5);
+}
+
+@media(max-width:900px) { .int-grid { grid-template-columns: 1fr 1fr; } }
+@media(max-width:480px) { .int-grid { grid-template-columns: 1fr; } }
 
 /* ══════════════════════════════════════════════
    SECTION 10 — FINAL CTA
@@ -992,68 +1056,76 @@ body { overflow-x: clip; }
      SECTION 3 — LIVING ECOSYSTEM (sticky scroll-through)
 ══════════════════════════════ -->
 <div class="eco-outer" id="ecoOuter">
-  <div class="eco-sticky" id="ecoSticky">
 
-    <div class="eco-left" id="ecoLeft">
+  <div class="eco-header reveal">
+    <div class="s-kicker">The Living Ecosystem</div>
+    <h2 class="s-headline">Six habits.<br><em>One connected world.</em></h2>
+    <p class="s-body" style="margin:0 auto;text-align:center;">Most wellness apps track your metrics in isolation. DAOasis connects them. Every habit feeds the same journey — together they move you further, faster.</p>
+  </div>
+
+  <!-- Auto-cycle progress bar -->
+  <div class="eco-cycle-bar" style="max-width:1400px;margin:0 auto;">
+    <div class="eco-cycle-progress" id="ecoCycleBar"></div>
+  </div>
+
+  <div class="eco-layout">
+
+    <!-- Left: phone + glow -->
+    <div class="eco-left">
+      <div class="eco-phone-glow" id="ecoGlow"></div>
       <div class="eco-phone-wrap-lg">
-        <img src="images/19.png" alt="DAOasis daily wellness rings dashboard" />
-      </div>
-      <div class="eco-badge eco-badge-1" data-badge="0">
-        <div class="eco-badge-dot" style="background:#C48A5A;"></div>Steps tracked
-      </div>
-      <div class="eco-badge eco-badge-2" data-badge="1">
-        <div class="eco-badge-dot" style="background:#7F97A2;"></div>Breathing logged
-      </div>
-      <div class="eco-badge eco-badge-3" data-badge="2">
-        <div class="eco-badge-dot" style="background:#5a8aad;"></div>Hydration recorded
-      </div>
-      <div class="eco-badge eco-badge-4" data-badge="3">
-        <div class="eco-badge-dot" style="background:#9B8CA8;"></div>Sleep tracked
-      </div>
-      <div class="eco-badge eco-badge-5" data-badge="4">
-        <div class="eco-badge-dot" style="background:#A8B7A2;"></div>Nutrition logged
-      </div>
-      <div class="eco-badge eco-badge-6" data-badge="5">
-        <div class="eco-badge-dot" style="background:#DDD1C2;"></div>Lessons completed
+        <img src="images/19.png" alt="DAOasis daily wellness dashboard" id="ecoPhone" />
       </div>
     </div>
 
+    <!-- Right: tiles + detail -->
     <div class="eco-right">
-      <div class="eco-intro-copy" id="ecoIntroCopy">
-        <div class="s-kicker">The Living Ecosystem</div>
-        <h2 class="s-headline">Six habits.<br><em>One connected world.</em></h2>
-        <p class="s-body">Most wellness apps track your metrics in isolation. DAOasis connects them. Every habit you build feeds the same journey — and together they move you further, faster.</p>
-        <div class="eco-scroll-hint">Scroll to explore each habit ↓</div>
+
+      <div class="eco-tile-grid" id="ecoTileGrid">
+        <div class="eco-tile active" data-idx="0" style="--tile-color:#C48A5A;">
+          <svg class="eco-tile-icon" viewBox="0 0 24 24" fill="none" stroke="#C48A5A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2z"/><path d="M8 8.5L6.5 15l3 1L11 20h2l1.5-4 2.5 1L18 9l-4-1-.5-1.5H10L8 8.5z"/></svg>
+          <span class="eco-tile-name">Steps</span>
+        </div>
+        <div class="eco-tile" data-idx="1" style="--tile-color:#7F97A2;">
+          <svg class="eco-tile-icon" viewBox="0 0 24 24" fill="none" stroke="#7F97A2" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v4M8 6c-2 0-4 1.5-4 4s2 4 4 4h8c2 0 4-1.5 4-4s-2-4-4-4"/><path d="M12 14v6M9 17h6"/></svg>
+          <span class="eco-tile-name">Breathing</span>
+        </div>
+        <div class="eco-tile" data-idx="2" style="--tile-color:#5a8aad;">
+          <svg class="eco-tile-icon" viewBox="0 0 24 24" fill="none" stroke="#5a8aad" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L6 10a6 6 0 1 0 12 0L12 2z"/></svg>
+          <span class="eco-tile-name">Hydration</span>
+        </div>
+        <div class="eco-tile" data-idx="3" style="--tile-color:#9B8CA8;">
+          <svg class="eco-tile-icon" viewBox="0 0 24 24" fill="none" stroke="#9B8CA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <span class="eco-tile-name">Sleep</span>
+        </div>
+        <div class="eco-tile" data-idx="4" style="--tile-color:#A8B7A2;">
+          <svg class="eco-tile-icon" viewBox="0 0 24 24" fill="none" stroke="#A8B7A2" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a5 5 0 0 1 5 5c0 3-2 5-5 8-3-3-5-5-5-8a5 5 0 0 1 5-5z"/><circle cx="12" cy="7" r="1.5"/></svg>
+          <span class="eco-tile-name">Nutrition</span>
+        </div>
+        <div class="eco-tile" data-idx="5" style="--tile-color:#DDD1C2;">
+          <svg class="eco-tile-icon" viewBox="0 0 24 24" fill="none" stroke="#DDD1C2" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          <span class="eco-tile-name">Learning</span>
+        </div>
       </div>
 
-      <div class="eco-habit-spotlight" id="ecoHabitSpotlight">
-        <div class="eco-spot-icon" id="ecoSpotIcon"></div>
-        <div class="eco-spot-tag" id="ecoSpotTag"></div>
-        <div class="eco-spot-name" id="ecoSpotName"></div>
-        <div class="eco-spot-section">
-          <div class="eco-spot-label">What it does in the app</div>
-          <p class="eco-spot-text" id="ecoSpotWhat"></p>
-        </div>
-        <div class="eco-spot-section">
-          <div class="eco-spot-label">How it powers your quest</div>
-          <p class="eco-spot-text" id="ecoSpotQuest"></p>
-        </div>
-        <div class="eco-spot-section">
-          <div class="eco-spot-label">Why it matters for your health</div>
-          <p class="eco-spot-text" id="ecoSpotWhy"></p>
+      <div class="eco-detail" id="ecoDetail">
+        <div class="eco-detail-inner show" id="ecoDetailInner">
+          <div class="eco-detail-tag" id="ecoDetailTag"></div>
+          <div class="eco-detail-name" id="ecoDetailName"></div>
+          <div class="eco-detail-row">
+            <div>
+              <div class="eco-detail-label">In the app</div>
+              <div class="eco-detail-text" id="ecoDetailWhat"></div>
+            </div>
+            <div>
+              <div class="eco-detail-label">Quest bonus</div>
+              <div class="eco-detail-text" id="ecoDetailQuest"></div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="eco-progress" id="ecoProgress">
-      <div class="eco-prog-dot" data-index="0"></div>
-      <div class="eco-prog-dot" data-index="1"></div>
-      <div class="eco-prog-dot" data-index="2"></div>
-      <div class="eco-prog-dot" data-index="3"></div>
-      <div class="eco-prog-dot" data-index="4"></div>
-      <div class="eco-prog-dot" data-index="5"></div>
     </div>
-
   </div>
 </div>
 
@@ -1131,47 +1203,32 @@ body { overflow-x: clip; }
 <!-- Post-map content -->
 <div class="quest-post-map">
 
-  <div class="quest-phones reveal">
-    <div class="quest-phone">
-      <img src="images/Brathing_quest.png" alt="Breathing Quest" />
-      <div class="quest-phone-label">Breathing Quest</div>
-    </div>
-    <div class="quest-phone featured">
-      <img src="images/18.png" alt="Quests overview screen" />
-      <div class="quest-phone-label">Daily Quests</div>
-    </div>
-    <div class="quest-phone">
-      <img src="images/Hydration.png" alt="Daily Hydration Quest" />
-      <div class="quest-phone-label">Hydration Quest</div>
-    </div>
-  </div>
-
   <div class="booster-wrap">
     <div class="booster-label">How your habits boost your journey</div>
     <div class="booster-grid" id="boosterGrid">
       <div class="booster-card">
-        <div class="booster-icon">🏃</div>
+        <svg class="booster-icon" viewBox="0 0 24 24" fill="none" stroke="rgba(247,244,238,0.7)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2z"/><path d="M8 8.5L6.5 15l3 1L11 20h2l1.5-4 2.5 1L18 9l-4-1-.5-1.5H10L8 8.5z"/></svg>
         <div class="booster-metric">Steps</div>
         <div class="booster-name">The Engine</div>
         <div class="booster-text">Steps are your primary distance driver. More movement means more ground covered on the route — every day.</div>
         <div class="booster-boost">Primary driver</div>
       </div>
       <div class="booster-card">
-        <div class="booster-icon">🫁</div>
+        <svg class="booster-icon" viewBox="0 0 24 24" fill="none" stroke="rgba(247,244,238,0.7)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v4M8 6c-2 0-4 1.5-4 4s2 4 4 4h8c2 0 4-1.5 4-4s-2-4-4-4"/><path d="M12 14v6M9 17h6"/></svg>
         <div class="booster-metric">Breathing</div>
         <div class="booster-name">The Accelerator</div>
         <div class="booster-text">Complete a daily breathing session and earn a km boost on your journey — and keep your streak multiplier alive.</div>
         <div class="booster-boost">+1 km / session</div>
       </div>
       <div class="booster-card">
-        <div class="booster-icon">💧</div>
+        <svg class="booster-icon" viewBox="0 0 24 24" fill="none" stroke="rgba(247,244,238,0.7)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L6 10a6 6 0 1 0 12 0L12 2z"/></svg>
         <div class="booster-metric">Hydration</div>
         <div class="booster-name">The Fuel</div>
         <div class="booster-text">Hit your daily 3L target and the app adds extra kilometres to your progress. Your body and your journey both benefit.</div>
         <div class="booster-boost">+1 km / target hit</div>
       </div>
       <div class="booster-card">
-        <div class="booster-icon">🌙</div>
+        <svg class="booster-icon" viewBox="0 0 24 24" fill="none" stroke="rgba(247,244,238,0.7)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
         <div class="booster-metric">Sleep</div>
         <div class="booster-name">The Multiplier</div>
         <div class="booster-text">Quality sleep triggers a nightly distance bonus. A consistent sleep streak amplifies everything else you do.</div>
@@ -1257,135 +1314,201 @@ body { overflow-x: clip; }
 <!-- ══════════════════════════════
      SECTION 6 — LEARN & EARN
 ══════════════════════════════ -->
-<section class="s-light" id="learning">
-  <div class="learn-layout">
-    <div class="learn-copy-col">
-      <div class="s-kicker reveal">Learn &amp; Earn</div>
-      <h2 class="s-headline reveal reveal-delay-1">Knowledge has<br><em>always had value.</em><br>Now it pays.</h2>
-      <p class="s-body reveal reveal-delay-2">128 lessons across two tracks — Wellness and Web3. Each lesson you complete earns Reward Credits directly. You do not need to understand blockchain to start. You will by the time you finish.</p>
-
-      <div class="learn-tracks reveal reveal-delay-3">
-        <div class="learn-track">
-          <div class="track-icon">🌿</div>
-          <div>
-            <div class="track-name">Wellness Track</div>
-            <div class="track-desc">Sleep science, nutrition, movement, breathwork, nervous system regulation and more.</div>
-          </div>
-          <div class="track-earn">Earns Credits</div>
-        </div>
-        <div class="learn-track">
-          <div class="track-icon">🌐</div>
-          <div>
-            <div class="track-name">Web3 Track</div>
-            <div class="track-desc">What blockchain actually means. How tokens work. Why ownership is shifting. No jargon.</div>
-          </div>
-          <div class="track-earn">Earns Credits</div>
-        </div>
+<section class="s-dark" id="learning" style="padding-bottom:0;">
+  <div class="learn-header reveal">
+    <div class="s-kicker">Learn &amp; Earn</div>
+    <h2 class="s-headline">Knowledge has<br><em>always had value.</em><br>Now it pays.</h2>
+    <p class="s-body" style="margin:0 auto;text-align:center;">128 lessons across two tracks. Every lesson earns Reward Credits directly. You don't need to understand blockchain to start — you will by the time you finish.</p>
+  </div>
+  <div class="learn-track-grid">
+    <div class="learn-track-card" id="learnCard0">
+      <div class="learn-track-number">01</div>
+      <svg class="learn-track-icon" viewBox="0 0 24 24" fill="none" stroke="#A8B7A2" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a5 5 0 0 1 5 5c0 3-2 5-5 8-3-3-5-5-5-8a5 5 0 0 1 5-5z"/><circle cx="12" cy="7" r="1.5"/></svg>
+      <div class="learn-track-tag" style="color:#A8B7A2;border-color:rgba(168,183,162,0.35);background:rgba(168,183,162,0.08);">Wellness Track</div>
+      <div class="learn-track-name">Understand your body.<br>Own your health.</div>
+      <div class="learn-track-desc">64 lessons built around the science of how you actually function. No fluff — just the evidence-backed knowledge that changes how you move, sleep, eat, and think.</div>
+      <div class="learn-topic-pills">
+        <span class="learn-topic-pill">Sleep science</span><span class="learn-topic-pill">Nutrition</span><span class="learn-topic-pill">Movement</span><span class="learn-topic-pill">Breathwork</span><span class="learn-topic-pill">Nervous system</span><span class="learn-topic-pill">Recovery</span><span class="learn-topic-pill">Mental fitness</span>
+      </div>
+      <div class="learn-earn-callout">
+        <div class="learn-earn-dot" style="background:#A8B7A2;"></div>
+        <div class="learn-earn-text" style="color:#8a8377;">Every lesson earns</div>
+        <div class="learn-earn-amount">Reward Credits</div>
       </div>
     </div>
-
-    <div class="learn-phones reveal">
-      <div class="learn-phone">
-        <img src="images/17.png" alt="Learning track screen" />
+    <div class="learn-track-card web3-card" id="learnCard1">
+      <div class="learn-track-number">02</div>
+      <svg class="learn-track-icon" viewBox="0 0 24 24" fill="none" stroke="#7F97A2" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg>
+      <div class="learn-track-tag" style="color:#7F97A2;border-color:rgba(127,151,162,0.35);background:rgba(127,151,162,0.08);">Web3 Track</div>
+      <div class="learn-track-name">Understand the system.<br>Own your future.</div>
+      <div class="learn-track-desc">64 lessons on what blockchain actually is, how tokens work, and why digital ownership matters — written for people who have never touched crypto, without the jargon.</div>
+      <div class="learn-topic-pills">
+        <span class="learn-topic-pill">Blockchain basics</span><span class="learn-topic-pill">Tokens &amp; wallets</span><span class="learn-topic-pill">Digital ownership</span><span class="learn-topic-pill">DAOs explained</span><span class="learn-topic-pill">DeFi concepts</span><span class="learn-topic-pill">$DVT &amp; DAOasis</span><span class="learn-topic-pill">Web3 future</span>
       </div>
-      <div class="learn-phone main">
-        <img src="images/17.png" alt="Learning module" />
+      <div class="learn-earn-callout">
+        <div class="learn-earn-dot" style="background:#7F97A2;"></div>
+        <div class="learn-earn-text" style="color:#8a8377;">Every lesson earns</div>
+        <div class="learn-earn-amount">Reward Credits</div>
       </div>
     </div>
   </div>
+  <div class="learn-stat-bar reveal">
+    <div class="learn-stat"><div class="learn-stat-num">128</div><div class="learn-stat-label">Total lessons</div></div>
+    <div class="learn-stat"><div class="learn-stat-num">2</div><div class="learn-stat-label">Tracks</div></div>
+    <div class="learn-stat"><div class="learn-stat-num">100%</div><div class="learn-stat-label">Credit-earning</div></div>
+    <div class="learn-stat"><div class="learn-stat-num">0</div><div class="learn-stat-label">Jargon required</div></div>
+  </div>
 </section>
 
-<div class="divider-light"><div class="divider-inner">
-  <div class="divider-line-l"></div>
-  <img src="images/img-09.png" class="divider-mark" alt="" />
-  <div class="divider-line-l"></div>
+<div class="divider-dark"><div class="divider-inner">
+  <div class="divider-line-d"></div>
+  <img src="images/img-09-white.png" class="divider-mark" alt="" />
+  <div class="divider-line-d"></div>
 </div></div>
 
 
 <!-- ══════════════════════════════
      SECTION 7 — REWARDS: CREDITS → DVT
 ══════════════════════════════ -->
-<section class="s-light" id="rewards">
+<section class="s-dark" id="rewards" style="padding-bottom:0;">
   <div class="s-kicker reveal">The Reward System</div>
   <h2 class="s-headline reveal reveal-delay-1">Every habit earns.<br><em>Every credit counts.</em></h2>
   <p class="s-body reveal reveal-delay-2">Reward Credits accumulate every time you complete a quest, finish a lesson, or hit a daily target. They convert to $DVT — and $DVT opens doors across the entire DAOasis ecosystem.</p>
-
-  <div class="reward-flow" id="rewardFlow">
-    <div class="flow-node">
-      <div class="flow-icon">🏃</div>
-      <div class="flow-name">Daily Habits</div>
-      <div class="flow-desc">Move, breathe, hydrate, sleep, learn</div>
+  <div class="reward-pipeline" id="rewardFlow">
+    <div class="reward-pipe-node">
+      <svg class="reward-pipe-icon" viewBox="0 0 24 24" fill="none" stroke="#C48A5A" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2z"/><path d="M8 8.5L6.5 15l3 1L11 20h2l1.5-4 2.5 1L18 9l-4-1-.5-1.5H10L8 8.5z"/></svg>
+      <div class="reward-pipe-label">Step 01</div>
+      <div class="reward-pipe-name">Daily Habits</div>
+      <div class="reward-pipe-desc">Move, breathe, hydrate, sleep, learn. Every completed habit and quest generates Reward Credits automatically.</div>
     </div>
-    <div class="flow-arrow">→</div>
-    <div class="flow-node">
-      <div class="flow-icon">⭐</div>
-      <div class="flow-name">Reward Credits</div>
-      <div class="flow-desc">Earned for every quest and lesson completed</div>
+    <div class="reward-pipe-arrow">→</div>
+    <div class="reward-pipe-node">
+      <svg class="reward-pipe-icon" viewBox="0 0 24 24" fill="none" stroke="#C48A5A" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+      <div class="reward-pipe-label">Step 02</div>
+      <div class="reward-pipe-name">Reward Credits</div>
+      <div class="reward-pipe-desc">Credits stack with every quest completed and every lesson finished. Consistency is always rewarded.</div>
     </div>
-    <div class="flow-arrow">→</div>
-    <div class="flow-node">
-      <div class="flow-icon">🪙</div>
-      <div class="flow-name">$DVT</div>
-      <div class="flow-desc">DAOasis's utility token — real, transferable value</div>
+    <div class="reward-pipe-arrow">→</div>
+    <div class="reward-pipe-node">
+      <svg class="reward-pipe-icon" viewBox="0 0 24 24" fill="none" stroke="#C48A5A" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M9 10h4.5a1.5 1.5 0 0 1 0 3H9m0 0h5a1.5 1.5 0 0 1 0 3H9"/></svg>
+      <div class="reward-pipe-label">Step 03</div>
+      <div class="reward-pipe-name">$DVT</div>
+      <div class="reward-pipe-desc">Reward Credits convert to $DVT — DAOasis's on-chain utility token. Real value, transferable ownership, and the key to everything the ecosystem unlocks.</div>
     </div>
   </div>
-
+  <div class="s-kicker reveal" style="text-align:center;margin-bottom:24px;">What $DVT unlocks</div>
   <div class="reward-uses" id="rewardUses">
     <div class="reward-use">
-      <div class="reward-use-icon">🏝</div>
+      <svg class="reward-use-icon" viewBox="0 0 24 24" fill="none" stroke="#C48A5A" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>
       <div class="reward-use-title">Sanctuary Stays</div>
-      <div class="reward-use-text">Reward Credits and $DVT contribute toward a stay at the DAOasis Sanctuary in Phuket — the physical destination your journey has been walking toward.</div>
-      <div class="reward-use-tag">Phuket · Thailand</div>
+      <div class="reward-use-text">Reward Credits and $DVT contribute toward a real stay at the DAOasis Sanctuary in Phuket — the physical destination your journey has been walking toward. The app moves you there. $DVT gets you through the door.</div>
+      <div class="reward-use-tag">Phuket · Thailand · Physical destination</div>
     </div>
     <div class="reward-use">
-      <div class="reward-use-icon">🛍</div>
-      <div class="reward-use-title">Marketplace Discounts</div>
-      <div class="reward-use-text">When the DAOasis marketplace launches, $DVT holders get preferential access and discounts across wellness products, experiences, and partner offers.</div>
-      <div class="reward-use-tag">Marketplace · Coming Soon</div>
+      <svg class="reward-use-icon" viewBox="0 0 24 24" fill="none" stroke="#C48A5A" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+      <div class="reward-use-title">Marketplace Access</div>
+      <div class="reward-use-text">When the DAOasis marketplace launches, $DVT holders get preferential access and discounts across wellness products, experiences, and partner offers. Build value inside the app — spend it in the real world.</div>
+      <div class="reward-use-tag">Marketplace · Launching soon</div>
     </div>
     <div class="reward-use">
-      <div class="reward-use-icon">🔓</div>
-      <div class="reward-use-title">Premium Access</div>
-      <div class="reward-use-text">Higher $DVT holdings unlock elevated tier access — deeper content, exclusive community features, and priority booking for Sanctuary events and retreats.</div>
-      <div class="reward-use-tag">Tiered Access</div>
-    </div>
-  </div>
-
-  <div class="reward-phone-row reveal">
-    <div class="reward-phone">
-      <img src="images/06.png" alt="DAOasis wallet — $DVT balance and earnings" />
+      <svg class="reward-use-icon" viewBox="0 0 24 24" fill="none" stroke="#C48A5A" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <div class="reward-use-title">Premium Tiers</div>
+      <div class="reward-use-text">Higher $DVT holdings unlock elevated access — deeper content, exclusive community features, and priority booking for Sanctuary events and retreats. The more consistently you show up, the more the platform opens up.</div>
+      <div class="reward-use-tag">Tiered access · Community first</div>
     </div>
   </div>
 </section>
 
-<div class="divider-light"><div class="divider-inner">
-  <div class="divider-line-l"></div>
-  <img src="images/img-09.png" class="divider-mark" alt="" />
-  <div class="divider-line-l"></div>
+<div class="divider-dark"><div class="divider-inner">
+  <div class="divider-line-d"></div>
+  <img src="images/img-09-white.png" class="divider-mark" alt="" />
+  <div class="divider-line-d"></div>
 </div></div>
 
 
 <!-- ══════════════════════════════
-     SECTION 8 — MARKETPLACE
+     SECTION 8 — MARKETPLACE (sticky scroll)
 ══════════════════════════════ -->
-<section class="s-light" id="marketplace">
-  <div class="market-layout">
-    <div>
-      <div class="s-kicker reveal">The Marketplace</div>
-      <h2 class="s-headline reveal reveal-delay-1">A place to spend<br><em>what you've earned.</em></h2>
-      <div class="s-body reveal reveal-delay-2">
-        <p>The DAOasis Marketplace is where Reward Credits and $DVT find their real-world home. Wellness products, branded goods, experiences — all accessible to the community that built it.</p>
-        <p>Creators, wellness brands, and community members can list products directly. $DVT holders get early access and discounts. If you helped build the platform, the platform rewards you first.</p>
+<div class="market-outer" id="marketOuter">
+  <div class="market-sticky" id="marketSticky">
+
+    <!-- Left: fixed copy -->
+    <div class="market-left">
+      <div class="market-kicker">The Marketplace</div>
+      <h2 class="market-headline">A place to spend<br><em>what you've earned.</em></h2>
+      <p class="market-intro">Your Reward Credits and $DVT have a real home. Scroll to explore what the marketplace makes possible.</p>
+      <div class="market-progress" id="marketProgress">
+        <div class="market-prog-dot active"></div>
+        <div class="market-prog-dot"></div>
+        <div class="market-prog-dot"></div>
+        <div class="market-prog-dot"></div>
       </div>
-      <div style="margin-top:32px;" class="reveal reveal-delay-3">
-        <span style="display:inline-block;padding:8px 20px;border:1px solid rgba(43,38,35,0.2);border-radius:20px;font-size:12px;color:#8a7f6d;letter-spacing:0.1em;text-transform:uppercase;">Launching Soon</span>
-      </div>
+      <span class="market-launching">Launching Soon</span>
     </div>
-    <div class="reveal">
-      <img class="market-phone" src="images/14.png" alt="DAOasis Marketplace — coming soon" />
+
+    <!-- Right: sliding panels -->
+    <div class="market-right">
+
+      <!-- Panel 0: Wellness Products -->
+      <div class="market-panel active" data-panel="0">
+        <svg class="market-panel-icon" viewBox="0 0 80 80" fill="none" stroke="rgba(247,244,238,0.85)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="40" cy="28" r="14"/>
+          <path d="M40 14v28M28 22l24 12M28 34l24-12"/>
+          <path d="M20 56c0-6 9-10 20-10s20 4 20 10"/>
+          <path d="M14 66h52"/>
+        </svg>
+        <div class="market-panel-tag">Wellness Products</div>
+        <div class="market-panel-name">Things that support<br>how you live.</div>
+        <div class="market-panel-desc">Supplements, recovery tools, sleep aids, nutrition products — curated for the DAOasis community and purchasable with Reward Credits or $DVT. No middleman. Community-first pricing.</div>
+        <div class="market-panel-dvt">$DVT accepted · Credits redeemable</div>
+      </div>
+
+      <!-- Panel 1: Branded Goods -->
+      <div class="market-panel" data-panel="1">
+        <svg class="market-panel-icon" viewBox="0 0 80 80" fill="none" stroke="rgba(247,244,238,0.85)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="18" y="30" width="44" height="36" rx="2"/>
+          <path d="M28 30V24a12 12 0 0 1 24 0v6"/>
+          <circle cx="40" cy="48" r="4"/>
+          <path d="M40 52v6"/>
+        </svg>
+        <div class="market-panel-tag">Branded Goods</div>
+        <div class="market-panel-name">Wear what<br>you've built.</div>
+        <div class="market-panel-desc">DAOasis apparel, accessories, and limited drops — earned through consistency, not just purchased. High-conviction members get early access. $DVT holders get priority and discounts.</div>
+        <div class="market-panel-dvt">$DVT holders · Priority access</div>
+      </div>
+
+      <!-- Panel 2: Sanctuary Experiences -->
+      <div class="market-panel" data-panel="2">
+        <svg class="market-panel-icon" viewBox="0 0 80 80" fill="none" stroke="rgba(247,244,238,0.85)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 56c0-18 12-32 26-32s26 14 26 32"/>
+          <path d="M40 24V14"/>
+          <path d="M28 30l-8-8M52 30l8-8"/>
+          <path d="M20 56h40"/>
+          <path d="M30 56V44a10 10 0 0 1 20 0v12"/>
+          <path d="M10 66h60"/>
+        </svg>
+        <div class="market-panel-tag">Sanctuary Experiences</div>
+        <div class="market-panel-name">The destination<br>you walked to.</div>
+        <div class="market-panel-desc">Retreats, workshops, and stays at the DAOasis Sanctuary in Phuket — bookable with $DVT. Every step in the app was moving you here. Redeem your credits. Show up in person.</div>
+        <div class="market-panel-dvt">Phuket · Thailand · $DVT redeemable</div>
+      </div>
+
+      <!-- Panel 3: Partner Offers -->
+      <div class="market-panel" data-panel="3">
+        <svg class="market-panel-icon" viewBox="0 0 80 80" fill="none" stroke="rgba(247,244,238,0.85)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M28 40a12 12 0 1 0 24 0 12 12 0 0 0-24 0z"/>
+          <path d="M14 40a26 26 0 1 0 52 0 26 26 0 0 0-52 0z"/>
+          <path d="M40 14v8M40 58v8M14 40h8M58 40h8"/>
+        </svg>
+        <div class="market-panel-tag">Partner Offers</div>
+        <div class="market-panel-name">Wellness brands<br>that get it.</div>
+        <div class="market-panel-desc">Curated partner offers from wellness brands aligned with the DAOasis ethos — gym memberships, health testing, coaching, nutrition services. $DVT holders always get first access and best prices.</div>
+        <div class="market-panel-dvt">$DVT holders · Exclusive rates</div>
+      </div>
+
     </div>
   </div>
-</section>
+</div>
 
 <div class="divider-dark"><div class="divider-inner">
   <div class="divider-line-d"></div>
@@ -1401,13 +1524,84 @@ body { overflow-x: clip; }
   <div class="s-kicker reveal">Device Integrations</div>
   <h2 class="s-headline reveal reveal-delay-1">Works with what<br><em>you already use.</em></h2>
   <p class="s-body reveal reveal-delay-2">DAOasis connects to your existing health platforms so your data flows automatically — steps, sleep, heart rate. You live your life. The app does the rest.</p>
-  <div class="int-grid reveal reveal-delay-3">
-    <div class="int-pill"><div class="int-dot"></div>Apple Health</div>
-    <div class="int-pill"><div class="int-dot"></div>Google Health Connect</div>
-    <div class="int-pill"><div class="int-dot"></div>Whoop</div>
-    <div class="int-pill"><div class="int-dot"></div>Oura Ring</div>
-    <div class="int-pill"><div class="int-dot"></div>Garmin</div>
-    <div class="int-pill"><div class="int-dot"></div>Fitbit</div>
+
+  <div class="int-grid" id="intGrid">
+
+    <!-- Apple Health -->
+    <div class="int-card">
+      <svg class="int-logo" viewBox="0 0 120 28" fill="none">
+        <path d="M14 4C11 4 8.5 6.5 8 9c-2.5.3-5 2.5-5 5.5 0 3.5 2.8 6.5 6.5 6.5h17c3 0 5.5-2.5 5.5-5.5 0-2.8-2-5-4.8-5.4C26.7 7 24.5 4 22 4c-1.5 0-2.8.7-3.7 1.8C17.4 4.7 15.8 4 14 4z" stroke="rgba(247,244,238,0.6)" stroke-width="1.2" stroke-linecap="round"/>
+        <path d="M14 22v-8M11 17l3-3 3 3" stroke="rgba(247,244,238,0.6)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+        <text x="38" y="19" font-family="'Frank Ruhl Libre',serif" font-size="13" fill="rgba(247,244,238,0.6)">Apple Health</text>
+      </svg>
+      <div class="int-card-name">Apple Health</div>
+      <div class="int-card-desc">Steps, sleep, heart rate and activity data synced automatically from HealthKit. Covers iPhone and Apple Watch.</div>
+      <div class="int-card-tag">iOS · Apple Watch</div>
+    </div>
+
+    <!-- Google Health Connect -->
+    <div class="int-card">
+      <svg class="int-logo" viewBox="0 0 160 28" fill="none">
+        <circle cx="14" cy="14" r="10" stroke="rgba(247,244,238,0.6)" stroke-width="1.2"/>
+        <path d="M8 14h6v-5" stroke="rgba(247,244,238,0.6)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M14 8a6 6 0 0 1 6 6" stroke="rgba(196,138,90,0.7)" stroke-width="1.2" stroke-linecap="round"/>
+        <text x="30" y="19" font-family="'Frank Ruhl Libre',serif" font-size="13" fill="rgba(247,244,238,0.6)">Google Health</text>
+      </svg>
+      <div class="int-card-name">Google Health Connect</div>
+      <div class="int-card-desc">Android health data hub — connects Pixel, Samsung, and any Android device directly into DAOasis.</div>
+      <div class="int-card-tag">Android · Pixel · Samsung</div>
+    </div>
+
+    <!-- Whoop -->
+    <div class="int-card">
+      <svg class="int-logo" viewBox="0 0 100 28" fill="none">
+        <rect x="4" y="8" width="20" height="12" rx="3" stroke="rgba(247,244,238,0.6)" stroke-width="1.2"/>
+        <path d="M9 14l2 3 4-6 2 3 2-3" stroke="rgba(247,244,238,0.6)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+        <text x="30" y="19" font-family="'Frank Ruhl Libre',serif" font-size="13" fill="rgba(247,244,238,0.6)" letter-spacing="2">WHOOP</text>
+      </svg>
+      <div class="int-card-name">Whoop</div>
+      <div class="int-card-desc">HRV, recovery score, sleep performance and strain data — Whoop's depth makes it one of the most powerful boosters in the app.</div>
+      <div class="int-card-tag">HRV · Recovery · Sleep</div>
+    </div>
+
+    <!-- Oura -->
+    <div class="int-card">
+      <svg class="int-logo" viewBox="0 0 90 28" fill="none">
+        <circle cx="14" cy="14" r="9" stroke="rgba(247,244,238,0.6)" stroke-width="1.2"/>
+        <circle cx="14" cy="14" r="4" stroke="rgba(196,138,90,0.6)" stroke-width="1.2"/>
+        <text x="30" y="19" font-family="'Frank Ruhl Libre',serif" font-size="13" fill="rgba(247,244,238,0.6)">Oura Ring</text>
+      </svg>
+      <div class="int-card-name">Oura Ring</div>
+      <div class="int-card-desc">Sleep staging, readiness score, body temperature and HRV from the ring that many consider the gold standard in passive health tracking.</div>
+      <div class="int-card-tag">Sleep · Readiness · HRV</div>
+    </div>
+
+    <!-- Garmin -->
+    <div class="int-card">
+      <svg class="int-logo" viewBox="0 0 100 28" fill="none">
+        <path d="M6 20V10a8 8 0 0 1 16 0v2h-6" stroke="rgba(247,244,238,0.6)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="14" cy="14" r="2" fill="rgba(247,244,238,0.6)"/>
+        <text x="30" y="19" font-family="'Frank Ruhl Libre',serif" font-size="13" fill="rgba(247,244,238,0.6)">Garmin</text>
+      </svg>
+      <div class="int-card-name">Garmin</div>
+      <div class="int-card-desc">GPS activity, VO2 max, advanced sleep tracking and Body Battery score. Ideal for serious movers using the quest mechanic to its fullest.</div>
+      <div class="int-card-tag">GPS · VO2 Max · Activity</div>
+    </div>
+
+    <!-- Fitbit -->
+    <div class="int-card">
+      <svg class="int-logo" viewBox="0 0 90 28" fill="none">
+        <circle cx="8" cy="14" r="3" stroke="rgba(247,244,238,0.6)" stroke-width="1.2"/>
+        <circle cx="14" cy="8" r="2" stroke="rgba(247,244,238,0.6)" stroke-width="1"/>
+        <circle cx="14" cy="20" r="2" stroke="rgba(247,244,238,0.6)" stroke-width="1"/>
+        <circle cx="20" cy="14" r="3" stroke="rgba(196,138,90,0.6)" stroke-width="1.2"/>
+        <text x="30" y="19" font-family="'Frank Ruhl Libre',serif" font-size="13" fill="rgba(247,244,238,0.6)">Fitbit</text>
+      </svg>
+      <div class="int-card-name">Fitbit</div>
+      <div class="int-card-desc">Daily steps, active zone minutes, sleep analysis and heart rate tracking. One of the most widely used wearables — fully supported from day one.</div>
+      <div class="int-card-tag">Steps · Sleep · Heart Rate</div>
+    </div>
+
   </div>
 </section>
 
@@ -1554,7 +1748,7 @@ body { overflow-x: clip; }
     const isMobile = window.innerWidth <= 900;
 
     /* Title card */
-    const titleIn  = ease(clamp01((raw-0.06)/0.06));
+    const titleIn  = ease(clamp01((raw-0.12)/0.06));
     const titleOut = ease(clamp01((raw-0.22)/0.07));
     titleCard.style.opacity  = titleIn;
     titleText.style.opacity  = Math.min(titleIn, 1-titleOut);
@@ -1625,14 +1819,14 @@ body { overflow-x: clip; }
     }
 
     /* Bridge */
-    const bp = clamp01((raw-0.90)/0.10);
+    const bp = clamp01((raw-0.72)/0.10);
     bridge.style.opacity       = bp;
     bridge.style.pointerEvents = bp>0.05?'auto':'none';
   }
 
   function tick(){
     targetRaw  = measureRaw();
-    currentRaw = lerp(currentRaw, targetRaw, 0.12);
+    currentRaw = lerp(currentRaw, targetRaw, 0.18);
     if(Math.abs(currentRaw-targetRaw)<0.0005) currentRaw=targetRaw;
     applyFrame(currentRaw);
     requestAnimationFrame(tick);
@@ -1680,129 +1874,82 @@ body { overflow-x: clip; }
 })();
 
 /* ────────────────────────────────────────────
-   ECOSYSTEM — sticky scroll-through habits
+   ECOSYSTEM — auto-cycling interactive tabs
 ──────────────────────────────────────────── */
 (function(){
   const ECO_HABITS = [
-    {
-      icon:'🏃', name:'Steps', color:'#C48A5A',
-      tag:'Primary Driver', tagBg:'rgba(196,138,90,0.15)',
-      what: 'Every step you take converts directly into kilometres on your active quest. Steps are the core engine powering every journey in DAOasis.',
-      quest:'In Bangkok → Phuket: 10,000 steps equals approximately 5 kilometres of real progress. More steps each day means more ground covered.',
-      why:  '8,000–10,000 daily steps is linked to significantly lower all-cause mortality and improved metabolic, cardiovascular, and mental health. The single most evidence-backed daily habit.'
-    },
-    {
-      icon:'🫁', name:'Breathing', color:'#7F97A2',
-      tag:'Booster', tagBg:'rgba(127,151,162,0.15)',
-      what: 'Complete a daily guided breathwork session in the app. This keeps your streak multiplier active and earns a bonus distance on your quest.',
-      quest:'Every completed session adds +1 km to your journey and maintains your streak. Miss a day and the multiplier resets — consistency compounds.',
-      why:  'Controlled breathwork activates the parasympathetic nervous system, reduces cortisol, and improves HRV — one of the strongest biomarkers of long-term cardiovascular health.'
-    },
-    {
-      icon:'💧', name:'Hydration', color:'#5a8aad',
-      tag:'Booster', tagBg:'rgba(90,138,173,0.15)',
-      what: 'Log your daily water intake in the app. Hit your 3-litre daily target and earn a bonus kilometre on your active quest.',
-      quest:'Every day you reach your hydration goal, +1 km is added to your progress. The river inside your app world rises visually with every bottle logged.',
-      why:  'Even 1–2% dehydration impairs cognitive function, energy levels, and physical output. Most people are chronically under-hydrated — and most don\'t know it.'
-    },
-    {
-      icon:'🌙', name:'Sleep', color:'#9B8CA8',
-      tag:'Booster', tagBg:'rgba(155,140,168,0.15)',
-      what: 'Quality sleep earns a nightly distance bonus. The app reads your sleep score from connected health devices and rewards consistent, restorative rest.',
-      quest:'Achieve 7+ hours of quality sleep and earn +2 km on your journey. Build a consistent streak and constellations grow in your app world\'s sky.',
-      why:  'Chronic poor sleep accelerates biological ageing, suppresses immunity, and amplifies every health risk. Better sleep amplifies every other habit you build.'
-    },
-    {
-      icon:'🌱', name:'Nutrition', color:'#A8B7A2',
-      tag:'Booster', tagBg:'rgba(168,183,162,0.15)',
-      what: 'Log your meals in the app and earn Reward Credits. The app rewards dietary variety, consistency, and nutritional balance tracked over time.',
-      quest:'Logging varied, balanced meals earns credits and grows a garden inside your app world. Nourishment is one of the most direct routes to building your $DVT balance.',
-      why:  'Dietary diversity is the strongest predictor of microbiome health, which regulates immunity, inflammation, and mood. Every meal is a vote for who you are becoming.'
-    },
-    {
-      icon:'📖', name:'Learning', color:'#DDD1C2',
-      tag:'Earner', tagBg:'rgba(221,209,194,0.15)',
-      what: 'Complete wellness and Web3 lessons inside the app to earn Reward Credits directly. In DAOasis, knowledge is treated as a habit with real, tangible value.',
-      quest:'Every lesson you complete earns Reward Credits that accumulate and convert to $DVT. 128 lessons across two tracks — Wellness and Web3 — all rewarded.',
-      why:  'Lifelong learning is a consistent marker of cognitive resilience and healthy ageing. Understanding your tools — including Web3 — gives you genuine agency over your own future.'
-    }
+    { svg:'<path d="M12 4c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2z"/><path d="M8 8.5L6.5 15l3 1L11 20h2l1.5-4 2.5 1L18 9l-4-1-.5-1.5H10L8 8.5z"/>', name:'Steps', color:'#C48A5A', glow:'rgba(196,138,90,0.15)', tag:'Primary Driver', tagBg:'rgba(196,138,90,0.15)', what:'Every step converts directly into kilometres on your quest. Steps are the core engine — the single most important daily action.', quest:'10,000 steps ≈ 5km on Bangkok → Phuket. More steps every day means more ground covered.' },
+    { svg:'<path d="M12 4v4M8 6c-2 0-4 1.5-4 4s2 4 4 4h8c2 0 4-1.5 4-4s-2-4-4-4"/><path d="M12 14v6M9 17h6"/>', name:'Breathing', color:'#7F97A2', glow:'rgba(127,151,162,0.12)', tag:'Booster', tagBg:'rgba(127,151,162,0.15)', what:'Complete a daily guided breathwork session to keep your streak multiplier active and earn bonus distance.', quest:'+1 km every completed session. Miss a day and the multiplier resets.' },
+    { svg:'<path d="M12 2L6 10a6 6 0 1 0 12 0L12 2z"/>', name:'Hydration', color:'#5a8aad', glow:'rgba(90,138,173,0.12)', tag:'Booster', tagBg:'rgba(90,138,173,0.15)', what:'Log your daily water intake and hit your 3L target to earn a bonus kilometre on your quest.', quest:'+1 km every day you hit your hydration goal. The river in your world rises with every bottle logged.' },
+    { svg:'<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>', name:'Sleep', color:'#9B8CA8', glow:'rgba(155,140,168,0.12)', tag:'Booster', tagBg:'rgba(155,140,168,0.15)', what:'Quality sleep earns a nightly distance bonus. The app reads your sleep score from connected health devices.', quest:'+2 km for 7+ hours of quality sleep. Streak constellations grow in your app sky.' },
+    { svg:'<path d="M12 2a5 5 0 0 1 5 5c0 3-2 5-5 8-3-3-5-5-5-8a5 5 0 0 1 5-5z"/><circle cx="12" cy="7" r="1.5"/>', name:'Nutrition', color:'#A8B7A2', glow:'rgba(168,183,162,0.10)', tag:'Booster', tagBg:'rgba(168,183,162,0.15)', what:'Log meals and earn Reward Credits. The app rewards dietary variety, consistency, and nutritional balance.', quest:'Logging varied meals earns credits and grows a garden inside your world. One of the most direct routes to $DVT.' },
+    { svg:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>', name:'Learning', color:'#DDD1C2', glow:'rgba(221,209,194,0.10)', tag:'Earner', tagBg:'rgba(221,209,194,0.15)', what:'Complete wellness and Web3 lessons to earn Reward Credits directly. Knowledge is treated as a habit with real value.', quest:'Every lesson earns credits that convert to $DVT. 128 lessons across Wellness and Web3 — all rewarded.' }
   ];
 
-  const outer     = document.getElementById('ecoOuter');
-  const spotlight = document.getElementById('ecoHabitSpotlight');
-  const introCopy = document.getElementById('ecoIntroCopy');
-  const progDots  = document.querySelectorAll('.eco-prog-dot');
-  const badges    = document.querySelectorAll('.eco-badge');
-  if (!outer) return;
+  const tiles    = document.querySelectorAll('.eco-tile');
+  const glow     = document.getElementById('ecoGlow');
+  const tagEl    = document.getElementById('ecoDetailTag');
+  const nameEl   = document.getElementById('ecoDetailName');
+  const whatEl   = document.getElementById('ecoDetailWhat');
+  const questEl  = document.getElementById('ecoDetailQuest');
+  const inner    = document.getElementById('ecoDetailInner');
+  const cycleBar = document.getElementById('ecoCycleBar');
+  if (!tiles.length) return;
 
-  let lastIdx = -1, initialized = false;
+  const CYCLE_MS = 4000;
+  let current = 0, timer = null, barAnim = null;
 
-  const initObs = new IntersectionObserver(entries => {
+  function show(idx, resetCycle) {
+    current = idx;
+    const h = ECO_HABITS[idx];
+
+    // Tiles
+    tiles.forEach((t, i) => t.classList.toggle('active', i === idx));
+
+    // Glow
+    if (glow) glow.style.setProperty('--eco-glow', h.glow);
+    if (glow) glow.style.background = `radial-gradient(ellipse, ${h.glow} 0%, transparent 70%)`;
+
+    // Detail panel — fade out, swap, fade in
+    inner.classList.remove('show');
+    setTimeout(() => {
+      tagEl.textContent = h.tag;
+      tagEl.style.color = h.color; tagEl.style.borderColor = h.color; tagEl.style.background = h.tagBg;
+      nameEl.textContent = h.name;
+      whatEl.textContent  = h.what;
+      questEl.textContent = h.quest;
+      inner.classList.add('show');
+    }, 200);
+
+    if (resetCycle !== false) startCycle();
+  }
+
+  function startCycle() {
+    clearTimeout(timer);
+    if (cycleBar) {
+      cycleBar.style.transition = 'none';
+      cycleBar.style.width = '0%';
+      void cycleBar.offsetWidth;
+      cycleBar.style.transition = `width ${CYCLE_MS}ms linear`;
+      cycleBar.style.width = '100%';
+    }
+    timer = setTimeout(() => {
+      show((current + 1) % ECO_HABITS.length, false);
+      startCycle();
+    }, CYCLE_MS);
+  }
+
+  tiles.forEach(t => {
+    t.addEventListener('click', () => show(parseInt(t.dataset.idx)));
+  });
+
+  // Init on intersect
+  const obs = new IntersectionObserver(entries => {
     entries.forEach(e => {
-      if (e.isIntersecting && !initialized) {
-        initialized = true;
-        badges.forEach((b, i) => setTimeout(() => b.classList.add('show'), i * 200 + 600));
-      }
+      if (e.isIntersecting) { show(0); obs.disconnect(); }
     });
-  }, { threshold: 0.05 });
-  initObs.observe(outer);
-
-  function setHabit(idx, frac) {
-    progDots.forEach((d, i) => d.classList.toggle('active', i === idx));
-    badges.forEach((b, i) => {
-      b.classList.toggle('eco-badge-active', i === idx);
-      b.classList.toggle('eco-badge-dim',    i !== idx);
-    });
-
-    if (idx !== lastIdx) {
-      const h = ECO_HABITS[idx];
-      document.getElementById('ecoSpotIcon').textContent  = h.icon;
-      document.getElementById('ecoSpotName').textContent  = h.name;
-      const tag = document.getElementById('ecoSpotTag');
-      tag.textContent       = h.tag;
-      tag.style.background  = h.tagBg;
-      tag.style.color       = h.color;
-      tag.style.borderColor = h.color;
-      document.getElementById('ecoSpotWhat').textContent  = h.what;
-      document.getElementById('ecoSpotQuest').textContent = h.quest;
-      document.getElementById('ecoSpotWhy').textContent   = h.why;
-      lastIdx = idx;
-    }
-
-    let op = frac < 0.15 ? frac/0.15 : frac < 0.85 ? 1 : (1-frac)/0.15;
-    op = Math.max(0, Math.min(1, op));
-    spotlight.style.opacity       = op;
-    spotlight.style.transform     = `translateY(${(1-op)*18}px)`;
-    spotlight.style.pointerEvents = op > 0.1 ? 'auto' : 'none';
-  }
-
-  function ecoScroll() {
-    const rect  = outer.getBoundingClientRect();
-    const maxS  = outer.offsetHeight - window.innerHeight;
-    const p     = Math.max(0, Math.min(1, -rect.top / maxS));
-    const step  = p * 8;
-    const floor = Math.min(7, Math.floor(step));
-    const frac  = step - floor;
-
-    if (floor === 0) {
-      const fade = Math.max(0, 1 - frac * 3);
-      introCopy.style.opacity   = fade;
-      introCopy.style.transform = `translateY(${(1-fade)*20}px)`;
-      spotlight.style.opacity   = '0';
-      badges.forEach(b => b.classList.remove('eco-badge-active','eco-badge-dim'));
-      lastIdx = -1;
-    } else if (floor >= 1 && floor <= 6) {
-      introCopy.style.opacity   = '0';
-      introCopy.style.transform = 'translateY(20px)';
-      setHabit(floor - 1, frac);
-    } else {
-      spotlight.style.opacity = Math.max(0, 1 - frac * 4);
-      badges.forEach(b => b.classList.remove('eco-badge-active','eco-badge-dim'));
-    }
-  }
-
-  window.addEventListener('scroll', ecoScroll, { passive: true });
-  ecoScroll();
+  }, { threshold: 0.2 });
+  obs.observe(document.getElementById('ecoOuter'));
 })();
 
 /* ────────────────────────────────────────────
@@ -1873,6 +2020,42 @@ body { overflow-x: clip; }
 })();
 
 /* ────────────────────────────────────────────
+   MARKETPLACE — sticky scroll panels
+──────────────────────────────────────────── */
+(function(){
+  const outer  = document.getElementById('marketOuter');
+  const panels = document.querySelectorAll('.market-panel');
+  const dots   = document.querySelectorAll('.market-prog-dot');
+  if (!outer || !panels.length) return;
+  const TOTAL  = panels.length;
+  function setPanel(idx) {
+    panels.forEach((p, i) => p.classList.toggle('active', i === idx));
+    dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+  }
+  window.addEventListener('scroll', () => {
+    const rect = outer.getBoundingClientRect();
+    const maxS = outer.offsetHeight - window.innerHeight;
+    const p    = Math.max(0, Math.min(1, -rect.top / maxS));
+    setPanel(Math.min(TOTAL - 1, Math.floor(p * TOTAL)));
+  }, { passive: true });
+})();
+
+/* ────────────────────────────────────────────
+   INTEGRATION CARDS stagger
+──────────────────────────────────────────── */
+(function(){
+  const grid = document.getElementById('intGrid');
+  if (!grid) return;
+  new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        grid.querySelectorAll('.int-card').forEach((c,i) => setTimeout(() => c.classList.add('show'), i * 100));
+      }
+    });
+  }, { threshold: 0.1 }).observe(grid);
+})();
+
+/* ────────────────────────────────────────────
    BOOSTER CARDS stagger
 ──────────────────────────────────────────── */
 (function(){
@@ -1921,8 +2104,41 @@ body { overflow-x: clip; }
       });
     }, { threshold: 0.1 }).observe(el);
   }
-  stagger('rewardFlow', '.flow-node, .flow-arrow', 180);
+  stagger('rewardFlow', '.reward-pipe-node', 160);
   stagger('rewardUses', '.reward-use', 130);
+})();
+
+/* ────────────────────────────────────────────
+   NAV — hide on scroll down, show on scroll up
+──────────────────────────────────────────── */
+(function(){
+  const nav = document.querySelector('.nav');
+  if (!nav) return;
+  let lastY = 0, ticking = false;
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        const y = window.scrollY;
+        if (y > lastY && y > 80) nav.classList.add('nav-hidden');
+        else nav.classList.remove('nav-hidden');
+        lastY = y; ticking = false;
+      });
+      ticking = true;
+    }
+  }, { passive: true });
+})();
+
+/* ────────────────────────────────────────────
+   LEARN TRACK CARDS stagger
+──────────────────────────────────────────── */
+(function(){
+  const cards = [document.getElementById('learnCard0'), document.getElementById('learnCard1')];
+  if (!cards[0]) return;
+  new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) cards.forEach((c,i) => setTimeout(() => c && c.classList.add('show'), i * 200));
+    });
+  }, { threshold: 0.15 }).observe(cards[0]);
 })();
 
 </script>
