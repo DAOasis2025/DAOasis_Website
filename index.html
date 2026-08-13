@@ -43,13 +43,25 @@
   @keyframes blink{50%{opacity:0;}}
 
   /* SCROLL-PIN CONTAINER */
-  .pin-container{position:relative;height:100vh;}
+  .pin-container{position:relative;height:300vh;}
   .hero{position:sticky;top:0;height:100vh;overflow:hidden;opacity:0;transition:opacity 1.1s ease;}
   .hero.reveal{opacity:1;}
   #heroH1{opacity:0;transition:opacity 0.5s ease;}
   #heroH1.settled{opacity:1;}
 
-  .bg{position:absolute;inset:0;z-index:0;background-image:linear-gradient(180deg, rgba(15,13,11,0.72) 0%, rgba(15,13,11,0.6) 30%, rgba(15,13,11,0.55) 55%, rgba(15,13,11,0.85) 100%), url('images/img-01.jpg');background-size:cover;background-position:center 30%;}
+  body.intro-skipped .intro{display:none !important;}
+  body.intro-skipped .kicker, body.intro-skipped .h1, body.intro-skipped .sub,
+  body.intro-skipped .ctas, body.intro-skipped .journey-wrap, body.intro-skipped .journey-mobile,
+  body.intro-skipped .scroll-hint{animation:none !important;opacity:1 !important;transform:none !important;}
+  body.intro-skipped #heroH1{opacity:1 !important;}
+
+  .bg{position:absolute;inset:0;z-index:0;background-image:linear-gradient(180deg, rgba(15,13,11,0.72) 0%, rgba(15,13,11,0.6) 30%, rgba(15,13,11,0.55) 55%, rgba(15,13,11,0.85) 100%), url('images/img-01.jpg');background-size:cover;background-position:center 30%;
+    opacity:0;transform:translateY(var(--py,0px)) scale(var(--bgs,1.045));
+    transition:opacity 1.8s cubic-bezier(0.22,1,0.36,1), transform 2.1s cubic-bezier(0.22,1,0.36,1);
+    will-change:transform,opacity;}
+  .hero.reveal .bg{opacity:1;--bgs:1;}
+  @keyframes heroBgBreathe{0%,100%{transform:translateY(var(--py,0px)) scale(var(--bgs,1));}50%{transform:translateY(var(--py,0px)) scale(calc(var(--bgs,1) + 0.014));}}
+  .bg.breathe{animation:heroBgBreathe 48s ease-in-out infinite;}
   .app-title-card{position:absolute;inset:0;z-index:15;background:var(--mineral);display:flex;align-items:center;justify-content:center;pointer-events:none;opacity:0;}
   .app-title-text{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(42px,8.5vw,120px);color:var(--warm-white);text-align:center;letter-spacing:0.01em;padding:0 6%;}
   .app-title-text em{font-style:italic;color:var(--gold);}
@@ -98,6 +110,23 @@
   .wp-label{font-family:'Frank Ruhl Libre',serif;font-size:13px;letter-spacing:0.05em;fill:var(--warm-white);text-transform:uppercase;}
   .wp-sub{font-family:'Frank Ruhl Libre',serif;font-size:10px;fill:#cfc8be;opacity:0.85;}
 
+  #routeMaskPath{transition:stroke-dashoffset 1.8s cubic-bezier(0.22,1,0.36,1);}
+  .wp-group{opacity:0.3;transition:opacity 0.7s ease, filter 0.7s ease;}
+  .wp-group.wp-upcoming{opacity:0.28;}
+  .wp-group.wp-passed{opacity:0.5;}
+  .wp-group.wp-anticipate{opacity:0.5;}
+  .wp-group.wp-active{opacity:1;filter:drop-shadow(0 0 6px rgba(196,138,90,0.55));}
+  .wp-group.wp-end.wp-upcoming{opacity:0;}
+  .wp-group.wp-end.wp-active{opacity:1;filter:drop-shadow(0 0 7px rgba(247,244,238,0.6));}
+
+  @media (prefers-reduced-motion: reduce){
+    .bg{transition:opacity 0.6s ease !important;transform:none !important;}
+    .bg.breathe{animation:none !important;}
+    #routeMaskPath{transition:stroke-dashoffset 0.4s ease !important;}
+    .wp-group{transition:opacity 0.3s ease !important;filter:none !important;}
+    #heroContent{transition:none !important;}
+  }
+
   .journey-mobile{display:none;flex-direction:column;gap:0;width:100%;max-width:360px;margin:1.5vh auto 0;
     opacity:0;animation:fadeUp 1.6s ease-out forwards;animation-delay:6.3s;}
   .journey-mobile .stop{position:relative;padding:0 0 18px 26px;border-left:1px dashed rgba(196,138,90,0.5);}
@@ -143,50 +172,82 @@
     margin-right:8px;vertical-align:middle;animation:pulse 1.8s ease-in-out infinite;}
   @keyframes pulse{0%,100%{opacity:0.4;transform:scale(0.8);}50%{opacity:1;transform:scale(1.15);}}
 
-  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:7vh;}
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:7vh;position:relative;}
   @media (max-width:900px){.cards{grid-template-columns:1fr;gap:22px;}}
 
-  .card{opacity:0;transform:translateY(40px);transition:opacity 0.8s ease, transform 0.8s ease;}
+  .eco-connector{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:visible;}
+  @media (max-width:900px){.eco-connector{display:none;}}
+
+  .card{opacity:0;transform:translateY(40px);transition:opacity 0.8s ease, transform 0.8s ease;position:relative;z-index:1;cursor:pointer;}
   .card.in-view{opacity:1;transform:translateY(0);}
   .card:hover{transform:translateY(-8px);}
   .card.in-view:hover{transition:transform 0.35s ease;}
 
+  .cards.has-selected .card{transition:opacity 0.55s cubic-bezier(0.22,1,0.36,1), transform 0.55s cubic-bezier(0.22,1,0.36,1);}
+  .cards.has-selected .card:not(.card-selected){opacity:0.48;transform:scale(0.955) translateY(0);}
+  .cards.has-selected .card:not(.card-selected):hover{transform:scale(0.955) translateY(0);}
+  .card.card-selected{opacity:1;transform:scale(1.045);z-index:3;}
+  .card.card-selected:hover{transform:scale(1.045);}
   .card-media{position:relative;aspect-ratio:3/2;border-radius:4px;overflow:hidden;background:var(--charcoal);cursor:pointer;
-    border:1px solid rgba(196,138,90,0.3);box-shadow:0 20px 45px rgba(43,38,35,0.16);}
+    border:1px solid rgba(196,138,90,0.3);box-shadow:0 20px 45px rgba(43,38,35,0.16);transition:box-shadow 0.55s ease;}
+  .card.card-selected .card-media{box-shadow:0 28px 60px rgba(43,38,35,0.28);}
   .card-media::after{content:'Click for details ↗';position:absolute;bottom:0;left:0;right:0;padding:10px 12px 8px;
     background:linear-gradient(to top, rgba(0,0,0,0.6), transparent);color:var(--warm-white);font-size:10px;
     letter-spacing:0.05em;text-transform:uppercase;opacity:0.65;transition:opacity 0.25s ease;}
   .card:hover .card-media::after{opacity:1;}
+  .card.card-selected .card-media::after{content:'Selected';opacity:1;}
   .card-media img{width:100%;height:112%;object-fit:cover;display:block;will-change:transform;transition:transform 0.4s ease;}
   .card-body{padding:22px 2px 0;}
   .card-step{font-size:11px;letter-spacing:0.12em;color:var(--gold);text-transform:uppercase;}
   .card-title{font-family:'Cormorant Garamond',serif;font-size:26px;color:var(--charcoal);margin-top:8px;}
   .card-desc{font-size:13px;color:#6b6459;line-height:1.6;margin-top:8px;}
   .card-learn{display:inline-block;margin-top:10px;font-size:12px;color:var(--sanctuary);text-decoration:none;
-    border-bottom:1px solid rgba(49,70,63,0.4);padding-bottom:1px;}
+    border-bottom:1px solid rgba(49,70,63,0.4);padding-bottom:1px;position:relative;z-index:2;}
   .card-learn:hover{border-bottom-color:var(--sanctuary);}
+
+  .card-more{max-height:0;opacity:0;overflow:hidden;
+    transition:max-height 0.6s cubic-bezier(0.22,1,0.36,1), opacity 0.5s ease, margin-top 0.6s cubic-bezier(0.22,1,0.36,1);}
+  .card.card-selected .card-more{max-height:420px;opacity:1;margin-top:14px;transition:max-height 0.6s cubic-bezier(0.22,1,0.36,1), opacity 0.55s ease 0.12s, margin-top 0.6s cubic-bezier(0.22,1,0.36,1);}
+  .card-more-text{font-size:13px;color:#6b6459;line-height:1.7;}
+  .card-more-features{margin-top:14px;padding-top:14px;border-top:1px solid #e4ddd0;display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;}
+  .card-more-features div{font-size:12px;color:#6b6459;padding-left:14px;position:relative;}
+  .card-more-features div::before{content:'—';position:absolute;left:0;color:var(--gold);}
+  @media (max-width:520px){.card-more-features{grid-template-columns:1fr;}}
+
+  @media (prefers-reduced-motion: reduce){
+    .card, .cards.has-selected .card, .card-more{transition-duration:0.2s !important;}
+  }
 
   .footer-note{text-align:center;color:#8a8377;font-size:12px;margin-top:8vh;padding-bottom:4vh;}
 
   /* ═══════════════════════════════════════════
-     DIVIDERS — transparent, sit on section above
+     DIVIDERS — transparent, overlap section above via negative margin
   ═══════════════════════════════════════════ */
-  .divider{padding:4vh 8%;background:transparent;}
+  .divider{
+    padding:4vh 8%;
+    background:transparent;
+    position:relative;
+    z-index:5;
+    /* Pull divider UP so it overlaps the bottom of the previous section */
+    margin-top:-8vh;
+    margin-bottom:-4vh;
+    pointer-events:none;
+  }
   .divider-inner{display:flex;align-items:center;gap:24px;max-width:1200px;margin:0 auto;}
   .divider-line{flex:1;height:1px;}
   .divider-mark{width:26px;height:26px;object-fit:contain;flex-shrink:0;}
 
-  /* Dark divider — on mineral/dark backgrounds */
-  .divider.dark .divider-line{background:rgba(247,244,238,0.14);}
-  .divider.dark .divider-mark{opacity:0.85;}
+  /* Dark divider line/mark — for use against dark sections */
+  .divider.dark .divider-line{background:rgba(247,244,238,0.16);}
+  .divider.dark .divider-mark{opacity:0.8;}
 
-  /* Light divider — on warm-white/warm-stone */
-  .divider.light .divider-line{background:rgba(43,38,35,0.18);}
-  .divider.light .divider-mark{opacity:0.6;}
+  /* Light divider line/mark — for use against warm-white sections */
+  .divider.light .divider-line{background:rgba(43,38,35,0.2);}
+  .divider.light .divider-mark{opacity:0.55;filter:invert(1);}
 
   /* Warm divider */
   .divider.warm .divider-line{background:rgba(43,38,35,0.18);}
-  .divider.warm .divider-mark{opacity:0.6;}
+  .divider.warm .divider-mark{opacity:0.55;filter:invert(1);}
 
   .lightbox{position:fixed;inset:0;background:rgba(15,13,11,0.92);display:flex;align-items:center;justify-content:center;
     z-index:100;opacity:0;pointer-events:none;transition:opacity 0.3s ease;padding:4vh 4vw;}
@@ -211,7 +272,7 @@
   @media (max-width:700px){.lightbox-features{grid-template-columns:1fr;}.lightbox-body{padding:22px 22px 28px;}}
 
   /* WHY DAOASIS */
-  .pin{position:relative;height:520vh;}
+  .pin{position:relative;height:820vh;}
   .stage{position:sticky;top:0;height:100vh;overflow:hidden;
     background:radial-gradient(ellipse at 45% 28%, #0d1a26 0%, #060c12 55%, #030609 100%);}
   #starfield{position:absolute;inset:0;z-index:0;}
@@ -250,7 +311,7 @@
     .panel .stat{font-size:28px;}
   }
   @media (max-width:900px){
-    .panels{width:88vw;left:50%;right:auto;transform:translateX(-50%);top:40%;bottom:1%;gap:9px;}
+    .panels{width:88vw;left:50%;right:auto;transform:translateX(-50%);top:38%;bottom:10%;gap:7px;}
     .panel{padding:14px 16px;}
     .panel .bar{margin-bottom:8px;}
     .panel .stat{font-size:20px;}
@@ -335,10 +396,33 @@
     .tm-item:last-child{border-bottom:1px solid rgba(247,244,238,0.12);}
     .tm-label{font-size:11px;letter-spacing:0.08em;color:var(--gold);text-transform:uppercase;}
     .tm-text{font-size:13px;color:#cfc8be;line-height:1.6;margin-top:5px;}
+
+    .jm-list{max-width:480px;margin:5vh auto 0;position:relative;padding-left:34px;}
+    .jm-line-base{position:absolute;left:9px;top:6px;bottom:6px;width:1px;background:rgba(247,244,238,0.14);}
+    .jm-line-fill{position:absolute;left:9px;top:6px;width:1px;height:0%;
+      background:linear-gradient(180deg, var(--gold), #e0b083);box-shadow:0 0 10px rgba(196,138,90,0.5);
+      transition:height 0.4s ease-out;}
+    .jm-item{position:relative;padding:0 0 30px;opacity:0.4;transition:opacity 0.6s ease;}
+    .jm-item:last-child{padding-bottom:2px;}
+    .jm-dot{position:absolute;left:-34px;top:1px;width:19px;height:19px;border-radius:50%;
+      border:1.5px solid rgba(247,244,238,0.28);background:rgba(30,26,22,0.4);
+      transition:all 0.5s cubic-bezier(0.34,1.56,0.64,1);}
+    .jm-item.done .jm-dot{border-color:transparent;background:radial-gradient(circle at 35% 30%, #e0b083, #a8703f);}
+    .jm-item.active{opacity:1;}
+    .jm-item.active .jm-dot{border-color:transparent;background:radial-gradient(circle at 35% 30%, #f0c39a, #c48a5a);
+      box-shadow:0 0 0 4px rgba(196,138,90,0.18);transform:scale(1.1);}
+    .jm-item.done .jm-label,.jm-item.active .jm-label{color:var(--gold);}
+    .jm-item.done .jm-text,.jm-item.active .jm-text{opacity:1;}
+    .jm-label{font-size:11px;letter-spacing:0.08em;color:#8a8377;text-transform:uppercase;transition:color 0.5s ease;}
+    .jm-text{font-size:13px;color:#cfc8be;line-height:1.6;margin-top:5px;opacity:0.65;transition:opacity 0.5s ease;}
+
+    @media (prefers-reduced-motion: reduce){
+      .jm-item, .jm-dot, .jm-line-fill{transition:opacity 0.2s ease, background 0.2s ease !important;}
+    }
   }
 
   /* THE JOURNEY */
-  .pin4{position:relative;height:520vh;}
+  .pin4{position:relative;height:760vh;}
   .stage4{position:sticky;top:0;height:100vh;overflow:visible;
     background:radial-gradient(ellipse at 50% 45%, #221c16 0%, var(--mineral) 75%);
     display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 5%;}
@@ -376,11 +460,22 @@
   .j-node.active .j-dot::after{opacity:1;animation:jPulse 1.7s ease-out infinite;}
   @keyframes jPulse{0%{transform:scale(0.75);opacity:0.8;}100%{transform:scale(1.7);opacity:0;}}
 
+  .j-node{transition:opacity 0.7s ease;}
+  .j-node.tease .j-dot{border-color:rgba(196,138,90,0.55);color:#cbb9a0;background:rgba(60,48,36,0.55);
+    box-shadow:0 4px 14px rgba(196,138,90,0.18);}
+  .j-node.tease .j-title{color:#b3ac9f;}
+
   .j-title{font-size:14px;color:#8a8377;margin-top:16px;transition:color 0.5s ease;}
   .j-sub{font-size:11.5px;color:#5f5a52;line-height:1.5;margin-top:5px;transition:color 0.5s ease, opacity 0.5s ease;opacity:0.7;}
   .j-node.done .j-title,.j-node.active .j-title{color:var(--warm-white);}
   .j-node.active .j-title{font-weight:500;}
   .j-node.done .j-sub,.j-node.active .j-sub{color:#b8b1a4;opacity:1;}
+
+  @media (prefers-reduced-motion: reduce){
+    .j-node{transition:opacity 0.2s ease !important;}
+    .j-node.active .j-dot::after{animation:none !important;}
+    .j-track{transition:none !important;}
+  }
 
   .j-popcard{position:absolute;bottom:calc(100% + 26px);left:0%;transform:translateX(-50%);width:250px;
     background:rgba(30,26,22,0.82);backdrop-filter:blur(16px);border:1px solid rgba(196,138,90,0.35);
@@ -461,9 +556,7 @@
   .cm-pillar-text{font-size:13px;color:#6b6459;line-height:1.7;}
 
   /* ═══════════════════════════════════════════
-     PRINCIPLE — REDESIGNED
-     Left: kicker + headline + card stacked
-     Right: large image
+     PRINCIPLE — image always visible, typewriter headline, card appears after
   ═══════════════════════════════════════════ */
   .pin5{position:relative;height:300vh;}
   .stage5{position:sticky;top:0;height:100vh;overflow:hidden;
@@ -477,21 +570,25 @@
     background:radial-gradient(ellipse,rgba(49,70,63,0.18),transparent 70%);}
 
   /* LEFT: text column */
-  .pr-left{position:relative;z-index:10;flex:0 0 380px;display:flex;flex-direction:column;gap:0;align-self:center;}
+  .pr-left{position:relative;z-index:10;flex:0 0 400px;display:flex;flex-direction:column;gap:0;align-self:center;}
 
   .pr-kicker{font-size:11px;letter-spacing:0.2em;color:var(--gold);text-transform:uppercase;
     opacity:0;transition:opacity 0.6s ease;margin-bottom:14px;}
   .pr-kicker.visible{opacity:1;}
 
+  /* Headline: always rendered, typewriter fills it in, then it's fully visible */
   .pr-headline{font-family:'Cormorant Garamond',serif;font-weight:400;color:var(--warm-white);
     font-size:clamp(44px,5.5vw,72px);line-height:1.05;margin-bottom:36px;
-    opacity:0;transform:translateY(10px);transition:opacity 0.7s ease 0.2s, transform 0.7s ease 0.2s;}
+    opacity:1;min-height:1.1em;}
   .pr-headline em{font-style:italic;color:var(--gold);}
-  .pr-headline.visible{opacity:1;transform:translateY(0);}
+  .pr-type-cursor{display:inline-block;width:2px;height:0.8em;background:var(--gold);
+    margin-left:2px;vertical-align:-0.05em;animation:prBlink 0.8s steps(1) infinite;}
+  @keyframes prBlink{50%{opacity:0;}}
 
-  /* Glass card — now under headline on left */
+  /* Glass card */
   .pr-card-wrap{position:relative;z-index:10;width:100%;perspective:900px;
-    opacity:0;transition:opacity 0.8s ease 0.5s, transform 0.8s ease 0.5s;transform:translateY(20px);}
+    opacity:0;transition:opacity 0.9s ease;transform:translateY(16px);
+    transition:opacity 0.9s ease, transform 0.9s ease;}
   .pr-card-wrap.visible{opacity:1;transform:translateY(0);}
   .pr-card{
     background:rgba(247,244,238,0.06);
@@ -508,11 +605,9 @@
   .pr-card::before{content:'';position:absolute;inset:0;border-radius:16px;
     background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,0.03) 50%,transparent 60%);}
 
-  /* RIGHT: large image */
+  /* RIGHT: large image — always visible */
   .pr-image-col{position:relative;z-index:10;flex:1;align-self:stretch;display:flex;align-items:center;
-    opacity:0;transform:translateX(20px);transition:opacity 0.9s ease 0.3s, transform 0.9s ease 0.3s;
     min-height:0;}
-  .pr-image-col.visible{opacity:1;transform:translateX(0);}
   .pr-clarity-image{width:100%;height:85vh;max-height:720px;object-fit:cover;border-radius:12px;display:block;
     box-shadow:0 32px 80px rgba(0,0,0,0.6);}
 
@@ -666,6 +761,7 @@
   <div class="intro">
     <div class="logo"><img src="images/img-02.png" alt="DAOasis logo" /></div>
     <div class="headline" id="headline"></div>
+    <button type="button" id="skipIntroBtn" style="position:fixed;bottom:24px;right:24px;z-index:110;background:transparent;border:1px solid rgba(247,244,238,0.4);color:var(--warm-white);padding:9px 18px;border-radius:20px;font-size:12px;letter-spacing:0.04em;cursor:pointer;font-family:'Frank Ruhl Libre',serif;">Skip →</button>
   </div>
 
   <div class="pin-container" id="pinContainer">
@@ -673,7 +769,7 @@
       <div class="bg"></div>
 
       <div class="nav">
-        <div class="brand"><img src="images/img-02.png" alt="DAOasis" /></div>
+        <a class="brand" href="index.html" id="navBrand" style="text-decoration:none;"><img src="images/img-02.png" alt="DAOasis" /></a>
         <div class="links" id="navLinks"><a href="app.html">The App</a><span>The Sanctuary</span><span>The Web3 Layer</span><span>About Us</span><span>Investors</span></div>
         <div style="display:flex;align-items:center;gap:10px;">
           <div class="burger" id="burger"><span></span><span></span><span></span></div>
@@ -692,8 +788,14 @@
 
         <div class="journey-wrap" id="journeyWrap">
           <svg viewBox="0 0 1000 320" fill="none" id="journeySvg">
+            <defs>
+              <mask id="routeMask" maskUnits="userSpaceOnUse">
+                <path id="routeMaskPath" d="M100,190 C190,100 300,270 460,150 C560,70 660,240 780,140 C840,90 870,170 900,110"
+                  stroke="#fff" stroke-width="16" stroke-linecap="round" fill="none"/>
+              </mask>
+            </defs>
             <path id="route" d="M100,190 C190,100 300,270 460,150 C560,70 660,240 780,140 C840,90 870,170 900,110"
-              stroke="#C48A5A" stroke-width="2.5" stroke-dasharray="5 7" opacity="0.65" fill="none"/>
+              stroke="#C48A5A" stroke-width="2.5" stroke-dasharray="5 7" opacity="0.65" fill="none" mask="url(#routeMask)"/>
           </svg>
         </div>
         <div class="journey-mobile">
@@ -776,7 +878,18 @@
   <div class="eco-sub">DAOasis combines a daily wellness app, premium real-world sanctuaries and digital ownership into one connected ecosystem that helps people build healthier habits, meaningful relationships and long-term wellbeing.</div>
   <div class="click-cue">Click any card to explore each experience in detail</div>
 
-  <div class="cards">
+  <div class="cards" id="ecoCards">
+    <svg class="eco-connector" id="ecoConnector">
+      <path id="ecoConnBase" fill="none" stroke="#C48A5A" stroke-width="1" opacity="0.16"/>
+      <defs>
+        <linearGradient id="ecoPulseGradient" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#C48A5A" stop-opacity="0"/>
+          <stop offset="50%" stop-color="#F7F4EE" stop-opacity="0.9"/>
+          <stop offset="100%" stop-color="#C48A5A" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <path id="ecoConnPulse" fill="none" stroke="url(#ecoPulseGradient)" stroke-width="1.4" opacity="0"/>
+    </svg>
     <div class="card" id="card1">
       <div class="card-media"><img src="images/img-06.jpg" alt="DAOasis Companion App" style="object-position:center;"/></div>
       <div class="card-body">
@@ -784,6 +897,7 @@
         <div class="card-title">Companion App</div>
         <div class="card-desc">Daily rituals, learning, and quests that turn wellbeing into a consistent practice.</div>
         <a class="card-learn" href="/app">Learn more →</a>
+        <div class="card-more" id="card1More"></div>
       </div>
     </div>
     <div class="card" id="card2">
@@ -793,6 +907,7 @@
         <div class="card-title">DAOasis Sanctuaries</div>
         <div class="card-desc">Immersive real-world retreats where the journey becomes tangible, starting in Phuket.</div>
         <a class="card-learn" href="/sanctuary">Learn more →</a>
+        <div class="card-more" id="card2More"></div>
       </div>
     </div>
     <div class="card" id="card3">
@@ -802,6 +917,7 @@
         <div class="card-title">Digital Ownership</div>
         <div class="card-desc">Participation and consistency are rewarded and reflected in something you actually own.</div>
         <a class="card-learn" href="/web3">Learn more →</a>
+        <div class="card-more" id="card3More"></div>
       </div>
     </div>
   </div>
@@ -918,14 +1034,16 @@
 <div class="section journey-mobile-section" id="journeyMobileSection" style="background:var(--mineral);">
   <div class="eco-kicker" style="color:var(--gold);">The journey</div>
   <div class="eco-headline" style="color:var(--warm-white);">A path that unfolds at your own pace.</div>
-  <div class="tm-list">
-    <div class="tm-item"><div class="tm-label">01 — Download the App</div><div class="tm-text">Your journey starts with a single tap.</div></div>
-    <div class="tm-item"><div class="tm-label">02 — Build Healthy Habits</div><div class="tm-text">Small daily actions, tracked and rewarded.</div></div>
-    <div class="tm-item"><div class="tm-label">03 — Join the Community</div><div class="tm-text">Connect with others building the same habits.</div></div>
-    <div class="tm-item"><div class="tm-label">04 — Earn Reward Credits</div><div class="tm-text">Quests, learning, and referrals turn effort into credits.</div></div>
-    <div class="tm-item"><div class="tm-label">05 — Own DVT (Optional)</div><div class="tm-text">Go deeper — hold the token, unlock governance.</div></div>
-    <div class="tm-item"><div class="tm-label">06 — Help Shape DAOasis</div><div class="tm-text">Vote, propose, and steer where DAOasis goes next.</div></div>
-    <div class="tm-item"><div class="tm-label">07 — Visit the Sanctuary</div><div class="tm-text">For the few who go all the way: a real-world retreat, earned.</div></div>
+  <div class="jm-list" id="jmList">
+    <div class="jm-line-base"></div>
+    <div class="jm-line-fill" id="jmLineFill"></div>
+    <div class="jm-item"><div class="jm-dot"></div><div class="jm-label">01 — Download the App</div><div class="jm-text">Your journey starts with a single tap.</div></div>
+    <div class="jm-item"><div class="jm-dot"></div><div class="jm-label">02 — Build Healthy Habits</div><div class="jm-text">Small daily actions, tracked and rewarded.</div></div>
+    <div class="jm-item"><div class="jm-dot"></div><div class="jm-label">03 — Join the Community</div><div class="jm-text">Connect with others building the same habits.</div></div>
+    <div class="jm-item"><div class="jm-dot"></div><div class="jm-label">04 — Earn Reward Credits</div><div class="jm-text">Quests, learning, and referrals turn effort into credits.</div></div>
+    <div class="jm-item"><div class="jm-dot"></div><div class="jm-label">05 — Own DVT (Optional)</div><div class="jm-text">Go deeper — hold the token, unlock governance.</div></div>
+    <div class="jm-item"><div class="jm-dot"></div><div class="jm-label">06 — Help Shape DAOasis</div><div class="jm-text">Vote, propose, and steer where DAOasis goes next.</div></div>
+    <div class="jm-item"><div class="jm-dot"></div><div class="jm-label">07 — Visit the Sanctuary</div><div class="jm-text">For the few who go all the way: a real-world retreat, earned.</div></div>
   </div>
 </div>
 
@@ -1012,10 +1130,10 @@
     <div class="pr-blob pr-blob1"></div>
     <div class="pr-blob pr-blob2"></div>
 
-    <!-- LEFT: kicker + headline + glass card -->
+    <!-- LEFT: kicker + headline (typewriter) + glass card -->
     <div class="pr-left">
       <div class="pr-kicker" id="prKicker">Principle</div>
-      <div class="pr-headline" id="prHeadline">Clarity <em>over</em> Noise.</div>
+      <div class="pr-headline" id="prHeadline"></div>
 
       <div class="pr-card-wrap" id="prCardWrap">
         <div class="pr-card" id="prCard">
@@ -1027,7 +1145,7 @@
       </div>
     </div>
 
-    <!-- RIGHT: large image -->
+    <!-- RIGHT: large image — always visible on entry -->
     <div class="pr-image-col" id="prImageCol">
       <img class="pr-clarity-image" id="prClarityImage" src="images/clarity.png" alt="Clarity" />
     </div>
@@ -1145,13 +1263,19 @@
     { frac: 1.0,  color:'#F7F4EE', title:'Phuket',     sub:'Day 30 · Arrives at the Sanctuary', end:true }
   ];
 
+  const wpEls = [];
   function buildJourney(){
     const path = document.getElementById('route');
     const svg = document.getElementById('journeySvg');
+    const maskPath = document.getElementById('routeMaskPath');
     const len = path.getTotalLength();
+    maskPath.style.strokeDasharray = len;
+    maskPath.style.strokeDashoffset = len;
     waypoints.forEach(wp => {
       const p = path.getPointAtLength(len * wp.frac);
       const g = document.createElementNS('http://www.w3.org/2000/svg','g');
+      g.setAttribute('class', 'wp-group' + (wp.end ? ' wp-end' : ''));
+      wpEls.push(g);
       const circle = document.createElementNS('http://www.w3.org/2000/svg','circle');
       circle.setAttribute('cx', p.x); circle.setAttribute('cy', p.y);
       circle.setAttribute('r', wp.end ? 9 : 7);
@@ -1192,6 +1316,65 @@
   buildJourney();
 
   (function(){
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const clamp = (v,a,b) => Math.min(b, Math.max(a,v));
+    const pinContainer = document.getElementById('pinContainer');
+    const bgEl = document.querySelector('.bg');
+    const heroContentEl = document.getElementById('heroContent');
+    const maskPath = document.getElementById('routeMaskPath');
+    const routeLen = document.getElementById('route').getTotalLength();
+    let entranceStarted = false;
+    let maxProgress = 0;
+
+    function updateJourneyState(){
+      if(!entranceStarted) return;
+      const rect = pinContainer.getBoundingClientRect();
+      const vh = window.innerHeight || 1;
+      const scrollable = pinContainer.offsetHeight - vh;
+      const raw = scrollable > 0 ? clamp(-rect.top / scrollable, 0, 1) : 0;
+      maxProgress = Math.max(maxProgress, raw);
+      const progress = maxProgress;
+      const revealFrac = clamp(progress * 0.86 + 0.14, 0, 1);
+      maskPath.style.strokeDashoffset = String(routeLen * (1 - revealFrac));
+
+      waypoints.forEach((wp, i) => {
+        const g = wpEls[i];
+        let cls;
+        if(wp.end){
+          cls = revealFrac >= 0.995 ? 'active' : (progress > 0.68 ? 'anticipate' : 'upcoming');
+        } else {
+          const next = waypoints[i+1];
+          const isActive = progress >= wp.frac - 0.02 && (!next || progress < next.frac - 0.02);
+          cls = isActive ? 'active' : (progress > wp.frac ? 'passed' : 'upcoming');
+        }
+        g.classList.remove('wp-active','wp-passed','wp-upcoming','wp-anticipate');
+        g.classList.add('wp-' + cls);
+      });
+
+      if(!reducedMotion){
+        bgEl.style.setProperty('--py', (progress * -16) + 'px');
+        heroContentEl.style.transform = `translateY(${progress * -8}px)`;
+        heroContentEl.style.opacity = String(1 - progress * 0.06);
+      }
+    }
+
+    let ticking = false;
+    function onScroll(){
+      if(!ticking){ ticking = true; requestAnimationFrame(() => { updateJourneyState(); ticking = false; }); }
+    }
+    window.addEventListener('scroll', onScroll, { passive:true });
+    window.addEventListener('resize', onScroll, { passive:true });
+
+    setTimeout(() => { entranceStarted = true; updateJourneyState(); }, 7200);
+
+    window.__heroEntranceExtras = function(){
+      if(reducedMotion) return;
+      setTimeout(() => { bgEl.classList.add('breathe'); }, 2100);
+    };
+    window.__startHeroWaypointsNow = function(){ entranceStarted = true; updateJourneyState(); };
+  })();
+
+  (function(){
     const burger = document.getElementById('burger');
     const links = document.getElementById('navLinks');
     burger.addEventListener('click', () => { burger.classList.toggle('open'); links.classList.toggle('open'); });
@@ -1200,6 +1383,28 @@
   document.documentElement.style.overflow = 'hidden';
   document.body.style.overflow = 'hidden';
   function unlockScroll(){ document.documentElement.style.overflow = ''; document.body.style.overflow = ''; }
+
+  function skipIntro(){
+    document.body.classList.add('intro-skipped');
+    const heroEl = document.querySelector('.hero');
+    heroEl.classList.add('reveal');
+    const heroH1 = document.getElementById('heroH1');
+    if(heroH1) heroH1.classList.add('settled');
+    if(window.__heroEntranceExtras) window.__heroEntranceExtras();
+    if(window.__startHeroWaypointsNow) window.__startHeroWaypointsNow();
+    unlockScroll();
+  }
+  window.skipIntro = skipIntro;
+  const skipBtn = document.getElementById('skipIntroBtn');
+  if(skipBtn) skipBtn.addEventListener('click', skipIntro);
+  const navBrand = document.getElementById('navBrand');
+  if(navBrand){
+    navBrand.addEventListener('click', (e) => {
+      e.preventDefault();
+      if(!document.body.classList.contains('intro-skipped')) skipIntro();
+      window.scrollTo({ top: 0, behavior: document.body.classList.contains('intro-skipped') ? 'smooth' : 'auto' });
+    });
+  }
 
   (function(){
     const el = document.getElementById('headline');
@@ -1264,6 +1469,7 @@
       const heroH1 = document.getElementById('heroH1');
       const heroEl = document.querySelector('.hero');
       heroEl.classList.add('reveal');
+      if(window.__heroEntranceExtras) window.__heroEntranceExtras();
       const r1 = el.getBoundingClientRect();
       const r2 = heroH1.getBoundingClientRect();
       const startSize = parseFloat(getComputedStyle(el).fontSize);
@@ -1311,7 +1517,7 @@
     entries.forEach((entry, i) => {
       if(entry.isIntersecting){
         const idx = [...document.querySelectorAll('.card')].indexOf(entry.target);
-        setTimeout(() => entry.target.classList.add('in-view'), idx * 150);
+        setTimeout(() => { entry.target.classList.add('in-view'); setTimeout(() => { if(window.__measureEcoConnector) window.__measureEcoConnector(); }, 850); }, idx * 150);
         cardObserver.unobserve(entry.target);
       }
     });
@@ -1343,23 +1549,95 @@
     card3: { step:'Step three', title:'Digital Ownership', text:'Consistency and participation are recognised and reflected in something you actually own. This layer strengthens community alignment and rewards meaningful, long-term involvement — not speculation.', features:['Reward credits','Governance participation','Staking','Ecosystem alignment'], url:'/web3' }
   };
 
-  const lightbox = document.getElementById('lightbox');
-  document.querySelectorAll('.card').forEach(card => {
-    card.querySelector('.card-media').addEventListener('click', () => {
-      const data = cardData[card.id]; if(!data) return;
-      document.getElementById('lightboxImg').src = card.querySelector('.card-media img').src;
-      document.getElementById('lightboxStep').textContent = data.step;
-      document.getElementById('lightboxTitle').textContent = data.title;
-      document.getElementById('lightboxText').textContent = data.text;
-      document.getElementById('lightboxFeatures').innerHTML = data.features.map(f => `<div>${f}</div>`).join('');
-      document.getElementById('lightboxCta').href = data.url;
-      lightbox.classList.add('open');
+  (function(){
+    const ecoReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const ecoCards = document.querySelectorAll('#ecoCards .card');
+    const ecoCardsWrap = document.getElementById('ecoCards');
+    const connBase = document.getElementById('ecoConnBase');
+    const connPulse = document.getElementById('ecoConnPulse');
+    const connGradient = document.getElementById('ecoPulseGradient');
+    const connSvg = document.getElementById('ecoConnector');
+
+    ecoCards.forEach(card => {
+      const data = cardData[card.id];
+      const moreEl = document.getElementById(card.id + 'More');
+      if(data && moreEl){
+        moreEl.innerHTML = `<div class="card-more-text">${data.text}</div><div class="card-more-features">${data.features.map(f => `<div>${f}</div>`).join('')}</div>`;
+      }
     });
-  });
-  function closeLightbox(){ lightbox.classList.remove('open'); }
-  document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
-  lightbox.addEventListener('click', (e) => { if(e.target === lightbox) closeLightbox(); });
-  document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeLightbox(); });
+
+    let connPoints = [];
+    function measureConnector(){
+      if(!connSvg || window.innerWidth <= 900) return;
+      const wrapRect = ecoCardsWrap.getBoundingClientRect();
+      connSvg.setAttribute('viewBox', `0 0 ${wrapRect.width} ${wrapRect.height}`);
+      connPoints = [...ecoCards].map(card => {
+        const media = card.querySelector('.card-media');
+        const r = media.getBoundingClientRect();
+        return { x: r.left - wrapRect.left + r.width / 2, y: r.top - wrapRect.top + r.height / 2 };
+      });
+      if(connPoints.length === 3){
+        const d = `M${connPoints[0].x},${connPoints[0].y} L${connPoints[1].x},${connPoints[1].y} L${connPoints[2].x},${connPoints[2].y}`;
+        connBase.setAttribute('d', d);
+        connPulse.setAttribute('d', d);
+      }
+    }
+    measureConnector();
+    window.__measureEcoConnector = measureConnector;
+    window.addEventListener('resize', measureConnector);
+
+    function pulseConnector(fromIdx){
+      if(ecoReducedMotion || connPoints.length !== 3) return;
+      const minX = Math.min(connPoints[0].x, connPoints[1].x, connPoints[2].x);
+      const maxX = Math.max(connPoints[0].x, connPoints[1].x, connPoints[2].x);
+      const fromX = connPoints[fromIdx].x;
+      connGradient.setAttribute('x1', fromX); connGradient.setAttribute('x2', fromX);
+      connPulse.style.transition = 'none';
+      connPulse.style.opacity = '1';
+      requestAnimationFrame(() => {
+        connGradient.style.transition = 'none';
+        let start = null;
+        const duration = 1000;
+        function step(ts){
+          if(!start) start = ts;
+          const p = Math.min(1, (ts - start) / duration);
+          const spread = (maxX - minX) * 0.8 * p;
+          connGradient.setAttribute('x1', fromX - spread);
+          connGradient.setAttribute('x2', fromX + spread);
+          if(p < 1){ requestAnimationFrame(step); }
+          else { connPulse.style.transition = 'opacity 0.5s ease'; connPulse.style.opacity = '0'; }
+        }
+        requestAnimationFrame(step);
+      });
+    }
+
+    function toggleCard(card){
+      const idx = [...ecoCards].indexOf(card);
+      const already = card.classList.contains('card-selected');
+      ecoCards.forEach(c => c.classList.remove('card-selected'));
+      if(already){
+        ecoCardsWrap.classList.remove('has-selected');
+      } else {
+        card.classList.add('card-selected');
+        ecoCardsWrap.classList.add('has-selected');
+        pulseConnector(idx);
+      }
+    }
+
+    ecoCards.forEach(card => {
+      card.addEventListener('click', (e) => {
+        if(e.target.closest('.card-learn')) return;
+        toggleCard(card);
+      });
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if(e.key === 'Escape'){
+        const sel = document.querySelector('#ecoCards .card-selected');
+        if(sel) toggleCard(sel);
+      }
+    });
+  })();
 </script>
 
 <script>
@@ -1432,74 +1710,74 @@
   const orderPositions = new Float32Array(COUNT * 3);
   const colors = new Float32Array(COUNT * 3);
   const sizes = new Float32Array(COUNT);
+  const assemblyStart = new Float32Array(COUNT);
+  const assemblyEnd = new Float32Array(COUNT);
   const colGold = new THREE.Color('#C48A5A');
   const colGreen = new THREE.Color('#4a9a68');
   const colWhite = new THREE.Color('#F7F4EE');
 
-  // ── DAOasis logo shape ──────────────────────────────────────────────────
-  // The logo: circular canopy (palm fronds filling a circle), thick straight
-  // trunk, ground/beach arc at the bottom. We split COUNT into three zones:
-  //   40% = canopy particles (circle boundary + fill)
-  //   35% = trunk (straight vertical column)
-  //   25% = ground arc (elliptical sweep at base)
+  function hash01(n){ const x = Math.sin(n * 12.9898) * 43758.5453; return x - Math.floor(x); }
 
-  const CANOPY_COUNT  = Math.floor(COUNT * 0.42);
-  const TRUNK_COUNT   = Math.floor(COUNT * 0.33);
-  const GROUND_COUNT  = COUNT - CANOPY_COUNT - TRUNK_COUNT;
-
-  const CANOPY_R  = 3.8;   // canopy radius
-  const CANOPY_CY = 2.2;   // canopy centre Y
-  const TRUNK_TOP = CANOPY_CY - CANOPY_R * 0.55; // trunk enters canopy base
-  const TRUNK_BOT = -2.8;  // trunk bottom
-  const TRUNK_W   = 0.32;  // trunk half-width
-
-  function logoPoint(i) {
-    if (i < CANOPY_COUNT) {
-      // Canopy: particles scattered inside circle, denser near edge (like a silhouette)
-      const frac = i / CANOPY_COUNT;
-      // Use rejection-sampling-style distribution biased toward rim
-      const angle = frac * Math.PI * 2 * 7.3; // multiple rotations for even fill
-      // Bias r toward outer edge to give silhouette feel
-      const rim = (i * 2654435761 % 1000) / 1000;
-      const r = CANOPY_R * (0.35 + 0.65 * Math.sqrt(rim));
-      const x = Math.cos(angle) * r;
-      const y = CANOPY_CY + Math.sin(angle) * r * 0.92; // slight vertical squeeze
-      const z = ((i * 40503 % 1000) / 1000 - 0.5) * 0.3;
-      return [x, y, z];
-    } else if (i < CANOPY_COUNT + TRUNK_COUNT) {
-      // Trunk: straight vertical, narrow
-      const ti = i - CANOPY_COUNT;
-      const s = ti / TRUNK_COUNT;
-      const y = TRUNK_TOP + (TRUNK_BOT - TRUNK_TOP) * s;
-      // Trunk narrows slightly at top, widens at base
-      const halfW = TRUNK_W * (0.6 + 0.4 * s);
-      const angle = (ti * 2654435761 % 1000) / 1000 * Math.PI * 2;
-      const rr = Math.sqrt((ti * 40503 % 1000) / 1000) * halfW;
-      const x = Math.cos(angle) * rr;
-      const z = ((ti * 73856 % 1000) / 1000 - 0.5) * 0.2;
-      return [x, y, z];
-    } else {
-      // Ground arc: elliptical sweep, flat like the beach/water line in the logo
-      const gi = i - CANOPY_COUNT - TRUNK_COUNT;
-      const s = gi / GROUND_COUNT;
-      const angle = (s - 0.5) * Math.PI * 1.1; // arc spanning ~200 degrees
-      const arcRx = 4.2;
-      const arcRy = 0.55;
-      const arcCY = TRUNK_BOT + 0.1;
-      const x = Math.cos(angle) * arcRx;
-      const y = arcCY + Math.sin(Math.abs(angle) * 0.5) * arcRy * -0.5;
-      // Thickness of arc band
-      const offset = ((gi * 2654435761 % 1000) / 1000 - 0.5) * 0.38;
-      const z = ((gi * 40503 % 1000) / 1000 - 0.5) * 0.18;
-      return [x + offset * 0.1, y + offset, z];
+  // ── Refined palm tree shape: tapered trunk, asymmetric pinnate crown ──
+  const NUM_FRONDS = 9;
+  const TRUNK_SHARE = 0.22;
+  const trunkCount = Math.floor(COUNT * TRUNK_SHARE);
+  const frondCount = COUNT - trunkCount;
+  const perFrond = Math.floor(frondCount / NUM_FRONDS);
+  const LEAFLETS_PER_FROND = 18;
+  function logoPoint(i){
+    if(i < trunkCount){
+      const s = i / trunkCount;
+      // gentle one-directional lean (wind-swept) rather than a symmetric S-curve
+      const lean = s * s * 0.55;
+      const cx = lean + Math.sin(s * 6) * 0.025;
+      const cy = -s * 7 + 1.5;
+      const cz = -0.3 - s * 0.12;
+      const baseBulge = s < 0.1 ? (0.1 - s) * 1.6 : 0;
+      const radius = (0.44 * (1 - s * 0.6) + baseBulge) * (1 - s * s * 0.15);
+      const ring = 1 + Math.sin(s * 46) * 0.05;
+      const ang = (i * 2654435761 % 1000) / 1000 * Math.PI * 2;
+      const rr = Math.sqrt((i * 40503 % 1000) / 1000) * radius * ring;
+      const role = s * 0.3;
+      return [cx + Math.cos(ang) * rr, cy, cz + Math.sin(ang) * rr * 0.7, role];
     }
+    const fIdx = i - trunkCount;
+    const frond = Math.min(NUM_FRONDS - 1, Math.floor(fIdx / perFrond));
+    const s = (fIdx % perFrond) / perFrond;
+
+    // per-frond deterministic asymmetric variance — keeps the crown natural, not radially uniform
+    const fh1 = hash01(frond * 3.1 + 1.7), fh2 = hash01(frond * 7.3 + 4.2), fh3 = hash01(frond * 11.9 + 0.6);
+    const spread = 2.5;
+    const angleJitter = (fh1 - 0.5) * 0.55;
+    const baseAngle = (frond / (NUM_FRONDS - 1) - 0.5) * spread + angleJitter;
+    const lengthVar = 0.82 + fh2 * 0.5;
+    const length = (5.6 - Math.abs(baseAngle) * 0.45) * lengthVar;
+    const dirX = Math.sin(baseAngle), dirY = Math.cos(baseAngle);
+    const topY = 1.5 + (fh3 - 0.5) * 0.3;
+    const arch = 0.28 + fh2 * 0.1, droop = 0.5 + fh1 * 0.35;
+    const centerX = dirX * s * length + arch * Math.sin(s * Math.PI) * dirY * length * 0.25;
+    const centerY = topY + dirY * s * length - droop * Math.pow(s, 1.6) * length;
+    const centerZ = Math.cos(baseAngle * 0.5) * 0.6 - 0.3 + (fh3 - 0.5) * 0.4;
+    const perpX = dirY, perpY = -dirX;
+    const envelope = Math.sin(Math.min(1, s * 1.05) * Math.PI);
+    const leafletPhase = Math.abs(Math.sin(s * LEAFLETS_PER_FROND * Math.PI));
+    const maxWidth = (0.56 + fh2 * 0.12) * (1 - Math.abs(baseAngle) / 2.1);
+    const widthAtS = envelope * maxWidth * (0.3 + 0.7 * leafletPhase);
+    const wOffset = ((fIdx * 2654435761 % 1000) / 1000 - 0.5) * 2 * widthAtS;
+    const sweepBack = 0.32;
+    const x = centerX + perpX * wOffset - dirX * Math.abs(wOffset) * sweepBack;
+    const y = centerY + perpY * wOffset * 0.4 - dirY * Math.abs(wOffset) * sweepBack * 0.3;
+    const z = centerZ + (((fIdx * 40503 % 1000) / 1000) - 0.5) * 0.14;
+    const edgeNorm = Math.max(0, Math.min(1, Math.abs(wOffset) / Math.max(0.0001, widthAtS)));
+    const role = s < 0.35 ? (0.28 + s * 0.25) : (0.38 + s * 0.22 + edgeNorm * 0.4);
+    return [x, y, z, role];
   }
 
   for(let i = 0; i < COUNT; i++){
     chaosPositions[i*3]   = (Math.random() - 0.5) * 34;
     chaosPositions[i*3+1] = (Math.random() - 0.5) * 20;
     chaosPositions[i*3+2] = (Math.random() - 0.5) * 20;
-    const [ox, oy, oz] = logoPoint(i);
+    const [ox, oy, oz, role] = logoPoint(i);
     orderPositions[i*3]   = ox + (Math.random()-0.5)*0.22;
     orderPositions[i*3+1] = oy + (Math.random()-0.5)*0.22;
     orderPositions[i*3+2] = oz + (Math.random()-0.5)*0.18;
@@ -1510,6 +1788,12 @@
     const c = mix < 0.5 ? colGold.clone().lerp(colWhite, mix*2) : colGreen.clone().lerp(colGold, (mix-0.5)*2);
     colors[i*3] = c.r; colors[i*3+1] = c.g; colors[i*3+2] = c.b;
     sizes[i] = Math.random() * 0.14 + 0.05;
+    // stagger each particle's assembly window so trunk → major fronds → fine leaf detail converge in waves
+    const jitter = (hash01(i * 0.37 + 2.1) - 0.5) * 0.16;
+    const winStart = Math.max(0, Math.min(0.97, role * 0.72 + jitter * 0.5));
+    const winLen = 0.3 + hash01(i * 1.11 + 5.5) * 0.24;
+    assemblyStart[i] = winStart;
+    assemblyEnd[i] = Math.min(1, Math.max(winStart + 0.08, winStart + winLen));
   }
 
   const geometry = new THREE.BufferGeometry();
@@ -1520,6 +1804,10 @@
   const points = new THREE.Points(geometry, material);
   scene.add(points);
 
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const ASSEMBLY_END = 0.88;
+  function smoother(x){ return x*x*x*(x*(x*6-15)+10); }
+
   let targetProgress = 0, currentProgress = 0;
   let targetMouseX = 0, targetMouseY = 0, mouseX = 0, mouseY = 0;
   function computeProgress(){
@@ -1527,7 +1815,9 @@
     const scrollable = pin.offsetHeight - window.innerHeight;
     return Math.max(0, Math.min(1, -rect.top / scrollable));
   }
-  window.addEventListener('mousemove', (e) => { targetMouseX = (e.clientX / window.innerWidth - 0.5) * 2; targetMouseY = (e.clientY / window.innerHeight - 0.5) * 2; });
+  if(!reducedMotion){
+    window.addEventListener('mousemove', (e) => { targetMouseX = (e.clientX / window.innerWidth - 0.5) * 2; targetMouseY = (e.clientY / window.innerHeight - 0.5) * 2; });
+  }
 
   const posAttr = geometry.attributes.position;
   const p1 = document.getElementById('p1'), p2 = document.getElementById('p2'), p3 = document.getElementById('p3');
@@ -1548,34 +1838,47 @@
   };
   const CENTER_SCALE_DESKTOP = 1.22, CENTER_SCALE_MOBILE = 1.08;
 
+  let maxAssemblyT = 0;
   function animate(){
-    targetProgress = computeProgress();
+    targetProgress = Math.max(targetProgress, computeProgress());
     currentProgress += (targetProgress - currentProgress) * 0.05;
     mouseX += (targetMouseX - mouseX) * 0.04;
     mouseY += (targetMouseY - mouseY) * 0.04;
     const t = currentProgress;
     if(!slotsMeasured && t > 0.001){ measurePanelSlots(); slotsMeasured = true; }
     const time = performance.now() * 0.0002;
+    maxAssemblyT = Math.max(maxAssemblyT, Math.min(1, t / ASSEMBLY_END));
+    const assemblyT = maxAssemblyT;
     for(let i = 0; i < COUNT; i++){
       const idx = i * 3;
-      const driftX = Math.sin(time + i) * 0.15 * (1 - t);
-      const driftY = Math.cos(time * 1.3 + i) * 0.15 * (1 - t);
+      const ws = assemblyStart[i], we = assemblyEnd[i];
+      const localRaw = we > ws ? Math.max(0, Math.min(1, (assemblyT - ws) / (we - ws))) : (assemblyT >= we ? 1 : 0);
+      const local = smoother(localRaw);
+      const driftAmt = 1.4 * (1 - local);
+      const driftX = driftAmt ? Math.sin(time * 2.2 + i) * driftAmt : 0;
+      const driftY = driftAmt ? Math.cos(time * 2.6 + i * 1.7) * driftAmt : 0;
       const cx = chaosPositions[idx] + driftX, cy = chaosPositions[idx+1] + driftY, cz = chaosPositions[idx+2];
       const ox = orderPositions[idx], oy = orderPositions[idx+1], oz = orderPositions[idx+2];
-      posAttr.array[idx]   = cx + (ox - cx) * t;
-      posAttr.array[idx+1] = cy + (oy - cy) * t;
-      posAttr.array[idx+2] = cz + (oz - cz) * t;
+      posAttr.array[idx]   = cx + (ox - cx) * local;
+      posAttr.array[idx+1] = cy + (oy - cy) * local;
+      posAttr.array[idx+2] = cz + (oz - cz) * local;
     }
     posAttr.needsUpdate = true;
-    points.rotation.y = time * 0.3 * (1 - t) + mouseX * (0.25 - 0.16 * t);
-    points.rotation.x = mouseY * 0.12 * (1 - 0.5 * t);
+    const rotFactor = reducedMotion ? 0 : (1 - assemblyT);
+    points.rotation.y = (reducedMotion ? 0 : time * 0.3 * rotFactor) + mouseX * (0.25 - 0.16 * assemblyT);
+    points.rotation.x = reducedMotion ? 0 : mouseY * 0.12 * (1 - 0.5 * assemblyT);
+    if(!reducedMotion){
+      const breatheAmt = Math.max(0, Math.min(1, (assemblyT - 0.85) / 0.15));
+      points.position.y = Math.sin(time * 0.5) * 0.03 * breatheAmt;
+      points.rotation.z = Math.sin(time * 0.35) * 0.01 * breatheAmt;
+    }
     camera.position.x = mouseX * 1.2; camera.position.y = 0.5 - mouseY * 0.8; camera.lookAt(0, 0, 0);
 
     const kicker = document.getElementById('oKicker'), headline = document.getElementById('oHeadline'), lede = document.getElementById('oLede'), body = document.getElementById('oBody'), progressUI = document.getElementById('scrollProgress'), fill = document.getElementById('progressFill');
-    kicker.style.opacity = Math.min(1, t * 6);
-    headline.style.opacity = Math.min(1, Math.max(0, (t - 0.02) * 6));
-    lede.style.opacity = Math.min(1, Math.max(0, (t - 0.06) * 6));
-    body.style.opacity = Math.min(1, Math.max(0, (t - 0.1) * 6));
+    kicker.style.opacity = 1;
+    headline.style.opacity = 1;
+    lede.style.opacity = 1;
+    body.style.opacity = 1;
     progressUI.style.opacity = t > 0.02 ? 1 : 0;
     fill.style.width = (t * 100) + '%';
 
@@ -1588,20 +1891,21 @@
       .forEach(({ el, win, slot }) => {
         const centerP = trapezoid(t, win);
         const opacity = Math.max(centerP, stackT);
-        applyPanelTransform(el, slot, centerP, opacity, centerScale, centerP > 0.5, isMobile);
+        applyPanelTransform(el, slot, centerP, opacity, centerScale, centerP > 0.5, isMobile, stackT);
       });
     (function(){
       const win = tl.p3;
       const inP = rampT(t, win.inStart, win.inEnd);
       const posP = t < tl.stackStart ? inP : (1 - stackT);
       const opacity = Math.max(inP, stackT);
-      applyPanelTransform(p3, panelSlots[2], posP, opacity, centerScale, posP > 0.5, isMobile);
+      applyPanelTransform(p3, panelSlots[2], posP, opacity, centerScale, posP > 0.5, isMobile, stackT);
     })();
-    function applyPanelTransform(el, slot, posP, opacity, scale, isActive, mobile){
+    function applyPanelTransform(el, slot, posP, opacity, scale, isActive, mobile, stackAmt){
       const rY = mouseX * 6 * (1 - posP), rX = -mouseY * 6 * (1 - posP);
       let dx = 0, dy = 0;
-      if(slot){ dx = (window.innerWidth / 2 - slot.cx) * posP; dy = (window.innerHeight / 2 - slot.cy) * posP; }
-      const s = 1 + (scale - 1) * posP;
+      if(slot){ const centerY = mobile ? window.innerHeight * 0.58 : window.innerHeight / 2; dx = (window.innerWidth / 2 - slot.cx) * posP; dy = (centerY - slot.cy) * posP; }
+      const stackedShrink = posP < 0.5 ? (stackAmt || 0) : 0;
+      const s = (1 + (scale - 1) * posP) * (1 - stackedShrink * 0.24);
       el.style.opacity = opacity; el.style.zIndex = posP > 0.05 ? 20 : 1;
       el.style.transform = `translate(${dx}px, ${dy}px) scale(${s}) perspective(600px) rotateY(${rY}deg) rotateX(${rX}deg)`;
       el.classList.toggle('panel-active', isActive);
@@ -1656,6 +1960,37 @@
   if(!section) return;
   const obs = new IntersectionObserver((entries) => { entries.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add('in-view'); }); }, { threshold: 0.15 });
   obs.observe(section);
+
+  const items = [...section.querySelectorAll('.jm-item')];
+  const lineFill = document.getElementById('jmLineFill');
+  const list = document.getElementById('jmList');
+  if(!items.length || !lineFill || !list) return;
+  let furthestActive = -1;
+  function evaluate(){
+    const vh = window.innerHeight || 1;
+    const triggerY = vh * 0.55;
+    let activeIdx = furthestActive;
+    items.forEach((el, i) => {
+      const r = el.getBoundingClientRect();
+      if(r.top < triggerY){
+        el.classList.add('done');
+        if(i > activeIdx) activeIdx = i;
+      }
+    });
+    if(activeIdx > furthestActive) furthestActive = activeIdx;
+    items.forEach((el, i) => { el.classList.toggle('active', i === furthestActive); });
+    if(furthestActive >= 0){
+      const last = items[furthestActive];
+      const listRect = list.getBoundingClientRect();
+      const lastRect = last.getBoundingClientRect();
+      const fillPx = Math.max(0, (lastRect.top + lastRect.height * 0.15) - listRect.top);
+      lineFill.style.height = fillPx + 'px';
+    }
+  }
+  let ticking = false;
+  window.addEventListener('scroll', () => { if(!ticking){ ticking = true; requestAnimationFrame(() => { evaluate(); ticking = false; }); } }, { passive:true });
+  window.addEventListener('resize', evaluate);
+  evaluate();
 })();
 
 (function(){
@@ -1678,18 +2013,33 @@
     'The physical culmination of the digital journey — Phuket, and beyond.'
   ];
   function computeT(){ const rect = pin4.getBoundingClientRect(); const scrollable = pin4.offsetHeight - window.innerHeight; if(scrollable <= 0) return 0; return Math.max(0, Math.min(1, -rect.top / scrollable)); }
+  const j4ReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const STAGE_END = 0.92; // reserve the tail of the scroll as a hold once the final stage is reached
+  const TEASE_FROM = 0.72; // fraction into a stage's own scroll window where the next waypoint starts previewing
   let cur = 0, target = 0, mouseX = 0, mouseY = 0, tMouseX = 0, tMouseY = 0;
-  window.addEventListener('mousemove', (e) => { tMouseX = (e.clientX / window.innerWidth - 0.5) * 2; tMouseY = (e.clientY / window.innerHeight - 0.5) * 2; });
+  if(!j4ReducedMotion){
+    window.addEventListener('mousemove', (e) => { tMouseX = (e.clientX / window.innerWidth - 0.5) * 2; tMouseY = (e.clientY / window.innerHeight - 0.5) * 2; });
+  }
   let lastActive = -1;
   function tick(){
-    target = computeT(); cur += (target - cur) * 0.07; if(Math.abs(target - cur) < 0.0008) cur = target;
+    target = Math.max(target, computeT()); cur += (target - cur) * 0.07; if(Math.abs(target - cur) < 0.0008) cur = target;
     mouseX += (tMouseX - mouseX) * 0.05; mouseY += (tMouseY - mouseY) * 0.05;
-    const fillPct = cur * 100;
+    const stageT = Math.min(1, cur / STAGE_END);
+    const fillPct = stageT * 100;
     lineFill.style.width = fillPct + '%';
     comet.style.left = fillPct + '%';
-    comet.style.opacity = cur > 0.005 && cur < 0.999 ? 1 : 0;
-    const activeIndex = Math.max(0, Math.min(6, Math.floor(cur * 7)));
-    nodes.forEach((el, i) => { el.classList.toggle('done', i < activeIndex); el.classList.toggle('active', i === activeIndex); });
+    comet.style.opacity = stageT > 0.005 && stageT < 0.999 ? 1 : 0;
+    const raw = stageT * 7;
+    const activeIndex = Math.max(0, Math.min(6, Math.floor(raw)));
+    const stageFrac = raw - activeIndex;
+    const teaseIndex = stageFrac > TEASE_FROM && activeIndex < 6 ? activeIndex + 1 : -1;
+    nodes.forEach((el, i) => {
+      const isDone = i < activeIndex;
+      el.classList.toggle('done', isDone);
+      el.classList.toggle('active', i === activeIndex);
+      el.classList.toggle('tease', i === teaseIndex);
+      el.style.opacity = isDone ? String(Math.max(0.42, 1 - (activeIndex - i) * 0.16)) : '';
+    });
     if(activeIndex !== lastActive){
       lastActive = activeIndex;
       popEyebrow.textContent = 'Stage 0' + (activeIndex + 1);
@@ -1697,8 +2047,8 @@
       popcard.style.left = (activeIndex / 6 * 100) + '%';
       popcard.classList.remove('pop'); void popcard.offsetWidth; popcard.classList.add('pop');
     }
-    popcard.style.opacity = cur > 0.01 ? 1 : 0;
-    jTrack.style.transform = `rotateX(${mouseY * -3}deg) rotateY(${mouseX * 3}deg)`;
+    popcard.style.opacity = stageT > 0.01 ? 1 : 0;
+    jTrack.style.transform = j4ReducedMotion ? 'none' : `rotateX(${mouseY * -3}deg) rotateY(${mouseX * 3}deg)`;
     requestAnimationFrame(tick);
   }
   requestAnimationFrame(tick);
@@ -1716,22 +2066,67 @@
   const card = document.getElementById('prCard');
   const cardWrap = document.getElementById('prCardWrap');
   const kicker = document.getElementById('prKicker');
-  const headline = document.getElementById('prHeadline');
-  const imageCol = document.getElementById('prImageCol');
+  const headlineEl = document.getElementById('prHeadline');
   if(!pin5 || !card) return;
+
+  // Typewriter for "Clarity over Noise."
+  // Renders as: Clarity [italic gold: over] Noise.
+  const HEADLINE_PARTS = [
+    { text: 'Clarity ', em: false },
+    { text: 'over', em: true },
+    { text: ' Noise.', em: false }
+  ];
+  const SPEED = 55; // ms per character
+
+  function runTypewriter(onDone) {
+    headlineEl.innerHTML = '';
+    const cursor = document.createElement('span');
+    cursor.className = 'pr-type-cursor';
+    headlineEl.appendChild(cursor);
+    let partIdx = 0, charIdx = 0, currentSpan = null;
+    function step() {
+      if (partIdx >= HEADLINE_PARTS.length) {
+        cursor.remove();
+        onDone && onDone();
+        return;
+      }
+      const part = HEADLINE_PARTS[partIdx];
+      if (charIdx === 0) {
+        currentSpan = part.em ? document.createElement('em') : document.createTextNode('');
+        if (part.em) {
+          headlineEl.insertBefore(currentSpan, cursor);
+        }
+      }
+      const char = part.text[charIdx];
+      if (part.em) {
+        currentSpan.textContent += char;
+      } else {
+        headlineEl.insertBefore(document.createTextNode(char), cursor);
+      }
+      charIdx++;
+      if (charIdx >= part.text.length) { partIdx++; charIdx = 0; }
+      setTimeout(step, SPEED);
+    }
+    step();
+  }
+
   let triggered = false;
   function checkTrigger(){
     const rect = pin5.getBoundingClientRect();
     if(!triggered && rect.top <= 10){
       triggered = true;
-      if(imageCol) imageCol.classList.add('visible');
-      setTimeout(() => { if(kicker) kicker.classList.add('visible'); }, 300);
-      setTimeout(() => { if(headline) headline.classList.add('visible'); }, 600);
-      setTimeout(() => { if(cardWrap) cardWrap.classList.add('visible'); }, 900);
+      // Kicker fades in immediately
+      setTimeout(() => { kicker.classList.add('visible'); }, 200);
+      // Typewriter starts shortly after
+      setTimeout(() => { runTypewriter(() => {
+        // Card appears after typewriter finishes
+        setTimeout(() => { cardWrap.classList.add('visible'); }, 300);
+      }); }, 600);
     }
   }
   window.addEventListener('scroll', checkTrigger, { passive: true });
   checkTrigger();
+
   // Mouse tilt on card
   const stage = card.closest('.stage5');
   let mx = 0, my = 0, cx = 0, cy = 0;

@@ -1,0 +1,2154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<script>
+  (function(){
+    var t = localStorage.getItem('daoasis-theme') || 'dark';
+    if(t === 'light') document.documentElement.setAttribute('data-theme','light');
+  })();
+</script>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Sanctuary — DAOasis</title>
+<meta name="description" content="The DAOasis Sanctuary is where the digital journey becomes physical — a seven day rolling programme of recovery, learning, accountability and community. First pilot planned for Phuket in 2027." />
+<meta property="og:title" content="The Sanctuary — DAOasis" />
+<meta property="og:description" content="Immersion creates acceleration. A seven day rolling programme of wellness, learning and community. Coming to Phuket in 2027." />
+<meta property="og:image" content="images/img-07.jpg" />
+<meta property="og:type" content="website" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Frank+Ruhl+Libre:wght@300;400;500&display=swap" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+<style>
+/* ══════════════════════════════════════════════════════════════
+   ██  SANCTUARY IMAGE SLOTS  ██
+   ──────────────────────────────────────────────────────────────
+   Every photograph on this page is referenced from this block and
+   nowhere else. To swap a holding image for a final photograph,
+   change the path here only.
+
+   --img-hero-01        Sanctuary architecture    (hero, centre plate)
+   --img-hero-02        Tropical environment      (hero, left plate)
+   --img-hero-03        Human experience          (hero, right plate)
+   --img-sanctuary-wide Wide establishing shot    (Section 2)
+   --img-day-*          The four lights of a day  (Section 6)
+   --img-immersion      Full-bleed cinematic still
+   --img-exp-*          The Experience rows
+   --img-place          Location / map
+   --img-pilot          Phuket 2027 pilot
+══════════════════════════════════════════════════════════════ */
+:root {
+  --img-hero-01:        url('images/img-07.jpg');
+  --img-hero-02:        url('images/img-11.jpg');
+  --img-hero-03:        url('images/img-01.jpg');
+
+  --img-sanctuary-wide: url('images/img-01.jpg');
+
+  --img-day-morning:    url('images/img-01.jpg');
+  --img-day-midday:     url('images/pexels-jayasankar24-9819827.jpg');
+  --img-day-afternoon:  url('images/img-11.jpg');
+  --img-day-evening:    url('images/img-07.jpg');
+
+  --img-immersion:      url('images/img-11.jpg');
+
+  --img-exp-movement:   url('images/img-11.jpg');
+  --img-exp-recovery:   url('images/img-07.jpg');
+  --img-exp-learning:   url('images/img-01.jpg');
+  --img-exp-nature:     url('images/pexels-jayasankar24-9819827.jpg');
+  --img-exp-community:  url('images/img-01.jpg');
+
+  --img-place:          url('images/img-map.jpg');
+  --img-pilot:          url('images/img-07.jpg');
+}
+
+/* ── BRAND TOKENS (identical to index.html / app.html) ── */
+:root {
+  --warm-white: #F7F4EE;
+  --warm-stone: #E8E1D6;
+  --soft-stone: #CFC8BE;
+  --charcoal: #2B2623;
+  --mineral: #171412;
+  --sanctuary: #31463F;
+  --gold: #C48A5A;
+  --blue: #7F97A2;
+  --sage: #A8B7A2;
+  --dark-surface: #211D1A;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { font-family: 'Frank Ruhl Libre', serif; background: var(--mineral); color: var(--warm-white); }
+body { overflow-x: clip; }
+img { max-width: 100%; }
+::selection { background: rgba(196,138,90,0.3); }
+
+/* ── FILM GRAIN — the thing that stops dark sections looking flat ── */
+.grain { position: relative; }
+.grain::after {
+  content: ''; position: absolute; inset: 0; z-index: 6;
+  pointer-events: none; opacity: 0.038;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ── SCROLL PROGRESS ── */
+.scroll-prog {
+  position: fixed; top: 0; left: 0; height: 2px; width: 0;
+  background: linear-gradient(90deg, rgba(196,138,90,0.4), var(--gold));
+  z-index: 95; pointer-events: none;
+}
+
+/* ══════════════════════════════════════════════
+   NAV
+══════════════════════════════════════════════ */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 90;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 5%;
+  background: rgba(23,20,18,0.88); backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(247,244,238,0.07);
+  transition: transform 0.35s ease;
+}
+.nav.nav-hidden { transform: translateY(-100%); }
+.nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0; }
+.nav-brand img { width: 26px; opacity: 0.9; }
+.nav-brand span { font-family: 'Cormorant Garamond', serif; font-size: 18px; color: var(--warm-white); }
+.nav-links { display: flex; gap: 28px; }
+.nav-links a, .nav-links span { font-size: 13px; color: #8a8377; text-decoration: none; letter-spacing: 0.04em; transition: color 0.2s; }
+.nav-links a:hover, .nav-links a.active { color: var(--warm-white); }
+.nav-cta {
+  background: var(--warm-white); color: var(--charcoal); font-size: 13px;
+  padding: 10px 24px; border-radius: 24px; text-decoration: none;
+  letter-spacing: 0.03em; transition: opacity 0.2s; flex-shrink: 0;
+}
+.nav-cta:hover { opacity: 0.88; }
+.nav-burger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; background: none; border: none; }
+.nav-burger span { display: block; width: 22px; height: 1.5px; background: var(--warm-white); transition: all 0.3s; }
+.nav-burger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+.nav-burger.open span:nth-child(2) { opacity: 0; }
+.nav-burger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+.nav-drawer {
+  position: fixed; inset: 0; z-index: 89;
+  background: rgba(23,20,18,0.97); backdrop-filter: blur(16px);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 32px;
+  opacity: 0; pointer-events: none; transition: opacity 0.35s;
+}
+.nav-drawer.open { opacity: 1; pointer-events: auto; }
+.nav-drawer a, .nav-drawer span.drawer-dead { font-family: 'Cormorant Garamond', serif; font-size: 28px; color: #8a8377; text-decoration: none; transition: color 0.2s; }
+.nav-drawer a:hover, .nav-drawer a.active { color: var(--warm-white); }
+.nav-drawer .nav-cta { font-family: 'Frank Ruhl Libre', serif; font-size: 15px; margin-top: 16px; padding: 14px 40px; }
+@media(max-width:900px) { .nav-links, .nav > .nav-cta { display: none; } .nav-burger { display: flex; } }
+
+/* ══════════════════════════════════════════════
+   DIVIDERS  (homepage system)
+══════════════════════════════════════════════ */
+.divider { padding: 7vh 8%; position: relative; z-index: 5; pointer-events: none; }
+.divider-inner { display: flex; align-items: center; gap: 24px; max-width: 1200px; margin: 0 auto; }
+.divider-line { flex: 1; height: 1px; }
+.divider-mark { width: 26px; height: 26px; object-fit: contain; flex-shrink: 0; }
+.divider.dark  .divider-line { background: rgba(247,244,238,0.16); }
+.divider.light .divider-line { background: rgba(43,38,35,0.2); }
+.divider.green .divider-line { background: rgba(247,244,238,0.22); }
+/* the rule draws outward from the mark when it enters view */
+.divider .divider-line { transform: scaleX(0); transition: transform 1.4s var(--ease); }
+.divider.shown .divider-line { transform: scaleX(1); }
+.divider .divider-line:first-child { transform-origin: right; }
+.divider .divider-line:last-child  { transform-origin: left; }
+.divider .divider-mark { opacity: 0; transition: opacity 0.9s ease; }
+.divider.shown.dark  .divider-mark { opacity: 0.8; }
+.divider.shown.light .divider-mark { opacity: 0.55; }
+.divider.shown.green .divider-mark { opacity: 0.7; }
+
+/* ══════════════════════════════════════════════
+   EDITORIAL PRIMITIVES
+══════════════════════════════════════════════ */
+.sect { padding: 16vh 8%; }
+.sect-inner { max-width: 1360px; margin: 0 auto; }
+.bg-ivory   { background: var(--warm-white); }
+.bg-stone   { background: var(--warm-stone); }
+.bg-green   { background: var(--sanctuary); }
+.bg-mineral { background: var(--mineral); }
+.bg-surface { background: var(--dark-surface); }
+
+.eyebrow {
+  font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+  display: flex; align-items: center; gap: 14px; margin-bottom: 26px;
+}
+.eyebrow::before { content: ''; display: block; width: 0; height: 1px; background: currentColor; opacity: 0.55; transition: width 1.1s var(--ease) 0.15s; }
+.rv.show .eyebrow::before, .eyebrow.show::before { width: 28px; }
+.eyebrow.centered { justify-content: center; }
+.on-light .eyebrow { color: #8a7f6d; }
+.on-dark  .eyebrow { color: var(--gold); }
+.on-green .eyebrow { color: rgba(247,244,238,0.66); }
+
+.display {
+  font-family: 'Cormorant Garamond', serif; font-weight: 300;
+  font-size: clamp(36px,5.4vw,78px); line-height: 1.06; letter-spacing: -0.008em;
+}
+.display em { font-style: italic; color: var(--gold); }
+.on-light .display { color: var(--charcoal); }
+.on-dark .display, .on-green .display { color: var(--warm-white); }
+
+.copy { font-size: 16px; line-height: 1.9; max-width: 620px; }
+.copy p + p { margin-top: 20px; }
+.on-light .copy { color: #5c554c; }
+.on-dark  .copy { color: #b0a99b; }
+.on-green .copy { color: rgba(247,244,238,0.78); }
+
+.note-line { font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; }
+.on-light .note-line { color: #8a7f6d; }
+.on-dark  .note-line { color: rgba(196,138,90,0.9); }
+.on-green .note-line { color: rgba(247,244,238,0.58); }
+
+/* ── LINE-MASK REVEAL — type rises out of its own baseline.
+   The padding/negative-margin pair gives descenders (p, g, y)
+   room inside the mask without changing the layout. ── */
+.ln { display: block; overflow: hidden; padding-bottom: 0.14em; margin-bottom: -0.14em; }
+.ln > i {
+  display: block; font-style: inherit; color: inherit;
+  transform: translateY(108%);
+  transition: transform 1.15s var(--ease);
+}
+.rv.show .ln > i { transform: translateY(0); }
+.rv .ln:nth-child(2) > i { transition-delay: 0.09s; }
+.rv .ln:nth-child(3) > i { transition-delay: 0.18s; }
+.rv .ln:nth-child(4) > i { transition-delay: 0.27s; }
+
+/* ── SOFT REVEAL for body copy and blocks ── */
+.rv { opacity: 1; }
+.rv .soft { opacity: 0; transform: translateY(20px); transition: opacity 1s var(--ease), transform 1s var(--ease); }
+.rv.show .soft { opacity: 1; transform: translateY(0); }
+.rv.show .soft.d1 { transition-delay: 0.14s; }
+.rv.show .soft.d2 { transition-delay: 0.26s; }
+.rv.show .soft.d3 { transition-delay: 0.38s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ln > i, .rv .soft { transition-duration: 0.25s; }
+  .ln > i { transform: none; }
+}
+
+/* ── BUTTONS ── */
+.btn { display: inline-block; padding: 16px 36px; border-radius: 40px; text-decoration: none;
+       font-size: 12.5px; letter-spacing: 0.16em; text-transform: uppercase;
+       transition: opacity 0.3s, border-color 0.3s, background 0.3s, color 0.3s; }
+.btn-light { background: var(--warm-white); color: var(--charcoal); }
+.btn-light:hover { opacity: 0.86; }
+.btn-ghost { border: 1px solid rgba(247,244,238,0.3); color: var(--warm-white); }
+.btn-ghost:hover { border-color: rgba(247,244,238,0.8); }
+.btn-dark { background: var(--mineral); color: var(--warm-white); }
+.btn-dark:hover { opacity: 0.86; }
+.btn-outline { border: 1px solid rgba(43,38,35,0.28); color: var(--charcoal); }
+.btn-outline:hover { border-color: rgba(43,38,35,0.75); }
+.btn-row { display: flex; flex-wrap: wrap; gap: 12px; }
+
+/* ══════════════════════════════════════════════
+   SECTION 1 — HERO
+══════════════════════════════════════════════ */
+.hero-outer { position: relative; height: 620vh; }
+.hero-stage {
+  position: sticky; top: 0; height: 100vh; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  background: radial-gradient(ellipse at 50% 48%, #14110f 0%, #0a0806 55%, #040302 100%);
+}
+.hero-stage::before {
+  content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: radial-gradient(ellipse at 50% 46%, rgba(196,138,90,0.10) 0%, transparent 62%);
+  animation: heroAtmos 15s ease-in-out infinite;
+}
+@keyframes heroAtmos { 0%,100% { opacity: 0.45; } 50% { opacity: 0.95; } }
+/* vignette keeps the eye centred on the plates.
+   The hero owns both ::before (atmosphere) and ::after (vignette),
+   so its grain rides on its own element rather than the .grain helper. */
+.hero-stage::after {
+  content: ''; position: absolute; inset: 0; z-index: 8; pointer-events: none;
+  background: radial-gradient(ellipse at 50% 50%, transparent 42%, rgba(0,0,0,0.55) 100%);
+}
+.hero-grain {
+  position: absolute; inset: 0; z-index: 9; pointer-events: none; opacity: 0.038;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.hero-title {
+  position: absolute; inset: 0; z-index: 15; background: #080605;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  pointer-events: none; text-align: center; padding: 0 6%; opacity: 0;
+}
+.hero-title-eyebrow {
+  font-size: 10.5px; letter-spacing: 0.42em; text-transform: uppercase;
+  color: rgba(247,244,238,0.4); margin-bottom: 38px; padding-left: 0.42em;
+}
+.hero-title-text {
+  font-family: 'Cormorant Garamond', serif; font-weight: 500;
+  font-size: clamp(40px,7.6vw,116px); line-height: 1.02;
+  color: var(--warm-white); letter-spacing: 0.004em;
+}
+.hero-title-text em { font-style: italic; color: var(--gold); }
+.hero-title-text .type-cursor {
+  display: inline-block; width: 2px; height: 0.82em; background: var(--gold);
+  margin-left: 4px; vertical-align: -0.06em; animation: blink 0.85s steps(1) infinite;
+}
+@keyframes blink { 50% { opacity: 0; } }
+.hero-cue {
+  position: absolute; bottom: 7vh; left: 50%; transform: translateX(-50%);
+  font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase;
+  color: rgba(247,244,238,0.42); opacity: 0; transition: opacity 1.2s ease;
+}
+.hero-cue.show { opacity: 1; }
+
+.hero-plate {
+  position: absolute; top: 50%; left: 50%; z-index: 5;
+  width: 300px; aspect-ratio: 3 / 2;
+  background-size: cover; background-position: center 55%; background-repeat: no-repeat;
+  transform: translate(-50%,-50%) scale(0.7);
+  opacity: 0; pointer-events: none;
+  box-shadow: 0 50px 110px rgba(0,0,0,0.8);
+  will-change: transform, opacity, filter, width;
+}
+.hero-plate::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  box-shadow: inset 0 0 0 1px rgba(247,244,238,0.16);
+}
+#heroPlate01 { background-image: var(--img-hero-01); z-index: 7; }
+#heroPlate02 { background-image: var(--img-hero-02); background-position: center 62%; z-index: 6; }
+#heroPlate03 { background-image: var(--img-hero-03); background-position: 58% 55%; z-index: 6; }
+
+/* a caption per plate — appears only when the trio has settled */
+.hero-plate-cap {
+  position: absolute; left: 50%; transform: translateX(-50%);
+  bottom: 11vh; z-index: 9; text-align: center;
+  font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase;
+  color: rgba(247,244,238,0.5); opacity: 0; transition: opacity 0.8s ease;
+}
+.hero-plate-cap.show { opacity: 1; }
+
+.hero-bridge {
+  position: sticky; top: 0; height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  background: #080605; text-align: center; padding: 0 7%;
+  opacity: 0; pointer-events: none; z-index: 10;
+}
+.hero-bridge-inner { max-width: 820px; }
+.hero-bridge-rule {
+  width: 1px; height: 64px;
+  background: linear-gradient(180deg, transparent, rgba(196,138,90,0.5), transparent);
+  margin: 0 auto 34px;
+}
+.hero-statement {
+  font-family: 'Cormorant Garamond', serif; font-weight: 300;
+  font-size: clamp(42px,6.8vw,102px); line-height: 1.04;
+  color: var(--warm-white); letter-spacing: -0.012em;
+}
+.hero-statement em { display: block; font-style: italic; color: var(--gold); }
+.hero-bridge-copy { font-size: 15.5px; line-height: 1.9; color: rgba(247,244,238,0.6); max-width: 580px; margin: 40px auto 0; }
+.hero-bridge-note { font-size: 11px; letter-spacing: 0.28em; text-transform: uppercase; color: rgba(196,138,90,0.9); margin-top: 28px; }
+.hero-bridge .btn-row { justify-content: center; margin-top: 46px; }
+
+@media(max-width:900px){
+  .hero-outer { height: 500vh; }
+  .hero-title-eyebrow { letter-spacing: 0.3em; margin-bottom: 26px; }
+  .hero-plate { box-shadow: 0 30px 60px rgba(0,0,0,0.78); }
+  .hero-plate-cap { bottom: 9vh; font-size: 9px; letter-spacing: 0.2em; }
+}
+
+/* ══════════════════════════════════════════════
+   SECTION 2 — THE SANCTUARY
+══════════════════════════════════════════════ */
+.intro-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7%; align-items: start; }
+.intro-note { margin-top: 34px; padding-top: 26px; border-top: 1px solid rgba(43,38,35,0.16); }
+
+/* full-bleed photo with real scroll parallax */
+.par { position: relative; overflow: hidden; }
+.par-layer { position: absolute; inset: -12% 0; background-size: cover; background-position: center 50%; will-change: transform; }
+.wide-photo { height: 92vh; min-height: 460px; }
+.wide-photo .par-layer { background-image: var(--img-sanctuary-wide); }
+.wide-photo-cap {
+  position: absolute; left: 6%; bottom: 6%; z-index: 3;
+  font-size: 10px; letter-spacing: 0.24em; text-transform: uppercase;
+  color: rgba(247,244,238,0.7); text-shadow: 0 2px 24px rgba(0,0,0,0.9);
+}
+@media(max-width:900px){
+  .intro-grid { grid-template-columns: 1fr; gap: 36px; }
+  .wide-photo { height: 58vh; min-height: 320px; }
+}
+
+/* ══════════════════════════════════════════════
+   SECTION 3 — THE PHILOSOPHY
+══════════════════════════════════════════════ */
+.philosophy { text-align: center; }
+.philosophy .display { max-width: 15ch; margin: 0 auto; }
+.philosophy-italic {
+  font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300;
+  font-size: clamp(32px,4.6vw,66px); color: var(--gold); margin-top: 14px;
+}
+.phil-lines { max-width: 800px; margin: 14vh auto 0; }
+.phil-line {
+  display: grid; grid-template-columns: auto 1fr auto; align-items: baseline; gap: 26px;
+  padding: 30px 0; border-top: 1px solid rgba(43,38,35,0.14); text-align: left;
+}
+.phil-line:last-child { border-bottom: 1px solid rgba(43,38,35,0.14); }
+.phil-num { font-size: 10px; letter-spacing: 0.2em; color: var(--gold); }
+.phil-a { font-family: 'Cormorant Garamond', serif; font-size: clamp(22px,2.5vw,34px); color: var(--charcoal); font-weight: 400; }
+.phil-b { font-size: 10.5px; letter-spacing: 0.22em; text-transform: uppercase; color: #8a7f6d; }
+.philosophy-close { max-width: 620px; margin: 8vh auto 0; font-size: 16px; line-height: 1.9; color: #5c554c; }
+@media(max-width:720px){ .phil-line { grid-template-columns: auto 1fr; gap: 16px; } .phil-b { display: none; } }
+
+/* ══════════════════════════════════════════════
+   SECTION 4 — FOUR FOUNDATIONS
+══════════════════════════════════════════════ */
+.found-outer { position: relative; height: 360vh; background: var(--sanctuary); }
+.found-sticky {
+  position: sticky; top: 0; height: 100vh; overflow: hidden;
+  display: flex; flex-direction: column; justify-content: center; padding: 14vh 8% 9vh;
+}
+.found-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 32px; margin-bottom: 6vh; }
+.found-index { font-family: 'Cormorant Garamond', serif; font-size: clamp(30px,3.4vw,50px); color: rgba(247,244,238,0.9); font-weight: 300; line-height: 1; white-space: nowrap; }
+.found-index span.dim { color: rgba(247,244,238,0.26); }
+.found-list { position: relative; border-top: 1px solid rgba(247,244,238,0.16); max-width: 1360px; width: 100%; margin: 0 auto; }
+/* the spine that draws down the left as you progress */
+.found-spine { position: absolute; left: 0; top: 0; width: 1px; background: var(--gold); height: 0; transition: height 0.9s var(--ease); }
+.found-item {
+  display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 6%;
+  align-items: center; padding: 3.6vh 0 3.6vh 34px;
+  border-bottom: 1px solid rgba(247,244,238,0.16);
+  position: relative; opacity: 0.3;
+  transition: opacity 0.8s var(--ease);
+}
+.found-item.active { opacity: 1; }
+.found-dot {
+  position: absolute; left: -4px; top: 50%; margin-top: -4px;
+  width: 9px; height: 9px; border-radius: 50%;
+  background: var(--sanctuary); border: 1px solid rgba(247,244,238,0.35);
+  transition: background 0.6s ease, border-color 0.6s ease, box-shadow 0.6s ease;
+}
+.found-item.active .found-dot { background: var(--gold); border-color: var(--gold); box-shadow: 0 0 16px rgba(196,138,90,0.8); }
+.found-name {
+  font-family: 'Cormorant Garamond', serif; font-weight: 300;
+  font-size: clamp(30px,4.4vw,66px); line-height: 1; color: var(--warm-white);
+  display: flex; align-items: baseline; gap: 18px;
+  transition: letter-spacing 0.9s var(--ease);
+}
+.found-item.active .found-name { letter-spacing: 0.008em; }
+.found-num { font-size: 10.5px; letter-spacing: 0.2em; color: rgba(196,138,90,0.95); font-family: 'Frank Ruhl Libre', serif; }
+.found-sub { display: flex; flex-wrap: wrap; gap: 10px 30px; }
+.found-sub span {
+  font-size: 13px; letter-spacing: 0.05em; color: rgba(247,244,238,0.66);
+  opacity: 0; transform: translateY(10px);
+  transition: opacity 0.7s ease, transform 0.7s var(--ease);
+}
+.found-item.active .found-sub span { opacity: 1; transform: translateY(0); }
+.found-item.active .found-sub span:nth-child(2) { transition-delay: 0.07s; }
+.found-item.active .found-sub span:nth-child(3) { transition-delay: 0.14s; }
+.found-item.active .found-sub span:nth-child(4) { transition-delay: 0.21s; }
+.found-foot { margin-top: 5vh; font-size: 13.5px; color: rgba(247,244,238,0.52); line-height: 1.85; max-width: 620px; }
+@media(max-width:900px){
+  .found-outer { height: auto; }
+  .found-sticky { position: relative; height: auto; padding: 14vh 8%; }
+  .found-head { flex-direction: column; align-items: flex-start; gap: 16px; }
+  .found-index { display: none; }
+  .found-spine { height: 100% !important; }
+  .found-item { grid-template-columns: 1fr; gap: 16px; opacity: 1; padding: 4.5vh 0 4.5vh 28px; }
+  .found-item .found-sub span { opacity: 1; transform: none; }
+  .found-item .found-dot { background: var(--gold); border-color: var(--gold); }
+}
+
+/* ══════════════════════════════════════════════
+   SECTION 5 — SEVEN DAYS
+══════════════════════════════════════════════ */
+.seven-outer { position: relative; height: 580vh; background: var(--warm-white); }
+.seven-sticky {
+  position: sticky; top: 0; height: 100vh; overflow: hidden;
+  display: flex; flex-direction: column; justify-content: center; padding: 13vh 8% 9vh;
+}
+.seven-head { max-width: 1360px; margin: 0 auto 4vh; width: 100%; }
+.seven-stage { position: relative; max-width: 1360px; margin: 0 auto; width: 100%; height: 32vh; min-height: 210px; }
+.seven-day {
+  position: absolute; inset: 0;
+  display: grid; grid-template-columns: auto 1fr; gap: 6%; align-items: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.7s var(--ease);
+}
+.seven-day.active { opacity: 1; }
+.seven-numeral {
+  font-family: 'Cormorant Garamond', serif; font-weight: 300;
+  font-size: clamp(90px,14vw,210px); line-height: 0.82;
+  color: rgba(43,38,35,0.09); letter-spacing: -0.02em;
+  transform: translateY(18px); transition: transform 0.9s var(--ease);
+}
+.seven-day.active .seven-numeral { transform: translateY(0); }
+.seven-body { border-left: 1px solid rgba(43,38,35,0.16); padding-left: 6%; }
+.seven-label { font-size: 10.5px; letter-spacing: 0.26em; text-transform: uppercase; color: #8a7f6d; margin-bottom: 16px; }
+.seven-verb {
+  font-family: 'Cormorant Garamond', serif; font-weight: 400; font-style: italic;
+  font-size: clamp(38px,5.6vw,82px); color: var(--charcoal); line-height: 1; margin-bottom: 26px;
+  transform: translateY(16px); transition: transform 0.9s var(--ease) 0.06s;
+}
+.seven-day.active .seven-verb { transform: translateY(0); }
+.seven-keys { display: flex; flex-wrap: wrap; gap: 10px 28px; }
+.seven-keys span { font-size: 14px; color: #6b6459; letter-spacing: 0.04em; }
+
+/* the arc — a journey, not a progress bar */
+.seven-arc { max-width: 1360px; margin: 2vh auto 0; width: 100%; }
+.seven-arc svg { width: 100%; height: auto; overflow: visible; display: block; }
+.arc-track { fill: none; stroke: rgba(43,38,35,0.16); stroke-width: 1.2; stroke-dasharray: 4 7; }
+.arc-fill { fill: none; stroke: var(--gold); stroke-width: 2; stroke-linecap: round; }
+.arc-dot { fill: var(--warm-white); stroke: rgba(43,38,35,0.28); stroke-width: 1.2; transition: all 0.45s ease; }
+.arc-dot.on { fill: var(--gold); stroke: var(--gold); }
+.arc-dot.now { fill: var(--gold); stroke: var(--charcoal); stroke-width: 2; r: 7; }
+.arc-lab { font-size: 9.5px; letter-spacing: 0.16em; fill: rgba(43,38,35,0.32); font-family: 'Frank Ruhl Libre', serif; transition: fill 0.45s ease; }
+.arc-lab.on { fill: var(--charcoal); }
+.seven-rolling { margin: 4vh auto 0; max-width: 1360px; width: 100%; font-size: 12.5px; letter-spacing: 0.04em; color: #8a7f6d; line-height: 1.8; }
+@media(max-width:900px){
+  .seven-outer { height: auto; }
+  .seven-sticky { position: relative; height: auto; padding: 14vh 8%; }
+  .seven-stage { height: auto; min-height: 0; }
+  .seven-day { position: relative; inset: auto; opacity: 1; grid-template-columns: auto 1fr; gap: 22px; align-items: start; padding: 4.5vh 0; border-top: 1px solid rgba(43,38,35,0.14); }
+  .seven-numeral { font-size: 56px; color: rgba(43,38,35,0.18); transform: none; }
+  .seven-body { border-left: none; padding-left: 0; }
+  .seven-verb { font-size: 34px; margin-bottom: 16px; transform: none; }
+  .seven-arc { display: none; }
+}
+
+/* ══════════════════════════════════════════════
+   SECTION 6 — AN AVERAGE DAY
+══════════════════════════════════════════════ */
+.day-outer { background: var(--dark-surface); padding: 16vh 0 0; }
+.day-head { padding: 0 8%; max-width: 1360px; margin: 0 auto 9vh; }
+.day-grid { display: grid; grid-template-columns: 1fr 1fr; max-width: 1600px; margin: 0 auto; }
+.day-media { position: sticky; top: 0; height: 100vh; overflow: hidden; background: #0b0908; }
+.day-media-layer {
+  position: absolute; inset: -4%;
+  background-size: cover; background-position: center 55%;
+  opacity: 0; transform: scale(1.07);
+  transition: opacity 1.4s var(--ease), transform 3s var(--ease);
+}
+.day-media-layer.on { opacity: 1; transform: scale(1); }
+.day-media-layer[data-media="morning"]   { background-image: var(--img-day-morning); }
+.day-media-layer[data-media="midday"]    { background-image: var(--img-day-midday); }
+.day-media-layer[data-media="afternoon"] { background-image: var(--img-day-afternoon); }
+.day-media-layer[data-media="evening"]   { background-image: var(--img-day-evening); }
+.day-media-veil { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(11,9,8,0.4) 0%, rgba(11,9,8,0.04) 42%, rgba(11,9,8,0.6) 100%); }
+.day-clock {
+  position: absolute; left: 8%; bottom: 8%; z-index: 3;
+  font-family: 'Cormorant Garamond', serif; font-size: clamp(48px,5.4vw,92px);
+  color: rgba(247,244,238,0.94); font-weight: 300; line-height: 1;
+  text-shadow: 0 4px 44px rgba(0,0,0,0.8);
+}
+.day-list { padding: 0 8% 0 6%; }
+.day-entry { padding: 8vh 0; border-bottom: 1px solid rgba(247,244,238,0.09); opacity: 0.26; transition: opacity 0.9s var(--ease); }
+.day-entry.on { opacity: 1; }
+.day-entry:first-child { padding-top: 0; }
+.day-time { font-size: 10.5px; letter-spacing: 0.28em; color: var(--gold); margin-bottom: 16px; }
+.day-title { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: clamp(32px,3.6vw,54px); color: var(--warm-white); line-height: 1; margin-bottom: 20px; }
+.day-detail { display: flex; flex-wrap: wrap; gap: 8px 26px; }
+.day-detail span { font-size: 14px; color: #8a8377; }
+.day-foot { padding: 9vh 8% 0; max-width: 1360px; margin: 9vh auto 0; font-size: 13px; color: #7a746a; line-height: 1.85; border-top: 1px solid rgba(247,244,238,0.08); }
+@media(max-width:900px){
+  .day-grid { grid-template-columns: 1fr; }
+  .day-media { height: 42vh; top: 58px; }
+  .day-clock { font-size: 40px; left: 7%; bottom: 7%; }
+  .day-list { padding: 7vh 8% 0; }
+  .day-entry { padding: 5.5vh 0; opacity: 1; }
+  .day-media-veil { background: linear-gradient(180deg, rgba(11,9,8,0.32) 0%, rgba(11,9,8,0.08) 50%, rgba(11,9,8,0.62) 100%); }
+}
+
+/* ══════════════════════════════════════════════
+   3D STAGES
+══════════════════════════════════════════════ */
+.three-outer { position: relative; background: #07100f; }
+.three-sticky { position: sticky; top: 0; height: 100vh; overflow: hidden; }
+.three-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.three-vignette {
+  position: absolute; inset: 0; pointer-events: none; z-index: 2;
+  background: radial-gradient(ellipse at 50% 50%, transparent 45%, rgba(0,0,0,0.6) 100%);
+}
+.three-copy { position: absolute; left: 8%; top: 12vh; z-index: 4; max-width: 400px; pointer-events: none; }
+.three-copy .display { font-size: clamp(30px,3.6vw,54px); }
+.three-copy .copy { font-size: 14.5px; margin-top: 22px; max-width: 340px; }
+.three-fallback { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; color: rgba(247,244,238,0.35); font-size: 14px; line-height: 1.9; text-align: center; padding: 0 12%; z-index: 5; }
+.three-outer.no-webgl .three-fallback { display: flex; }
+.three-outer.no-webgl .three-canvas { display: none; }
+
+/* sun-cycle readout */
+.sun-readout { position: absolute; right: 8%; bottom: 10vh; z-index: 4; text-align: right; pointer-events: none; }
+.sun-time { font-family: 'Cormorant Garamond', serif; font-size: clamp(52px,6vw,104px); font-weight: 300; color: var(--warm-white); line-height: 0.9; }
+.sun-phase { font-size: 10.5px; letter-spacing: 0.28em; text-transform: uppercase; color: rgba(196,138,90,0.9); margin-top: 14px; }
+.sun-scale { position: absolute; left: 8%; bottom: 10vh; z-index: 4; width: 34%; max-width: 380px; pointer-events: none; }
+.sun-scale-track { height: 1px; background: rgba(247,244,238,0.18); position: relative; }
+.sun-scale-fill { position: absolute; left: 0; top: 0; height: 1px; background: var(--gold); width: 0; }
+.sun-scale-knob { position: absolute; top: -3px; width: 7px; height: 7px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 14px var(--gold); margin-left: -3px; }
+.sun-scale-ends { display: flex; justify-content: space-between; margin-top: 12px; font-size: 9.5px; letter-spacing: 0.2em; color: rgba(247,244,238,0.4); }
+
+/* loop readout */
+.loop-readout { position: absolute; left: 50%; transform: translateX(-50%); bottom: 9vh; z-index: 4; text-align: center; pointer-events: none; }
+.loop-day { font-family: 'Cormorant Garamond', serif; font-size: clamp(30px,3.4vw,46px); font-weight: 300; color: var(--warm-white); line-height: 1; }
+.loop-day em { font-style: italic; color: var(--gold); }
+.loop-sub { font-size: 10px; letter-spacing: 0.26em; text-transform: uppercase; color: rgba(247,244,238,0.45); margin-top: 14px; }
+.loop-close { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); z-index: 4; text-align: center; opacity: 0; transition: opacity 1.4s ease; pointer-events: none; }
+.loop-close.show { opacity: 1; }
+.loop-close-text { font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300; font-size: clamp(30px,4.4vw,64px); color: var(--warm-white); line-height: 1.15; }
+
+@media(max-width:900px){
+  .three-copy { left: 7%; right: 7%; top: 11vh; max-width: none; }
+  .three-copy .copy { max-width: none; font-size: 13.5px; }
+  .sun-readout { right: 7%; bottom: 20vh; }
+  .sun-time { font-size: 48px; }
+  .sun-scale { left: 7%; right: 7%; width: auto; max-width: none; bottom: 7vh; }
+  .loop-readout { bottom: 7vh; }
+}
+
+/* ══════════════════════════════════════════════
+   SECTION 7 — IMMERSION
+══════════════════════════════════════════════ */
+.immersion { position: relative; min-height: 112vh; display: flex; align-items: flex-end; overflow: hidden; }
+.immersion .par-layer { background-image: var(--img-immersion); background-position: center 52%; }
+.immersion-veil {
+  position: absolute; inset: 0; z-index: 1;
+  background: linear-gradient(180deg, rgba(10,8,6,0.6) 0%, rgba(10,8,6,0.1) 30%, rgba(10,8,6,0.28) 58%, rgba(10,8,6,0.9) 100%);
+}
+.immersion-inner { position: relative; z-index: 3; padding: 0 8% 15vh; max-width: 1360px; margin: 0 auto; width: 100%; }
+.immersion .display { max-width: 12ch; }
+.immersion-copy { margin-top: 32px; max-width: 500px; font-size: 16px; line-height: 1.9; color: rgba(247,244,238,0.8); }
+.immersion-triplet { display: flex; flex-wrap: wrap; gap: 14px 44px; margin-top: 38px; }
+.immersion-triplet span { font-size: 11.5px; letter-spacing: 0.24em; text-transform: uppercase; color: rgba(247,244,238,0.62); }
+@media(max-width:900px){ .immersion { min-height: 92vh; } .immersion-inner { padding-bottom: 11vh; } }
+
+/* ══════════════════════════════════════════════
+   SECTION 8 — THE EXPERIENCE
+══════════════════════════════════════════════ */
+.exp-row { display: grid; grid-template-columns: 1fr 1fr; max-width: 1600px; margin: 0 auto; align-items: stretch; }
+.exp-photo { position: relative; min-height: 68vh; overflow: hidden; }
+.exp-photo .par-layer { inset: -12% 0; }
+.exp-text { display: flex; flex-direction: column; justify-content: center; padding: 9vh 8%; }
+.exp-row.flip .exp-photo { order: 2; }
+.exp-row.flip .exp-text { order: 1; }
+.exp-idx { font-size: 10px; letter-spacing: 0.24em; color: var(--gold); margin-bottom: 20px; }
+.exp-name { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: clamp(30px,3.4vw,50px); color: var(--charcoal); line-height: 1.08; margin-bottom: 24px; }
+.exp-name em { font-style: italic; color: var(--gold); }
+.exp-copy { font-size: 15.5px; line-height: 1.9; color: #5c554c; max-width: 450px; }
+@media(max-width:900px){
+  .exp-row { grid-template-columns: 1fr; }
+  .exp-row.flip .exp-photo, .exp-row.flip .exp-text { order: 0; }
+  .exp-photo { min-height: 46vh; }
+  .exp-text { padding: 8vh 8%; }
+}
+
+/* ══════════════════════════════════════════════
+   SECTION 9 — THE PLACE
+══════════════════════════════════════════════ */
+.place-grid { display: grid; grid-template-columns: 1fr 0.9fr; gap: 8%; align-items: center; max-width: 1360px; margin: 0 auto; }
+.place-map { position: relative; height: 82vh; min-height: 440px; background-image: var(--img-place); background-size: contain; background-position: center; background-repeat: no-repeat; }
+.place-pin { position: absolute; left: 30.5%; top: 79%; width: 9px; height: 9px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 0 6px rgba(196,138,90,0.16), 0 0 24px rgba(196,138,90,0.95); }
+@keyframes pinPulse { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.4); opacity: 0.65; } }
+.place-pin { animation: pinPulse 3.6s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .place-pin { animation: none; } }
+.place-pin-label { position: absolute; left: 20px; top: -7px; white-space: nowrap; font-size: 10px; letter-spacing: 0.26em; text-transform: uppercase; color: rgba(247,244,238,0.8); }
+.place-coords { margin-top: 34px; padding-top: 22px; border-top: 1px solid rgba(247,244,238,0.12); display: flex; gap: 46px; flex-wrap: wrap; }
+.place-coord-k { font-size: 9.5px; letter-spacing: 0.22em; text-transform: uppercase; color: #5f5a52; margin-bottom: 8px; }
+.place-coord-v { font-family: 'Cormorant Garamond', serif; font-size: 22px; color: var(--warm-white); font-weight: 300; }
+@media(max-width:900px){ .place-grid { grid-template-columns: 1fr; gap: 8vh; } .place-map { height: 48vh; min-height: 300px; order: 2; } }
+
+/* ══════════════════════════════════════════════
+   SECTION 10 — TRANSFORMATION
+══════════════════════════════════════════════ */
+.transform-sect { text-align: center; padding: 22vh 8%; }
+.transform-sect .display { max-width: 18ch; margin: 0 auto; }
+.transform-italic { font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300; font-size: clamp(30px,4.4vw,62px); color: var(--gold); margin-top: 18px; line-height: 1.12; }
+.transform-copy { max-width: 580px; margin: 8vh auto 0; font-size: 16px; line-height: 1.95; color: #5c554c; }
+@media(max-width:900px){ .transform-sect { padding: 15vh 8%; } }
+
+/* ══════════════════════════════════════════════
+   SECTION 11 — COMING TO PHUKET
+══════════════════════════════════════════════ */
+.pilot { position: relative; min-height: 104vh; display: flex; align-items: center; overflow: hidden; }
+.pilot .par-layer { background-image: var(--img-pilot); background-position: center 48%; }
+.pilot-veil { position: absolute; inset: 0; z-index: 1; background: linear-gradient(90deg, rgba(7,5,4,0.94) 0%, rgba(7,5,4,0.76) 40%, rgba(7,5,4,0.34) 76%, rgba(7,5,4,0.18) 100%); }
+.pilot-inner { position: relative; z-index: 3; padding: 15vh 8%; max-width: 1360px; margin: 0 auto; width: 100%; }
+.pilot-title { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: clamp(40px,5.8vw,90px); line-height: 1.02; color: var(--warm-white); }
+.pilot-title em { display: block; font-style: italic; color: var(--gold); }
+.pilot .copy { margin-top: 32px; color: rgba(247,244,238,0.72); }
+.pilot .btn-row { margin-top: 48px; }
+@media(max-width:900px){ .pilot { min-height: auto; } }
+
+/* ══════════════════════════════════════════════
+   EARLY ACCESS FORM
+══════════════════════════════════════════════ */
+.form-wrap { max-width: 1000px; margin: 0 auto; }
+.form-tag {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 9px 20px; border: 1px solid rgba(196,138,90,0.42); border-radius: 30px;
+  font-size: 10px; letter-spacing: 0.24em; text-transform: uppercase; color: #a07a4f; margin-bottom: 30px;
+}
+.form-tag::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--gold); }
+.ea-form { margin-top: 8vh; }
+.ea-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 44px; }
+.ea-field { margin-bottom: 36px; }
+.ea-field.full { grid-column: 1 / -1; }
+.ea-label { display: block; font-size: 10px; letter-spacing: 0.24em; text-transform: uppercase; color: #8a7f6d; margin-bottom: 13px; }
+.ea-input, .ea-select, .ea-textarea {
+  width: 100%; background: transparent; border: none;
+  border-bottom: 1px solid rgba(43,38,35,0.24);
+  padding: 13px 0; font-family: 'Frank Ruhl Libre', serif; font-size: 16px;
+  color: var(--charcoal); border-radius: 0; transition: border-color 0.35s ease;
+}
+.ea-input:focus, .ea-select:focus, .ea-textarea:focus { outline: none; border-bottom-color: var(--gold); }
+.ea-input::placeholder, .ea-textarea::placeholder { color: rgba(43,38,35,0.3); }
+.ea-select {
+  appearance: none; -webkit-appearance: none; cursor: pointer;
+  background-image: linear-gradient(45deg, transparent 50%, #8a7f6d 50%), linear-gradient(135deg, #8a7f6d 50%, transparent 50%);
+  background-position: calc(100% - 12px) calc(50% + 1px), calc(100% - 7px) calc(50% + 1px);
+  background-size: 5px 5px, 5px 5px; background-repeat: no-repeat;
+}
+.ea-textarea { resize: vertical; min-height: 96px; }
+.ea-submit-row { grid-column: 1 / -1; margin-top: 2vh; }
+.ea-button {
+  font-family: 'Frank Ruhl Libre', serif; border: none; cursor: pointer;
+  background: var(--mineral); color: var(--warm-white);
+  padding: 18px 46px; border-radius: 40px;
+  font-size: 12.5px; letter-spacing: 0.16em; text-transform: uppercase; transition: opacity 0.3s ease;
+}
+.ea-button:hover { opacity: 0.86; }
+.ea-disclaimer { margin-top: 22px; font-size: 12.5px; color: #8a7f6d; line-height: 1.8; max-width: 540px; }
+.ea-response { margin-top: 26px; padding: 22px 26px; border-left: 2px solid var(--gold); background: rgba(255,255,255,0.55); font-size: 14px; line-height: 1.8; color: #5c554c; display: none; }
+.ea-response.show { display: block; }
+@media(max-width:720px){ .ea-grid { grid-template-columns: 1fr; gap: 0; } }
+
+/* ══════════════════════════════════════════════
+   FINAL
+══════════════════════════════════════════════ */
+.final { text-align: center; padding: 22vh 8%; background: radial-gradient(ellipse at 50% 40%, #221c16 0%, var(--mineral) 68%); position: relative; }
+.final .display { max-width: 16ch; margin: 0 auto; }
+.final-verbs { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px 38px; margin: 7vh 0 5vh; }
+.final-verbs span { font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300; font-size: clamp(20px,2.4vw,34px); color: rgba(247,244,238,0.55); }
+.final .copy { margin: 0 auto 48px; text-align: center; }
+.final .btn-row { justify-content: center; }
+@media(max-width:900px){ .final { padding: 15vh 8%; } }
+
+/* ══════════════════════════════════════════════
+   FOOTER
+══════════════════════════════════════════════ */
+.site-footer { background: var(--mineral); color: #8a8377; padding: 7vh 8% 4vh; border-top: 1px solid rgba(247,244,238,0.07); }
+.footer-top { display: grid; grid-template-columns: repeat(5,1fr); gap: 40px; padding-bottom: 5vh; border-bottom: 1px solid rgba(247,244,238,0.1); }
+.footer-brand-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+.footer-brand-logo img { width: 28px; opacity: 0.9; }
+.footer-brand-logo span { font-family: 'Cormorant Garamond', serif; font-size: 18px; color: var(--warm-white); }
+.footer-tagline { font-size: 13px; line-height: 1.6; color: #7a746a; }
+.footer-tagline strong { display: block; color: #b8b1a4; font-weight: 500; }
+.footer-tagline em { font-style: italic; }
+.footer-col-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #5f5a52; margin-bottom: 18px; }
+.footer-col a, .footer-col span { display: block; font-size: 13.5px; color: #8a8377; text-decoration: none; margin-bottom: 11px; transition: color 0.2s; }
+.footer-col a:hover { color: var(--warm-white); }
+.footer-bottom { display: flex; justify-content: space-between; padding-top: 4vh; font-size: 12px; color: #4a4540; }
+.footer-appearance { margin-top: 22px; }
+.footer-appearance-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: #5f5a52; margin-bottom: 8px; }
+.footer-toggle { display: inline-flex; background: rgba(247,244,238,0.08); border-radius: 20px; padding: 3px; }
+.footer-toggle button { background: none; border: none; color: #7a746a; font-size: 12px; padding: 6px 14px; border-radius: 16px; cursor: pointer; transition: all 0.2s ease; letter-spacing: 0.04em; text-transform: uppercase; font-family: 'Frank Ruhl Libre', serif; }
+.footer-toggle button.active { background: rgba(247,244,238,0.14); color: var(--warm-white); }
+@media(max-width:768px) { .footer-top { grid-template-columns: 1fr 1fr; gap: 32px; } .footer-bottom { flex-direction: column; gap: 8px; } }
+
+/* ══════════════════════════════════════════════
+   LIGHT THEME — chrome only. The page body is a
+   cinematic sequence that already travels dark →
+   ivory → green → ivory → dark, the same way app.html
+   keeps its Ecosystem, Quest and Footer as fixed anchors.
+══════════════════════════════════════════════ */
+html[data-theme="light"], html[data-theme="light"] body { background: #F7F4EE; color: #2B2623; }
+html[data-theme="light"] .nav { background: rgba(247,244,238,0.94); border-bottom-color: rgba(43,38,35,0.1); }
+html[data-theme="light"] .nav-brand span { color: #171412; }
+html[data-theme="light"] .nav-brand img { filter: invert(1) brightness(0.3); }
+html[data-theme="light"] .nav-links a, html[data-theme="light"] .nav-links span { color: #6b6459; }
+html[data-theme="light"] .nav-links a:hover, html[data-theme="light"] .nav-links a.active { color: #171412; }
+html[data-theme="light"] .nav-cta { background: #171412; color: #F7F4EE; }
+html[data-theme="light"] .nav-burger span { background: #2B2623; }
+html[data-theme="light"] .nav-drawer { background: rgba(247,244,238,0.98); }
+html[data-theme="light"] .nav-drawer a, html[data-theme="light"] .nav-drawer span.drawer-dead { color: #6b6459; }
+html[data-theme="light"] .nav-drawer a:hover, html[data-theme="light"] .nav-drawer a.active { color: #171412; }
+html[data-theme="light"] .nav-drawer .nav-cta { background: #171412; color: #F7F4EE; }
+html[data-theme="light"] .footer-toggle button#ftLight { background: rgba(247,244,238,0.18); color: var(--warm-white); }
+html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; background: none; }
+</style>
+<noscript><style>
+  /* Masked headlines and soft blocks are revealed by script. Without it,
+     show everything rather than serve a page of invisible type. */
+  .ln > i { transform: none !important; }
+  .rv .soft { opacity: 1 !important; transform: none !important; }
+  .eyebrow::before { width: 28px !important; }
+  .divider .divider-line { transform: scaleX(1) !important; }
+  .divider .divider-mark { opacity: 0.7 !important; }
+  .found-item, .seven-day, .day-entry { opacity: 1 !important; }
+</style></noscript>
+</head>
+<body>
+
+<div class="scroll-prog" id="scrollProg"></div>
+
+<!-- ══ NAV ══ -->
+<nav class="nav">
+  <a class="nav-brand" href="index.html">
+    <img src="images/img-09-white.png" alt="DAOasis" />
+    <span>DAOasis</span>
+  </a>
+  <div class="nav-links">
+    <a href="app.html">The App</a>
+    <a href="sanctuary.html" class="active">The Sanctuary</a>
+    <span>The Web3 Layer</span>
+    <span>About Us</span>
+    <span>Investors</span>
+  </div>
+  <a class="nav-cta" href="#earlyAccess">Join the waitlist</a>
+  <button class="nav-burger" id="navBurger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="nav-drawer" id="navDrawer">
+  <a href="app.html">The App</a>
+  <a href="sanctuary.html" class="active">The Sanctuary</a>
+  <span class="drawer-dead">The Web3 Layer</span>
+  <span class="drawer-dead">About Us</span>
+  <span class="drawer-dead">Investors</span>
+  <a class="nav-cta" href="#earlyAccess">Join the waitlist</a>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     SECTION 1 — HERO
+══════════════════════════════════════════════ -->
+<div class="hero-outer" id="heroOuter">
+  <section class="hero-stage" id="heroStage">
+
+    <div class="hero-title" id="heroTitle">
+      <div class="hero-title-eyebrow">The DAOasis Sanctuary</div>
+      <div class="hero-title-text" id="heroTitleText"></div>
+      <div class="hero-cue" id="heroCue">Scroll to enter ↓</div>
+    </div>
+
+    <div class="hero-plate" id="heroPlate02" role="img" aria-label="The tropical environment surrounding the Sanctuary"></div>
+    <div class="hero-plate" id="heroPlate03" role="img" aria-label="A person at rest within the Sanctuary"></div>
+    <div class="hero-plate" id="heroPlate01" role="img" aria-label="Sanctuary architecture at first light"></div>
+
+    <div class="hero-plate-cap" id="heroPlateCap">Architecture · Environment · Experience</div>
+    <div class="hero-grain"></div>
+  </section>
+
+  <div class="hero-bridge" id="heroBridge">
+    <div class="hero-bridge-inner">
+      <div class="hero-bridge-rule"></div>
+      <h1 class="hero-statement">Immersion creates<em>acceleration.</em></h1>
+      <p class="hero-bridge-copy">A seven day rolling programme of wellness, learning and community designed to help people step away from distraction, deepen awareness and accelerate meaningful behavioural change.</p>
+      <div class="hero-bridge-note">Coming to Phuket in 2027</div>
+      <div class="btn-row">
+        <a class="btn btn-light" href="#earlyAccess">Join Early Access</a>
+        <a class="btn btn-ghost" href="#theSanctuary">Explore the Experience</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     SECTION 2 — THE SANCTUARY
+══════════════════════════════════════════════ -->
+<section class="sect bg-ivory on-light" id="theSanctuary" style="padding-bottom:0;">
+  <div class="sect-inner">
+    <div class="intro-grid">
+      <div class="rv">
+        <div class="eyebrow">The Sanctuary</div>
+        <h2 class="display">
+          <span class="ln"><i>A place to step</i></span>
+          <span class="ln"><i>outside the noise.</i></span>
+        </h2>
+      </div>
+      <div class="rv">
+        <div class="copy soft">
+          <p>The DAOasis Sanctuary is where the digital journey becomes physical.</p>
+          <p>A place designed around recovery, learning, accountability and community, with the space and structure to help people change how they live rather than simply how they feel for a few days.</p>
+        </div>
+        <div class="intro-note note-line soft d2">The first pilot is planned for Phuket in 2027</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider light bg-ivory" style="padding-top:12vh;">
+  <div class="divider-inner">
+    <div class="divider-line"></div>
+    <img src="images/img-09.png" alt="" class="divider-mark" />
+    <div class="divider-line"></div>
+  </div>
+</div>
+
+<div class="wide-photo par" data-par="0.16">
+  <div class="par-layer"></div>
+  <div class="wide-photo-cap">Holding image · Sanctuary environment</div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     SECTION 3 — THE PHILOSOPHY
+══════════════════════════════════════════════ -->
+<section class="sect bg-stone on-light philosophy">
+  <div class="sect-inner">
+    <div class="rv">
+      <div class="eyebrow centered">The DAOasis Philosophy</div>
+      <h2 class="display">
+        <span class="ln"><i>The programme is not</i></span>
+        <span class="ln"><i>the destination.</i></span>
+      </h2>
+      <div class="philosophy-italic soft d2">It is the catalyst.</div>
+    </div>
+
+    <div class="phil-lines">
+      <div class="phil-line rv"><div class="phil-num">01</div><div class="phil-a"><span class="ln"><i>Recovery creates space.</i></span></div><div class="phil-b">Foundation</div></div>
+      <div class="phil-line rv"><div class="phil-num">02</div><div class="phil-a"><span class="ln"><i>Learning creates understanding.</i></span></div><div class="phil-b">Direction</div></div>
+      <div class="phil-line rv"><div class="phil-num">03</div><div class="phil-a"><span class="ln"><i>Accountability creates action.</i></span></div><div class="phil-b">Momentum</div></div>
+      <div class="phil-line rv"><div class="phil-num">04</div><div class="phil-a"><span class="ln"><i>Community makes it sustainable.</i></span></div><div class="phil-b">Continuity</div></div>
+    </div>
+
+    <div class="rv"><p class="philosophy-close soft">The Sanctuary is designed to create the conditions for change. The seven day experience brings these elements together into one continuous rhythm.</p></div>
+  </div>
+</section>
+
+<div class="divider light bg-stone">
+  <div class="divider-inner">
+    <div class="divider-line"></div>
+    <img src="images/img-09.png" alt="" class="divider-mark" />
+    <div class="divider-line"></div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     SECTION 4 — FOUR FOUNDATIONS
+══════════════════════════════════════════════ -->
+<div class="found-outer on-green grain" id="foundOuter">
+  <div class="found-sticky">
+
+    <div class="found-head">
+      <div>
+        <div class="eyebrow show">The Structure</div>
+        <h2 class="display">Four foundations.<br><em>One system.</em></h2>
+      </div>
+      <div class="found-index"><span id="foundIndexNum">01</span><span class="dim"> / 04</span></div>
+    </div>
+
+    <div class="found-list" id="foundList">
+      <div class="found-spine" id="foundSpine"></div>
+      <div class="found-item" data-found="0">
+        <div class="found-dot"></div>
+        <div class="found-name"><span class="found-num">01</span>Recovery</div>
+        <div class="found-sub"><span>Sleep optimisation</span><span>Breathwork</span><span>Nervous system regulation</span><span>Movement</span></div>
+      </div>
+      <div class="found-item" data-found="1">
+        <div class="found-dot"></div>
+        <div class="found-name"><span class="found-num">02</span>Learning</div>
+        <div class="found-sub"><span>Practical frameworks</span><span>Workshops</span><span>Applied education</span></div>
+      </div>
+      <div class="found-item" data-found="2">
+        <div class="found-dot"></div>
+        <div class="found-name"><span class="found-num">03</span>Accountability</div>
+        <div class="found-sub"><span>Tracking</span><span>Reflection</span><span>Behavioural implementation</span></div>
+      </div>
+      <div class="found-item" data-found="3">
+        <div class="found-dot"></div>
+        <div class="found-name"><span class="found-num">04</span>Community</div>
+        <div class="found-sub"><span>Connection</span><span>Shared experience</span><span>Growth</span></div>
+      </div>
+    </div>
+
+    <p class="found-foot">None of the four work alone. Recovery makes learning possible. Learning gives accountability something to hold. Community is what carries all of it past the last day.</p>
+
+  </div>
+</div>
+
+<div class="divider green bg-green">
+  <div class="divider-inner">
+    <div class="divider-line"></div>
+    <img src="images/img-09-white.png" alt="" class="divider-mark" />
+    <div class="divider-line"></div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     SECTION 5 — SEVEN DAYS
+══════════════════════════════════════════════ -->
+<div class="seven-outer on-light" id="sevenOuter">
+  <div class="seven-sticky">
+
+    <div class="seven-head">
+      <div class="eyebrow show">The Rhythm</div>
+      <h2 class="display">Seven days. <em>One continuous rhythm.</em></h2>
+    </div>
+
+    <div class="seven-stage" id="sevenStage">
+      <div class="seven-day active" data-day="0"><div class="seven-numeral">01</div><div class="seven-body"><div class="seven-label">Day One</div><div class="seven-verb">Arrive</div><div class="seven-keys"><span>Reset</span><span>Orientation</span><span>Create space</span></div></div></div>
+      <div class="seven-day" data-day="1"><div class="seven-numeral">02</div><div class="seven-body"><div class="seven-label">Day Two</div><div class="seven-verb">Recover</div><div class="seven-keys"><span>Sleep</span><span>Movement</span><span>Nervous system</span></div></div></div>
+      <div class="seven-day" data-day="2"><div class="seven-numeral">03</div><div class="seven-body"><div class="seven-label">Day Three</div><div class="seven-verb">Learn</div><div class="seven-keys"><span>Frameworks</span><span>Education</span><span>Reflection</span></div></div></div>
+      <div class="seven-day" data-day="3"><div class="seven-numeral">04</div><div class="seven-body"><div class="seven-label">Day Four</div><div class="seven-verb">Practise</div><div class="seven-keys"><span>Apply</span><span>Experiment</span><span>Build</span></div></div></div>
+      <div class="seven-day" data-day="4"><div class="seven-numeral">05</div><div class="seven-body"><div class="seven-label">Day Five</div><div class="seven-verb">Account</div><div class="seven-keys"><span>Track</span><span>Reflect</span><span>Adjust</span></div></div></div>
+      <div class="seven-day" data-day="5"><div class="seven-numeral">06</div><div class="seven-body"><div class="seven-label">Day Six</div><div class="seven-verb">Connect</div><div class="seven-keys"><span>Community</span><span>Conversation</span><span>Shared experience</span></div></div></div>
+      <div class="seven-day" data-day="6"><div class="seven-numeral">07</div><div class="seven-body"><div class="seven-label">Day Seven</div><div class="seven-verb">Integrate</div><div class="seven-keys"><span>Reflect</span><span>Commit</span><span>Carry it forward</span></div></div></div>
+    </div>
+
+    <div class="seven-arc">
+      <svg viewBox="0 0 1200 120" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path class="arc-track" d="M 30,86 C 190,86 250,26 400,26 C 550,26 620,86 760,86 C 900,86 960,30 1170,30"/>
+        <path class="arc-fill" id="arcFill" d="M 30,86 C 190,86 250,26 400,26 C 550,26 620,86 760,86 C 900,86 960,30 1170,30"/>
+        <g id="arcDots"></g>
+      </svg>
+    </div>
+
+    <p class="seven-rolling">A rolling programme — there is no fixed cohort start date. New members arrive every day, entering a community already in motion rather than starting from zero. You arrive. You join the rhythm. You begin where the programme currently is.</p>
+
+  </div>
+</div>
+
+<section class="sect bg-ivory on-light" style="padding-top:14vh;padding-bottom:14vh;">
+  <div class="sect-inner" style="max-width:860px;">
+    <div class="rv"><p class="copy soft" style="max-width:none;font-size:17px;">Each day builds on the last. Recovery creates the space for learning. Learning deepens accountability. Accountability strengthens community. By day seven, you are not simply leaving a retreat — you are leaving with a different relationship to your own behaviour.</p></div>
+  </div>
+</section>
+
+<div class="divider light bg-ivory">
+  <div class="divider-inner">
+    <div class="divider-line"></div>
+    <img src="images/img-09.png" alt="" class="divider-mark" />
+    <div class="divider-line"></div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     SECTION 6 — AN AVERAGE DAY
+══════════════════════════════════════════════ -->
+<div class="day-outer on-dark grain" id="dayOuter">
+
+  <div class="day-head rv">
+    <div class="eyebrow">A Day at the Sanctuary</div>
+    <h2 class="display">
+      <span class="ln"><i>A day designed</i></span>
+      <span class="ln"><i>with intention.</i></span>
+    </h2>
+    <p class="copy soft d2" style="margin-top:28px;">There is structure without rigidity.</p>
+  </div>
+
+  <div class="day-grid">
+    <div>
+      <div class="day-media">
+        <div class="day-media-layer on" data-media="morning"></div>
+        <div class="day-media-layer" data-media="midday"></div>
+        <div class="day-media-layer" data-media="afternoon"></div>
+        <div class="day-media-layer" data-media="evening"></div>
+        <div class="day-media-veil"></div>
+        <div class="day-clock" id="dayClock">07:00</div>
+      </div>
+    </div>
+
+    <div class="day-list" id="dayList">
+      <div class="day-entry on" data-time="07:00" data-media="morning"><div class="day-time">07:00</div><div class="day-title">Wake</div><div class="day-detail"><span>Slow start</span><span>Hydration</span><span>Quiet</span></div></div>
+      <div class="day-entry" data-time="08:00" data-media="morning"><div class="day-time">08:00</div><div class="day-title">Move</div><div class="day-detail"><span>Movement session</span><span>Walk</span><span>Mobility</span><span>Breath</span></div></div>
+      <div class="day-entry" data-time="09:00" data-media="morning"><div class="day-time">09:00</div><div class="day-title">Nourish</div><div class="day-detail"><span>Breakfast</span><span>Nutrition</span><span>Conversation</span></div></div>
+      <div class="day-entry" data-time="10:30" data-media="midday"><div class="day-time">10:30</div><div class="day-title">Learn</div><div class="day-detail"><span>Workshop</span><span>Practical framework</span><span>Applied learning</span></div></div>
+      <div class="day-entry" data-time="13:00" data-media="midday"><div class="day-time">13:00</div><div class="day-title">Reset</div><div class="day-detail"><span>Lunch</span><span>Rest</span><span>Space</span></div></div>
+      <div class="day-entry" data-time="15:00" data-media="afternoon"><div class="day-time">15:00</div><div class="day-title">Explore</div><div class="day-detail"><span>Reflection</span><span>Nature</span><span>Personal practice</span></div></div>
+      <div class="day-entry" data-time="17:00" data-media="afternoon"><div class="day-time">17:00</div><div class="day-title">Connect</div><div class="day-detail"><span>Community</span><span>Conversation</span><span>Shared experience</span></div></div>
+      <div class="day-entry" data-time="19:00" data-media="evening"><div class="day-time">19:00</div><div class="day-title">Integrate</div><div class="day-detail"><span>Dinner</span><span>Reflection</span><span>Plan tomorrow</span></div></div>
+      <div class="day-entry" data-time="21:00" data-media="evening"><div class="day-time">21:00</div><div class="day-title">Rest</div><div class="day-detail"><span>Digital distance</span><span>Quiet</span><span>Sleep</span></div></div>
+    </div>
+  </div>
+
+  <p class="day-foot">An illustrative average day, shown to convey the rhythm of the programme. It is not a published timetable and the final operating schedule has not been set.</p>
+</div>
+
+<div class="divider dark bg-surface" style="padding-top:12vh;">
+  <div class="divider-inner">
+    <div class="divider-line"></div>
+    <img src="images/img-09-white.png" alt="" class="divider-mark" />
+    <div class="divider-line"></div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     3D ONE — THE PAVILION UNDER A TRAVELLING SUN
+     Real geometry, real light, real shadows. The sun
+     crosses the sky from first light to night as you
+     scroll, and the building sits still while everything
+     around it changes.
+══════════════════════════════════════════════ -->
+<div class="three-outer" id="pavilionOuter" style="height:420vh;">
+  <div class="three-sticky grain">
+    <canvas class="three-canvas" id="pavilionCanvas"></canvas>
+    <div class="three-vignette"></div>
+
+    <div class="three-copy on-dark">
+      <div class="eyebrow show">One Place, All Day</div>
+      <h2 class="display">The building<br><em>stays still.</em></h2>
+      <p class="copy">Everything else moves around it. Light, temperature, pace, attention. The Sanctuary is designed so the day does the work.</p>
+    </div>
+
+    <div class="sun-readout">
+      <div class="sun-time" id="sunTime">05:00</div>
+      <div class="sun-phase" id="sunPhase">First light</div>
+    </div>
+
+    <div class="sun-scale">
+      <div class="sun-scale-track">
+        <div class="sun-scale-fill" id="sunFill"></div>
+        <div class="sun-scale-knob" id="sunKnob"></div>
+      </div>
+      <div class="sun-scale-ends"><span>DAWN</span><span>NIGHT</span></div>
+    </div>
+
+    <div class="three-fallback">A single open pavilion — platform, columns, roof and water — sitting still while the light moves across it from first light to night.</div>
+  </div>
+</div>
+
+<div class="divider dark bg-mineral">
+  <div class="divider-inner">
+    <div class="divider-line"></div>
+    <img src="images/img-09-white.png" alt="" class="divider-mark" />
+    <div class="divider-line"></div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     SECTION 7 — IMMERSION
+══════════════════════════════════════════════ -->
+<section class="immersion on-dark par grain" data-par="0.2">
+  <div class="par-layer"></div>
+  <div class="immersion-veil"></div>
+  <div class="immersion-inner rv">
+    <div class="eyebrow">Immersion</div>
+    <h2 class="display"><span class="ln"><i>Leave the noise behind.</i></span></h2>
+    <p class="immersion-copy soft d2">The Sanctuary is designed to create distance from the constant pull of everyday life.</p>
+    <div class="immersion-triplet soft d3"><span>Less distraction</span><span>More awareness</span><span>More space to notice</span></div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     SECTION 8 — THE EXPERIENCE
+══════════════════════════════════════════════ -->
+<section class="sect bg-ivory on-light" style="padding-bottom:9vh;">
+  <div class="sect-inner rv">
+    <div class="eyebrow">Sanctuary Life</div>
+    <h2 class="display">
+      <span class="ln"><i>What the days</i></span>
+      <span class="ln"><i>are actually made of.</i></span>
+    </h2>
+  </div>
+</section>
+
+<div class="bg-ivory">
+  <div class="exp-row">
+    <div class="exp-photo par" data-par="0.14"><div class="par-layer" style="background-image:var(--img-exp-movement);"></div></div>
+    <div class="exp-text on-light rv">
+      <div class="exp-idx">01 — Movement</div>
+      <h3 class="exp-name"><span class="ln"><i>Move because it feels good,</i></span><span class="ln"><i><em>not because it is scheduled.</em></i></span></h3>
+      <p class="exp-copy soft d2">Walking, mobility, breath and open water. Movement at the Sanctuary is built around what the body actually responds to, not around filling a timetable.</p>
+    </div>
+  </div>
+
+  <div class="exp-row flip">
+    <div class="exp-photo par" data-par="0.14"><div class="par-layer" style="background-image:var(--img-exp-recovery);background-position:center 42%;"></div></div>
+    <div class="exp-text on-light rv">
+      <div class="exp-idx">02 — Recovery</div>
+      <h3 class="exp-name"><span class="ln"><i>Sleep treated as the foundation,</i></span><span class="ln"><i><em>not the afterthought.</em></i></span></h3>
+      <p class="exp-copy soft d2">Light, temperature, rhythm and evening quiet are designed into the environment. Recovery is not a session you attend — it is the condition everything else runs on.</p>
+    </div>
+  </div>
+
+  <div class="exp-row">
+    <div class="exp-photo par" data-par="0.14"><div class="par-layer" style="background-image:var(--img-exp-learning);background-position:70% 60%;"></div></div>
+    <div class="exp-text on-light rv">
+      <div class="exp-idx">03 — Learning</div>
+      <h3 class="exp-name"><span class="ln"><i>Frameworks you can</i></span><span class="ln"><i><em>use on Monday.</em></i></span></h3>
+      <p class="exp-copy soft d2">Small workshops, practical and applied. The measure of a session is not how it felt in the room — it is whether it still works three weeks later at home.</p>
+    </div>
+  </div>
+
+  <div class="exp-row flip">
+    <div class="exp-photo par" data-par="0.14"><div class="par-layer" style="background-image:var(--img-exp-nature);background-position:center 65%;"></div></div>
+    <div class="exp-text on-light rv">
+      <div class="exp-idx">04 — Nature &amp; Reflection</div>
+      <h3 class="exp-name"><span class="ln"><i>The environment</i></span><span class="ln"><i><em>does part of the work.</em></i></span></h3>
+      <p class="exp-copy soft d2">Open air, water, distance and time without a screen. Some of the most useful hours of the week are the ones with nothing scheduled in them at all.</p>
+    </div>
+  </div>
+
+  <div class="exp-row">
+    <div class="exp-photo par" data-par="0.14"><div class="par-layer" style="background-image:var(--img-exp-community);background-position:22% 60%;"></div></div>
+    <div class="exp-text on-light rv">
+      <div class="exp-idx">05 — Community</div>
+      <h3 class="exp-name"><span class="ln"><i>You arrive alone.</i></span><span class="ln"><i><em>You do not stay that way.</em></i></span></h3>
+      <p class="exp-copy soft d2">Shared meals, shared practice and honest conversation with people doing the same work. Accountability becomes far easier when it is not a private project.</p>
+    </div>
+  </div>
+</div>
+
+<div class="divider light bg-ivory" style="padding:10vh 8%;">
+  <div class="divider-inner">
+    <div class="divider-line"></div>
+    <img src="images/img-09.png" alt="" class="divider-mark" />
+    <div class="divider-line"></div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     SECTION 9 — THE PLACE
+══════════════════════════════════════════════ -->
+<section class="sect bg-mineral on-dark grain">
+  <div class="place-grid">
+    <div class="rv">
+      <div class="eyebrow">Phuket 2027</div>
+      <h2 class="display">
+        <span class="ln"><i>A place designed</i></span>
+        <span class="ln"><i>to change the pace.</i></span>
+      </h2>
+      <div class="copy soft d2" style="margin-top:32px;">
+        <p>The first DAOasis Sanctuary pilot is planned for Phuket in 2027.</p>
+        <p>Surrounded by nature and designed around space, light, movement and connection, the Sanctuary will provide the physical environment for the DAOasis experience to take place.</p>
+      </div>
+      <div class="place-coords soft d3">
+        <div><div class="place-coord-k">Region</div><div class="place-coord-v">Phuket, Thailand</div></div>
+        <div><div class="place-coord-k">Status</div><div class="place-coord-v">Planned pilot</div></div>
+        <div><div class="place-coord-k">Target</div><div class="place-coord-v">2027</div></div>
+      </div>
+      <div class="note-line soft d3" style="margin-top:30px;">Location and programme in development</div>
+    </div>
+    <div class="place-map rv"><div class="place-pin"><span class="place-pin-label">Phuket</span></div></div>
+  </div>
+</section>
+
+<div class="divider dark bg-mineral">
+  <div class="divider-inner">
+    <div class="divider-line"></div>
+    <img src="images/img-09-white.png" alt="" class="divider-mark" />
+    <div class="divider-line"></div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     3D TWO — RIDE THE SEVEN DAY LOOP
+     You travel along the route in first person, passing
+     each day. At the end the camera pulls back and the
+     route is revealed as a closed loop — it never had a
+     start line or a finish line.
+══════════════════════════════════════════════ -->
+<div class="three-outer" id="loopOuter" style="height:460vh;background:#05080b;">
+  <div class="three-sticky grain">
+    <canvas class="three-canvas" id="loopCanvas"></canvas>
+    <div class="three-vignette"></div>
+
+    <div class="three-copy on-dark" id="loopCopy">
+      <div class="eyebrow show">The Seven Day Journey</div>
+      <h2 class="display">Travel it<br><em>from the inside.</em></h2>
+      <p class="copy">There is no start line and no finish line. You enter the rhythm wherever it currently is.</p>
+    </div>
+
+    <div class="loop-readout">
+      <div class="loop-day" id="loopDay">Day 01 — <em>Arrive</em></div>
+      <div class="loop-sub" id="loopSub">Entering the rhythm</div>
+    </div>
+
+    <div class="loop-close" id="loopClose">
+      <div class="loop-close-text">It was never a line.<br>It was always a loop.</div>
+    </div>
+
+    <div class="three-fallback">Seven days forming one continuous loop — arrive, recover, learn, practise, account, connect, integrate — with no start line and no finish line.</div>
+  </div>
+</div>
+
+<div class="divider dark" style="background:#05080b;">
+  <div class="divider-inner">
+    <div class="divider-line"></div>
+    <img src="images/img-09-white.png" alt="" class="divider-mark" />
+    <div class="divider-line"></div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     SECTION 10 — THE TRANSFORMATION
+══════════════════════════════════════════════ -->
+<section class="transform-sect bg-stone on-light">
+  <div class="rv">
+    <div class="eyebrow centered">The Point of It</div>
+    <h2 class="display">
+      <span class="ln"><i>You do not come here</i></span>
+      <span class="ln"><i>to escape your life.</i></span>
+    </h2>
+    <div class="transform-italic soft d2">You come here to return to it differently.</div>
+    <p class="transform-copy soft d3">The Sanctuary is not designed to become another place to hide. It is designed to create the space, awareness and habits that can travel home with you.</p>
+  </div>
+</section>
+
+<div class="divider light bg-stone">
+  <div class="divider-inner">
+    <div class="divider-line"></div>
+    <img src="images/img-09.png" alt="" class="divider-mark" />
+    <div class="divider-line"></div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     SECTION 11 — COMING TO PHUKET
+══════════════════════════════════════════════ -->
+<section class="pilot on-dark par grain" data-par="0.14">
+  <div class="par-layer"></div>
+  <div class="pilot-veil"></div>
+  <div class="pilot-inner rv">
+    <div class="eyebrow">The First Pilot</div>
+    <h1 class="pilot-title">
+      <span class="ln"><i>DAOasis Sanctuary</i></span>
+      <span class="ln"><i><em>Phuket 2027</em></i></span>
+    </h1>
+    <div class="copy soft d2">
+      <p>The first DAOasis Sanctuary pilot is planned for Phuket in 2027.</p>
+      <p>We are building the experience carefully — testing the programme and developing the physical environment before opening the doors.</p>
+    </div>
+    <div class="btn-row soft d3">
+      <a class="btn btn-light" href="#earlyAccess">Join Early Access</a>
+      <a class="btn btn-ghost" href="#earlyAccess">Express Your Interest</a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     EARLY ACCESS
+══════════════════════════════════════════════ -->
+<section class="sect bg-ivory on-light" id="earlyAccess">
+  <div class="form-wrap">
+    <div class="rv">
+      <div class="form-tag">Early access · Not yet open</div>
+      <h2 class="display">
+        <span class="ln"><i>Your place in the</i></span>
+        <span class="ln"><i>future Sanctuary.</i></span>
+      </h2>
+      <div class="copy soft d2" style="margin-top:30px;">
+        <p>The Sanctuary is currently in development, with the first pilot planned for Phuket in 2027.</p>
+        <p>Join the early access list to hear when applications and bookings open.</p>
+      </div>
+    </div>
+
+    <form class="ea-form" id="eaForm" novalidate>
+      <div class="ea-grid">
+        <div class="ea-field"><label class="ea-label" for="eaFirst">First name</label><input class="ea-input" id="eaFirst" name="firstName" type="text" autocomplete="given-name" placeholder="First name" /></div>
+        <div class="ea-field"><label class="ea-label" for="eaLast">Last name</label><input class="ea-input" id="eaLast" name="lastName" type="text" autocomplete="family-name" placeholder="Last name" /></div>
+        <div class="ea-field"><label class="ea-label" for="eaEmail">Email</label><input class="ea-input" id="eaEmail" name="email" type="email" autocomplete="email" placeholder="you@example.com" /></div>
+        <div class="ea-field"><label class="ea-label" for="eaCountry">Country</label><input class="ea-input" id="eaCountry" name="country" type="text" autocomplete="country-name" placeholder="Country" /></div>
+        <div class="ea-field">
+          <label class="ea-label" for="eaStay">Preferred stay length</label>
+          <select class="ea-select" id="eaStay" name="stayLength">
+            <option value="">Select</option><option>Seven days</option><option>Fourteen days</option><option>Twenty-one days</option><option>Longer</option><option>Not sure yet</option>
+          </select>
+        </div>
+        <div class="ea-field">
+          <label class="ea-label" for="eaInterest">What interests you most?</label>
+          <select class="ea-select" id="eaInterest" name="interest">
+            <option value="">Select</option><option>Recovery</option><option>Learning</option><option>Accountability</option><option>Community</option><option>The full DAOasis experience</option>
+          </select>
+        </div>
+        <div class="ea-field full">
+          <label class="ea-label" for="eaMessage">Message <span style="letter-spacing:0.08em;text-transform:none;">(optional)</span></label>
+          <textarea class="ea-textarea" id="eaMessage" name="message" placeholder="Anything you would like us to know"></textarea>
+        </div>
+        <div class="ea-submit-row">
+          <button class="ea-button" type="submit">Join Early Access</button>
+          <p class="ea-disclaimer">Bookings are not yet open. The first DAOasis Sanctuary pilot is planned for Phuket in 2027.</p>
+          <div class="ea-response" id="eaResponse" role="status" aria-live="polite"></div>
+        </div>
+      </div>
+    </form>
+  </div>
+</section>
+
+<div class="divider light bg-ivory">
+  <div class="divider-inner">
+    <div class="divider-line"></div>
+    <img src="images/img-09.png" alt="" class="divider-mark" />
+    <div class="divider-line"></div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     FINAL
+══════════════════════════════════════════════ -->
+<section class="final on-dark grain">
+  <div class="rv">
+    <div class="eyebrow centered">Beyond the Sanctuary</div>
+    <h2 class="display">
+      <span class="ln"><i>The journey continues</i></span>
+      <span class="ln"><i>beyond the Sanctuary.</i></span>
+    </h2>
+    <div class="final-verbs soft d2"><span>Rest.</span><span>Learn.</span><span>Practise.</span><span>Connect.</span><span>Return.</span></div>
+    <p class="copy soft d3">The Sanctuary is one part of the DAOasis journey.</p>
+    <div class="btn-row soft d3">
+      <a class="btn btn-light" href="app.html">Explore the App</a>
+      <a class="btn btn-ghost" href="index.html#waitlistSection">Join the DAOasis Waitlist</a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ FOOTER ══ -->
+<footer class="site-footer">
+  <div class="footer-top">
+    <div>
+      <div class="footer-brand-logo"><img src="images/img-09-white.png" alt="DAOasis mark" /><span>DAOasis</span></div>
+      <div class="footer-tagline"><strong>Wellness meets Web3.</strong><em>Built for long-term impact.</em></div>
+      <div class="footer-appearance">
+        <div class="footer-appearance-label">Appearance</div>
+        <div class="footer-toggle"><button id="ftLight">Light</button><button id="ftDark" class="active">Dark</button></div>
+      </div>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-label">Explore</div>
+      <a href="app.html">The App</a><a href="sanctuary.html">The Sanctuary</a><span>The Web3 Layer</span><a href="#earlyAccess">Early Access</a>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-label">Company</div>
+      <span>About</span><span>Team</span><span>Careers</span><span>Investors</span>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-label">Legal</div>
+      <span>Privacy Policy</span><span>Terms of Service</span><span>Risk Disclaimer</span>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-label">Follow Us</div>
+      <span>X / Twitter</span><span>Instagram</span><span>LinkedIn</span><span>YouTube</span>
+    </div>
+  </div>
+  <div class="footer-bottom"><span>© 2026 DAOasis. All rights reserved.</span><span>Phuket · Global</span></div>
+</footer>
+
+
+<script>
+/* ════════════════════════════════════════════
+   HELPERS
+════════════════════════════════════════════ */
+const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const clamp01 = v => Math.max(0, Math.min(1, v));
+const lerp = (a,b,t) => a + (b-a) * t;
+const ease = t => t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t+2, 2)/2;
+const smooth = x => x*x*(3-2*x);
+function progressOf(el){
+  const rect = el.getBoundingClientRect();
+  const scrollable = el.offsetHeight - window.innerHeight;
+  return scrollable > 0 ? clamp01(-rect.top / scrollable) : 0;
+}
+
+/* ── NAV ── */
+(function(){
+  const burger = document.getElementById('navBurger');
+  const drawer = document.getElementById('navDrawer');
+  if(!burger) return;
+  burger.addEventListener('click', () => {
+    const open = drawer.classList.toggle('open');
+    burger.classList.toggle('open', open);
+    document.body.style.overflow = open ? 'hidden' : '';
+  });
+  drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    drawer.classList.remove('open'); burger.classList.remove('open'); document.body.style.overflow = '';
+  }));
+})();
+
+(function(){
+  const nav = document.querySelector('.nav');
+  const prog = document.getElementById('scrollProg');
+  if(!nav) return;
+  let lastY = 0, ticking = false;
+  window.addEventListener('scroll', () => {
+    if(ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      const y = window.scrollY;
+      if(y > lastY && y > 80) nav.classList.add('nav-hidden'); else nav.classList.remove('nav-hidden');
+      if(prog){
+        const max = document.body.scrollHeight - window.innerHeight;
+        prog.style.width = (max > 0 ? (y / max) * 100 : 0) + '%';
+      }
+      lastY = y; ticking = false;
+    });
+  }, { passive: true });
+})();
+
+/* ── REVEAL (line masks + soft blocks + dividers) ── */
+(function(){
+  /* Everything below the fold starts hidden, so if the observer is
+     unavailable the whole page must fall open rather than stay blank. */
+  if(!('IntersectionObserver' in window)){
+    document.querySelectorAll('.rv, .divider').forEach(el => el.classList.add('show', 'shown'));
+    return;
+  }
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('show'); obs.unobserve(e.target); } });
+  }, { threshold: 0.16, rootMargin: '0px 0px -6% 0px' });
+  document.querySelectorAll('.rv').forEach(el => obs.observe(el));
+
+  const dObs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('shown'); dObs.unobserve(e.target); } });
+  }, { threshold: 0.5 });
+  document.querySelectorAll('.divider').forEach(el => dObs.observe(el));
+})();
+
+/* ── PARALLAX on full-bleed photography ── */
+(function(){
+  const items = [...document.querySelectorAll('.par')].map(el => ({ el, layer: el.querySelector('.par-layer'), amt: parseFloat(el.dataset.par) || 0.15 }))
+                  .filter(i => i.layer);
+  if(!items.length || REDUCED) return;
+  let ticking = false;
+  function run(){
+    const vh = window.innerHeight;
+    items.forEach(({ el, layer, amt }) => {
+      const r = el.getBoundingClientRect();
+      if(r.bottom < -200 || r.top > vh + 200) return;
+      const centre = (r.top + r.height / 2 - vh / 2) / vh;   /* -1 .. 1 */
+      layer.style.transform = 'translate3d(0,' + (centre * amt * 100).toFixed(2) + 'px,0)';
+    });
+    ticking = false;
+  }
+  window.addEventListener('scroll', () => { if(!ticking){ ticking = true; requestAnimationFrame(run); } }, { passive: true });
+  window.addEventListener('resize', run, { passive: true });
+  run();
+})();
+
+
+/* ════════════════════════════════════════════
+   SECTION 1 — HERO
+   Darkness → three plates emerge from depth and
+   settle → they rush past the camera as the
+   statement takes the frame.
+════════════════════════════════════════════ */
+(function(){
+  const outer = document.getElementById('heroOuter');
+  const title = document.getElementById('heroTitle');
+  const titleTx = document.getElementById('heroTitleText');
+  const cue = document.getElementById('heroCue');
+  const cap = document.getElementById('heroPlateCap');
+  const bridge = document.getElementById('heroBridge');
+  const pC = document.getElementById('heroPlate01');
+  const pL = document.getElementById('heroPlate02');
+  const pR = document.getElementById('heroPlate03');
+  if(!outer || !pC) return;
+
+  (function typewrite(){
+    if(!titleTx) return;
+    if(REDUCED){ titleTx.innerHTML = 'Welcome to <em>DAOasis.</em>'; if(cue) cue.classList.add('show'); return; }
+    const segments = [{ text:'Welcome to ', em:false }, { text:'DAOasis.', em:true }];
+    const total = segments.reduce((n,s) => n + s.text.length, 0);
+    const speed = 2000 / total;
+    const cursor = document.createElement('span');
+    cursor.className = 'type-cursor';
+    titleTx.appendChild(cursor);
+    let seg = 0, ch = 0, emSpan = null;
+    (function step(){
+      if(seg >= segments.length){ cursor.remove(); if(cue) cue.classList.add('show'); return; }
+      const s = segments[seg];
+      if(ch === 0 && s.em){ emSpan = document.createElement('em'); titleTx.insertBefore(emSpan, cursor); }
+      const c = s.text[ch];
+      if(s.em) emSpan.appendChild(document.createTextNode(c));
+      else titleTx.insertBefore(document.createTextNode(c), cursor);
+      ch++;
+      if(ch >= s.text.length){ seg++; ch = 0; }
+      setTimeout(step, speed);
+    })();
+  })();
+
+  let targetRaw = 0, currentRaw = 0;
+
+  function applyFrame(raw){
+    const isMobile = window.innerWidth <= 900;
+    const vw = window.innerWidth, vh = window.innerHeight;
+
+    /* 1 — darkness holds, then clears */
+    const tIn = raw <= 0.001 ? 1 : ease(clamp01((raw - 0.001) / 0.05));
+    const tOut = ease(clamp01((raw - 0.18) / 0.10));
+    const tCard = Math.min(tIn, 1 - tOut);
+    title.style.opacity = tCard;
+    title.style.pointerEvents = tCard > 0.02 ? 'auto' : 'none';
+
+    /* 2 — the Sanctuary emerges */
+    const r = clamp01((raw - 0.26) / 0.74);
+    const appear = ease(clamp01(r / 0.32));
+    const zoom = ease(clamp01(r / 0.54));
+
+    const startW = isMobile ? 160 : 260;
+    const widthCap = Math.min(vw * (isMobile ? 0.72 : 0.46), 720);
+    const heightCap = (vh * (isMobile ? 0.42 : 0.60)) * 1.5;   /* plates are 3:2 */
+    const endW = Math.min(widthCap, heightCap);
+    const wC = lerp(startW, endW, zoom);
+
+    /* 3 — the trio rushes past the camera as the statement arrives */
+    const bp = ease(clamp01((raw - 0.72) / 0.28));
+    const pass = bp * bp;                       /* accelerating departure */
+    const scaleC = lerp(0.80, 1, zoom) * (1 + pass * 0.62);
+    const blurC = isMobile ? pass * 10 : lerp(9, 0, Math.min(1, zoom * 1.7)) + pass * 16;
+
+    pC.style.width = wC + 'px';
+    pC.style.transform = 'translate(-50%,-50%) scale(' + scaleC + ')';
+    pC.style.filter = blurC > 0.05 ? 'blur(' + blurC.toFixed(2) + 'px)' : 'none';
+
+    const sideT = ease(clamp01((r - 0.06) / 0.36));
+    const drift = REDUCED ? 0 : clamp01((r - 0.55) / 0.45) * (isMobile ? 9 : 16);
+    const spreadX = 1 + pass * 1.15;            /* they part as they pass */
+    const offX = (lerp(wC * 0.16, wC * (isMobile ? 0.30 : 0.62), sideT) + drift) * spreadX;
+    const offY = lerp(wC * 0.06, wC * (isMobile ? 0.34 : 0.24), sideT) * (1 + pass * 0.7);
+    const sideW = wC * (isMobile ? 0.70 : 0.76);
+    const sideScale = lerp(0.74, 0.90, sideT) * (1 + pass * 0.55);
+    const sideBlur = (isMobile ? 0 : lerp(11, 1.4, sideT)) + pass * 14;
+    const rot = lerp(9, 3.5, sideT);
+
+    pL.style.width = sideW + 'px';
+    pL.style.transform = 'translate(calc(-50% - ' + offX.toFixed(1) + 'px), calc(-50% - ' + offY.toFixed(1) + 'px)) perspective(1400px) rotateY(' + rot.toFixed(2) + 'deg) scale(' + sideScale.toFixed(3) + ')';
+    pL.style.filter = 'blur(' + sideBlur.toFixed(2) + 'px)';
+
+    pR.style.width = sideW + 'px';
+    pR.style.transform = 'translate(calc(-50% + ' + offX.toFixed(1) + 'px), calc(-50% + ' + offY.toFixed(1) + 'px)) perspective(1400px) rotateY(' + (-rot).toFixed(2) + 'deg) scale(' + sideScale.toFixed(3) + ')';
+    pR.style.filter = 'blur(' + sideBlur.toFixed(2) + 'px)';
+
+    const fade = 1 - bp;
+    pC.style.opacity = appear * fade;
+    pL.style.opacity = appear * sideT * 0.94 * fade;
+    pR.style.opacity = appear * sideT * 0.94 * fade;
+
+    /* the caption only exists while the trio is settled and still */
+    if(cap) cap.classList.toggle('show', r > 0.62 && bp < 0.12);
+
+    bridge.style.opacity = bp;
+    bridge.style.pointerEvents = bp > 0.06 ? 'auto' : 'none';
+  }
+
+  function tick(){
+    targetRaw = progressOf(outer);
+    currentRaw = REDUCED ? targetRaw : lerp(currentRaw, targetRaw, 0.1);
+    if(Math.abs(currentRaw - targetRaw) < 0.0005) currentRaw = targetRaw;
+    applyFrame(currentRaw);
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+  window.addEventListener('resize', () => { targetRaw = progressOf(outer); }, { passive: true });
+})();
+
+
+/* ── SECTION 4 — FOUR FOUNDATIONS ── */
+(function(){
+  const outer = document.getElementById('foundOuter');
+  const items = [...document.querySelectorAll('.found-item')];
+  const num = document.getElementById('foundIndexNum');
+  const spine = document.getElementById('foundSpine');
+  if(!outer || !items.length) return;
+
+  function update(){
+    if(window.innerWidth <= 900){ items.forEach(el => el.classList.add('active')); return; }
+    const p = progressOf(outer);
+    const i = Math.min(items.length - 1, Math.floor(p * items.length * 0.999));
+    items.forEach((el, n) => el.classList.toggle('active', n === i));
+    if(num) num.textContent = String(i + 1).padStart(2, '0');
+    if(spine){
+      const last = items[i];
+      spine.style.height = (last.offsetTop + last.offsetHeight) + 'px';
+    }
+  }
+  window.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update, { passive: true });
+  update();
+})();
+
+
+/* ── SECTION 5 — SEVEN DAYS + the arc ── */
+(function(){
+  const outer = document.getElementById('sevenOuter');
+  const days = [...document.querySelectorAll('.seven-day')];
+  const fill = document.getElementById('arcFill');
+  const dotsG = document.getElementById('arcDots');
+  if(!outer || !days.length) return;
+
+  let len = 0, pts = [];
+
+  function build(){
+    if(!fill || !dotsG) return;
+    len = fill.getTotalLength();
+    fill.style.strokeDasharray = len;
+    fill.style.strokeDashoffset = len;
+    dotsG.innerHTML = '';
+    pts = [];
+    for(let i = 0; i < 7; i++){
+      const at = fill.getPointAtLength((i / 6) * len);
+      pts.push(at);
+      const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      c.setAttribute('cx', at.x); c.setAttribute('cy', at.y); c.setAttribute('r', 5);
+      c.setAttribute('class', 'arc-dot'); c.dataset.i = i;
+      dotsG.appendChild(c);
+      const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      t.setAttribute('x', at.x); t.setAttribute('y', at.y + 26);
+      t.setAttribute('text-anchor', 'middle'); t.setAttribute('class', 'arc-lab'); t.dataset.i = i;
+      t.textContent = 'DAY ' + String(i + 1).padStart(2, '0');
+      dotsG.appendChild(t);
+    }
+    update();
+  }
+
+  function update(){
+    if(window.innerWidth <= 900){ days.forEach(d => d.classList.add('active')); return; }
+    const p = progressOf(outer);
+    const i = Math.min(days.length - 1, Math.floor(p * days.length * 0.999));
+    days.forEach((d, n) => d.classList.toggle('active', n === i));
+    if(len){
+      fill.style.strokeDashoffset = len * (1 - (i / 6));
+      dotsG.querySelectorAll('.arc-dot').forEach(c => {
+        const n = +c.dataset.i;
+        c.classList.toggle('on', n <= i);
+        c.classList.toggle('now', n === i);
+      });
+      dotsG.querySelectorAll('.arc-lab').forEach(t => t.classList.toggle('on', +t.dataset.i <= i));
+    }
+  }
+
+  window.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', build, { passive: true });
+  if(document.readyState === 'complete') build(); else window.addEventListener('load', build);
+})();
+
+
+/* ── SECTION 6 — AN AVERAGE DAY ── */
+(function(){
+  const entries = [...document.querySelectorAll('.day-entry')];
+  const layers = [...document.querySelectorAll('.day-media-layer')];
+  const clock = document.getElementById('dayClock');
+  if(!entries.length) return;
+  let current = 'morning';
+  const obs = new IntersectionObserver(list => {
+    list.forEach(e => {
+      e.target.classList.toggle('on', e.isIntersecting);
+      if(e.isIntersecting){
+        const key = e.target.dataset.media;
+        if(key !== current){ current = key; layers.forEach(l => l.classList.toggle('on', l.dataset.media === key)); }
+        if(clock) clock.textContent = e.target.dataset.time;
+      }
+    });
+  }, { rootMargin: '-45% 0px -45% 0px', threshold: 0 });
+  entries.forEach(el => obs.observe(el));
+})();
+
+
+/* ════════════════════════════════════════════
+   3D — shared shell
+   Real meshes, real lights. Nothing here is a
+   particle system; that language belongs to the
+   home page and stays there.
+════════════════════════════════════════════ */
+function stage3D(canvasId, outerId, build){
+  const canvas = document.getElementById(canvasId);
+  const outer = document.getElementById(outerId);
+  if(!canvas || !outer) return null;
+  if(typeof THREE === 'undefined'){ outer.classList.add('no-webgl'); return null; }
+
+  let renderer;
+  try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false }); }
+  catch(err){ outer.classList.add('no-webgl'); return null; }
+
+  const isMobile = window.innerWidth <= 900;
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1.6 : 2));
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(48, 1, 0.1, 400);
+
+  function resize(){
+    const w = canvas.clientWidth || window.innerWidth;
+    const h = canvas.clientHeight || window.innerHeight;
+    if(!w || !h) return;
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+    renderer.setSize(w, h, false);
+  }
+
+  let visible = false;
+  new IntersectionObserver(l => l.forEach(e => { visible = e.isIntersecting; }), { threshold: 0 }).observe(outer);
+
+  let mx = 0, my = 0, tmx = 0, tmy = 0;
+  if(!REDUCED && !isMobile){
+    window.addEventListener('mousemove', e => {
+      tmx = (e.clientX / window.innerWidth - 0.5) * 2;
+      tmy = (e.clientY / window.innerHeight - 0.5) * 2;
+    }, { passive: true });
+  }
+
+  const api = { scene, camera, renderer, canvas, outer, isMobile };
+  const frame = build(api);
+
+  resize();
+  window.addEventListener('resize', resize, { passive: true });
+
+  let smoothP = 0, primed = false;
+  (function loop(){
+    requestAnimationFrame(loop);
+    if(!visible) return;
+    const p = progressOf(outer);
+    if(!primed){ smoothP = p; primed = true; }
+    smoothP = REDUCED ? p : smoothP + (p - smoothP) * 0.12;
+    mx += (tmx - mx) * 0.045;
+    my += (tmy - my) * 0.045;
+    frame(smoothP, performance.now() * 0.001, mx, my);
+    renderer.render(scene, camera);
+  })();
+
+  return api;
+}
+
+
+/* ══ 3D ONE — THE PAVILION UNDER A TRAVELLING SUN ══ */
+stage3D('pavilionCanvas', 'pavilionOuter', function(api){
+  const S = api.scene, C = api.camera;
+  const sunTimeEl = document.getElementById('sunTime');
+  const sunPhaseEl = document.getElementById('sunPhase');
+  const sunFill = document.getElementById('sunFill');
+  const sunKnob = document.getElementById('sunKnob');
+
+  const shadows = !api.isMobile;
+  api.renderer.shadowMap.enabled = shadows;
+  if(shadows) api.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+  S.fog = new THREE.Fog(0x0d1418, 34, 110);
+
+  /* ── materials ── */
+  const mStone  = new THREE.MeshLambertMaterial({ color: 0x8d8477 });
+  const mDeck   = new THREE.MeshLambertMaterial({ color: 0x6f6558 });
+  const mRoof   = new THREE.MeshLambertMaterial({ color: 0x4b453d });
+  const mCol    = new THREE.MeshLambertMaterial({ color: 0x9b9184 });
+  const mGround = new THREE.MeshLambertMaterial({ color: 0x2c2a24 });
+  const mWater  = new THREE.MeshPhongMaterial({ color: 0x0d1a1f, shininess: 120, specular: 0x9fd8e6 });
+
+  function box(w,h,d,x,y,z,mat,cast,receive){
+    const m = new THREE.Mesh(new THREE.BoxGeometry(w,h,d), mat);
+    m.position.set(x,y,z);
+    m.castShadow = !!cast && shadows;
+    m.receiveShadow = !!receive && shadows;
+    S.add(m); return m;
+  }
+
+  /* ground */
+  const ground = new THREE.Mesh(new THREE.PlaneGeometry(220, 220), mGround);
+  ground.rotation.x = -Math.PI / 2;
+  ground.position.y = -0.02;
+  ground.receiveShadow = shadows;
+  S.add(ground);
+
+  /* the pavilion */
+  box(19, 0.55, 12.5, 0, 0.28, 0, mStone, false, true);          // plinth
+  box(16.4, 0.30, 10.2, 0, 0.70, 0, mDeck, false, true);          // deck
+  box(15.2, 4.2, 0.45, 0, 2.9, -5.4, mStone, true, true);         // back wall
+  box(0.45, 4.2, 6.0, -7.6, 2.9, -2.4, mStone, true, true);       // side wall
+  box(17.6, 0.42, 11.4, 0, 7.0, 0, mRoof, true, false);           // roof
+  box(17.6, 0.10, 11.4, 0, 6.72, 0, mRoof, false, false);         // roof underside shadow line
+
+  const colGeo = new THREE.CylinderGeometry(0.20, 0.24, 6.1, 14);
+  [[-7.3,-4.4],[-7.3,4.4],[0,4.4],[7.3,-4.4],[7.3,4.4],[0,-4.4]].forEach(([x,z]) => {
+    const c = new THREE.Mesh(colGeo, mCol);
+    c.position.set(x, 3.75, z);
+    c.castShadow = shadows;
+    S.add(c);
+  });
+
+  /* the pool — catches the sun as a moving specular streak */
+  const pool = new THREE.Mesh(new THREE.PlaneGeometry(22, 9), mWater);
+  pool.rotation.x = -Math.PI / 2;
+  pool.position.set(2, 0.02, 11.5);
+  S.add(pool);
+
+  /* a low line of planting to break the silhouette */
+  const mPlant = new THREE.MeshLambertMaterial({ color: 0x2f3d2c });
+  for(let i = 0; i < 14; i++){
+    const h = 1.1 + Math.random() * 1.9;
+    const p = new THREE.Mesh(new THREE.ConeGeometry(0.5 + Math.random() * 0.4, h, 6), mPlant);
+    const side = i % 2 === 0 ? -1 : 1;
+    p.position.set(side * (10.5 + Math.random() * 9), h / 2, -9 + Math.random() * 18);
+    p.castShadow = shadows;
+    S.add(p);
+  }
+
+  /* ── light ── */
+  const sun = new THREE.DirectionalLight(0xffffff, 1.0);
+  sun.castShadow = shadows;
+  if(shadows){
+    sun.shadow.mapSize.set(1024, 1024);
+    const c = sun.shadow.camera;
+    c.left = -26; c.right = 26; c.top = 26; c.bottom = -26; c.near = 1; c.far = 90;
+    /* LightShadow.updateMatrices() never rebuilds the projection matrix,
+       so widening the frustum only takes effect once we do it ourselves. */
+    c.updateProjectionMatrix();
+    sun.shadow.bias = -0.0012;
+  }
+  S.add(sun);
+  const hemi = new THREE.HemisphereLight(0x8ea9bd, 0x2a241d, 0.45);
+  S.add(hemi);
+  const fillLight = new THREE.AmbientLight(0xffffff, 0.16);
+  S.add(fillLight);
+
+  /* palette across the day: dawn → morning → noon → gold → dusk → night */
+  const KEYS = [
+    { t:0.00, sun:0xff9d63, int:0.35, sky:0x24313d, gnd:0x2a231c, hemi:0.36, bg:0x101a20, time:'05:00', phase:'First light' },
+    { t:0.18, sun:0xffc48c, int:0.95, sky:0x87a8c4, gnd:0x3a3126, hemi:0.55, bg:0x2a3946, time:'08:00', phase:'Morning' },
+    { t:0.42, sun:0xfff6e6, int:1.45, sky:0xa8c6dc, gnd:0x453c2e, hemi:0.68, bg:0x486173, time:'12:00', phase:'Midday' },
+    { t:0.62, sun:0xffcf94, int:1.15, sky:0x9db4c4, gnd:0x453a2c, hemi:0.58, bg:0x50606b, time:'15:00', phase:'Afternoon' },
+    { t:0.80, sun:0xff8f4d, int:0.80, sky:0x6d5f62, gnd:0x38291f, hemi:0.42, bg:0x3d2f31, time:'18:00', phase:'Golden hour' },
+    { t:0.92, sun:0x8a6fa8, int:0.30, sky:0x2f3348, gnd:0x1e1a18, hemi:0.30, bg:0x1a1c28, time:'20:00', phase:'Dusk' },
+    { t:1.00, sun:0x4a5b86, int:0.14, sky:0x1a2030, gnd:0x14120f, hemi:0.22, bg:0x0b0e14, time:'21:00', phase:'Night' }
+  ];
+
+  const cSun = new THREE.Color(), cSky = new THREE.Color(), cGnd = new THREE.Color(), cBg = new THREE.Color();
+  const tmpA = new THREE.Color(), tmpB = new THREE.Color();
+
+  function sample(p){
+    let i = 0;
+    while(i < KEYS.length - 2 && p > KEYS[i+1].t) i++;
+    const a = KEYS[i], b = KEYS[i+1];
+    const k = clamp01((p - a.t) / (b.t - a.t));
+    cSun.copy(tmpA.setHex(a.sun)).lerp(tmpB.setHex(b.sun), k);
+    cSky.copy(tmpA.setHex(a.sky)).lerp(tmpB.setHex(b.sky), k);
+    cGnd.copy(tmpA.setHex(a.gnd)).lerp(tmpB.setHex(b.gnd), k);
+    cBg.copy(tmpA.setHex(a.bg)).lerp(tmpB.setHex(b.bg), k);
+    return { int: lerp(a.int, b.int, k), hemi: lerp(a.hemi, b.hemi, k),
+             time: k < 0.5 ? a.time : b.time, phase: k < 0.5 ? a.phase : b.phase };
+  }
+
+  let lastPhase = '';
+
+  return function frame(p, time, mx, my){
+    const s = sample(p);
+
+    /* the sun crosses the sky on an arc */
+    const ang = Math.PI * (0.06 + p * 0.88);
+    sun.position.set(Math.cos(ang) * 42, Math.max(1.2, Math.sin(ang) * 34), 16 + Math.cos(ang) * 12);
+    sun.color.copy(cSun);
+    sun.intensity = s.int;
+    hemi.color.copy(cSky);
+    hemi.groundColor.copy(cGnd);
+    hemi.intensity = s.hemi;
+    S.fog.color.copy(cBg);
+    api.renderer.setClearColor(cBg, 1);
+    mWater.specular.copy(cSun);
+
+    if(s.phase !== lastPhase){
+      lastPhase = s.phase;
+      if(sunTimeEl) sunTimeEl.textContent = s.time;
+      if(sunPhaseEl) sunPhaseEl.textContent = s.phase;
+    }
+    if(sunFill) sunFill.style.width = (p * 100) + '%';
+    if(sunKnob) sunKnob.style.left = (p * 100) + '%';
+
+    /* a long, slow dolly — the camera never cuts */
+    const orbit = -0.42 + p * 0.66 + mx * 0.08;
+    const dist = lerp(api.isMobile ? 44 : 34, api.isMobile ? 34 : 26, smooth(clamp01(p * 1.1)));
+    const hgt = lerp(9.5, 4.6, smooth(clamp01(p * 1.1))) + my * 1.2;
+    C.position.set(Math.sin(orbit) * dist, hgt, Math.cos(orbit) * dist);
+    C.lookAt(0, 3.2, 0);
+  };
+});
+
+
+/* ══ 3D TWO — RIDE THE SEVEN DAY LOOP ══ */
+stage3D('loopCanvas', 'loopOuter', function(api){
+  const S = api.scene, C = api.camera;
+  const dayEl = document.getElementById('loopDay');
+  const subEl = document.getElementById('loopSub');
+  const closeEl = document.getElementById('loopClose');
+  const copyEl = document.getElementById('loopCopy');
+
+  const DAYS = [
+    ['Arrive',    'Reset · Orientation · Create space'],
+    ['Recover',   'Sleep · Movement · Nervous system'],
+    ['Learn',     'Frameworks · Education · Reflection'],
+    ['Practise',  'Apply · Experiment · Build'],
+    ['Account',   'Track · Reflect · Adjust'],
+    ['Connect',   'Community · Conversation · Shared experience'],
+    ['Integrate', 'Reflect · Commit · Carry it forward']
+  ];
+
+  api.renderer.setClearColor(0x05080b, 1);
+  S.fog = new THREE.FogExp2(0x05080b, 0.026);
+
+  /* a closed, undulating loop through space */
+  const R = 26, ctrl = [];
+  for(let i = 0; i < 7; i++){
+    const a = (i / 7) * Math.PI * 2;
+    const rr = R * (0.86 + 0.20 * Math.sin(i * 2.3));
+    ctrl.push(new THREE.Vector3(Math.cos(a) * rr, Math.sin(i * 1.7) * 3.6, Math.sin(a) * rr));
+  }
+  const curve = new THREE.CatmullRomCurve3(ctrl, true, 'catmullrom', 0.5);
+
+  /* the route itself */
+  const tube = new THREE.Mesh(
+    new THREE.TubeGeometry(curve, 420, 0.30, 10, true),
+    new THREE.MeshStandardMaterial({ color: 0xC48A5A, roughness: 0.42, metalness: 0.12,
+                                     emissive: 0x2a1a0e, emissiveIntensity: 0.7 })
+  );
+  S.add(tube);
+
+  /* a wider, dimmer skirt gives the route a road-like presence */
+  const skirt = new THREE.Mesh(
+    new THREE.TubeGeometry(curve, 300, 1.5, 8, true),
+    new THREE.MeshBasicMaterial({ color: 0x14212a, transparent: true, opacity: 0.5, side: THREE.BackSide })
+  );
+  S.add(skirt);
+
+  /* seven waypoints — a gate you pass through */
+  const gates = [];
+  const gateGeo = new THREE.TorusGeometry(2.5, 0.07, 8, 44);
+  for(let i = 0; i < 7; i++){
+    const t = i / 7;
+    const pos = curve.getPointAt(t);
+    const tan = curve.getTangentAt(t);
+    const m = new THREE.Mesh(gateGeo, new THREE.MeshBasicMaterial({ color: 0x3a4d5a }));
+    m.position.copy(pos);
+    m.lookAt(pos.clone().add(tan));
+    S.add(m);
+    gates.push(m);
+  }
+
+  /* stars give the void a scale without being a particle "effect" */
+  const starGeo = new THREE.BufferGeometry();
+  const starN = api.isMobile ? 400 : 900;
+  const sp = new Float32Array(starN * 3);
+  for(let i = 0; i < starN; i++){
+    const a = Math.random() * Math.PI * 2, b = Math.acos(2 * Math.random() - 1), rr = 120 + Math.random() * 90;
+    sp[i*3] = Math.sin(b) * Math.cos(a) * rr;
+    sp[i*3+1] = Math.cos(b) * rr * 0.5;
+    sp[i*3+2] = Math.sin(b) * Math.sin(a) * rr;
+  }
+  starGeo.setAttribute('position', new THREE.BufferAttribute(sp, 3));
+  S.add(new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0x8fa6b8, size: 0.5, sizeAttenuation: true, transparent: true, opacity: 0.55 })));
+
+  /* the traveller's own light — the route lights up around you */
+  const lamp = new THREE.PointLight(0xffd9ac, 3.4, 46, 1.6);
+  S.add(lamp);
+  const amb = new THREE.AmbientLight(0x3a4a5a, 0.5);
+  S.add(amb);
+
+  const RIDE_END = 0.82;                 /* after this the camera pulls back */
+  const camPos = new THREE.Vector3(), camLook = new THREE.Vector3();
+  const origin = new THREE.Vector3(0, 0, 0);
+  const lampHigh = new THREE.Vector3(0, 26, 0);
+  const camLift = new THREE.Vector3(), lampAt = new THREE.Vector3();
+  const radial = new THREE.Vector3(), vantage = new THREE.Vector3();
+  const LOOP_EXTENT = 36;                /* ring radius plus framing margin */
+  let lastDay = -1;
+
+  /* The vantage point is derived from where you currently are on the loop and
+     from how much of the frame the camera can actually see, so the pull-back
+     rises outward from your own position instead of cutting across the middle
+     of the ring — which framed nothing but empty space. */
+  function vantageFor(here){
+    radial.set(here.x, 0, here.z);
+    if(radial.lengthSq() < 1e-4) radial.set(1, 0, 0);
+    radial.normalize();
+    const vHalf = (C.fov * Math.PI / 180) / 2;
+    const limit = Math.atan(Math.tan(vHalf) * Math.min(1, C.aspect));
+    const need = Math.min(150, LOOP_EXTENT / Math.max(0.15, Math.tan(limit)));
+    vantage.copy(radial).multiplyScalar(need * 0.72);
+    vantage.y = need * 0.62;
+    return vantage;
+  }
+
+  return function frame(p, time, mx, my){
+    const ride = clamp01(p / RIDE_END);
+    const t = (ride * 0.995) % 1;
+
+    const here = curve.getPointAt(t);
+    const ahead = curve.getPointAt((t + 0.035) % 1);
+
+    /* first person along the route, then a long pull back to reveal the loop */
+    const out = clamp01((p - RIDE_END) / (1 - RIDE_END));
+    const k = smooth(out);
+
+    /* Riding, the fog is thick and the lamp is the only light — you can only
+       see the stretch you are on. Pulling back, the fog thins and the whole
+       loop lights, otherwise the reveal would be fogged into nothing. */
+    /* the fog has to clear ahead of the camera, otherwise the far side of the
+       loop is still erased by the time it should be the whole point */
+    const kFog = smooth(clamp01(out * 1.7));
+    S.fog.density = lerp(0.026, 0.0032, kFog);
+    amb.intensity = lerp(0.5, 1.5, kFog);
+    lamp.distance = lerp(46, 150, k);
+    lamp.intensity = lerp(3.4, 2.4, k);
+    /* the route is a thin tube — at the reveal it has to carry the frame
+       on its own, so let it glow rather than rely on the lamp */
+    tube.material.emissiveIntensity = lerp(0.7, 2.6, kFog);
+    lampAt.copy(here); lampAt.y += 1.6;
+    lamp.position.copy(lampAt).lerp(lampHigh, k);
+
+    camLift.copy(here); camLift.y += 2.3 + my * 0.8;
+    camPos.copy(camLift).lerp(vantageFor(here), k);
+    camLook.copy(ahead).lerp(origin, k);
+
+    C.position.copy(camPos);
+    C.up.set(0, 1, 0);
+    C.lookAt(camLook);
+    C.rotation.z += mx * 0.03 * (1 - k);
+
+    /* waypoints light as they are reached, all lit once the loop closes */
+    const day = Math.min(6, Math.floor(ride * 7 * 0.999));
+    /* gates open up as the camera retreats so the loop keeps its presence */
+    const gateScale = lerp(1, 1.5, k);
+    gates.forEach((g, i) => g.scale.setScalar(gateScale * (i === day && k < 0.5 ? 1.12 : 1)));
+    if(day !== lastDay){
+      lastDay = day;
+      gates.forEach((g, i) => {
+        const lit = i <= day || out > 0.5;
+        g.material.color.setHex(lit ? 0xC48A5A : 0x3a4d5a);
+      });
+      if(dayEl) dayEl.innerHTML = 'Day ' + String(day + 1).padStart(2, '0') + ' — <em>' + DAYS[day][0] + '</em>';
+      if(subEl) subEl.textContent = DAYS[day][1];
+    }
+
+    if(closeEl) closeEl.classList.toggle('show', out > 0.55);
+    if(copyEl) copyEl.style.opacity = String(1 - clamp01(out * 2.2));
+
+    tube.rotation.y = 0;
+    skirt.rotation.y = 0;
+  };
+});
+
+
+/* ── EARLY ACCESS FORM — front end only, and it says so ── */
+(function(){
+  const form = document.getElementById('eaForm');
+  const out = document.getElementById('eaResponse');
+  if(!form || !out) return;
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    out.textContent = 'Early access sign-up is not connected yet — nothing has been submitted and no details have been stored. The list opens as the Phuket pilot moves forward. In the meantime you can join the main DAOasis waitlist from the home page.';
+    out.classList.add('show');
+    out.scrollIntoView({ behavior: REDUCED ? 'auto' : 'smooth', block: 'center' });
+  });
+})();
+
+/* ── THEME TOGGLE ── */
+(function(){
+  const btnLight = document.getElementById('ftLight');
+  const btnDark = document.getElementById('ftDark');
+  if(!btnLight) return;
+  function applyTheme(theme){
+    if(theme === 'light'){
+      document.documentElement.setAttribute('data-theme','light');
+      btnLight.classList.add('active'); btnDark.classList.remove('active');
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+      btnDark.classList.add('active'); btnLight.classList.remove('active');
+    }
+    localStorage.setItem('daoasis-theme', theme);
+  }
+  applyTheme(localStorage.getItem('daoasis-theme') || 'dark');
+  btnLight.addEventListener('click', () => applyTheme('light'));
+  btnDark.addEventListener('click', () => applyTheme('dark'));
+})();
+</script>
+
+</body>
+</html>

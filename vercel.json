@@ -1,7 +1,6 @@
 {
   "cleanUrls": true,
   "redirects": [
-    { "source": "/sanctuary", "destination": "/", "permanent": false },
     { "source": "/web3", "destination": "/", "permanent": false }
   ]
 }
