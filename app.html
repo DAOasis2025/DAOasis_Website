@@ -2,6 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
+<script>
+  (function(){
+    var t = localStorage.getItem('daoasis-theme') || 'dark';
+    if(t === 'light') document.documentElement.setAttribute('data-theme','light');
+  })();
+</script>
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>The Companion App — DAOasis</title>
 <meta name="description" content="Track your habits, complete real-world quests, and earn Reward Credits that convert to $DVT. The wellness app that pays you to show up." />
@@ -911,6 +918,269 @@ body { overflow-x: clip; }
 .final-cta .s-body { margin: 0 auto 40px; text-align: center; }
 .final-note { font-size: 12px; color: #4a4540; letter-spacing: 0.06em; margin-top: 16px; }
 
+
+  /* ══════════════════════════════════════════════
+     LIGHT THEME OVERRIDES  (app.html)
+  ══════════════════════════════════════════════ */
+
+  /* BASE */
+  html[data-theme="light"], html[data-theme="light"] body {
+    background: #F7F4EE;
+    color: #2B2623;
+  }
+
+  /* NAV — becomes warm ivory bar */
+  html[data-theme="light"] .nav {
+    background: rgba(247,244,238,0.94);
+    border-bottom-color: rgba(43,38,35,0.1);
+  }
+  html[data-theme="light"] .nav-brand span {
+    color: #171412;
+  }
+  html[data-theme="light"] .nav-brand img {
+    filter: invert(1) brightness(0.3);
+  }
+  html[data-theme="light"] .nav-links a {
+    color: #6b6459;
+  }
+  html[data-theme="light"] .nav-links a:hover,
+  html[data-theme="light"] .nav-links a.active {
+    color: #171412;
+  }
+  html[data-theme="light"] .nav-cta {
+    background: #171412;
+    color: #F7F4EE;
+  }
+  html[data-theme="light"] .nav-burger span {
+    background: #2B2623;
+  }
+
+  /* MOBILE NAV DRAWER */
+  html[data-theme="light"] .nav-drawer {
+    background: rgba(247,244,238,0.98);
+  }
+  html[data-theme="light"] .nav-drawer a {
+    color: #6b6459;
+  }
+  html[data-theme="light"] .nav-drawer a:hover {
+    color: #171412;
+  }
+  html[data-theme="light"] .nav-drawer .nav-cta {
+    background: #171412;
+    color: #F7F4EE;
+  }
+
+  /* HERO — photo bg, overlay softens, copy stays white for contrast */
+  html[data-theme="light"] .hero {
+    background-image:
+      linear-gradient(180deg,
+        rgba(10,8,6,0.38) 0%,
+        rgba(10,8,6,0.44) 35%,
+        rgba(10,8,6,0.40) 65%,
+        rgba(10,8,6,0.55) 100%
+      ),
+      url('images/pexels-jayasankar24-9819827.jpg');
+  }
+  html[data-theme="light"] .hero-title-card {
+    background: #2B2623;
+  }
+  /* Hero copy stays white — over photo, contrast required */
+
+  /* SHARED SECTION STYLES */
+  html[data-theme="light"] .s-dark {
+    background: #F7F4EE;
+    padding: 10vh 8%;
+  }
+  html[data-theme="light"] .s-dark .s-kicker {
+    color: #8a7f6d;
+  }
+  html[data-theme="light"] .s-dark .s-headline {
+    color: #171412;
+  }
+  html[data-theme="light"] .s-dark .s-body {
+    color: #5c554c;
+  }
+  html[data-theme="light"] .s-dark .s-body strong {
+    color: #C48A5A;
+  }
+
+  html[data-theme="light"] .s-mid {
+    background: #E8E1D6;
+    padding: 10vh 8%;
+  }
+  html[data-theme="light"] .s-mid .s-kicker {
+    color: #8a7f6d;
+  }
+  html[data-theme="light"] .s-mid .s-headline {
+    color: #171412;
+  }
+  html[data-theme="light"] .s-mid .s-body {
+    color: #5c554c;
+  }
+  html[data-theme="light"] .s-mid .s-body strong {
+    color: #C48A5A;
+  }
+
+  /* s-light already warm-stone — minimal adjustments */
+  html[data-theme="light"] .s-light {
+    background: #E8E1D6;
+  }
+  html[data-theme="light"] .s-light .s-kicker {
+    color: #8a7f6d;
+  }
+  html[data-theme="light"] .s-light .s-headline {
+    color: #171412;
+  }
+  html[data-theme="light"] .s-light .s-body {
+    color: #5c554c;
+  }
+
+  /* s-sanctuary — keep dark, it's Sanctuary Green and works as an anchor */
+
+  /* DIVIDERS */
+  html[data-theme="light"] .divider-dark {
+    background: #E8E1D6;
+  }
+  html[data-theme="light"] .divider-dark .divider-inner .divider-line-d {
+    background: rgba(43,38,35,0.14);
+  }
+  html[data-theme="light"] .divider-dark .divider-mark {
+    filter: invert(1) brightness(0.35);
+  }
+  html[data-theme="light"] .divider-light {
+    background: #CFC8BE;
+  }
+  html[data-theme="light"] .divider-mid {
+    background: #E8E1D6;
+  }
+
+  /* BUTTONS — reassess on light bg */
+  html[data-theme="light"] .btn-primary {
+    background: #171412;
+    color: #F7F4EE;
+  }
+  html[data-theme="light"] .btn-secondary {
+    border-color: rgba(43,38,35,0.35);
+    color: #2B2623;
+  }
+  html[data-theme="light"] .btn-secondary:hover {
+    border-color: rgba(43,38,35,0.7);
+  }
+  /* btn-gold stays gold — works on both */
+
+  /* HOW IT WORKS section — dark glass cards become warm stone */
+  html[data-theme="light"] .how-section-wrap {
+    background: #F7F4EE;
+  }
+  html[data-theme="light"] .how-card {
+    background: rgba(255,255,255,0.7);
+    border: 1px solid rgba(43,38,35,0.1);
+    box-shadow: 0 4px 24px rgba(43,38,35,0.07);
+  }
+  html[data-theme="light"] .how-card:hover {
+    box-shadow: 0 16px 48px rgba(43,38,35,0.13);
+  }
+  html[data-theme="light"] .how-card::after {
+    background: linear-gradient(to right, transparent, rgba(196,138,90,0.25), transparent);
+  }
+  html[data-theme="light"] .how-step {
+    color: rgba(196,138,90,0.22);
+  }
+  html[data-theme="light"] .how-title {
+    color: #171412;
+  }
+  html[data-theme="light"] .how-text {
+    color: #5c554c;
+  }
+  html[data-theme="light"] .how-tag {
+    border-color: rgba(196,138,90,0.4);
+    color: #C48A5A;
+  }
+  html[data-theme="light"] .how-phone-wrap {
+    box-shadow: 0 20px 50px rgba(43,38,35,0.22), 0 2px 8px rgba(43,38,35,0.12);
+  }
+
+  /* LIVING ECOSYSTEM — keep dark, it's visually complex and works as anchor */
+
+  /* QUEST SECTION — keep dark */
+
+  /* REWARD SECTION — check bg */
+  html[data-theme="light"] .quest-intro-wrap {
+    background: #F7F4EE;
+  }
+  html[data-theme="light"] .quest-intro-wrap .s-kicker {
+    color: #8a7f6d;
+  }
+  html[data-theme="light"] .quest-intro-wrap .s-headline {
+    color: #171412;
+  }
+  html[data-theme="light"] .quest-hd-kicker {
+    color: #8a7f6d;
+  }
+  html[data-theme="light"] .quest-hd-title {
+    color: #171412;
+  }
+  html[data-theme="light"] .quest-hd-desc {
+    color: #6b6459;
+  }
+
+  /* PHONE FEATURE MODAL */
+  html[data-theme="light"] .phone-modal-overlay {
+    background: rgba(43,38,35,0.82);
+  }
+  html[data-theme="light"] .phone-modal {
+    background: #F7F4EE;
+    border-color: rgba(43,38,35,0.1);
+  }
+  html[data-theme="light"] .phone-modal-close {
+    color: #8a7f6d;
+  }
+  html[data-theme="light"] .phone-modal-close:hover {
+    color: #171412;
+  }
+  html[data-theme="light"] .phone-modal-title {
+    color: #171412;
+  }
+  html[data-theme="light"] .phone-modal-body {
+    color: #5c554c;
+  }
+  html[data-theme="light"] .phone-modal-tag {
+    border-color: rgba(196,138,90,0.4);
+    color: #C48A5A;
+  }
+
+  /* FOOTER — keep dark: intentional anchor */
+  /* Footer already mineral black — no change needed */
+
+  /* FOOTER TOGGLE — light mode active state */
+  html[data-theme="light"] .footer-toggle button#ftLight {
+    background: rgba(247,244,238,0.18);
+    color: var(--warm-white);
+  }
+  html[data-theme="light"] .footer-toggle button#ftDark {
+    color: #7a746a;
+    background: none;
+  }
+
+  /* FOOTER APPEARANCE (app.html additions) */
+  .footer-appearance { margin-top: 22px; }
+  .footer-appearance-label {
+    font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: #5f5a52; margin-bottom: 8px;
+  }
+  .footer-toggle {
+    display: inline-flex; background: rgba(247,244,238,0.08);
+    border-radius: 20px; padding: 3px; gap: 0;
+  }
+  .footer-toggle button {
+    background: none; border: none; color: #7a746a; font-size: 12px;
+    padding: 6px 14px; border-radius: 16px; cursor: pointer;
+    transition: all 0.2s ease; letter-spacing: 0.04em; text-transform: uppercase;
+  }
+  .footer-toggle button.active {
+    background: rgba(247,244,238,0.14); color: var(--warm-white);
+  }
+
 </style>
 </head>
 <body>
@@ -1636,6 +1906,13 @@ body { overflow-x: clip; }
         <strong>Wellness meets Web3.</strong>
         <em>Built for long-term impact.</em>
       </div>
+      <div class="footer-appearance">
+        <div class="footer-appearance-label">Appearance</div>
+        <div class="footer-toggle">
+          <button id="ftLight">Light</button>
+          <button id="ftDark" class="active">Dark</button>
+        </div>
+      </div>
     </div>
     <div class="footer-col">
       <div class="footer-col-label">Explore</div>
@@ -2208,6 +2485,33 @@ body { overflow-x: clip; }
   overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 })();
+
+/* ── FOOTER THEME TOGGLE ── */
+(function(){
+  var btnLight = document.getElementById('ftLight');
+  var btnDark  = document.getElementById('ftDark');
+  if(!btnLight) return;
+
+  function applyTheme(theme){
+    if(theme === 'light'){
+      document.documentElement.setAttribute('data-theme','light');
+      btnLight.classList.add('active');
+      btnDark.classList.remove('active');
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+      btnDark.classList.add('active');
+      btnLight.classList.remove('active');
+    }
+    localStorage.setItem('daoasis-theme', theme);
+  }
+
+  var saved = localStorage.getItem('daoasis-theme') || 'dark';
+  applyTheme(saved);
+
+  btnLight.addEventListener('click', function(){ applyTheme('light'); });
+  btnDark.addEventListener('click',  function(){ applyTheme('dark');  });
+})();
+
 </script>
 
 </body>
