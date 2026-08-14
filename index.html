@@ -1047,7 +1047,7 @@
     <div class="nav-links">
       <a href="app.html">The App</a>
       <a href="sanctuary.html">The Sanctuary</a>
-      <span>The Web3 Layer</span>
+      <a href="web3.html">The Web3 Layer</a>
       <span>About Us</span>
       <span>Investors</span>
     </div>
@@ -1058,7 +1058,7 @@
   <div class="nav-drawer" id="navDrawer">
     <a href="app.html">The App</a>
     <a href="sanctuary.html">The Sanctuary</a>
-    <span class="drawer-dead">The Web3 Layer</span>
+    <a href="web3.html">The Web3 Layer</a>
     <span class="drawer-dead">About Us</span>
     <span class="drawer-dead">Investors</span>
     <a class="nav-cta" href="#waitlistSection">Join the waitlist</a>
@@ -1521,7 +1521,7 @@
     </div>
     <div class="footer-col">
       <div class="footer-col-label">Explore</div>
-      <a href="app.html">The App</a><a href="sanctuary.html">The Sanctuary</a><a href="#">The Web3 Layer</a><a href="#waitlistSection">Waitlist</a><a href="#">FAQ</a>
+      <a href="app.html">The App</a><a href="sanctuary.html">The Sanctuary</a><a href="web3.html">The Web3 Layer</a><a href="#waitlistSection">Waitlist</a><a href="#">FAQ</a>
     </div>
     <div class="footer-col">
       <div class="footer-col-label">Company</div>
@@ -1542,6 +1542,8 @@
   </div>
 </footer>
 
+<!-- Controlled Cinematic Scroll — shared pacing controller, see js/cine.js -->
+<script src="js/cine.js"></script>
 <script>
   const waypoints = [
     { frac: 0.0,  color:'#4a9a68', title:'Bangkok',    sub:'Day 1 · Begins the journey' },
@@ -1617,12 +1619,22 @@
     let entranceStarted = false;
     let maxProgress = 0;
 
+    /* GUIDED — the route is the homepage's story. It is speed-capped so
+       a hard flick can no longer draw the whole trail to Phuket in one
+       frame; the waypoints still arrive one at a time. The route only
+       ever advances (maxProgress), which is existing behaviour and is
+       kept — the pacing is applied to that advancing value. */
+    const track = (window.DAO && DAO.cine)
+      ? DAO.cine.track(pinContainer, { mode: 'guided', pace: 'epic', states: waypoints.length })
+      : null;
+
     function updateJourneyState(){
       if(!entranceStarted) return;
       const rect = pinContainer.getBoundingClientRect();
       const vh = window.innerHeight || 1;
       const scrollable = pinContainer.offsetHeight - vh;
-      const raw = scrollable > 0 ? clamp(-rect.top / scrollable, 0, 1) : 0;
+      const raw = track ? track.get()
+                        : (scrollable > 0 ? clamp(-rect.top / scrollable, 0, 1) : 0);
       maxProgress = Math.max(maxProgress, raw);
       const progress = maxProgress;
       const revealFrac = clamp(progress * 0.86 + 0.14, 0, 1);
@@ -1671,6 +1683,9 @@
     }
     window.addEventListener('scroll', onScroll, { passive:true });
     window.addEventListener('resize', onScroll, { passive:true });
+    /* the paced value keeps moving after the scrolling has stopped, and a
+       scroll listener alone would never repaint those frames */
+    if(track) track.on(() => updateJourneyState());
 
     setTimeout(() => { entranceStarted = true; updateJourneyState(); }, 7200);
 

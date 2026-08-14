@@ -21,13 +21,15 @@ Read this before asking Claude (or anyone else) to redeploy. It exists so we sto
 ## What's in this folder
 - `index.html` — home page
 - `app.html` — Companion App page
-- `images/` — everything both pages reference
-- `vercel.json` — makes `/app` work instead of requiring `/app.html`, and redirects `/sanctuary` and `/web3` to `/` since those pages don't exist yet
+- `sanctuary.html` — The Sanctuary page
+- `web3.html` — The Web3 Layer page
+- `images/` — everything the pages reference
+- `vercel.json` — makes `/app`, `/sanctuary` and `/web3` work instead of requiring the `.html`. No redirects remain; every nav destination is a real page now.
 
 ## Known gaps (not bugs — just not built yet, don't re-flag these)
-- "The Sanctuary" and "The Web3 Layer" nav/footer links are placeholders — no pages built for them yet.
-- "Join the Waitlist" buttons link to the waitlist section on the home page but there's no actual signup form/backend behind them yet.
+- "Join the Waitlist" buttons link to the waitlist section on the home page but there's no actual signup form/backend behind them yet. The Sanctuary early-access form is front end only and says so on submit.
 - "About Us" and "Investors" nav links are unlinked.
+- There's no `favicon.ico`, so every page logs one 404 in the browser console.
 
 ## For Claude
 Full project history and decisions live in the DAOasis CEO project doc `daoasis-website-status.md` — read that first in a new session instead of asking the user to re-explain any of the above.

@@ -791,7 +791,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
   <div class="nav-links">
     <a href="app.html">The App</a>
     <a href="sanctuary.html" class="active">The Sanctuary</a>
-    <span>The Web3 Layer</span>
+    <a href="web3.html">The Web3 Layer</a>
     <span>About Us</span>
     <span>Investors</span>
   </div>
@@ -802,7 +802,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
 <div class="nav-drawer" id="navDrawer">
   <a href="app.html">The App</a>
   <a href="sanctuary.html" class="active">The Sanctuary</a>
-  <span class="drawer-dead">The Web3 Layer</span>
+  <a href="web3.html">The Web3 Layer</a>
   <span class="drawer-dead">About Us</span>
   <span class="drawer-dead">Investors</span>
   <a class="nav-cta" href="#earlyAccess">Join the waitlist</a>
@@ -1410,7 +1410,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
     </div>
     <div class="footer-col">
       <div class="footer-col-label">Explore</div>
-      <a href="app.html">The App</a><a href="sanctuary.html">The Sanctuary</a><span>The Web3 Layer</span><a href="#earlyAccess">Early Access</a>
+      <a href="app.html">The App</a><a href="sanctuary.html">The Sanctuary</a><a href="web3.html">The Web3 Layer</a><a href="#earlyAccess">Early Access</a>
     </div>
     <div class="footer-col">
       <div class="footer-col-label">Company</div>
@@ -1429,6 +1429,8 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
 </footer>
 
 
+<!-- Controlled Cinematic Scroll — shared pacing controller, see js/cine.js -->
+<script src="js/cine.js"></script>
 <script>
 /* ════════════════════════════════════════════
    HELPERS
@@ -1442,6 +1444,26 @@ function progressOf(el){
   const rect = el.getBoundingClientRect();
   const scrollable = el.offsetHeight - window.innerHeight;
   return scrollable > 0 ? clamp01(-rect.top / scrollable) : 0;
+}
+
+/* Controlled Cinematic Scroll (js/cine.js). cine() returns a paced track
+   whose .get() replaces progressOf() at the call site. If the controller
+   file is ever missing the page degrades to direct scroll mapping rather
+   than breaking, so every section still works. */
+function cine(el, o){
+  if(el && window.DAO && DAO.cine) return DAO.cine.track(el, o);
+  return {
+    get: () => el ? progressOf(el) : 0,
+    raw: () => el ? progressOf(el) : 0,
+    state: () => 0,
+    refresh(){},
+    on(fn){
+      const f = () => fn(el ? progressOf(el) : 0, 0);
+      window.addEventListener('scroll', f, { passive: true });
+      window.addEventListener('resize', f, { passive: true });
+      f(); return this;
+    }
+  };
 }
 
 /* ── NAV ── */
@@ -1561,7 +1583,11 @@ function progressOf(el){
     })();
   })();
 
-  let targetRaw = 0, currentRaw = 0;
+  /* GUIDED — darkness → plates emerge → plates pass the camera. One
+     continuous move, so it is speed-capped rather than quantised. This
+     replaces the old fixed-alpha lerp, which closed large gaps in
+     proportion to their size and so still raced on a hard flick. */
+  const track = cine(outer, { mode: 'guided', pace: 'epic', states: 3 });
 
   function applyFrame(raw){
     const isMobile = window.innerWidth <= 900;
@@ -1626,14 +1652,10 @@ function progressOf(el){
   }
 
   function tick(){
-    targetRaw = progressOf(outer);
-    currentRaw = REDUCED ? targetRaw : lerp(currentRaw, targetRaw, 0.1);
-    if(Math.abs(currentRaw - targetRaw) < 0.0005) currentRaw = targetRaw;
-    applyFrame(currentRaw);
+    applyFrame(track.get());
     requestAnimationFrame(tick);
   }
   requestAnimationFrame(tick);
-  window.addEventListener('resize', () => { targetRaw = progressOf(outer); }, { passive: true });
 })();
 
 
@@ -1645,20 +1667,18 @@ function progressOf(el){
   const spine = document.getElementById('foundSpine');
   if(!outer || !items.length) return;
 
-  function update(){
-    if(window.innerWidth <= 900){ items.forEach(el => el.classList.add('active')); return; }
-    const p = progressOf(outer);
-    const i = Math.min(items.length - 1, Math.floor(p * items.length * 0.999));
-    items.forEach((el, n) => el.classList.toggle('active', n === i));
-    if(num) num.textContent = String(i + 1).padStart(2, '0');
-    if(spine){
-      const last = items[i];
-      spine.style.height = (last.offsetTop + last.offsetHeight) + 'px';
-    }
-  }
-  window.addEventListener('scroll', update, { passive: true });
-  window.addEventListener('resize', update, { passive: true });
-  update();
+  /* CINEMATIC STICKY — one foundation per state. */
+  cine(outer, { mode: 'sticky', pace: 'major', states: items.length })
+    .on((p) => {
+      if(window.innerWidth <= 900){ items.forEach(el => el.classList.add('active')); return; }
+      const i = Math.min(items.length - 1, Math.floor(p * items.length * 0.999));
+      items.forEach((el, n) => el.classList.toggle('active', n === i));
+      if(num) num.textContent = String(i + 1).padStart(2, '0');
+      if(spine){
+        const last = items[i];
+        spine.style.height = (last.offsetTop + last.offsetHeight) + 'px';
+      }
+    });
 })();
 
 
@@ -1695,9 +1715,13 @@ function progressOf(el){
     update();
   }
 
+  /* CINEMATIC STICKY — one day per state. build() also calls update(),
+     so the paced value is held rather than passed as an argument. */
+  let paced = 0;
+
   function update(){
     if(window.innerWidth <= 900){ days.forEach(d => d.classList.add('active')); return; }
-    const p = progressOf(outer);
+    const p = paced;
     const i = Math.min(days.length - 1, Math.floor(p * days.length * 0.999));
     days.forEach((d, n) => d.classList.toggle('active', n === i));
     if(len){
@@ -1711,7 +1735,8 @@ function progressOf(el){
     }
   }
 
-  window.addEventListener('scroll', update, { passive: true });
+  cine(outer, { mode: 'sticky', pace: 'epic', states: days.length })
+    .on((v) => { paced = v; update(); });
   window.addEventListener('resize', build, { passive: true });
   if(document.readyState === 'complete') build(); else window.addEventListener('load', build);
 })();
@@ -1786,16 +1811,17 @@ function stage3D(canvasId, outerId, build){
   resize();
   window.addEventListener('resize', resize, { passive: true });
 
-  let smoothP = 0, primed = false;
+  /* GUIDED — both 3D scenes are continuous camera moves (the sun crossing
+     the sky, the walk around the loop), so they are speed-capped, not
+     quantised. Seven waypoints each, matching their seven-key palettes. */
+  const track = cine(outer, { mode: 'guided', pace: 'epic', states: 7 });
+
   (function loop(){
     requestAnimationFrame(loop);
     if(!visible) return;
-    const p = progressOf(outer);
-    if(!primed){ smoothP = p; primed = true; }
-    smoothP = REDUCED ? p : smoothP + (p - smoothP) * 0.12;
     mx += (tmx - mx) * 0.045;
     my += (tmy - my) * 0.045;
-    frame(smoothP, performance.now() * 0.001, mx, my);
+    frame(track.get(), performance.now() * 0.001, mx, my);
     renderer.render(scene, camera);
   })();
 

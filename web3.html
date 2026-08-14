@@ -1,0 +1,2097 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<script>
+  (function(){
+    var t = localStorage.getItem('daoasis-theme') || 'dark';
+    if(t === 'light') document.documentElement.setAttribute('data-theme','light');
+  })();
+</script>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Web3 Layer — DAOasis</title>
+<meta name="description" content="DAOasis recognises meaningful participation through DRC — DAOasis Reward Credits. Over time DRC can be converted into $DVT, the token that connects deeper participation to the wider DAOasis ecosystem. No wallet required to begin." />
+<meta property="og:title" content="The Web3 Layer — DAOasis" />
+<meta property="og:description" content="Participation is recognised through DRC. DRC converts to $DVT. $DVT connects you to the wider DAOasis ecosystem — marketplace, governance, staking, Stake to Create." />
+<meta property="og:image" content="images/img-11.jpg" />
+<meta property="og:type" content="website" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Frank+Ruhl+Libre:wght@300;400;500&display=swap" rel="stylesheet" />
+
+<style>
+/* ══════════════════════════════════════════════════════════════
+   ██  WEB3 LAYER IMAGE SLOTS  ██
+   ──────────────────────────────────────────────────────────────
+   Every photograph on this page is referenced from this block and
+   nowhere else. To swap a holding image for a final photograph,
+   change the path here only.
+
+   The device mockups (Participation, Stake to Create) are the
+   existing transparent app PNGs and are referenced in markup,
+   because they are cropped by a fixed frame — see `.dev`.
+══════════════════════════════════════════════════════════════ */
+:root {
+  --img-sanctuary-link: url('images/img-07.jpg');
+  --img-sovereignty:    url('images/img-11.jpg');
+  --img-govern:         url('images/img-01.jpg');
+}
+
+/* ── BRAND TOKENS (identical to index.html / app.html / sanctuary.html) ── */
+:root {
+  --warm-white: #F7F4EE;
+  --warm-stone: #E8E1D6;
+  --soft-stone: #CFC8BE;
+  --charcoal: #2B2623;
+  --mineral: #171412;
+  --sanctuary: #31463F;
+  --gold: #C48A5A;
+  --blue: #7F97A2;
+  --sage: #A8B7A2;
+  --dark-surface: #211D1A;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { font-family: 'Frank Ruhl Libre', serif; background: var(--mineral); color: var(--warm-white); }
+body { overflow-x: clip; }
+img { max-width: 100%; }
+::selection { background: rgba(196,138,90,0.3); }
+
+/* ── FILM GRAIN ── */
+.grain { position: relative; }
+.grain::after {
+  content: ''; position: absolute; inset: 0; z-index: 6;
+  pointer-events: none; opacity: 0.038;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ── SCROLL PROGRESS ── */
+.scroll-prog {
+  position: fixed; top: 0; left: 0; height: 2px; width: 0;
+  background: linear-gradient(90deg, rgba(196,138,90,0.4), var(--gold));
+  z-index: 95; pointer-events: none;
+}
+
+/* ══════════════════════════════════════════════
+   NAV
+══════════════════════════════════════════════ */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 90;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 5%;
+  background: rgba(23,20,18,0.88); backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(247,244,238,0.07);
+  transition: transform 0.35s ease;
+}
+.nav.nav-hidden { transform: translateY(-100%); }
+.nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0; }
+.nav-brand img { width: 26px; opacity: 0.9; }
+.nav-brand span { font-family: 'Cormorant Garamond', serif; font-size: 18px; color: var(--warm-white); }
+.nav-links { display: flex; gap: 28px; }
+.nav-links a, .nav-links span { font-size: 13px; color: #8a8377; text-decoration: none; letter-spacing: 0.04em; transition: color 0.2s; }
+.nav-links a:hover, .nav-links a.active { color: var(--warm-white); }
+.nav-cta {
+  background: var(--warm-white); color: var(--charcoal); font-size: 13px;
+  padding: 10px 24px; border-radius: 24px; text-decoration: none;
+  letter-spacing: 0.03em; transition: opacity 0.2s; flex-shrink: 0;
+}
+.nav-cta:hover { opacity: 0.88; }
+.nav-burger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; background: none; border: none; }
+.nav-burger span { display: block; width: 22px; height: 1.5px; background: var(--warm-white); transition: all 0.3s; }
+.nav-burger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+.nav-burger.open span:nth-child(2) { opacity: 0; }
+.nav-burger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+.nav-drawer {
+  position: fixed; inset: 0; z-index: 89;
+  background: rgba(23,20,18,0.97); backdrop-filter: blur(16px);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 32px;
+  opacity: 0; pointer-events: none; transition: opacity 0.35s;
+}
+.nav-drawer.open { opacity: 1; pointer-events: auto; }
+.nav-drawer a, .nav-drawer span.drawer-dead { font-family: 'Cormorant Garamond', serif; font-size: 28px; color: #8a8377; text-decoration: none; transition: color 0.2s; }
+.nav-drawer a:hover, .nav-drawer a.active { color: var(--warm-white); }
+.nav-drawer .nav-cta { font-family: 'Frank Ruhl Libre', serif; font-size: 15px; margin-top: 16px; padding: 14px 40px; }
+@media(max-width:900px) { .nav-links, .nav > .nav-cta { display: none; } .nav-burger { display: flex; } }
+
+/* ══════════════════════════════════════════════
+   DIVIDERS  (homepage system)
+══════════════════════════════════════════════ */
+.divider { padding: 7vh 8%; position: relative; z-index: 5; pointer-events: none; }
+.divider-inner { display: flex; align-items: center; gap: 24px; max-width: 1200px; margin: 0 auto; }
+.divider-line { flex: 1; height: 1px; }
+.divider-mark { width: 26px; height: 26px; object-fit: contain; flex-shrink: 0; }
+.divider.dark  .divider-line { background: rgba(247,244,238,0.16); }
+.divider.light .divider-line { background: rgba(43,38,35,0.2); }
+.divider.green .divider-line { background: rgba(247,244,238,0.22); }
+.divider .divider-line { transform: scaleX(0); transition: transform 1.4s var(--ease); }
+.divider.shown .divider-line { transform: scaleX(1); }
+.divider .divider-line:first-child { transform-origin: right; }
+.divider .divider-line:last-child  { transform-origin: left; }
+.divider .divider-mark { opacity: 0; transition: opacity 0.9s ease; }
+.divider.shown.dark  .divider-mark { opacity: 0.8; }
+.divider.shown.light .divider-mark { opacity: 0.55; }
+.divider.shown.green .divider-mark { opacity: 0.7; }
+
+/* ══════════════════════════════════════════════
+   EDITORIAL PRIMITIVES
+══════════════════════════════════════════════ */
+.sect { padding: 16vh 8%; }
+.sect-inner { max-width: 1360px; margin: 0 auto; }
+.bg-ivory   { background: var(--warm-white); }
+.bg-stone   { background: var(--warm-stone); }
+.bg-green   { background: var(--sanctuary); }
+.bg-mineral { background: var(--mineral); }
+.bg-surface { background: var(--dark-surface); }
+
+.eyebrow {
+  font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+  display: flex; align-items: center; gap: 14px; margin-bottom: 26px;
+}
+.eyebrow::before { content: ''; display: block; width: 0; height: 1px; background: currentColor; opacity: 0.55; transition: width 1.1s var(--ease) 0.15s; }
+.rv.show .eyebrow::before, .eyebrow.show::before { width: 28px; }
+.eyebrow.centered { justify-content: center; }
+.on-light .eyebrow { color: #8a7f6d; }
+.on-dark  .eyebrow { color: var(--gold); }
+.on-green .eyebrow { color: rgba(247,244,238,0.66); }
+
+.display {
+  font-family: 'Cormorant Garamond', serif; font-weight: 300;
+  font-size: clamp(36px,5.4vw,78px); line-height: 1.06; letter-spacing: -0.008em;
+}
+.display em { font-style: italic; color: var(--gold); }
+.on-light .display { color: var(--charcoal); }
+.on-dark .display, .on-green .display { color: var(--warm-white); }
+
+.copy { font-size: 16px; line-height: 1.9; max-width: 620px; }
+.copy p + p { margin-top: 20px; }
+.on-light .copy { color: #5c554c; }
+.on-dark  .copy { color: #b0a99b; }
+.on-green .copy { color: rgba(247,244,238,0.78); }
+
+.note-line { font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; }
+.on-light .note-line { color: #8a7f6d; }
+.on-dark  .note-line { color: rgba(196,138,90,0.9); }
+.on-green .note-line { color: rgba(247,244,238,0.58); }
+
+/* ── LINE-MASK REVEAL ── */
+.ln { display: block; overflow: hidden; padding-bottom: 0.14em; margin-bottom: -0.14em; }
+.ln > i {
+  display: block; font-style: inherit; color: inherit;
+  transform: translateY(108%);
+  transition: transform 1.15s var(--ease);
+}
+.rv.show .ln > i { transform: translateY(0); }
+.rv .ln:nth-child(2) > i { transition-delay: 0.09s; }
+.rv .ln:nth-child(3) > i { transition-delay: 0.18s; }
+.rv .ln:nth-child(4) > i { transition-delay: 0.27s; }
+
+/* ── SOFT REVEAL ── */
+.rv { opacity: 1; }
+.rv .soft { opacity: 0; transform: translateY(20px); transition: opacity 1s var(--ease), transform 1s var(--ease); }
+.rv.show .soft { opacity: 1; transform: translateY(0); }
+.rv.show .soft.d1 { transition-delay: 0.14s; }
+.rv.show .soft.d2 { transition-delay: 0.26s; }
+.rv.show .soft.d3 { transition-delay: 0.38s; }
+.rv.show .soft.d4 { transition-delay: 0.50s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ln > i, .rv .soft { transition-duration: 0.25s; }
+  .ln > i { transform: none; }
+}
+
+/* ── BUTTONS ── */
+.btn { display: inline-block; padding: 16px 36px; border-radius: 40px; text-decoration: none;
+       font-size: 12.5px; letter-spacing: 0.16em; text-transform: uppercase;
+       transition: opacity 0.3s, border-color 0.3s, background 0.3s, color 0.3s; }
+.btn-light { background: var(--warm-white); color: var(--charcoal); }
+.btn-light:hover { opacity: 0.86; }
+.btn-ghost { border: 1px solid rgba(247,244,238,0.3); color: var(--warm-white); }
+.btn-ghost:hover { border-color: rgba(247,244,238,0.8); }
+.btn-dark { background: var(--mineral); color: var(--warm-white); }
+.btn-dark:hover { opacity: 0.86; }
+.btn-outline { border: 1px solid rgba(43,38,35,0.28); color: var(--charcoal); }
+.btn-outline:hover { border-color: rgba(43,38,35,0.75); }
+.btn-row { display: flex; flex-wrap: wrap; gap: 12px; }
+
+/* ── PARALLAX PHOTO ── */
+.par { position: relative; overflow: hidden; }
+.par-layer { position: absolute; inset: -12% 0; background-size: cover; background-position: center 50%; will-change: transform; }
+
+/* ── DEVICE FRAME ──
+   The app mockups are 2250×2250 transparent PNGs with the phone
+   occupying a fixed window (x 30.5%–69.5%, y 9.9%–90%). This frame
+   crops to exactly that window, so the phone fills its container at
+   any size and never floats inside dead space. */
+.dev { position: relative; width: 100%; max-width: 300px; margin: 0 auto; aspect-ratio: 873 / 1803; }
+/* Inside a 100vh sticky the device has to be sized off the viewport
+   height, not the column width, or a 720px-tall screen gets a 620px
+   phone and the section clips its own headline. */
+.part-grid .dev { width: auto; max-width: none; height: min(52vh, 580px); }
+.dev-shot { position: absolute; inset: 0; overflow: hidden; opacity: 0; transition: opacity 0.9s var(--ease), transform 1.4s var(--ease); transform: scale(0.97); }
+.dev-shot.on { opacity: 1; transform: scale(1); }
+.dev-shot img { position: absolute; display: block; width: 257.73%; max-width: none; left: -78.69%; top: -12.31%; filter: drop-shadow(0 40px 70px rgba(0,0,0,0.45)); }
+.dev-single .dev-shot { opacity: 1; transform: none; position: relative; }
+
+/* ══════════════════════════════════════════════
+   SECTION 1 — HERO
+   One thread, drawn as you scroll, then the camera
+   pulls back and it turns out to be one thread in a
+   much larger fabric.
+══════════════════════════════════════════════ */
+.hero-outer { position: relative; height: 600vh; }
+.hero-stage {
+  position: sticky; top: 0; height: 100vh; overflow: hidden;
+  background: radial-gradient(ellipse at 50% 52%, #14110f 0%, #0a0806 58%, #040302 100%);
+}
+.hero-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; z-index: 2; }
+.hero-stage::after {
+  content: ''; position: absolute; inset: 0; z-index: 8; pointer-events: none;
+  background: radial-gradient(ellipse at 50% 50%, transparent 40%, rgba(0,0,0,0.62) 100%);
+}
+.hero-grain {
+  position: absolute; inset: 0; z-index: 9; pointer-events: none; opacity: 0.038;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.hero-title {
+  position: absolute; inset: 0; z-index: 15; background: #080605;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  pointer-events: none; text-align: center; padding: 0 7%;
+}
+.hero-title-eyebrow {
+  font-size: 10.5px; letter-spacing: 0.42em; text-transform: uppercase;
+  color: rgba(247,244,238,0.4); margin-bottom: 38px; padding-left: 0.42em;
+}
+.hero-title-text {
+  font-family: 'Cormorant Garamond', serif; font-weight: 400;
+  font-size: clamp(34px,6.2vw,92px); line-height: 1.06;
+  color: var(--warm-white); letter-spacing: 0.004em; max-width: 16ch;
+}
+.hero-title-text em { font-style: italic; color: var(--gold); }
+.hero-cue {
+  position: absolute; bottom: 7vh; left: 50%; transform: translateX(-50%);
+  font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase;
+  color: rgba(247,244,238,0.42); opacity: 0; transition: opacity 1.2s ease 0.9s;
+}
+.hero-title.lit .hero-cue { opacity: 1; }
+
+.hero-mark {
+  position: absolute; left: 50%; transform: translateX(-50%);
+  bottom: 11vh; z-index: 12; text-align: center;
+  font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase;
+  color: rgba(247,244,238,0.5); opacity: 0; transition: opacity 0.9s ease;
+  pointer-events: none; text-shadow: 0 2px 18px rgba(0,0,0,0.95);
+  /* left:50% leaves only half the stage to shrink-to-fit into, which
+     wrapped this onto two lines on a phone */
+  white-space: nowrap;
+}
+.hero-mark.show { opacity: 1; }
+.hero-mark em { font-style: normal; color: rgba(196,138,90,0.95); }
+
+.hero-bridge {
+  position: sticky; top: 0; height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  background: #080605; text-align: center; padding: 0 7%;
+  opacity: 0; pointer-events: none; z-index: 10;
+}
+.hero-bridge-inner { max-width: 840px; }
+.hero-bridge-rule {
+  width: 1px; height: 64px;
+  background: linear-gradient(180deg, transparent, rgba(196,138,90,0.5), transparent);
+  margin: 0 auto 34px;
+}
+.hero-statement {
+  font-family: 'Cormorant Garamond', serif; font-weight: 300;
+  font-size: clamp(40px,6.4vw,98px); line-height: 1.04;
+  color: var(--warm-white); letter-spacing: -0.012em;
+}
+.hero-statement em { display: block; font-style: italic; color: var(--gold); }
+.hero-bridge-copy { font-size: 15.5px; line-height: 1.9; color: rgba(247,244,238,0.6); max-width: 600px; margin: 40px auto 0; }
+.hero-bridge-note { font-size: 11px; letter-spacing: 0.28em; text-transform: uppercase; color: rgba(196,138,90,0.9); margin-top: 28px; }
+.hero-bridge .btn-row { justify-content: center; margin-top: 46px; }
+
+@media(max-width:900px){
+  .hero-outer { height: 480vh; }
+  .hero-title-eyebrow { letter-spacing: 0.3em; margin-bottom: 26px; }
+  .hero-mark { bottom: 9vh; font-size: 9px; letter-spacing: 0.2em; }
+}
+
+/* ══════════════════════════════════════════════
+   SECTION 2 — PARTICIPATION
+══════════════════════════════════════════════ */
+.part-outer { position: relative; height: 560vh; background: var(--warm-white); }
+.part-sticky {
+  position: sticky; top: 0; height: 100vh; overflow: hidden;
+  display: flex; flex-direction: column; justify-content: center; padding: 13vh 8% 8vh;
+}
+.part-head { max-width: 1360px; width: 100%; margin: 0 auto 4vh; }
+.part-grid { display: grid; grid-template-columns: 0.62fr 1.38fr; gap: 7%; align-items: center; max-width: 1360px; width: 100%; margin: 0 auto; }
+.part-list { position: relative; border-top: 1px solid rgba(43,38,35,0.14); }
+.part-item {
+  display: grid; grid-template-columns: auto 1fr; gap: 22px; align-items: baseline;
+  padding: 2.5vh 0; border-bottom: 1px solid rgba(43,38,35,0.14);
+  opacity: 0.26; transition: opacity 0.75s var(--ease);
+}
+.part-item.active { opacity: 1; }
+.part-idx { font-size: 10px; letter-spacing: 0.2em; color: var(--gold); }
+.part-verb {
+  font-family: 'Cormorant Garamond', serif; font-weight: 300;
+  font-size: clamp(26px,3.4vw,50px); line-height: 1.02; color: var(--charcoal);
+  display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px 18px;
+}
+.part-verb small {
+  font-family: 'Frank Ruhl Libre', serif; font-size: 12.5px; letter-spacing: 0.04em;
+  color: #8a7f6d; opacity: 0; transform: translateX(-8px);
+  transition: opacity 0.7s ease 0.1s, transform 0.7s var(--ease) 0.1s;
+}
+.part-item.active .part-verb small { opacity: 1; transform: translateX(0); }
+.part-foot { max-width: 1360px; width: 100%; margin: 5vh auto 0; font-size: 13px; color: #8a7f6d; line-height: 1.8; }
+.part-foot a { color: var(--charcoal); text-decoration: none; border-bottom: 1px solid rgba(43,38,35,0.3); padding-bottom: 2px; }
+.part-foot a:hover { border-bottom-color: var(--charcoal); }
+/* short viewports — the sticky frame is the constraint, not the width */
+@media(min-width:1001px) and (max-height:900px){
+  .part-sticky { padding: 11vh 8% 7vh; }
+  .part-head { margin-bottom: 3vh; }
+  .part-head .display { font-size: clamp(28px,3.4vw,50px); }
+  .part-item { padding: 1.4vh 0; }
+  .part-verb { font-size: clamp(22px,2.6vw,36px); }
+  .part-foot { margin-top: 3vh; }
+}
+@media(max-width:1000px){
+  .part-outer { height: auto; }
+  .part-sticky { position: relative; height: auto; padding: 14vh 8%; }
+  .part-grid { grid-template-columns: 1fr; gap: 7vh; }
+  .part-item { opacity: 1; padding: 3.4vh 0; }
+  .part-item .part-verb small { opacity: 1; transform: none; }
+  .part-grid .dev { width: 100%; max-width: 230px; height: auto; }
+}
+
+/* ══════════════════════════════════════════════
+   SECTION 3 — DRC
+══════════════════════════════════════════════ */
+.drc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7%; align-items: start; }
+.drc-pull {
+  font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300;
+  font-size: clamp(24px,2.9vw,40px); color: var(--warm-white); line-height: 1.28;
+  margin-top: 34px; padding-left: 26px; border-left: 1px solid rgba(196,138,90,0.6);
+}
+.drc-rows { margin-top: 12vh; border-top: 1px solid rgba(247,244,238,0.1); }
+.drc-row {
+  display: grid; grid-template-columns: 210px 1fr 1.1fr; gap: 30px; align-items: center;
+  padding: 3.1vh 0; border-bottom: 1px solid rgba(247,244,238,0.1);
+}
+.drc-k { font-family: 'Cormorant Garamond', serif; font-size: clamp(21px,2.1vw,30px); font-weight: 300; color: var(--warm-white); }
+.drc-marks { display: flex; align-items: flex-end; gap: 7px; height: 26px; }
+.drc-marks i { display: block; width: 1.5px; height: 24px; background: var(--gold); opacity: 0; transform: scaleY(0.25); transform-origin: bottom; transition: opacity 0.5s ease, transform 0.7s var(--ease); }
+.rv.show .drc-marks i { opacity: 0.9; transform: scaleY(1); }
+.rv.show .drc-marks i.faint { opacity: 0.3; }
+.drc-d { font-size: 13.5px; line-height: 1.75; color: #8a8377; }
+.drc-note { margin-top: 7vh; display: flex; flex-wrap: wrap; gap: 14px 40px; align-items: baseline; }
+.drc-note .note-line { color: rgba(196,138,90,0.9); }
+.drc-note p { font-size: 13.5px; color: #8a8377; line-height: 1.8; max-width: 620px; }
+@media(max-width:1000px){
+  .drc-grid { grid-template-columns: 1fr; gap: 40px; }
+  .drc-rows { margin-top: 9vh; }
+  .drc-row { grid-template-columns: 1fr; gap: 14px; padding: 3.6vh 0; }
+  .drc-marks { height: 20px; }
+  .drc-marks i { height: 18px; }
+}
+
+/* ══════════════════════════════════════════════
+   SECTION 4 — THE BRIDGE
+   Many separate recognitions converge and resolve
+   into one. No arrows, no swap interface.
+══════════════════════════════════════════════ */
+.bridge-outer { position: relative; height: 460vh; background: var(--mineral); }
+.bridge-sticky {
+  position: sticky; top: 0; height: 100vh; overflow: hidden;
+  display: flex; flex-direction: column; justify-content: space-between; padding: 13vh 8% 8vh;
+}
+.bridge-head { max-width: 1360px; width: 100%; margin: 0 auto; }
+.bridge-stage { position: relative; flex: 1; max-width: 1360px; width: 100%; margin: 0 auto; }
+.bh-stack { position: absolute; left: 50%; top: 50%; width: min(560px, 74vw); height: 1px; transform: translateX(-50%); }
+.bh-stack i { position: absolute; left: 0; top: 0; display: block; width: 100%; height: 1px; background: rgba(196,138,90,0.85); opacity: 0; will-change: transform, opacity; }
+.bh-rule {
+  position: absolute; left: 50%; top: 50%; width: min(560px, 74vw); height: 3px;
+  background: linear-gradient(90deg, rgba(196,138,90,0.25), var(--gold) 50%, rgba(196,138,90,0.25));
+  transform: translate(-50%,-50%) scaleX(0.2); opacity: 0;
+  box-shadow: 0 0 34px rgba(196,138,90,0.5);
+}
+.bh-label {
+  position: absolute; left: 50%; top: 50%; margin-top: 36px; transform: translateX(-50%);
+  text-align: center; opacity: 0; white-space: nowrap;
+}
+/* margin-top is set from the measured stack spread in script, so the
+   caption always clears the hairlines whatever the viewport height */
+.bh-ticker {
+  position: absolute; left: 50%; top: 50%; margin-top: -90px; transform: translateX(-50%);
+  font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; color: rgba(247,244,238,0.34);
+  white-space: nowrap;
+}
+.bh-token { font-family: 'Cormorant Garamond', serif; font-size: clamp(32px,4.4vw,64px); font-weight: 300; color: var(--warm-white); line-height: 1; }
+.bh-token em { font-style: italic; color: var(--gold); }
+.bh-sub { font-size: 10.5px; letter-spacing: 0.28em; text-transform: uppercase; color: rgba(247,244,238,0.5); margin-top: 16px; }
+.bridge-rail { max-width: 1360px; width: 100%; margin: 0 auto; }
+.bridge-steps { display: grid; grid-template-columns: repeat(5,1fr); gap: 18px; border-top: 1px solid rgba(247,244,238,0.14); padding-top: 20px; position: relative; }
+.bridge-fill { position: absolute; left: 0; top: -1px; height: 1px; background: var(--gold); width: 0; transition: width 0.5s var(--ease); }
+.bridge-step { opacity: 0.3; transition: opacity 0.6s var(--ease); }
+.bridge-step.on { opacity: 1; }
+.bridge-step-i { font-size: 9.5px; letter-spacing: 0.2em; color: var(--gold); margin-bottom: 10px; }
+.bridge-step-n { font-size: 12.5px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(247,244,238,0.9); }
+.bridge-foot { font-size: 13.5px; line-height: 1.8; color: #8a8377; max-width: 640px; margin-top: 26px; }
+@media(min-width:901px) and (max-height:900px){
+  .bridge-sticky { padding: 11vh 8% 6vh; }
+  .bridge-head .display { font-size: clamp(28px,3.4vw,50px); }
+}
+@media(max-width:900px){
+  .bridge-outer { height: 380vh; }
+  /* the rail is the greedy part on a phone — trimming it is what
+     gives the hairline stage enough room to actually converge */
+  .bridge-sticky { padding: 10vh 7% 5vh; }
+  .bridge-head .display { font-size: clamp(30px,6vw,44px); }
+  .bridge-steps { grid-template-columns: repeat(2,1fr); gap: 10px 16px; padding-top: 16px; }
+  .bridge-step-i { margin-bottom: 6px; }
+  .bridge-step-n { font-size: 11px; letter-spacing: 0.08em; }
+  .bridge-foot { font-size: 12.5px; line-height: 1.7; margin-top: 18px; }
+  .bh-label { margin-top: 24px; }
+  .bh-token { font-size: 30px; }
+  .bh-sub { font-size: 9.5px; letter-spacing: 0.22em; margin-top: 10px; }
+}
+
+/* ══════════════════════════════════════════════
+   SECTION 5 — TWO LAYERS + $DVT UTILITY
+══════════════════════════════════════════════ */
+.two-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-top: 9vh; }
+.two-card { border: 1px solid rgba(43,38,35,0.14); padding: 42px 40px; background: rgba(255,255,255,0.4); }
+.two-card.accent { border-color: rgba(196,138,90,0.4); }
+.two-tag { font-size: 10px; letter-spacing: 0.24em; text-transform: uppercase; color: #8a7f6d; margin-bottom: 22px; }
+.two-card.accent .two-tag { color: #a07a4f; }
+.two-name { font-family: 'Cormorant Garamond', serif; font-size: clamp(30px,3.4vw,46px); font-weight: 300; color: var(--charcoal); line-height: 1; }
+.two-full { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: #8a7f6d; margin-top: 14px; }
+.two-role { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: clamp(19px,1.9vw,25px); color: var(--gold); margin-top: 26px; }
+.two-lines { margin-top: 26px; border-top: 1px solid rgba(43,38,35,0.12); }
+.two-lines div { font-size: 13.5px; color: #5c554c; padding: 12px 0; border-bottom: 1px solid rgba(43,38,35,0.08); line-height: 1.6; }
+.two-close { margin-top: 6vh; font-size: 14.5px; line-height: 1.9; color: #5c554c; max-width: 720px; }
+
+.util-list { margin-top: 12vh; border-top: 1px solid rgba(43,38,35,0.16); }
+.util-row {
+  display: grid; grid-template-columns: 64px 1fr 1.25fr; gap: 34px; align-items: start;
+  padding: 5.2vh 0; border-bottom: 1px solid rgba(43,38,35,0.16);
+}
+.util-i { font-size: 10.5px; letter-spacing: 0.2em; color: var(--gold); padding-top: 10px; }
+.util-n { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: clamp(28px,3.4vw,50px); line-height: 1.04; color: var(--charcoal); }
+.util-b { font-size: 15.5px; line-height: 1.9; color: #5c554c; }
+.util-q { display: inline-block; margin-top: 18px; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: #8a7f6d; border: 1px solid rgba(43,38,35,0.16); border-radius: 30px; padding: 7px 16px; }
+@media(max-width:900px){
+  .two-grid { grid-template-columns: 1fr; gap: 18px; margin-top: 7vh; }
+  .two-card { padding: 34px 28px; }
+  .util-list { margin-top: 9vh; }
+  .util-row { grid-template-columns: 1fr; gap: 16px; padding: 5vh 0; }
+  .util-i { padding-top: 0; }
+}
+
+/* ══════════════════════════════════════════════
+   SECTION 6 — THE ECOSYSTEM
+   One continuous line with everything hanging off
+   it — a system, not eight products.
+══════════════════════════════════════════════ */
+.eco-stage { margin-top: 10vh; }
+.eco-svg { width: 100%; height: auto; display: block; overflow: visible; }
+.eco-path { fill: none; stroke: rgba(247,244,238,0.34); stroke-width: 1.4; }
+.eco-glow { fill: none; stroke: var(--gold); stroke-width: 1.6; }
+.eco-stem { stroke: rgba(247,244,238,0.28); stroke-width: 1; }
+.eco-node { fill: var(--sanctuary); stroke: rgba(247,244,238,0.6); stroke-width: 1.4; }
+.eco-node.key { fill: var(--gold); stroke: var(--gold); }
+.eco-lab { font-family: 'Frank Ruhl Libre', serif; font-size: 12.5px; letter-spacing: 0.06em; fill: rgba(247,244,238,0.92); }
+/* 0.62 not 0.44 — at 0.44 over the sanctuary green these ~10px caps
+   measured about 3.1:1, which is decorative rather than readable */
+.eco-sub { font-family: 'Frank Ruhl Libre', serif; font-size: 10px; letter-spacing: 0.18em; fill: rgba(247,244,238,0.62); text-transform: uppercase; }
+.eco-g { opacity: 0; transition: opacity 0.9s var(--ease); }
+.eco-stage.shown .eco-g { opacity: 1; }
+.eco-list { display: none; }
+.eco-foot { margin-top: 8vh; font-size: 14.5px; line-height: 1.9; color: rgba(247,244,238,0.7); max-width: 640px; }
+@media(max-width:900px){
+  .eco-svg { display: none; }
+  .eco-list { display: block; position: relative; margin-top: 8vh; padding-left: 26px; }
+  .eco-list::before { content: ''; position: absolute; left: 3px; top: 8px; bottom: 8px; width: 1px; background: rgba(247,244,238,0.24); }
+  .eco-item { position: relative; padding: 2.6vh 0; }
+  .eco-item::before { content: ''; position: absolute; left: -26px; top: calc(2.6vh + 8px); width: 7px; height: 7px; border-radius: 50%; background: var(--sanctuary); border: 1px solid rgba(247,244,238,0.6); }
+  .eco-item.key::before { background: var(--gold); border-color: var(--gold); }
+  .eco-item-n { font-family: 'Cormorant Garamond', serif; font-size: 25px; font-weight: 300; color: var(--warm-white); }
+  .eco-item-s { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(247,244,238,0.46); margin-top: 7px; }
+}
+
+/* ══════════════════════════════════════════════
+   SECTION 7 — STAKE TO CREATE
+══════════════════════════════════════════════ */
+.stc-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 8%; align-items: center; }
+.stc-cats { margin-top: 42px; display: grid; grid-template-columns: 1fr 1fr; gap: 0 34px; }
+.stc-cat { padding: 16px 0; border-top: 1px solid rgba(43,38,35,0.16); font-size: 14.5px; color: #5c554c; }
+.stc-cat b { display: block; font-weight: 400; color: var(--charcoal); font-family: 'Cormorant Garamond', serif; font-size: 22px; margin-bottom: 5px; }
+@media(max-width:900px){
+  .stc-grid { grid-template-columns: 1fr; gap: 8vh; }
+  .stc-cats { grid-template-columns: 1fr; }
+  .stc-grid .dev { max-width: 240px; order: 2; }
+}
+
+/* ══════════════════════════════════════════════
+   SECTION 8 — GOVERNANCE
+══════════════════════════════════════════════ */
+.gov-beats { display: grid; grid-template-columns: repeat(3,1fr); gap: 34px; margin-top: 10vh; }
+.gov-beat { border-top: 1px solid rgba(43,38,35,0.18); padding-top: 26px; }
+.gov-beat-i { font-size: 10px; letter-spacing: 0.2em; color: var(--gold); margin-bottom: 18px; }
+.gov-beat-t { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: clamp(26px,2.8vw,40px); color: var(--charcoal); line-height: 1.06; }
+.gov-beat-b { font-size: 14.5px; line-height: 1.85; color: #5c554c; margin-top: 18px; }
+.gov-areas { margin-top: 9vh; display: flex; flex-wrap: wrap; gap: 10px; }
+.gov-areas span { font-size: 12px; letter-spacing: 0.1em; color: #5c554c; border: 1px solid rgba(43,38,35,0.18); border-radius: 30px; padding: 9px 20px; }
+.gov-foot { margin-top: 5vh; font-size: 13px; color: #8a7f6d; line-height: 1.8; max-width: 640px; }
+@media(max-width:900px){ .gov-beats { grid-template-columns: 1fr; gap: 42px; margin-top: 7vh; } }
+
+/* ══════════════════════════════════════════════
+   SECTION 9 — SANCTUARY CONNECTION
+══════════════════════════════════════════════ */
+.sanct { position: relative; min-height: 108vh; display: flex; align-items: flex-end; overflow: hidden; }
+.sanct .par-layer { background-image: var(--img-sanctuary-link); background-position: center 48%; }
+.sanct-veil { position: absolute; inset: 0; z-index: 1; background: linear-gradient(180deg, rgba(10,8,6,0.66) 0%, rgba(10,8,6,0.16) 32%, rgba(10,8,6,0.4) 62%, rgba(10,8,6,0.94) 100%); }
+.sanct-inner { position: relative; z-index: 3; padding: 0 8% 14vh; max-width: 1360px; margin: 0 auto; width: 100%; }
+.sanct .display { max-width: 15ch; }
+.sanct-copy { margin-top: 32px; max-width: 520px; font-size: 16px; line-height: 1.9; color: rgba(247,244,238,0.8); }
+.sanct-verbs { display: flex; flex-wrap: wrap; gap: 14px 40px; margin-top: 38px; }
+.sanct-verbs span { font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300; font-size: clamp(20px,2.3vw,32px); color: rgba(247,244,238,0.72); }
+.sanct .btn-row { margin-top: 44px; }
+@media(max-width:900px){ .sanct { min-height: 92vh; } .sanct-inner { padding-bottom: 11vh; } }
+
+/* ══════════════════════════════════════════════
+   SECTION 10 — DIGITAL SOVEREIGNTY
+══════════════════════════════════════════════ */
+.sov { position: relative; overflow: hidden; }
+.sov .par-layer { background-image: var(--img-sovereignty); background-position: center 40%; opacity: 0.16; }
+.sov-inner { position: relative; z-index: 3; max-width: 1000px; margin: 0 auto; }
+.future-tag {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 9px 20px; border: 1px solid rgba(127,151,162,0.45); border-radius: 30px;
+  font-size: 10px; letter-spacing: 0.24em; text-transform: uppercase; color: #93a8b2; margin-bottom: 30px;
+}
+.future-tag::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--blue); }
+.sov-split { display: grid; grid-template-columns: 1fr 1fr; gap: 8%; margin-top: 9vh; }
+.sov-col-k { font-size: 10px; letter-spacing: 0.24em; text-transform: uppercase; color: rgba(247,244,238,0.4); margin-bottom: 20px; }
+.sov-col p { font-size: 15px; line-height: 1.9; color: #b0a99b; }
+.sov-line { font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300; font-size: clamp(28px,3.6vw,54px); color: var(--warm-white); margin-top: 10vh; line-height: 1.18; }
+.sov-disclaim { margin-top: 6vh; padding-top: 24px; border-top: 1px solid rgba(247,244,238,0.12); font-size: 13px; line-height: 1.85; color: #7a746a; max-width: 700px; }
+@media(max-width:900px){ .sov-split { grid-template-columns: 1fr; gap: 42px; margin-top: 7vh; } }
+
+/* ══════════════════════════════════════════════
+   SECTION 11 — THE COMPLETE LOOP
+══════════════════════════════════════════════ */
+.loop-outer { position: relative; height: 420vh; background: #0b0f12; }
+/* The ring is a discrete object, not a full-bleed scene, so the copy
+   gets its own column. Floating it over the stage collided with the
+   labels on the ring's left-hand side. */
+.loop-sticky {
+  position: sticky; top: 0; height: 100vh; overflow: hidden;
+  display: grid; grid-template-columns: 0.82fr 1.18fr; align-items: center;
+  gap: 4%; padding: 0 8%;
+}
+.loop-copy { z-index: 4; max-width: 420px; pointer-events: none; }
+.loop-copy .display { font-size: clamp(26px,3vw,44px); }
+.loop-copy .copy { font-size: 14.5px; margin-top: 22px; max-width: 360px; }
+.loop-wrap { position: relative; width: min(80vh, 100%); max-width: 740px; justify-self: center; }
+.loop-svg { width: 100%; height: auto; display: block; overflow: visible; }
+.loop-ring { fill: none; stroke: rgba(247,244,238,0.14); stroke-width: 1; }
+.loop-arc { fill: none; stroke: var(--gold); stroke-width: 1.6; stroke-linecap: round; }
+.loop-node { fill: #0b0f12; stroke: rgba(247,244,238,0.3); stroke-width: 1.2; transition: all 0.5s ease; }
+.loop-node.on { fill: var(--gold); stroke: var(--gold); }
+/* the not-yet-reached labels still have to be legible, not just present.
+   14 viewBox units, because the SVG is scaled to ~0.83 — at 11 these
+   rendered at 8.6px, which is a miniature label, not a label. */
+.loop-lab { font-family: 'Frank Ruhl Libre', serif; font-size: 14px; letter-spacing: 0.14em; fill: rgba(247,244,238,0.5); transition: fill 0.5s ease; }
+.loop-lab.on { fill: var(--warm-white); }
+.loop-knob { fill: var(--gold); }
+.loop-centre { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); text-align: center; width: 62%; pointer-events: none; }
+.loop-centre-t { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: clamp(26px,3.2vw,46px); color: var(--warm-white); line-height: 1.1; }
+.loop-centre-t em { font-style: italic; color: var(--gold); }
+.loop-centre-s { font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase; color: rgba(247,244,238,0.5); margin-top: 18px; }
+.loop-mobile { display: none; }
+@media(max-width:1000px){
+  .loop-outer { height: auto; background: #0b0f12; }
+  .loop-sticky { position: relative; height: auto; padding: 14vh 8%; display: block; }
+  .loop-copy { max-width: none; }
+  .loop-copy .display { font-size: clamp(30px,6vw,44px); }
+  .loop-copy .copy { max-width: none; }
+  .loop-wrap { display: none; }
+  .loop-mobile { display: block; position: relative; margin-top: 8vh; padding-left: 28px; }
+  .loop-mobile::before { content: ''; position: absolute; left: 3px; top: 10px; bottom: 10px; width: 1px; background: linear-gradient(180deg, rgba(196,138,90,0.15), rgba(196,138,90,0.85), rgba(196,138,90,0.15)); }
+  .loop-m-item { position: relative; padding: 2.4vh 0; }
+  .loop-m-item::before { content: ''; position: absolute; left: -28px; top: calc(2.4vh + 9px); width: 7px; height: 7px; border-radius: 50%; background: var(--gold); }
+  .loop-m-n { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 300; color: var(--warm-white); }
+  .loop-m-s { font-size: 12.5px; color: #8a8377; margin-top: 6px; line-height: 1.7; }
+  .loop-m-end { margin-top: 3vh; font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 24px; color: var(--gold); }
+}
+
+/* ══════════════════════════════════════════════
+   SECTION 12 — TRUST
+══════════════════════════════════════════════ */
+.trust-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 40px; margin-top: 10vh; }
+.trust-i { border-top: 1px solid rgba(43,38,35,0.2); padding-top: 26px; }
+.trust-k { font-family: 'Cormorant Garamond', serif; font-size: clamp(30px,3.2vw,44px); font-weight: 300; color: var(--charcoal); }
+.trust-b { font-size: 14.5px; line-height: 1.85; color: #5c554c; margin-top: 18px; }
+@media(max-width:900px){ .trust-grid { grid-template-columns: 1fr; gap: 34px; margin-top: 7vh; } }
+
+/* ══════════════════════════════════════════════
+   SECTION 13 — FAQ
+══════════════════════════════════════════════ */
+.faq { max-width: 900px; margin: 10vh auto 0; border-top: 1px solid rgba(43,38,35,0.18); }
+.faq-item { border-bottom: 1px solid rgba(43,38,35,0.18); }
+.faq-q {
+  width: 100%; background: none; border: none; cursor: pointer; text-align: left;
+  font-family: 'Cormorant Garamond', serif; font-weight: 300;
+  font-size: clamp(21px,2.3vw,32px); color: var(--charcoal);
+  padding: 30px 56px 30px 0; position: relative; line-height: 1.24;
+  transition: color 0.25s ease;
+}
+.faq-q:hover { color: #6b5133; }
+.faq-q::after,
+.faq-q::before {
+  content: ''; position: absolute; right: 8px; top: 50%; background: var(--gold);
+  transition: transform 0.4s var(--ease), opacity 0.3s ease;
+}
+.faq-q::before { width: 16px; height: 1px; margin-top: -0.5px; }
+.faq-q::after { width: 1px; height: 16px; margin-top: -8px; right: 15.5px; }
+.faq-item.open .faq-q::after { transform: rotate(90deg); opacity: 0; }
+.faq-a { overflow: hidden; max-height: 0; transition: max-height 0.55s var(--ease); }
+.faq-a-inner { padding: 0 12% 34px 0; font-size: 15px; line-height: 1.95; color: #5c554c; }
+.faq-a-inner p + p { margin-top: 16px; }
+.faq-foot { max-width: 900px; margin: 6vh auto 0; font-size: 13px; line-height: 1.85; color: #8a7f6d; }
+@media(max-width:900px){ .faq-a-inner { padding-right: 0; } }
+
+/* ══════════════════════════════════════════════
+   FINAL
+══════════════════════════════════════════════ */
+.final { text-align: center; padding: 22vh 8%; background: radial-gradient(ellipse at 50% 40%, #221c16 0%, var(--mineral) 68%); position: relative; }
+.final .display { max-width: 16ch; margin: 0 auto; }
+.final .copy { margin: 40px auto 48px; text-align: center; }
+.final .btn-row { justify-content: center; }
+.final-tag { margin-top: 9vh; font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300; font-size: clamp(22px,2.8vw,38px); color: rgba(247,244,238,0.6); }
+@media(max-width:900px){ .final { padding: 15vh 8%; } }
+
+/* ══════════════════════════════════════════════
+   FOOTER
+══════════════════════════════════════════════ */
+.site-footer { background: var(--mineral); color: #8a8377; padding: 7vh 8% 4vh; border-top: 1px solid rgba(247,244,238,0.07); }
+.footer-top { display: grid; grid-template-columns: repeat(5,1fr); gap: 40px; padding-bottom: 5vh; border-bottom: 1px solid rgba(247,244,238,0.1); }
+.footer-brand-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+.footer-brand-logo img { width: 28px; opacity: 0.9; }
+.footer-brand-logo span { font-family: 'Cormorant Garamond', serif; font-size: 18px; color: var(--warm-white); }
+.footer-tagline { font-size: 13px; line-height: 1.6; color: #7a746a; }
+.footer-tagline strong { display: block; color: #b8b1a4; font-weight: 500; }
+.footer-tagline em { font-style: italic; }
+.footer-col-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #5f5a52; margin-bottom: 18px; }
+.footer-col a, .footer-col span { display: block; font-size: 13.5px; color: #8a8377; text-decoration: none; margin-bottom: 11px; transition: color 0.2s; }
+.footer-col a:hover { color: var(--warm-white); }
+.footer-bottom { display: flex; justify-content: space-between; padding-top: 4vh; font-size: 12px; color: #4a4540; }
+.footer-appearance { margin-top: 22px; }
+.footer-appearance-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: #5f5a52; margin-bottom: 8px; }
+.footer-toggle { display: inline-flex; background: rgba(247,244,238,0.08); border-radius: 20px; padding: 3px; }
+.footer-toggle button { background: none; border: none; color: #7a746a; font-size: 12px; padding: 6px 14px; border-radius: 16px; cursor: pointer; transition: all 0.2s ease; letter-spacing: 0.04em; text-transform: uppercase; font-family: 'Frank Ruhl Libre', serif; }
+.footer-toggle button.active { background: rgba(247,244,238,0.14); color: var(--warm-white); }
+@media(max-width:768px) { .footer-top { grid-template-columns: 1fr 1fr; gap: 32px; } .footer-bottom { flex-direction: column; gap: 8px; } }
+
+/* ══════════════════════════════════════════════
+   LIGHT THEME — chrome only, as on sanctuary.html.
+   The body is a fixed cinematic sequence.
+══════════════════════════════════════════════ */
+html[data-theme="light"], html[data-theme="light"] body { background: #F7F4EE; color: #2B2623; }
+html[data-theme="light"] .nav { background: rgba(247,244,238,0.94); border-bottom-color: rgba(43,38,35,0.1); }
+html[data-theme="light"] .nav-brand span { color: #171412; }
+html[data-theme="light"] .nav-brand img { filter: invert(1) brightness(0.3); }
+html[data-theme="light"] .nav-links a, html[data-theme="light"] .nav-links span { color: #6b6459; }
+html[data-theme="light"] .nav-links a:hover, html[data-theme="light"] .nav-links a.active { color: #171412; }
+html[data-theme="light"] .nav-cta { background: #171412; color: #F7F4EE; }
+html[data-theme="light"] .nav-burger span { background: #2B2623; }
+html[data-theme="light"] .nav-drawer { background: rgba(247,244,238,0.98); }
+html[data-theme="light"] .nav-drawer a, html[data-theme="light"] .nav-drawer span.drawer-dead { color: #6b6459; }
+html[data-theme="light"] .nav-drawer a:hover, html[data-theme="light"] .nav-drawer a.active { color: #171412; }
+html[data-theme="light"] .nav-drawer .nav-cta { background: #171412; color: #F7F4EE; }
+html[data-theme="light"] .footer-toggle button#ftLight { background: rgba(247,244,238,0.18); color: var(--warm-white); }
+html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; background: none; }
+</style>
+<noscript><style>
+  /* Masked headlines, staged rows and the accumulation marks are all
+     revealed by script. Without it, show everything rather than serve
+     a page of invisible type. */
+  .ln > i { transform: none !important; }
+  .rv .soft { opacity: 1 !important; transform: none !important; }
+  .eyebrow::before { width: 28px !important; }
+  .divider .divider-line { transform: scaleX(1) !important; }
+  .divider .divider-mark { opacity: 0.7 !important; }
+  .part-item, .bridge-step { opacity: 1 !important; }
+  .part-item .part-verb small { opacity: 1 !important; transform: none !important; }
+  .hero-outer { height: auto !important; }
+  .hero-stage { position: relative !important; height: 78vh !important; }
+  .hero-bridge { position: relative !important; opacity: 1 !important; height: auto !important; padding: 18vh 7% !important; }
+  .part-outer, .bridge-outer, .loop-outer { height: auto !important; }
+  .part-sticky, .bridge-sticky, .loop-sticky { position: relative !important; height: auto !important; padding: 14vh 8% !important; }
+  .faq-a { max-height: none !important; }
+  .eco-stage .eco-g { opacity: 1 !important; }
+</style></noscript>
+</head>
+<body>
+
+<div class="scroll-prog" id="scrollProg"></div>
+
+<!-- ══ NAV ══ -->
+<nav class="nav">
+  <a class="nav-brand" href="index.html">
+    <img src="images/img-09-white.png" alt="DAOasis" />
+    <span>DAOasis</span>
+  </a>
+  <div class="nav-links">
+    <a href="app.html">The App</a>
+    <a href="sanctuary.html">The Sanctuary</a>
+    <a href="web3.html" class="active">The Web3 Layer</a>
+    <span>About Us</span>
+    <span>Investors</span>
+  </div>
+  <a class="nav-cta" href="index.html#waitlistSection">Join the waitlist</a>
+  <button class="nav-burger" id="navBurger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="nav-drawer" id="navDrawer">
+  <a href="app.html">The App</a>
+  <a href="sanctuary.html">The Sanctuary</a>
+  <a href="web3.html" class="active">The Web3 Layer</a>
+  <span class="drawer-dead">About Us</span>
+  <span class="drawer-dead">Investors</span>
+  <a class="nav-cta" href="index.html#waitlistSection">Join the waitlist</a>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     SECTION 1 — HERO
+     A single thread is drawn as you scroll. Then the
+     camera pulls back and it turns out to be one
+     thread in a much larger fabric.
+══════════════════════════════════════════════ -->
+<div class="hero-outer" id="heroOuter">
+  <section class="hero-stage" id="heroStage">
+    <canvas class="hero-canvas" id="heroCanvas" role="img" aria-label="A single thread is drawn across the frame, then the view pulls back and it becomes one thread among many, woven into a much larger field."></canvas>
+
+    <div class="hero-title" id="heroTitle">
+      <div class="hero-title-eyebrow">The DAOasis Web3 Layer</div>
+      <h1 class="hero-title-text rv" id="heroTitleRv">
+        <span class="ln"><i>What you do here</i></span>
+        <span class="ln"><i>becomes part of</i></span>
+        <span class="ln"><i><em>something bigger.</em></i></span>
+      </h1>
+      <div class="hero-cue">Scroll to follow the thread ↓</div>
+    </div>
+
+    <div class="hero-mark" id="heroMark"><em>Your participation</em> &nbsp;·&nbsp; The ecosystem</div>
+    <div class="hero-grain"></div>
+  </section>
+
+  <div class="hero-bridge" id="heroBridge">
+    <div class="hero-bridge-inner">
+      <div class="hero-bridge-rule"></div>
+      <h2 class="hero-statement">Participation, with<em>somewhere to go.</em></h2>
+      <p class="hero-bridge-copy">DAOasis connects your daily progress, learning and contribution to an ecosystem designed around long term participation.</p>
+      <div class="hero-bridge-note">No wallet required to begin</div>
+      <div class="btn-row">
+        <a class="btn btn-light" href="index.html#waitlistSection">Join the Waitlist</a>
+        <a class="btn btn-ghost" href="#ecosystem">Explore the ecosystem</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     SECTION 2 — PARTICIPATION
+══════════════════════════════════════════════ -->
+<div class="part-outer on-light" id="partOuter">
+  <div class="part-sticky">
+
+    <div class="part-head rv">
+      <div class="eyebrow">Where it begins</div>
+      <h2 class="display">
+        <span class="ln"><i>It starts with</i></span>
+        <span class="ln"><i>something simple.</i></span>
+      </h2>
+    </div>
+
+    <div class="part-grid">
+      <div class="dev" id="partDev">
+        <div class="dev-shot on" data-shot="0"><img src="images/18.png" alt="The DAOasis Companion App quests screen" /></div>
+        <div class="dev-shot" data-shot="1"><img src="images/17.png" alt="The DAOasis Companion App learning screen" /></div>
+        <div class="dev-shot" data-shot="2"><img src="images/11.png" alt="The DAOasis Companion App onboarding screen" /></div>
+      </div>
+
+      <div class="part-list" id="partList">
+        <div class="part-item active" data-part="0" data-shot="0">
+          <div class="part-idx">01</div>
+          <div class="part-verb">Walk. <small>Movement, steps and daily targets</small></div>
+        </div>
+        <div class="part-item" data-part="1" data-shot="0">
+          <div class="part-idx">02</div>
+          <div class="part-verb">Complete a quest. <small>Wellness, Web3 and community quests</small></div>
+        </div>
+        <div class="part-item" data-part="2" data-shot="1">
+          <div class="part-idx">03</div>
+          <div class="part-verb">Learn. <small>Lessons across both learning tracks</small></div>
+        </div>
+        <div class="part-item" data-part="3" data-shot="1">
+          <div class="part-idx">04</div>
+          <div class="part-verb">Build a routine. <small>Consistency, held over time</small></div>
+        </div>
+        <div class="part-item" data-part="4" data-shot="2">
+          <div class="part-idx">05</div>
+          <div class="part-verb">Take part. <small>Challenges and shared community effort</small></div>
+        </div>
+        <div class="part-item" data-part="5" data-shot="2">
+          <div class="part-idx">06</div>
+          <div class="part-verb">Help others. <small>Referrals and contribution</small></div>
+        </div>
+      </div>
+    </div>
+
+    <p class="part-foot">You show up. You learn. You move. You build. You contribute. DAOasis recognises meaningful participation and gives it somewhere to go — and all of it begins in the <a href="app.html">Companion App</a>.</p>
+
+  </div>
+</div>
+
+<div class="divider light bg-ivory">
+  <div class="divider-inner">
+    <div class="divider-line"></div>
+    <img src="images/img-09.png" alt="" class="divider-mark" />
+    <div class="divider-line"></div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     SECTION 3 — DRC
+══════════════════════════════════════════════ -->
+<section class="sect bg-surface on-dark grain" id="drc">
+  <div class="sect-inner">
+    <div class="drc-grid">
+      <div class="rv">
+        <div class="eyebrow">DAOasis Reward Credits</div>
+        <h2 class="display">
+          <span class="ln"><i>Participation</i></span>
+          <span class="ln"><i>is recognised.</i></span>
+        </h2>
+      </div>
+      <div class="rv">
+        <div class="copy soft">
+          <p>DRC — DAOasis Reward Credits — is the everyday recognition layer inside DAOasis.</p>
+          <p>Meaningful activity across the ecosystem earns Reward Credits. They are a record of engagement, designed to sit close to the experience rather than apart from it.</p>
+        </div>
+        <div class="drc-pull soft d2">Your participation shouldn't disappear into a database.</div>
+      </div>
+    </div>
+
+    <div class="drc-rows" id="drcRows">
+      <div class="drc-row rv"><div class="drc-k">Learning</div><div class="drc-marks" data-marks="12"></div><div class="drc-d">Lessons completed across the wellness and Web3 tracks.</div></div>
+      <div class="drc-row rv"><div class="drc-k">Wellness</div><div class="drc-marks" data-marks="12"></div><div class="drc-d">Movement, hydration, sleep and the daily rituals behind them.</div></div>
+      <div class="drc-row rv"><div class="drc-k">Quests</div><div class="drc-marks" data-marks="12"></div><div class="drc-d">Structured tasks that turn intention into a completed action.</div></div>
+      <div class="drc-row rv"><div class="drc-k">Challenges</div><div class="drc-marks" data-marks="12"></div><div class="drc-d">Longer efforts held across days and weeks rather than minutes.</div></div>
+      <div class="drc-row rv"><div class="drc-k">Community</div><div class="drc-marks" data-marks="12"></div><div class="drc-d">Taking part in shared activity rather than practising alone.</div></div>
+      <div class="drc-row rv"><div class="drc-k">Referrals</div><div class="drc-marks" data-marks="12"></div><div class="drc-d">Bringing people in and helping them start their own practice.</div></div>
+      <div class="drc-row rv"><div class="drc-k">Contribution</div><div class="drc-marks" data-marks="12"></div><div class="drc-d">Work that makes the ecosystem better for the people in it.</div></div>
+    </div>
+
+    <div class="drc-note rv">
+      <div class="note-line soft">DRC is not $DVT</div>
+      <p class="soft d2">The two layers do different jobs. DRC recognises what you have already done, inside DAOasis. $DVT is the on-chain layer that opens up deeper participation across the wider ecosystem. Reward Credits are designed as a record of participation, not as something to speculate on.</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     SECTION 4 — THE BRIDGE
+     Many separate recognitions converge and resolve
+     into one. No arrows, no swap interface.
+══════════════════════════════════════════════ -->
+<div class="bridge-outer on-dark grain" id="bridgeOuter">
+  <div class="bridge-sticky">
+
+    <div class="bridge-head rv">
+      <div class="eyebrow">The Bridge</div>
+      <h2 class="display">
+        <span class="ln"><i>From participation</i></span>
+        <span class="ln"><i>to <em>ownership.</em></i></span>
+      </h2>
+    </div>
+
+    <div class="bridge-stage">
+      <div class="bh-ticker" id="bhTicker">Individual acts of participation</div>
+      <div class="bh-stack" id="bhStack" aria-hidden="true"></div>
+      <div class="bh-rule" id="bhRule"></div>
+      <div class="bh-label" id="bhLabel">
+        <div class="bh-token"><em>$DVT</em></div>
+        <div class="bh-sub">DAOasis Value Token</div>
+      </div>
+    </div>
+
+    <div class="bridge-rail">
+      <div class="bridge-steps" id="bridgeSteps">
+        <div class="bridge-fill" id="bridgeFill"></div>
+        <div class="bridge-step on"><div class="bridge-step-i">01</div><div class="bridge-step-n">Participate</div></div>
+        <div class="bridge-step"><div class="bridge-step-i">02</div><div class="bridge-step-n">Earn DRC</div></div>
+        <div class="bridge-step"><div class="bridge-step-i">03</div><div class="bridge-step-n">Build consistency</div></div>
+        <div class="bridge-step"><div class="bridge-step-i">04</div><div class="bridge-step-n">Convert</div></div>
+        <div class="bridge-step"><div class="bridge-step-i">05</div><div class="bridge-step-n">$DVT</div></div>
+      </div>
+      <p class="bridge-foot">DRC can be converted into $DVT, creating a pathway from everyday participation into deeper ecosystem utility. Conversion is a step you choose to take — not a requirement for using DAOasis.</p>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     SECTION 5 — TWO LAYERS, THEN $DVT UTILITY
+══════════════════════════════════════════════ -->
+<section class="sect bg-ivory on-light" id="dvt">
+  <div class="sect-inner">
+    <div class="rv">
+      <div class="eyebrow">Two layers, two jobs</div>
+      <h2 class="display">
+        <span class="ln"><i>One recognises.</i></span>
+        <span class="ln"><i>One unlocks.</i></span>
+      </h2>
+    </div>
+
+    <div class="two-grid">
+      <div class="two-card rv">
+        <div class="two-tag soft">Layer one</div>
+        <div class="two-name soft">DRC</div>
+        <div class="two-full soft">DAOasis Reward Credits</div>
+        <div class="two-role soft d1">Recognition of participation</div>
+        <div class="two-lines soft d2">
+          <div>Earned through meaningful activity</div>
+          <div>Held inside the DAOasis experience</div>
+          <div>A record of what you have done</div>
+          <div>Can be converted into $DVT over time</div>
+        </div>
+      </div>
+      <div class="two-card accent rv">
+        <div class="two-tag soft">Layer two</div>
+        <div class="two-name soft">$DVT</div>
+        <div class="two-full soft">DAOasis Value Token</div>
+        <div class="two-role soft d1">Deeper ecosystem utility</div>
+        <div class="two-lines soft d2">
+          <div>Converted from accumulated DRC</div>
+          <div>The on-chain layer of the ecosystem</div>
+          <div>Used across marketplace, governance and staking</div>
+          <div>Supports Stake to Create and contribution</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rv"><p class="two-close soft">The distinction matters. DRC keeps the everyday experience simple — you can take part in DAOasis without ever thinking about a token. $DVT is what becomes available when you want to go further.</p></div>
+  </div>
+</section>
+
+<div class="divider light bg-ivory" style="padding-top:2vh;">
+  <div class="divider-inner">
+    <div class="divider-line"></div>
+    <img src="images/img-09.png" alt="" class="divider-mark" />
+    <div class="divider-line"></div>
+  </div>
+</div>
+
+<section class="sect bg-ivory on-light" style="padding-top:8vh;">
+  <div class="sect-inner">
+    <div class="rv">
+      <div class="eyebrow">$DVT — DAOasis Value Token</div>
+      <h2 class="display">
+        <span class="ln"><i>One token. A deeper</i></span>
+        <span class="ln"><i>level of participation.</i></span>
+      </h2>
+      <p class="copy soft d2" style="margin-top:30px;">$DVT is the on-chain token that connects deeper participation with the wider DAOasis ecosystem. Here is what it is designed to do.</p>
+    </div>
+
+    <div class="util-list">
+      <div class="util-row rv">
+        <div class="util-i">01</div>
+        <div class="util-n"><span class="ln"><i>Marketplace</i></span></div>
+        <div><p class="util-b soft d1">Use $DVT within the DAOasis marketplace for eligible products, experiences and ecosystem offerings — the place where value built inside the app is spent in the real world.</p><span class="util-q soft d2">The marketplace is in development</span></div>
+      </div>
+      <div class="util-row rv">
+        <div class="util-i">02</div>
+        <div class="util-n"><span class="ln"><i>Governance</i></span></div>
+        <div><p class="util-b soft d1">Participate in decisions that shape the development of DAOasis as the governance system evolves. Consistent participation is what earns a voice, rather than the size of a balance alone.</p><span class="util-q soft d2">Governance is being introduced in stages</span></div>
+      </div>
+      <div class="util-row rv">
+        <div class="util-i">03</div>
+        <div class="util-n"><span class="ln"><i>Staking</i></span></div>
+        <div><p class="util-b soft d1">Stake $DVT as part of longer term ecosystem alignment and participation — a way of signalling that you are here for the long version of this, not the short one.</p><span class="util-q soft d2">Mechanics in design · no returns are promised</span></div>
+      </div>
+      <div class="util-row rv">
+        <div class="util-i">04</div>
+        <div class="util-n"><span class="ln"><i>Stake to Create</i></span></div>
+        <div><p class="util-b soft d1">Use $DVT to take part in the DAOasis creator economy and bring approved contributions into the ecosystem — content, products, events, education and community initiatives.</p><span class="util-q soft d2">Approved contributions only</span></div>
+      </div>
+      <div class="util-row rv">
+        <div class="util-i">05</div>
+        <div class="util-n"><span class="ln"><i>Build DAOasis</i></span></div>
+        <div><p class="util-b soft d1">Use your position within the ecosystem to contribute to projects, initiatives, partnerships and the wider DAOasis community. The people who build this are the people who use it.</p><span class="util-q soft d2">As the ecosystem develops</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     SECTION 6 — THE ECOSYSTEM
+══════════════════════════════════════════════ -->
+<section class="sect bg-green on-green grain" id="ecosystem">
+  <div class="sect-inner">
+    <div class="rv">
+      <div class="eyebrow">The Ecosystem</div>
+      <h2 class="display">
+        <span class="ln"><i>$DVT takes</i></span>
+        <span class="ln"><i>you deeper.</i></span>
+      </h2>
+      <p class="copy soft d2" style="margin-top:30px;">The token is not the product. It is the infrastructure running underneath one connected system — the same journey, from the app in your pocket to a place you can actually walk into.</p>
+    </div>
+
+    <div class="eco-stage" id="ecoStage">
+      <svg class="eco-svg" id="ecoSvg" viewBox="0 0 1200 470" preserveAspectRatio="xMidYMid meet" role="img" aria-label="One connected DAOasis system: the Companion App, Reward Credits, $DVT, marketplace, community, governance, Stake to Create and the Sanctuary, all on one continuous line.">
+        <path id="ecoPath" class="eco-path" d="M 20,250 C 130,250 150,150 260,150 C 370,150 380,290 490,290 C 600,290 610,140 720,140 C 830,140 840,300 950,300 C 1050,300 1090,210 1180,210" />
+        <path id="ecoPathLit" class="eco-glow" d="M 20,250 C 130,250 150,150 260,150 C 370,150 380,290 490,290 C 600,290 610,140 720,140 C 830,140 840,300 950,300 C 1050,300 1090,210 1180,210" />
+        <g id="ecoNodes"></g>
+      </svg>
+
+      <div class="eco-list" id="ecoList"></div>
+    </div>
+
+    <p class="eco-foot rv"><span class="soft">Each part is useful on its own. Together they are the reason any of it holds: the app builds the habit, participation is recognised, $DVT carries that recognition into the rest of the ecosystem, and the Sanctuary is where all of it becomes physical.</span></p>
+  </div>
+</section>
+
+<div class="divider green bg-green">
+  <div class="divider-inner">
+    <div class="divider-line"></div>
+    <img src="images/img-09-white.png" alt="" class="divider-mark" />
+    <div class="divider-line"></div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     SECTION 7 — STAKE TO CREATE
+══════════════════════════════════════════════ -->
+<section class="sect bg-stone on-light">
+  <div class="sect-inner">
+    <div class="stc-grid">
+      <div class="rv">
+        <div class="eyebrow">Stake to Create</div>
+        <h2 class="display">
+          <span class="ln"><i>Don't just participate.</i></span>
+          <span class="ln"><i><em>Build.</em></i></span>
+        </h2>
+        <div class="copy soft d2" style="margin-top:30px;">
+          <p>DAOasis is designed to give aligned members the ability to create within the ecosystem, not only to consume it.</p>
+          <p>Stake to Create connects $DVT with creator participation — putting your position behind something you want to bring into DAOasis, and being accountable for it.</p>
+        </div>
+        <div class="stc-cats">
+          <div class="stc-cat rv"><span class="soft"><b>Content</b>Writing, media and material that other members learn from.</span></div>
+          <div class="stc-cat rv"><span class="soft"><b>Products</b>Physical and digital offerings within the marketplace.</span></div>
+          <div class="stc-cat rv"><span class="soft"><b>Events</b>Gatherings, sessions and shared real-world experiences.</span></div>
+          <div class="stc-cat rv"><span class="soft"><b>Education</b>Lessons and structured learning for the tracks.</span></div>
+          <div class="stc-cat rv"><span class="soft"><b>Community initiatives</b>Projects run by members, for members.</span></div>
+          <div class="stc-cat rv"><span class="soft"><b>Other contributions</b>Approved additions to the wider ecosystem.</span></div>
+        </div>
+        <p class="note-line soft" style="margin-top:40px;">DAOasis isn't only something you use — it is something you can help build</p>
+      </div>
+
+      <div class="dev dev-single rv">
+        <div class="dev-shot on"><img src="images/14.png" alt="The DAOasis marketplace and creator entry point in the Companion App" /></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider light bg-stone">
+  <div class="divider-inner">
+    <div class="divider-line"></div>
+    <img src="images/img-09.png" alt="" class="divider-mark" />
+    <div class="divider-line"></div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     SECTION 8 — GOVERNANCE
+══════════════════════════════════════════════ -->
+<section class="sect bg-ivory on-light">
+  <div class="sect-inner">
+    <div class="rv">
+      <div class="eyebrow">Governance</div>
+      <h2 class="display">
+        <span class="ln"><i>Help shape</i></span>
+        <span class="ln"><i>what comes next.</i></span>
+      </h2>
+    </div>
+
+    <div class="gov-beats">
+      <div class="gov-beat rv">
+        <div class="gov-beat-i">01</div>
+        <div class="gov-beat-t"><span class="ln"><i>You participate.</i></span></div>
+        <p class="gov-beat-b soft d1">It starts where everything else on this page starts — with what you actually do, day to day.</p>
+      </div>
+      <div class="gov-beat rv">
+        <div class="gov-beat-i">02</div>
+        <div class="gov-beat-t"><span class="ln"><i>You contribute.</i></span></div>
+        <p class="gov-beat-b soft d1">Participation turns into standing. The members holding the ecosystem up are the ones it should listen to.</p>
+      </div>
+      <div class="gov-beat rv">
+        <div class="gov-beat-i">03</div>
+        <div class="gov-beat-t"><span class="ln"><i>You help decide.</i></span></div>
+        <p class="gov-beat-b soft d1">As governance develops, members can take part in the decisions that set the direction of DAOasis.</p>
+      </div>
+    </div>
+
+    <div class="rv">
+      <div class="gov-areas soft">
+        <span>Learning</span><span>Community</span><span>Sanctuaries</span><span>Partnerships</span><span>Ecosystem allocation</span><span>Platform development</span>
+      </div>
+      <p class="gov-foot soft d2">Governance is being introduced in stages rather than switched on at once. What is described here is the direction of travel, and the detail will be published as each part is implemented.</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     SECTION 9 — THE SANCTUARY CONNECTION
+══════════════════════════════════════════════ -->
+<section class="sanct on-dark par grain" data-par="0.18">
+  <div class="par-layer"></div>
+  <div class="sanct-veil"></div>
+  <div class="sanct-inner rv">
+    <div class="eyebrow">The Sanctuary</div>
+    <h2 class="display">
+      <span class="ln"><i>The digital layer doesn't</i></span>
+      <span class="ln"><i>replace the real world.</i></span>
+    </h2>
+    <p class="sanct-copy soft d2">The Sanctuary is the physical expression of DAOasis. The app carries the practice before and after it. The Web3 layer is the infrastructure underneath — participation, alignment and contribution, running the whole way through.</p>
+    <div class="sanct-verbs soft d3"><span>Rest.</span><span>Learn.</span><span>Earn.</span><span>Return.</span></div>
+    <div class="btn-row soft d3">
+      <a class="btn btn-light" href="sanctuary.html">Explore the Sanctuary</a>
+      <a class="btn btn-ghost" href="app.html">See the Companion App</a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     SECTION 10 — DIGITAL SOVEREIGNTY
+     Clearly framed as direction, not product.
+══════════════════════════════════════════════ -->
+<section class="sect bg-mineral on-dark sov par grain" data-par="0.1">
+  <div class="par-layer"></div>
+  <div class="sov-inner">
+    <div class="rv">
+      <div class="future-tag">Looking further ahead</div>
+      <h2 class="display">
+        <span class="ln"><i>Where ownership</i></span>
+        <span class="ln"><i>could go next.</i></span>
+      </h2>
+    </div>
+
+    <div class="sov-split">
+      <div class="sov-col rv">
+        <div class="sov-col-k soft">Today</div>
+        <p class="soft d1">DAOasis recognises participation through DRC and builds a pathway from that recognition toward digital ownership through $DVT. That is the part being built now.</p>
+      </div>
+      <div class="sov-col rv">
+        <div class="sov-col-k soft">Where this could go</div>
+        <p class="soft d1">Your wellness journey generates information. As DAOasis infrastructure evolves, we are exploring ways to give individuals greater control over verified achievements, credentials and personal wellness information.</p>
+      </div>
+    </div>
+
+    <div class="rv"><p class="sov-line soft">Your progress should belong to you.</p></div>
+
+    <div class="rv"><p class="sov-disclaim soft">This section describes a direction, not a feature. DAOasis does not store health data on a blockchain, and nothing described here is available today. Digital sovereignty is a principle we are designing toward, and anything built on it will be published clearly when it exists.</p></div>
+  </div>
+</section>
+
+<div class="divider dark bg-mineral">
+  <div class="divider-inner">
+    <div class="divider-line"></div>
+    <img src="images/img-09-white.png" alt="" class="divider-mark" />
+    <div class="divider-line"></div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     SECTION 11 — THE COMPLETE LOOP
+══════════════════════════════════════════════ -->
+<div class="loop-outer grain" id="loopOuter">
+  <div class="loop-sticky">
+
+    <div class="loop-copy on-dark">
+      <div class="eyebrow show">The whole system</div>
+      <h2 class="display">One system. <em>From daily action to deeper participation.</em></h2>
+      <p class="copy">Participation creates value. Value enables contribution. Contribution strengthens the ecosystem. A stronger ecosystem gives people more reason to participate.</p>
+    </div>
+
+    <div class="loop-wrap">
+      <svg class="loop-svg" id="loopSvg" viewBox="0 0 760 760" preserveAspectRatio="xMidYMid meet" role="img" aria-label="The DAOasis participation cycle: participate, earn DRC, convert, hold $DVT, use, contribute, build, govern, strengthen DAOasis, and participate again.">
+        <circle class="loop-ring" cx="380" cy="380" r="230" />
+        <circle class="loop-arc" id="loopArc" cx="380" cy="380" r="230" transform="rotate(-90 380 380)" />
+        <g id="loopNodes"></g>
+        <circle class="loop-knob" id="loopKnob" cx="380" cy="150" r="5" />
+      </svg>
+      <div class="loop-centre">
+        <div class="loop-centre-t" id="loopCentreT">Participate</div>
+        <div class="loop-centre-s" id="loopCentreS">Where every cycle starts</div>
+      </div>
+    </div>
+
+    <div class="loop-mobile" id="loopMobile"></div>
+
+  </div>
+</div>
+
+<div class="divider dark" style="background:#0b0f12;">
+  <div class="divider-inner">
+    <div class="divider-line"></div>
+    <img src="images/img-09-white.png" alt="" class="divider-mark" />
+    <div class="divider-line"></div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     SECTION 12 — TRUST
+══════════════════════════════════════════════ -->
+<section class="sect bg-ivory on-light">
+  <div class="sect-inner">
+    <div class="rv">
+      <div class="eyebrow">Clarity</div>
+      <h2 class="display">
+        <span class="ln"><i>Web3 without</i></span>
+        <span class="ln"><i>the noise.</i></span>
+      </h2>
+    </div>
+    <div class="trust-grid">
+      <div class="trust-i rv"><div class="trust-k"><span class="ln"><i>Clear</i></span></div><p class="trust-b soft d1">The mechanics should be understandable without a glossary. If part of this page needed one, it isn't finished.</p></div>
+      <div class="trust-i rv"><div class="trust-k"><span class="ln"><i>Useful</i></span></div><p class="trust-b soft d1">The token exists to support real participation in the ecosystem — not to be the reason the ecosystem exists.</p></div>
+      <div class="trust-i rv"><div class="trust-k"><span class="ln"><i>Aligned</i></span></div><p class="trust-b soft d1">The system is designed around long term contribution rather than short term speculation.</p></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider light bg-ivory">
+  <div class="divider-inner">
+    <div class="divider-line"></div>
+    <img src="images/img-09.png" alt="" class="divider-mark" />
+    <div class="divider-line"></div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     SECTION 13 — FAQ
+══════════════════════════════════════════════ -->
+<section class="sect bg-stone on-light" id="faq">
+  <div class="sect-inner">
+    <div class="rv">
+      <div class="eyebrow">Questions</div>
+      <h2 class="display">
+        <span class="ln"><i>The short answers.</i></span>
+      </h2>
+    </div>
+
+    <div class="faq" id="faqList">
+      <div class="faq-item">
+        <button class="faq-q" type="button" aria-expanded="false">What are DRC?</button>
+        <div class="faq-a"><div class="faq-a-inner">
+          <p>DRC stands for DAOasis Reward Credits. They are the recognition layer inside DAOasis: complete a quest, finish a lesson, hold a routine or take part in the community, and that participation is recognised as Reward Credits.</p>
+          <p>DRC is designed as a record of what you have done inside DAOasis, not as something to speculate on.</p>
+        </div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" type="button" aria-expanded="false">What is $DVT?</button>
+        <div class="faq-a"><div class="faq-a-inner">
+          <p>$DVT is the DAOasis Value Token — the on-chain layer of the ecosystem. It connects deeper participation to marketplace participation, governance, staking, Stake to Create and contribution to DAOasis itself.</p>
+        </div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" type="button" aria-expanded="false">How do DRC and $DVT work together?</button>
+        <div class="faq-a"><div class="faq-a-inner">
+          <p>DRC recognises participation as it happens. Over time, accumulated DRC can be converted into $DVT.</p>
+          <p>One is the everyday record inside the app. The other is what opens up the wider ecosystem. Converting is a step you choose to take, not a requirement.</p>
+        </div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" type="button" aria-expanded="false">Do I need a wallet to use DAOasis?</button>
+        <div class="faq-a"><div class="faq-a-inner">
+          <p>No. You can start in the Companion App, build habits, complete quests, learn and earn DRC without one. A wallet only becomes relevant if and when you move into the $DVT layer.</p>
+        </div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" type="button" aria-expanded="false">Can I use DAOasis without knowing anything about Web3?</button>
+        <div class="faq-a"><div class="faq-a-inner">
+          <p>Yes. The Web3 layer sits behind the experience rather than in front of it. Nothing about walking, sleeping, learning or completing a quest requires you to understand a blockchain.</p>
+          <p>If you want to understand it, the app includes a Web3 learning track alongside the wellness one — and that learning earns Reward Credits too.</p>
+        </div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" type="button" aria-expanded="false">What can I use $DVT for?</button>
+        <div class="faq-a"><div class="faq-a-inner">
+          <p>$DVT is designed for marketplace participation, governance, staking, Stake to Create, and contributing to the projects and initiatives that make up DAOasis.</p>
+          <p>Several of these are still being built. Where that is the case, this page says so rather than describing them as though they are live.</p>
+        </div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" type="button" aria-expanded="false">What is Stake to Create?</button>
+        <div class="faq-a"><div class="faq-a-inner">
+          <p>Stake to Create connects $DVT with creator participation. Members can use their position within the ecosystem to bring approved contributions into it — content, products, events, education and community initiatives.</p>
+          <p>It is the difference between using DAOasis and helping build it.</p>
+        </div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" type="button" aria-expanded="false">Is DAOasis an investment?</button>
+        <div class="faq-a"><div class="faq-a-inner">
+          <p>No. DAOasis is a wellness and accountability ecosystem. $DVT exists to support participation and utility within it.</p>
+          <p>Nothing on this page is financial advice, no return is promised or implied, and $DVT is not presented as a store of value.</p>
+        </div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" type="button" aria-expanded="false">What happens to my data?</button>
+        <div class="faq-a"><div class="faq-a-inner">
+          <p>Today, information you generate in the app is handled by the DAOasis platform under its privacy policy.</p>
+          <p>Longer term, we are exploring how individuals could hold greater control over verified achievements, credentials and personal wellness information. That is a direction we are designing toward — DAOasis does not store health data on a blockchain.</p>
+        </div></div>
+      </div>
+    </div>
+
+    <p class="faq-foot rv"><span class="soft">Where something is still in development, this page says so. As each part of the Web3 layer is implemented, the detail will be published rather than described in advance.</span></p>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     SECTION 14 — FINAL
+══════════════════════════════════════════════ -->
+<section class="final on-dark grain">
+  <div class="rv">
+    <div class="eyebrow centered">Begin</div>
+    <h2 class="display">
+      <span class="ln"><i>Start with</i></span>
+      <span class="ln"><i>where you are.</i></span>
+    </h2>
+    <p class="copy soft d2">DAOasis begins with participation. The rest unfolds over time.</p>
+    <div class="btn-row soft d3">
+      <a class="btn btn-light" href="index.html#waitlistSection">Join the Waitlist</a>
+      <a class="btn btn-ghost" href="app.html">Explore the App</a>
+    </div>
+    <div class="final-tag soft d3">Rest. Learn. Earn. Return.</div>
+  </div>
+</section>
+
+
+<!-- ══ FOOTER ══ -->
+<footer class="site-footer">
+  <div class="footer-top">
+    <div>
+      <div class="footer-brand-logo"><img src="images/img-09-white.png" alt="DAOasis mark" /><span>DAOasis</span></div>
+      <div class="footer-tagline"><strong>Wellness meets Web3.</strong><em>Built for long-term impact.</em></div>
+      <div class="footer-appearance">
+        <div class="footer-appearance-label">Appearance</div>
+        <div class="footer-toggle"><button id="ftLight">Light</button><button id="ftDark" class="active">Dark</button></div>
+      </div>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-label">Explore</div>
+      <a href="app.html">The App</a><a href="sanctuary.html">The Sanctuary</a><a href="web3.html">The Web3 Layer</a><a href="#faq">FAQ</a>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-label">Company</div>
+      <span>About</span><span>Team</span><span>Careers</span><span>Investors</span>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-label">Legal</div>
+      <span>Privacy Policy</span><span>Terms of Service</span><span>Risk Disclaimer</span>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-label">Follow Us</div>
+      <span>X / Twitter</span><span>Instagram</span><span>LinkedIn</span><span>YouTube</span>
+    </div>
+  </div>
+  <div class="footer-bottom"><span>© 2026 DAOasis. All rights reserved.</span><span>Phuket · Global</span></div>
+</footer>
+
+
+<!-- Controlled Cinematic Scroll — shared pacing controller, see js/cine.js -->
+<script src="js/cine.js"></script>
+<script>
+/* ════════════════════════════════════════════
+   HELPERS
+════════════════════════════════════════════ */
+const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const clamp01 = v => Math.max(0, Math.min(1, v));
+const lerp = (a,b,t) => a + (b-a) * t;
+const ease = t => t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t+2, 2)/2;
+const smooth = x => x*x*(3-2*x);
+function progressOf(el){
+  const rect = el.getBoundingClientRect();
+  const scrollable = el.offsetHeight - window.innerHeight;
+  return scrollable > 0 ? clamp01(-rect.top / scrollable) : 0;
+}
+/* Controlled Cinematic Scroll (js/cine.js). cine() returns a paced track
+   whose .get() replaces progressOf() at the call site. If the controller
+   file is ever missing the page degrades to direct scroll mapping rather
+   than breaking, so every section still works. */
+function cine(el, o){
+  if(el && window.DAO && DAO.cine) return DAO.cine.track(el, o);
+  return {
+    get: () => el ? progressOf(el) : 0,
+    raw: () => el ? progressOf(el) : 0,
+    state: () => 0,
+    refresh(){},
+    on(fn){
+      const f = () => fn(el ? progressOf(el) : 0, 0);
+      window.addEventListener('scroll', f, { passive: true });
+      window.addEventListener('resize', f, { passive: true });
+      f(); return this;
+    }
+  };
+}
+
+/* deterministic pseudo-random so the fabric is identical every load */
+function rnd(i){ const s = Math.sin(i * 127.1 + 311.7) * 43758.5453; return s - Math.floor(s); }
+
+/* ── NAV ── */
+(function(){
+  const burger = document.getElementById('navBurger');
+  const drawer = document.getElementById('navDrawer');
+  if(!burger) return;
+  burger.addEventListener('click', () => {
+    const open = drawer.classList.toggle('open');
+    burger.classList.toggle('open', open);
+    document.body.style.overflow = open ? 'hidden' : '';
+  });
+  drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    drawer.classList.remove('open'); burger.classList.remove('open'); document.body.style.overflow = '';
+  }));
+})();
+
+(function(){
+  const nav = document.querySelector('.nav');
+  const prog = document.getElementById('scrollProg');
+  if(!nav) return;
+  let lastY = 0, ticking = false;
+  window.addEventListener('scroll', () => {
+    if(ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      const y = window.scrollY;
+      if(y > lastY && y > 80) nav.classList.add('nav-hidden'); else nav.classList.remove('nav-hidden');
+      if(prog){
+        const max = document.body.scrollHeight - window.innerHeight;
+        prog.style.width = (max > 0 ? (y / max) * 100 : 0) + '%';
+      }
+      lastY = y; ticking = false;
+    });
+  }, { passive: true });
+})();
+
+/* ── REVEAL (line masks + soft blocks + dividers) ── */
+(function(){
+  /* Everything below the fold starts hidden, so if the observer is
+     unavailable the whole page must fall open rather than stay blank. */
+  if(!('IntersectionObserver' in window)){
+    document.querySelectorAll('.rv, .divider, .eco-stage').forEach(el => el.classList.add('show', 'shown'));
+    return;
+  }
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('show'); obs.unobserve(e.target); } });
+  }, { threshold: 0.16, rootMargin: '0px 0px -6% 0px' });
+  document.querySelectorAll('.rv').forEach(el => obs.observe(el));
+
+  const dObs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('shown'); dObs.unobserve(e.target); } });
+  }, { threshold: 0.5 });
+  document.querySelectorAll('.divider').forEach(el => dObs.observe(el));
+})();
+
+/* ── PARALLAX on full-bleed photography ── */
+(function(){
+  const items = [...document.querySelectorAll('.par')].map(el => ({ el, layer: el.querySelector('.par-layer'), amt: parseFloat(el.dataset.par) || 0.15 }))
+                  .filter(i => i.layer);
+  if(!items.length || REDUCED) return;
+  let ticking = false;
+  function run(){
+    const vh = window.innerHeight;
+    items.forEach(({ el, layer, amt }) => {
+      const r = el.getBoundingClientRect();
+      if(r.bottom < -200 || r.top > vh + 200) return;
+      const centre = (r.top + r.height / 2 - vh / 2) / vh;
+      layer.style.transform = 'translate3d(0,' + (centre * amt * 100).toFixed(2) + 'px,0)';
+    });
+    ticking = false;
+  }
+  window.addEventListener('scroll', () => { if(!ticking){ ticking = true; requestAnimationFrame(run); } }, { passive: true });
+  window.addEventListener('resize', run, { passive: true });
+  run();
+})();
+
+
+/* ════════════════════════════════════════════
+   SECTION 1 — HERO — THE FABRIC
+   One thread is drawn across the frame. Then the
+   camera pulls back and the thread turns out to be
+   one of many, woven into a field. Deliberately not
+   a particle system — that language belongs to the
+   home page palm assembly and stays there.
+════════════════════════════════════════════ */
+(function(){
+  const outer  = document.getElementById('heroOuter');
+  const canvas = document.getElementById('heroCanvas');
+  const title  = document.getElementById('heroTitle');
+  const titleRv= document.getElementById('heroTitleRv');
+  const mark   = document.getElementById('heroMark');
+  const bridge = document.getElementById('heroBridge');
+  if(!outer || !canvas) return;
+
+  const ctx = canvas.getContext('2d');
+  if(!ctx) return;
+
+  /* the title card is above the fold, so it reveals on load rather
+     than waiting for an observer that has already fired */
+  requestAnimationFrame(() => { titleRv.classList.add('show'); title.classList.add('lit'); });
+
+  let W = 0, H = 0, DPR = 1, mobile = false;
+  function resize(){
+    mobile = window.innerWidth <= 900;
+    DPR = Math.min(window.devicePixelRatio || 1, mobile ? 2 : 2);
+    W = canvas.clientWidth || window.innerWidth;
+    H = canvas.clientHeight || window.innerHeight;
+    canvas.width = Math.round(W * DPR);
+    canvas.height = Math.round(H * DPR);
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  }
+  resize();
+  window.addEventListener('resize', resize, { passive: true });
+
+  const GAP = 130;                     /* world spacing between threads */
+  /* Z0 was 7.4, which put the nearest neighbour 960px off screen — half
+     the pull-back was spent before a second thread was even visible, so
+     the middle of the hero was a single line and nothing else. 4.8 still
+     opens on one thread but lets the field start arriving straight away. */
+  const Z0 = 4.8, Z1 = 0.34;           /* camera zoom: one thread → the field */
+  /* ease-OUT, not smoothstep: the reveal has to move early and settle
+     late, not the other way round */
+  const outQuad = t => t * (2 - t);
+
+  function threadAt(i, worldX){
+    const amp  = 16 + rnd(i) * 22;
+    const freq = 0.0042 + rnd(i + 91) * 0.0036;
+    const ph   = rnd(i + 17) * Math.PI * 2;
+    const amp2 = 6 + rnd(i + 55) * 8;
+    return i * GAP
+         + Math.sin(worldX * freq + ph) * amp
+         + Math.sin(worldX * freq * 2.7 + ph * 1.7) * amp2;
+  }
+
+  function draw(p){
+    ctx.clearRect(0, 0, W, H);
+
+    const drawT = ease(clamp01((p - 0.055) / 0.20));          /* the thread draws in */
+    const pull  = outQuad(clamp01((p - 0.26) / 0.50));        /* the camera pulls back */
+    const z     = lerp(Z0, Z1, pull);
+    const cx = W / 2, cy = H / 2;
+
+    /* how many neighbours have arrived */
+    const maxI = Math.floor(lerp(0, mobile ? 13 : 22, pull));
+    const step = mobile ? 14 : 9;                             /* px between samples */
+
+    for(let i = -maxI; i <= maxI; i++){
+      if(i === 0) continue;
+      const arrive = clamp01((pull - (Math.abs(i) - 1) / (mobile ? 15 : 24)) * 4.2);
+      if(arrive <= 0.01) continue;
+      const depth = 1 - Math.min(1, Math.abs(i) / (mobile ? 15 : 24)) * 0.55;
+      ctx.beginPath();
+      for(let sx = -20; sx <= W + 20; sx += step){
+        const wx = (sx - cx) / z;
+        const sy = cy + threadAt(i, wx) * z;
+        if(sx === -20) ctx.moveTo(sx, sy); else ctx.lineTo(sx, sy);
+      }
+      ctx.strokeStyle = 'rgba(214,204,188,' + (0.30 * arrive * depth).toFixed(3) + ')';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+
+    /* thread zero — yours */
+    const cut = W * drawT;
+    ctx.beginPath();
+    for(let sx = -20; sx <= W + 20; sx += Math.max(3, step - 4)){
+      const wx = (sx - cx) / z;
+      const sy = cy + threadAt(0, wx) * z;
+      if(sx === -20) ctx.moveTo(sx, sy); else ctx.lineTo(sx, sy);
+    }
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(0, 0, drawT >= 1 ? W : cut, H);
+    ctx.clip();
+    ctx.beginPath();
+    for(let sx = -20; sx <= W + 20; sx += Math.max(3, step - 4)){
+      const wx = (sx - cx) / z;
+      const sy = cy + threadAt(0, wx) * z;
+      if(sx === -20) ctx.moveTo(sx, sy); else ctx.lineTo(sx, sy);
+    }
+    ctx.strokeStyle = 'rgba(196,138,90,' + lerp(0.95, 0.8, pull).toFixed(3) + ')';
+    ctx.lineWidth = lerp(2.2, 1.3, pull);
+    ctx.shadowColor = 'rgba(196,138,90,0.55)';
+    ctx.shadowBlur = lerp(18, 5, pull);
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+
+    /* the marks along it — individual acts of participation.
+       They belong to the close view and fade as we pull away. */
+    const tickA = clamp01((z - 1.0) / 3.2);
+    if(tickA > 0.02){
+      ctx.strokeStyle = 'rgba(247,244,238,' + (0.55 * tickA).toFixed(3) + ')';
+      ctx.lineWidth = 1;
+      const spacing = 78;
+      const firstN = Math.floor(((0 - cx) / z) / spacing) - 1;
+      const lastN  = Math.ceil(((W - cx) / z) / spacing) + 1;
+      for(let n = firstN; n <= lastN; n++){
+        const wx = n * spacing;
+        const sx = wx * z + cx;
+        if(sx < -10 || sx > W + 10) continue;
+        const sy = cy + threadAt(0, wx) * z;
+        const h = 13 * z * 0.5 + 5;
+        ctx.beginPath();
+        ctx.moveTo(sx, sy - h);
+        ctx.lineTo(sx, sy + h);
+        ctx.stroke();
+      }
+    }
+    ctx.restore();
+  }
+
+  /* the card holds, then clears; the statement takes the frame at the end */
+  function chrome(p){
+    const tIn = p <= 0.001 ? 1 : ease(clamp01((p - 0.001) / 0.05));
+    const tOut = ease(clamp01((p - 0.14) / 0.10));
+    const card = Math.min(tIn, 1 - tOut);
+    title.style.opacity = card;
+    title.style.pointerEvents = card > 0.02 ? 'auto' : 'none';
+
+    const bp = ease(clamp01((p - 0.80) / 0.20));
+    bridge.style.opacity = bp;
+    bridge.style.pointerEvents = bp > 0.06 ? 'auto' : 'none';
+    if(mark) mark.classList.toggle('show', p > 0.62 && bp < 0.14);
+  }
+
+  let visible = true;
+  if('IntersectionObserver' in window){
+    visible = false;
+    new IntersectionObserver(l => l.forEach(e => { visible = e.isIntersecting; }), { threshold: 0 }).observe(outer);
+  }
+
+  /* GUIDED — the pull-back is one continuous camera move, so it is
+     speed-capped rather than quantised. Three beats (card → field →
+     statement) set the pace; a flick can no longer snap the zoom. */
+  const track = cine(outer, { mode: 'guided', pace: 'epic', states: 3 });
+  (function tick(){
+    requestAnimationFrame(tick);
+    if(!visible) return;
+    const current = track.get();
+    draw(current);
+    chrome(current);
+  })();
+})();
+
+
+/* ── SECTION 2 — PARTICIPATION ── */
+(function(){
+  const outer = document.getElementById('partOuter');
+  const items = [...document.querySelectorAll('.part-item')];
+  const shots = [...document.querySelectorAll('#partDev .dev-shot')];
+  if(!outer || !items.length) return;
+
+  let lastShot = -1;
+  /* CINEMATIC STICKY — one item per state. Subscribing to the track
+     rather than to 'scroll' matters: the paced value keeps moving after
+     the scrolling itself has stopped, and a scroll listener would never
+     repaint those frames. */
+  cine(outer, { mode: 'sticky', pace: 'major', states: items.length })
+    .on((p) => {
+      if(window.innerWidth <= 1000){
+        items.forEach(el => el.classList.add('active'));
+        if(lastShot !== 0){ lastShot = 0; shots.forEach((s,n) => s.classList.toggle('on', n === 0)); }
+        return;
+      }
+      const i = Math.min(items.length - 1, Math.floor(p * items.length * 0.999));
+      items.forEach((el, n) => el.classList.toggle('active', n === i));
+      const shot = +items[i].dataset.shot;
+      if(shot !== lastShot){
+        lastShot = shot;
+        shots.forEach(s => s.classList.toggle('on', +s.dataset.shot === shot));
+      }
+    });
+})();
+
+
+/* ── SECTION 3 — DRC ACCUMULATION MARKS ──
+   Tally marks, not coins. Uniform counts on purpose:
+   these represent recognition, not a statistic. */
+(function(){
+  document.querySelectorAll('.drc-marks').forEach(box => {
+    const n = parseInt(box.dataset.marks, 10) || 12;
+    for(let i = 0; i < n; i++){
+      const m = document.createElement('i');
+      m.style.transitionDelay = (0.05 + i * 0.055).toFixed(3) + 's';
+      /* the last few stay faint — the record is still being written */
+      if(i >= n - 3) m.className = 'faint';
+      box.appendChild(m);
+    }
+  });
+})();
+
+
+/* ════════════════════════════════════════════
+   SECTION 4 — THE BRIDGE
+   Separate hairlines converge, equalise and resolve
+   into a single rule. The conversion is shown as
+   consolidation, never as a swap interface.
+════════════════════════════════════════════ */
+(function(){
+  const outer  = document.getElementById('bridgeOuter');
+  const stack  = document.getElementById('bhStack');
+  const rule   = document.getElementById('bhRule');
+  const label  = document.getElementById('bhLabel');
+  const ticker = document.getElementById('bhTicker');
+  const steps  = [...document.querySelectorAll('.bridge-step')];
+  const fill   = document.getElementById('bridgeFill');
+  if(!outer || !stack) return;
+
+  const N = window.innerWidth <= 900 ? 13 : 17;
+  const bars = [];
+  for(let i = 0; i < N; i++){
+    const b = document.createElement('i');
+    stack.appendChild(b);
+    bars.push({ el: b, w: 0.30 + rnd(i * 3.1) * 0.62, x: (rnd(i * 7.7) - 0.5) * 0.18 });
+  }
+
+  /* The stack has to live inside the stage it is centred in, so the
+     spacing comes from the measured stage rather than a fixed number —
+     otherwise a short viewport pushes hairlines over the headline. */
+  let gapPx = 14;
+  function measure(){
+    const h = stack.parentElement.getBoundingClientRect().height || 300;
+    gapPx = Math.max(6, Math.min(15, (h * 0.46) / Math.max(1, N - 1)));
+    if(ticker) ticker.style.marginTop = -(((N - 1) / 2) * gapPx + 38).toFixed(0) + 'px';
+  }
+  measure();
+  window.addEventListener('resize', measure, { passive: true });
+
+  const TICK = [
+    [0.00, 'Individual acts of participation'],
+    [0.30, 'Recognised as Reward Credits'],
+    [0.52, 'Consistency, held over time'],
+    [0.72, 'Converted'],
+    [0.86, 'One token, one ecosystem']
+  ];
+  const STEP_AT = [0, 0.22, 0.42, 0.64, 0.84];
+  let lastTick = -1, lastStep = -1;
+
+  function frame(p){
+    const appear   = clamp01(p / 0.26);
+    const converge = smooth(clamp01((p - 0.26) / 0.34));
+    const equalise = smooth(clamp01((p - 0.30) / 0.36));
+    const merge    = smooth(clamp01((p - 0.64) / 0.20));
+
+    for(let i = 0; i < N; i++){
+      const b = bars[i];
+      const on = clamp01((appear - (i / N) * 0.85) * 5);
+      const y  = (i - (N - 1) / 2) * gapPx * (1 - converge);
+      const x  = b.x * (1 - converge) * 100;
+      const sx = lerp(b.w, 1, equalise);
+      b.el.style.opacity = (on * (1 - merge) * 0.9).toFixed(3);
+      b.el.style.transform = 'translate(' + x.toFixed(2) + '%,' + y.toFixed(1) + 'px) scaleX(' + sx.toFixed(3) + ')';
+    }
+
+    rule.style.opacity = merge.toFixed(3);
+    rule.style.transform = 'translate(-50%,-50%) scaleX(' + lerp(0.35, 1, merge).toFixed(3) + ')';
+    const lab = smooth(clamp01((p - 0.78) / 0.16));
+    label.style.opacity = lab.toFixed(3);
+    label.style.transform = 'translateX(-50%) translateY(' + lerp(14, 0, lab).toFixed(1) + 'px)';
+
+    let ti = 0;
+    for(let i = 0; i < TICK.length; i++) if(p >= TICK[i][0]) ti = i;
+    if(ti !== lastTick){ lastTick = ti; ticker.textContent = TICK[ti][1]; }
+
+    let si = 0;
+    for(let i = 0; i < STEP_AT.length; i++) if(p >= STEP_AT[i]) si = i;
+    if(si !== lastStep){
+      lastStep = si;
+      steps.forEach((s, n) => s.classList.toggle('on', n <= si));
+      if(fill) fill.style.width = ((si / (STEP_AT.length - 1)) * 100) + '%';
+    }
+  }
+
+  let visible = true;
+  if('IntersectionObserver' in window){
+    visible = false;
+    new IntersectionObserver(l => l.forEach(e => { visible = e.isIntersecting; }), { threshold: 0 }).observe(outer);
+  }
+  /* CINEMATIC STICKY — the conversion is the page's central claim, so it
+     is paced in the five deliberate stages the ticker already names.
+     The value still eases continuously between them, so the hairlines
+     converge smoothly; what is fixed is how long each move takes. */
+  const track = cine(outer, { mode: 'sticky', pace: 'epic', states: STEP_AT.length });
+  (function loop(){
+    requestAnimationFrame(loop);
+    if(!visible) return;
+    frame(track.get());
+  })();
+})();
+
+
+/* ── SECTION 6 — THE ECOSYSTEM ──
+   Eight parts hanging off one continuous line. The
+   nodes are placed from the path itself, so the line
+   can be redrawn without re-measuring anything. */
+(function(){
+  const stage = document.getElementById('ecoStage');
+  const path  = document.getElementById('ecoPath');
+  const lit   = document.getElementById('ecoPathLit');
+  const nodes = document.getElementById('ecoNodes');
+  const list  = document.getElementById('ecoList');
+  if(!stage || !path || !nodes) return;
+
+  const PARTS = [
+    ['Companion App',  'Where it begins',      false],
+    ['Reward Credits', 'DRC · Recognition',    true ],
+    ['$DVT',           'The token layer',      true ],
+    ['Marketplace',    'Where value is spent', false],
+    ['Community',      'Shared practice',      false],
+    ['Governance',     'Direction',            false],
+    ['Stake to Create','Contribution',         true ],
+    ['Sanctuary',      'Phuket 2027',          false]
+  ];
+
+  function build(){
+    nodes.innerHTML = '';
+    const len = path.getTotalLength();
+    PARTS.forEach(([name, sub, key], i) => {
+      const at = path.getPointAtLength(((i + 0.5) / PARTS.length) * len);
+      /* Alternating by index put labels inside the wave wherever the
+         curve happened to be heading the same way. Side is chosen from
+         the node's own height instead, so a crest labels upward and a
+         trough labels downward and nothing lands on the line. */
+      const up = at.y < 220;
+      const stemY = up ? at.y - 66 : at.y + 66;
+      const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+      g.setAttribute('class', 'eco-g');
+      g.style.transitionDelay = (0.18 + i * 0.12).toFixed(2) + 's';
+
+      const stem = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      stem.setAttribute('class', 'eco-stem');
+      stem.setAttribute('x1', at.x); stem.setAttribute('y1', at.y);
+      stem.setAttribute('x2', at.x); stem.setAttribute('y2', stemY);
+      g.appendChild(stem);
+
+      const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      dot.setAttribute('class', 'eco-node' + (key ? ' key' : ''));
+      dot.setAttribute('cx', at.x); dot.setAttribute('cy', at.y); dot.setAttribute('r', key ? 6 : 4.5);
+      g.appendChild(dot);
+
+      const anchor = at.x < 90 ? 'start' : (at.x > 1110 ? 'end' : 'middle');
+      const t1 = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      t1.setAttribute('class', 'eco-lab');
+      t1.setAttribute('x', at.x); t1.setAttribute('y', up ? stemY - 16 : stemY + 20);
+      t1.setAttribute('text-anchor', anchor);
+      t1.textContent = name;
+      g.appendChild(t1);
+
+      const t2 = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      t2.setAttribute('class', 'eco-sub');
+      t2.setAttribute('x', at.x); t2.setAttribute('y', up ? stemY - 1 : stemY + 36);
+      t2.setAttribute('text-anchor', anchor);
+      t2.textContent = sub.toUpperCase();
+      g.appendChild(t2);
+
+      nodes.appendChild(g);
+    });
+
+    if(lit){
+      const l = lit.getTotalLength();
+      lit.style.strokeDasharray = l;
+      lit.style.strokeDashoffset = stage.classList.contains('shown') ? 0 : l;
+      lit.style.transition = 'stroke-dashoffset 2.6s var(--ease)';
+    }
+  }
+
+  /* intentional mobile composition — the same system read top to bottom */
+  if(list){
+    list.innerHTML = PARTS.map(([name, sub, key]) =>
+      '<div class="eco-item' + (key ? ' key' : '') + '"><div class="eco-item-n">' + name + '</div><div class="eco-item-s">' + sub + '</div></div>'
+    ).join('');
+  }
+
+  build();
+  window.addEventListener('resize', build, { passive: true });
+  if(document.readyState !== 'complete') window.addEventListener('load', build);
+
+  if('IntersectionObserver' in window){
+    const o = new IntersectionObserver(l => l.forEach(e => {
+      if(e.isIntersecting){
+        stage.classList.add('shown');
+        if(lit) lit.style.strokeDashoffset = 0;
+        o.unobserve(e.target);
+      }
+    }), { threshold: 0.25 });
+    o.observe(stage);
+  } else {
+    stage.classList.add('shown');
+  }
+})();
+
+
+/* ── SECTION 11 — THE COMPLETE LOOP ── */
+(function(){
+  const outer = document.getElementById('loopOuter');
+  const svg   = document.getElementById('loopSvg');
+  const arc   = document.getElementById('loopArc');
+  const knob  = document.getElementById('loopKnob');
+  const nodes = document.getElementById('loopNodes');
+  const cT    = document.getElementById('loopCentreT');
+  const cS    = document.getElementById('loopCentreS');
+  const mob   = document.getElementById('loopMobile');
+  if(!outer || !svg) return;
+
+  const STAGES = [
+    ['Participate',        'Where every cycle starts'],
+    ['Earn DRC',           'Participation is recognised'],
+    ['Convert',            'Reward Credits become $DVT'],
+    ['Hold $DVT',          'The on-chain layer opens'],
+    ['Use',                'Marketplace and ecosystem'],
+    ['Contribute',         'Put something back in'],
+    ['Build',              'Stake to Create'],
+    ['Govern',             'Help set the direction'],
+    ['Strengthen DAOasis', 'And the reason to take part grows']
+  ];
+  const CX = 380, CY = 380, R = 230, LR = 288;
+  const CIRC = 2 * Math.PI * R;
+
+  if(arc){
+    arc.style.strokeDasharray = CIRC;
+    arc.style.strokeDashoffset = CIRC;
+  }
+
+  STAGES.forEach(([name], i) => {
+    const a = (i / STAGES.length) * Math.PI * 2 - Math.PI / 2;
+    const nx = CX + Math.cos(a) * R, ny = CY + Math.sin(a) * R;
+    const lx = CX + Math.cos(a) * LR, ly = CY + Math.sin(a) * LR;
+    const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    c.setAttribute('class', 'loop-node'); c.dataset.i = i;
+    c.setAttribute('cx', nx); c.setAttribute('cy', ny); c.setAttribute('r', 5.5);
+    nodes.appendChild(c);
+    const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    t.setAttribute('class', 'loop-lab'); t.dataset.i = i;
+    t.setAttribute('x', lx); t.setAttribute('y', ly + 4);
+    t.setAttribute('text-anchor', Math.abs(lx - CX) < 24 ? 'middle' : (lx > CX ? 'start' : 'end'));
+    t.textContent = name.toUpperCase();
+    nodes.appendChild(t);
+  });
+
+  if(mob){
+    mob.innerHTML = STAGES.map(([n, s]) =>
+      '<div class="loop-m-item"><div class="loop-m-n">' + n + '</div><div class="loop-m-s">' + s + '</div></div>'
+    ).join('') + '<div class="loop-m-end">And then you participate again.</div>';
+  }
+
+  let last = -1;
+  function update(p){
+    if(window.innerWidth <= 1000) return;
+    /* the last stretch is held so the cycle closes rather than snapping */
+    const t = clamp01(p / 0.94);
+    if(arc) arc.style.strokeDashoffset = CIRC * (1 - t);
+    const a = t * Math.PI * 2 - Math.PI / 2;
+    if(knob){
+      knob.setAttribute('cx', CX + Math.cos(a) * R);
+      knob.setAttribute('cy', CY + Math.sin(a) * R);
+    }
+    const i = Math.min(STAGES.length - 1, Math.floor(t * STAGES.length * 0.999));
+    if(i !== last){
+      last = i;
+      nodes.querySelectorAll('.loop-node').forEach(n => n.classList.toggle('on', +n.dataset.i <= i));
+      nodes.querySelectorAll('.loop-lab').forEach(n => n.classList.toggle('on', +n.dataset.i <= i));
+      if(cT) cT.innerHTML = i === STAGES.length - 1 ? 'Strengthen <em>DAOasis</em>' : STAGES[i][0];
+      if(cS) cS.textContent = t > 0.985 ? 'And then you participate again' : STAGES[i][1];
+    }
+    if(cS && t > 0.985) cS.textContent = 'And then you participate again';
+  }
+  /* CINEMATIC STICKY — nine stages, one per state. This is the section
+     the brief's key test is aimed at: a hard flick sets a distant target,
+     and the arc still walks the ring one deliberate stage at a time. */
+  cine(outer, { mode: 'sticky', pace: 'epic', states: STAGES.length }).on(update);
+})();
+
+
+/* ── SECTION 13 — FAQ ACCORDION ── */
+(function(){
+  const items = [...document.querySelectorAll('.faq-item')];
+  if(!items.length) return;
+  items.forEach((item, n) => {
+    const btn = item.querySelector('.faq-q');
+    const pane = item.querySelector('.faq-a');
+    if(!btn || !pane) return;
+    pane.id = 'faqPane' + n;
+    pane.setAttribute('role', 'region');
+    btn.setAttribute('aria-controls', pane.id);
+    btn.addEventListener('click', () => {
+      const open = !item.classList.contains('open');
+      items.forEach(other => {
+        if(other === item) return;
+        other.classList.remove('open');
+        other.querySelector('.faq-q').setAttribute('aria-expanded', 'false');
+        other.querySelector('.faq-a').style.maxHeight = '0px';
+      });
+      item.classList.toggle('open', open);
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      pane.style.maxHeight = open ? pane.scrollHeight + 'px' : '0px';
+    });
+  });
+  /* an open panel has to keep fitting its content when the type reflows */
+  window.addEventListener('resize', () => {
+    const open = document.querySelector('.faq-item.open .faq-a');
+    if(open) open.style.maxHeight = open.scrollHeight + 'px';
+  }, { passive: true });
+})();
+
+/* ── THEME TOGGLE ── */
+(function(){
+  const btnLight = document.getElementById('ftLight');
+  const btnDark = document.getElementById('ftDark');
+  if(!btnLight) return;
+  function applyTheme(theme){
+    if(theme === 'light'){
+      document.documentElement.setAttribute('data-theme','light');
+      btnLight.classList.add('active'); btnDark.classList.remove('active');
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+      btnDark.classList.add('active'); btnLight.classList.remove('active');
+    }
+    localStorage.setItem('daoasis-theme', theme);
+  }
+  applyTheme(localStorage.getItem('daoasis-theme') || 'dark');
+  btnLight.addEventListener('click', () => applyTheme('light'));
+  btnDark.addEventListener('click', () => applyTheme('dark'));
+})();
+</script>
+
+</body>
+</html>

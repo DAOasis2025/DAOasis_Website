@@ -1292,7 +1292,7 @@ body { overflow-x: clip; }
   <div class="nav-links">
     <a href="app.html" class="active">The App</a>
     <a href="sanctuary.html">The Sanctuary</a>
-    <span>The Web3 Layer</span>
+    <a href="web3.html">The Web3 Layer</a>
     <span>About Us</span>
     <span>Investors</span>
   </div>
@@ -1305,7 +1305,7 @@ body { overflow-x: clip; }
 <div class="nav-drawer" id="navDrawer">
   <a href="app.html" class="active">The App</a>
   <a href="sanctuary.html">The Sanctuary</a>
-  <span class="drawer-dead">The Web3 Layer</span>
+  <a href="web3.html">The Web3 Layer</a>
   <span class="drawer-dead">About Us</span>
   <span class="drawer-dead">Investors</span>
   <a class="nav-cta" href="#waitlist">Join the waitlist</a>
@@ -1996,7 +1996,7 @@ body { overflow-x: clip; }
       <div class="footer-col-label">Explore</div>
       <a href="app.html">The App</a>
       <a href="sanctuary.html">The Sanctuary</a>
-      <a href="#">The Web3 Layer</a>
+      <a href="web3.html">The Web3 Layer</a>
       <a href="#">Waitlist</a>
     </div>
     <div class="footer-col">
@@ -2027,7 +2027,36 @@ body { overflow-x: clip; }
 </footer>
 
 
+<!-- Controlled Cinematic Scroll — shared pacing controller, see js/cine.js -->
+<script src="js/cine.js"></script>
 <script>
+/* ────────────────────────────────────────────
+   CONTROLLED CINEMATIC SCROLL (js/cine.js)
+   cine() returns a paced track whose .get() replaces a raw scroll
+   fraction at the call site. Falls back to direct scroll mapping if the
+   controller file is missing, so sections degrade rather than break.
+──────────────────────────────────────────── */
+function cineProgress(el){
+  const r = el.getBoundingClientRect();
+  const s = el.offsetHeight - window.innerHeight;
+  return s > 0 ? Math.max(0, Math.min(1, -r.top / s)) : (r.top < 0 ? 1 : 0);
+}
+function cine(el, o){
+  if(el && window.DAO && DAO.cine) return DAO.cine.track(el, o);
+  return {
+    get: () => el ? cineProgress(el) : 0,
+    raw: () => el ? cineProgress(el) : 0,
+    state: () => 0,
+    refresh(){},
+    on(fn){
+      const f = () => fn(el ? cineProgress(el) : 0, 0);
+      window.addEventListener('scroll', f, { passive: true });
+      window.addEventListener('resize', f, { passive: true });
+      f(); return this;
+    }
+  };
+}
+
 /* ────────────────────────────────────────────
    NAV BURGER
 ──────────────────────────────────────────── */
@@ -2108,14 +2137,6 @@ body { overflow-x: clip; }
     }
     step();
   })();
-
-  let targetRaw=0, currentRaw=0;
-
-  function measureRaw(){
-    const rect = outer.getBoundingClientRect();
-    const scrollable = outer.offsetHeight - window.innerHeight;
-    return scrollable > 0 ? clamp01(-rect.top / scrollable) : 0;
-  }
 
   function applyFrame(raw){
     const isMobile = window.innerWidth <= 900;
@@ -2215,15 +2236,16 @@ body { overflow-x: clip; }
     }
   }
 
+  /* GUIDED — the phone fan-out is one continuous move, speed-capped so a
+     hard flick can no longer snap it open. Replaces the fixed-alpha lerp,
+     which closed large gaps in proportion to their size. */
+  const track = cine(outer, { mode: 'guided', pace: 'epic', states: 3 });
+
   function tick(){
-    targetRaw  = measureRaw();
-    currentRaw = reducedMotion ? targetRaw : lerp(currentRaw, targetRaw, 0.1);
-    if(Math.abs(currentRaw-targetRaw)<0.0005) currentRaw=targetRaw;
-    applyFrame(currentRaw);
+    applyFrame(track.get());
     requestAnimationFrame(tick);
   }
   requestAnimationFrame(tick);
-  window.addEventListener('resize', ()=>{ targetRaw=measureRaw(); });
 })();
 
 
@@ -2367,6 +2389,7 @@ body { overflow-x: clip; }
     pathFill.style.strokeDasharray  = pathLen;
     pathFill.style.strokeDashoffset = pathLen;
     updateWp(0, true);
+    questScroll();   /* the length is only known now; repaint at the paced value */
   }
 
   function updateWp(idx, force){
@@ -2387,12 +2410,14 @@ body { overflow-x: clip; }
   const svgEl  = document.querySelector('.quest-svg');
   const svgWrap = document.querySelector('.quest-svg-wrap');
 
+  /* CINEMATIC STICKY — six waypoints, one per state. The route is the
+     page's journey, so it is paced: scrolling hard now sets a distant
+     waypoint and the trail still walks there at the intended speed
+     instead of snapping to Phuket. */
+  let paced = 0;
+
   function questScroll(){
-    const rect  = outer.getBoundingClientRect();
-    const maxS  = outer.offsetHeight - window.innerHeight;
-    /* Guard the divide: a non-positive scroll range used to invert the sign
-       and drive the quest backwards. */
-    const p     = maxS > 0 ? Math.max(0, Math.min(1, -rect.top / maxS)) : 0;
+    const p = paced;
 
     if (pathLen > 0) pathFill.style.strokeDashoffset = pathLen * (1 - p);
 
@@ -2427,9 +2452,17 @@ body { overflow-x: clip; }
     updateWp(activeWp, false);
   }
 
-  window.addEventListener('load',   initPath);
-  window.addEventListener('scroll', questScroll, { passive: true });
-  questScroll();
+  window.addEventListener('load', initPath);
+
+  /* The waypoints are unevenly spaced along the route, so the track is
+     given their own thresholds as its states — snapping to even sixths
+     would land between Surat Thani and Khao Lak and skip one. The 0.97
+     hold that lets Phuket activate is reproduced here. */
+  cine(outer, {
+    mode: 'sticky',
+    pace: 'major',
+    stops: WPS.map((w, i) => i === WPS.length - 1 ? 1 : w.threshold * 0.97)
+  }).on((v) => { paced = v; questScroll(); });
 })();
 
 /* ────────────────────────────────────────────
@@ -2456,7 +2489,10 @@ body { overflow-x: clip; }
     return scrollable > 0 ? clamp01(-rect.top / scrollable) : 0;
   }
 
-  let target = 0, cur = 0;
+  /* CINEMATIC STICKY — each scene is centred at exactly i/(N-1), so the
+     scenes already are the states. Pacing gives each one a held beat
+     instead of letting a flick crossfade through all four at once. */
+  const track = cine(outer, { mode: 'sticky', pace: 'major', states: N });
 
   function apply(raw){
     const pos = raw * (N - 1); // continuous scene position, 0..N-1 (each scene gets a full centred hold)
@@ -2488,14 +2524,10 @@ body { overflow-x: clip; }
   }
 
   function tick(){
-    target = computeRaw();
-    cur = reducedMotion ? target : cur + (target - cur) * 0.12;
-    if(Math.abs(cur-target) < 0.0006) cur = target;
-    apply(cur);
+    apply(track.get());
     requestAnimationFrame(tick);
   }
   requestAnimationFrame(tick);
-  window.addEventListener('resize', () => { target = computeRaw(); });
 })();
 
 /* ────────────────────────────────────────────
