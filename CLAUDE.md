@@ -85,7 +85,38 @@ Converting the homepage nav `<span>` to an `<a>` is visually identical — `.nav
 - "The Web3 Layer" has no page; nav/footer links are placeholders and `vercel.json` still redirects `/web3` to `/`.
 - Nav items "About Us" and "Investors" are unlinked everywhere.
 - No signup backend anywhere. The Sanctuary early-access form is front end only and says so on submit: nothing is sent or stored. Do not wire it to a fake confirmation.
-- `app.html` has CSS for `.int-section-inner` / `.int-section-left` / `.int-section-right` / `.whoop-img` missing — the markup uses those classes but no rules exist. Pre-existing, unrelated to the Sanctuary work.
+- ~~`app.html` has CSS for `.int-section-inner` / `.int-section-left` / `.int-section-right` / `.whoop-img` missing~~ — **fixed August 14.** Section 9 (Integrations) is now a deliberate two-column editorial spread. See "Integrations section" below.
+
+---
+
+## Integrations section (app.html, Section 9) — reworked August 14
+
+`.int-section-inner` / `-left` / `-right` had no rules, so the section rendered as
+three stacked full-width blocks. It is now one editorial spread.
+
+Markup moved (nothing was added or removed except one `.int-visual` wrapper):
+the six cards moved into `.int-section-right`; `whoop.png` moved into
+`.int-section-left`, below the copy. The `#intGrid` id is unchanged, so the
+existing stagger observer still finds it.
+
+- **Statement column** — kicker, headline, body, then the Whoop band as the
+  visual that closes the column. **Content column** — the six platform cards, 2×3.
+- **Breakpoint is 1180px, not 900.** Below that the content column gives 274px
+  cards and ~31-character description lines. Measured, not guessed.
+- **Invariant worth keeping:** `.whoop-img` is always `width: 100%` of
+  `.int-visual`, so the band and the hairline rule above it share an edge at
+  every width. `.int-visual`'s `max-width` is the *single* place the plate is
+  sized (none on desktop = fills the column; 460px stacked). Do not set a width
+  on the image itself — that is what produced the unfinished edge originally.
+- No `position: sticky` on the statement column. It was tried; once the band
+  fills the column the two columns are within ~40px of each other, so there is
+  no travel to sticky through, and it only added a viewport-height gate.
+- **Contrast:** `.int-card-desc` was `#5f5a52` on `#211D1A` — 2.4:1, effectively
+  decorative. Now `#8a8377` (~4.5:1). `.int-card-tag` gold went 0.5 → 0.72 alpha.
+
+Still open here: each card shows the brand name twice — once as `<text>` inside
+the `.int-logo` SVG, once as `.int-card-name`. `.int-logo text { display: none; }`
+would fix it in one line, but it is a content/branding call, so it was left alone.
 
 ---
 

@@ -887,8 +887,6 @@ body { overflow-x: clip; }
      hairline rules immediately above and below the section. */
   max-width: 1200px; margin: 0 auto;
 }
-.int-section-left .s-body { max-width: 100%; }
-
 /* ── the device plate that closes the statement column ── */
 .int-visual {
   position: relative;
@@ -902,20 +900,25 @@ body { overflow-x: clip; }
    what separates the band from the page. Decorative only, never hit-tested. */
 .int-visual::before {
   content: ''; position: absolute; left: 50%; top: 57%;
-  /* 112%, not 120%: at 375px the column is 315px wide and sits in a 30px
-     gutter, so a wider wash pushed ~1.5px past the viewport edge. */
-  width: min(112%, 430px); aspect-ratio: 1;
+  /* 112% tracks the column, so the wash always reads as a halo around the
+     band rather than a disc behind it. Capping it in px went wrong at both
+     ends — a fixed cap fell inside the band on desktop, and anything wider
+     than ~112% pushed past the 30px gutter at 375px. */
+  width: 112%; aspect-ratio: 1;
   transform: translate(-50%, -50%);
   background: radial-gradient(circle,
     rgba(196,138,90,0.13) 0%, rgba(196,138,90,0.05) 40%, rgba(196,138,90,0) 68%);
   pointer-events: none;
 }
 /* whoop.png is 1209px wide and .whoop-img had no rule at all, so it rendered
-   at natural size and gave every viewport under ~1272px a horizontal scroll. */
+   at natural size and gave every viewport under ~1272px a horizontal scroll.
+   The band always fills .int-visual, so the plate and the hairline rule above
+   it share an edge at every width — .int-visual's own max-width is the single
+   place the plate is sized. */
 .whoop-img {
   position: relative;                 /* paints above the wash */
   display: block; height: auto;
-  width: min(100%, 300px); max-width: 100%;
+  width: 100%; max-width: 100%;
 }
 
 .int-grid {
@@ -951,37 +954,45 @@ body { overflow-x: clip; }
 @media(max-width:480px) { .int-grid { grid-template-columns: 1fr; } }
 
 /* ── DESKTOP: the two-column spread ──
-   1160px, not 900: below this the content column cannot hold two cards
-   without squeezing the descriptions to ~25 characters a line. */
-@media(min-width:1160px) {
+   1180px, not 900: at 1160 and below the content column gives 274px cards
+   and squeezes the descriptions to ~31 characters a line. 1180 puts the two
+   most common laptop widths (1280, 1366) on the spread; below it the section
+   stacks, which is what every other section on this page already does.
+   0.72/1.28 rather than an even split — the statement needs only enough
+   width to hold the headline's two lines, and every pixel past that is
+   better spent on the description measure in the cards. */
+@media(min-width:1180px) {
   .int-section-inner {
     display: grid;
-    grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr);
+    grid-template-columns: minmax(0, 0.72fr) minmax(0, 1.28fr);
     column-gap: clamp(48px, 5vw, 88px);
     align-items: start;
   }
+  /* the statement column is already near the ideal measure, so the shared
+     640px cap would only crop it short of its own column */
+  .int-section-left .s-body { max-width: 100%; }
   /* the first card row starts on the kicker's baseline, so the two columns
      share a top edge instead of the grid hanging below the copy */
   .int-section-right .int-grid {
     grid-template-columns: 1fr 1fr; margin-top: 0; max-width: none;
   }
   .int-section-right .int-card { padding: 36px 32px; }
-  .whoop-img { width: min(100%, 320px); }
-}
-/* The statement holds while the platform list travels past it. Gated on
-   viewport height as well as width: on a short window a sticky column
-   taller than the viewport pins with its foot cut off. */
-@media(min-width:1160px) and (min-height:820px) {
-  .int-section-left { position: sticky; top: 96px; }
+  /* The plate takes the full statement column here (no max-width). At 320px
+     it stopped well short of the hairline rule above it, which reads as an
+     unfinished edge, and left the statement column ~200px shorter than the
+     platform column. Filling the column squares the rule and brings the two
+     columns within ~40px of each other, which is what makes this read as a
+     spread rather than two stacked things that happen to sit side by side. */
 }
 
 /* ── STACKED: statement → device → platforms, in that order ── */
-@media(max-width:1159px) {
-  /* the plate stays on the body copy's measure rather than running the full
-     width of the section, so the rule above it reads as part of the
-     statement instead of as another divider */
-  .int-visual { max-width: 640px; }
-  .whoop-img { width: min(100%, 340px); }
+@media(max-width:1179px) {
+  /* Stacked, the section runs the full 1200px, and a plate that wide would
+     dwarf the statement it belongs to. 460px keeps it as an object inside
+     the statement — narrower than the 640px body measure on purpose, so it
+     reads as part of the copy block and not as another full-width divider.
+     Below ~520px it simply fills the column. */
+  .int-visual { max-width: 460px; }
   .int-section-right { margin-top: clamp(40px, 6vh, 72px); }
   .int-grid { margin-top: 0; max-width: none; }
 }
