@@ -1891,15 +1891,24 @@ stage3D('pavilionCanvas', 'pavilionOuter', function(api){
   const fillLight = new THREE.AmbientLight(0xffffff, 0.16);
   S.add(fillLight);
 
+  /* As the sun goes down the building lights from within and becomes a
+     lantern. Without this the scene simply ends on an empty black frame. */
+  const interior = new THREE.PointLight(0xffb46e, 0, 30, 1.7);
+  interior.position.set(0, 3.2, 0);
+  S.add(interior);
+  const interiorAft = new THREE.PointLight(0xffa960, 0, 24, 1.8);
+  interiorAft.position.set(-4.6, 2.6, 2.4);
+  S.add(interiorAft);
+
   /* palette across the day: dawn → morning → noon → gold → dusk → night */
   const KEYS = [
-    { t:0.00, sun:0xff9d63, int:0.35, sky:0x24313d, gnd:0x2a231c, hemi:0.36, bg:0x101a20, time:'05:00', phase:'First light' },
+    { t:0.00, sun:0xff9d63, int:0.50, sky:0x2c3b48, gnd:0x322a22, hemi:0.50, bg:0x16232b, time:'05:00', phase:'First light' },
     { t:0.18, sun:0xffc48c, int:0.95, sky:0x87a8c4, gnd:0x3a3126, hemi:0.55, bg:0x2a3946, time:'08:00', phase:'Morning' },
     { t:0.42, sun:0xfff6e6, int:1.45, sky:0xa8c6dc, gnd:0x453c2e, hemi:0.68, bg:0x486173, time:'12:00', phase:'Midday' },
     { t:0.62, sun:0xffcf94, int:1.15, sky:0x9db4c4, gnd:0x453a2c, hemi:0.58, bg:0x50606b, time:'15:00', phase:'Afternoon' },
     { t:0.80, sun:0xff8f4d, int:0.80, sky:0x6d5f62, gnd:0x38291f, hemi:0.42, bg:0x3d2f31, time:'18:00', phase:'Golden hour' },
-    { t:0.92, sun:0x8a6fa8, int:0.30, sky:0x2f3348, gnd:0x1e1a18, hemi:0.30, bg:0x1a1c28, time:'20:00', phase:'Dusk' },
-    { t:1.00, sun:0x4a5b86, int:0.14, sky:0x1a2030, gnd:0x14120f, hemi:0.22, bg:0x0b0e14, time:'21:00', phase:'Night' }
+    { t:0.92, sun:0x8a6fa8, int:0.30, sky:0x353a52, gnd:0x221d1a, hemi:0.36, bg:0x1e2130, time:'20:00', phase:'Dusk' },
+    { t:1.00, sun:0x4a5b86, int:0.16, sky:0x232b40, gnd:0x191614, hemi:0.30, bg:0x11151f, time:'21:00', phase:'Night' }
   ];
 
   const cSun = new THREE.Color(), cSky = new THREE.Color(), cGnd = new THREE.Color(), cBg = new THREE.Color();
@@ -1934,6 +1943,11 @@ stage3D('pavilionCanvas', 'pavilionOuter', function(api){
     S.fog.color.copy(cBg);
     api.renderer.setClearColor(cBg, 1);
     mWater.specular.copy(cSun);
+
+    /* the lantern comes up as the sun goes down */
+    const lantern = smooth(clamp01((p - 0.60) / 0.34));
+    interior.intensity = lantern * 3.2;
+    interiorAft.intensity = lantern * 1.9;
 
     if(s.phase !== lastPhase){
       lastPhase = s.phase;
@@ -2037,7 +2051,7 @@ stage3D('loopCanvas', 'loopOuter', function(api){
   const lampHigh = new THREE.Vector3(0, 26, 0);
   const camLift = new THREE.Vector3(), lampAt = new THREE.Vector3();
   const radial = new THREE.Vector3(), vantage = new THREE.Vector3();
-  const LOOP_EXTENT = 36;                /* ring radius plus framing margin */
+  const LOOP_EXTENT = 42;                /* ring radius plus framing margin */
   let lastDay = -1;
 
   /* The vantage point is derived from where you currently are on the loop and

@@ -56,7 +56,7 @@ body { overflow-x: clip; }
 .nav-brand img { width: 26px; opacity: 0.9; }
 .nav-brand span { font-family: 'Cormorant Garamond', serif; font-size: 18px; color: var(--warm-white); }
 .nav-links { display: flex; gap: 28px; }
-.nav-links a { font-size: 13px; color: #8a8377; text-decoration: none; letter-spacing: 0.04em; transition: color 0.2s; }
+.nav-links a, .nav-links span { font-size: 13px; color: #8a8377; text-decoration: none; letter-spacing: 0.04em; transition: color 0.2s; }
 .nav-links a:hover, .nav-links a.active { color: var(--warm-white); }
 .nav-cta {
   background: var(--warm-white); color: var(--charcoal); font-size: 13px;
@@ -76,10 +76,12 @@ body { overflow-x: clip; }
   opacity: 0; pointer-events: none; transition: opacity 0.35s;
 }
 .nav-drawer.open { opacity: 1; pointer-events: auto; }
-.nav-drawer a { font-family: 'Cormorant Garamond', serif; font-size: 28px; color: #8a8377; text-decoration: none; transition: color 0.2s; }
-.nav-drawer a:hover { color: var(--warm-white); }
+.nav-drawer a, .nav-drawer span.drawer-dead { font-family: 'Cormorant Garamond', serif; font-size: 28px; color: #8a8377; text-decoration: none; transition: color 0.2s; }
+.nav-drawer a:hover, .nav-drawer a.active { color: var(--warm-white); }
 .nav-drawer .nav-cta { font-family: 'Frank Ruhl Libre', serif; font-size: 15px; margin-top: 16px; padding: 14px 40px; }
-@media(max-width:900px) { .nav-links, .nav-cta { display: none; } .nav-burger { display: flex; } }
+/* `.nav > .nav-cta` — scoping this to a direct child matters: a bare
+   `.nav-cta` also matches the drawer's own button and hid it on mobile. */
+@media(max-width:900px) { .nav-links, .nav > .nav-cta { display: none; } .nav-burger { display: flex; } }
 
 /* ── SHARED SECTION STYLES ── */
 .s-dark  { background: var(--mineral); padding: 10vh 8%; }
@@ -107,6 +109,11 @@ body { overflow-x: clip; }
 .s-sanctuary .s-body { color: rgba(247,244,238,0.75); }
 .s-body p+p { margin-top: 18px; }
 .s-body strong { color: var(--gold); }
+
+/* ── DEVICE INTEGRATIONS IMAGE ──
+   whoop.png is 1209px wide and .whoop-img had no rule at all, so it rendered
+   at natural size and gave every viewport under ~1272px a horizontal scroll. */
+.whoop-img { max-width: 100%; height: auto; display: block; }
 
 /* ── DIVIDER ── */
 .divider-dark  { background: transparent; padding: 3vh 8%; }
@@ -905,7 +912,8 @@ body { overflow-x: clip; }
   html[data-theme="light"] .nav-brand img {
     filter: invert(1) brightness(0.3);
   }
-  html[data-theme="light"] .nav-links a {
+  html[data-theme="light"] .nav-links a,
+  html[data-theme="light"] .nav-links span {
     color: #6b6459;
   }
   html[data-theme="light"] .nav-links a:hover,
@@ -924,10 +932,12 @@ body { overflow-x: clip; }
   html[data-theme="light"] .nav-drawer {
     background: rgba(247,244,238,0.98);
   }
-  html[data-theme="light"] .nav-drawer a {
+  html[data-theme="light"] .nav-drawer a,
+  html[data-theme="light"] .nav-drawer span.drawer-dead {
     color: #6b6459;
   }
-  html[data-theme="light"] .nav-drawer a:hover {
+  html[data-theme="light"] .nav-drawer a:hover,
+  html[data-theme="light"] .nav-drawer a.active {
     color: #171412;
   }
   html[data-theme="light"] .nav-drawer .nav-cta {
@@ -1159,9 +1169,9 @@ body { overflow-x: clip; }
   <div class="nav-links">
     <a href="app.html" class="active">The App</a>
     <a href="sanctuary.html">The Sanctuary</a>
-    <a href="#">The Web3 Layer</a>
-    <a href="#">About Us</a>
-    <a href="#">Investors</a>
+    <span>The Web3 Layer</span>
+    <span>About Us</span>
+    <span>Investors</span>
   </div>
   <a class="nav-cta" href="#waitlist">Join the waitlist</a>
   <button class="nav-burger" id="navBurger" aria-label="Menu">
@@ -1170,11 +1180,11 @@ body { overflow-x: clip; }
 </nav>
 
 <div class="nav-drawer" id="navDrawer">
-  <a href="app.html">The App</a>
+  <a href="app.html" class="active">The App</a>
   <a href="sanctuary.html">The Sanctuary</a>
-  <a href="#">The Web3 Layer</a>
-  <a href="#">About Us</a>
-  <a href="#">Investors</a>
+  <span class="drawer-dead">The Web3 Layer</span>
+  <span class="drawer-dead">About Us</span>
+  <span class="drawer-dead">Investors</span>
   <a class="nav-cta" href="#waitlist">Join the waitlist</a>
 </div>
 
