@@ -110,11 +110,6 @@ body { overflow-x: clip; }
 .s-body p+p { margin-top: 18px; }
 .s-body strong { color: var(--gold); }
 
-/* ── DEVICE INTEGRATIONS IMAGE ──
-   whoop.png is 1209px wide and .whoop-img had no rule at all, so it rendered
-   at natural size and gave every viewport under ~1272px a horizontal scroll. */
-.whoop-img { max-width: 100%; height: auto; display: block; }
-
 /* ── DIVIDER ── */
 .divider-dark  { background: transparent; padding: 3vh 8%; }
 .divider-light { background: transparent; padding: 3vh 8%; }
@@ -304,12 +299,23 @@ body { overflow-x: clip; }
 .hero-ctas { display: flex; gap: 12px; }
 .hero-bridge-ctas { justify-content: center; margin-top: 40px; }
 
+/* ── MOBILE HERO ──
+   This used to collapse to `height:auto`, which left roughly 50vh of scroll
+   to carry a sequence authored for 515vh: the title card was hidden outright,
+   the phones raced through their fan-out, and the bridge cross-faded in
+   mid-screen. Mobile now gets its own shorter pin with the same three beats —
+   title, phones settling and holding, then the bridge sliding up over them. */
 @media(max-width:900px){
-  .hero-outer { height: auto; }
-  .hero { height: auto; min-height: 100vh; }
-  .hero-title-card { display: none; }
-  .hero-bridge { position: relative; height: auto; min-height: 50vh; padding: 60px 6%; }
-  .hero-bridge-ctas { flex-wrap: wrap; }
+  .hero-outer { height: 320vh; }
+  .hero { height: 100vh; }
+  .hero-title-text { font-size: clamp(40px,12vw,64px); }
+  .hero-title-scroll-cue { bottom: 6vh; font-size: 10px; letter-spacing: 0.24em; }
+  .hero-bridge { position: sticky; top: 0; height: 100vh; padding: 0 7%;
+                 opacity: 1; transform: translateY(100%); will-change: transform; }
+  .hero-bridge-text { font-size: clamp(34px,9.5vw,52px); }
+  .hero-bridge-sub { font-size: 11px; letter-spacing: 0.24em; margin-top: 20px; }
+  .hero-bridge-ctas { flex-wrap: wrap; justify-content: center; margin-top: 32px; }
+  .hero-bridge-ctas .btn-primary, .hero-bridge-ctas .btn-secondary { padding: 13px 26px; font-size: 12px; }
 }
 
 /* ══════════════════════════════════════════════
@@ -643,10 +649,21 @@ body { overflow-x: clip; }
 }
 .quest-note strong { color: var(--warm-white); }
 
+/* ── MOBILE QUEST MAP ──
+   Previously `height:auto` here made `outer.offsetHeight - innerHeight`
+   negative, which inverted the sign of the scroll fraction and ran the whole
+   quest backwards. It also dropped the pin entirely. Mobile now gets a real
+   (shorter) pin, and because a 1100×260 route squeezed into a phone width
+   renders barely 3px labels, the map is drawn oversize and pans sideways so
+   the leading dot stays in frame. */
 @media(max-width:768px) {
-  .quest-map-outer { height: auto; }
-  .quest-map-sticky { position: relative; height: auto; min-height: 60vh; padding-bottom: 40px; }
-  .quest-wp-info { position: relative; bottom: auto; left: auto; margin: 24px 0; width: auto; }
+  .quest-map-outer { height: 420vh; }
+  .quest-map-sticky { position: sticky; top: 0; height: 100vh; padding-bottom: 0; gap: 2vh; }
+  .quest-hd-wrap { padding: 0 7%; }
+  .quest-hd-desc { font-size: 13px; }
+  .quest-svg-wrap { padding: 2vh 0 0; overflow: hidden; }
+  .quest-svg { width: 280%; will-change: transform; }
+  .quest-wp-info { position: relative; bottom: auto; left: auto; margin: 0 7%; width: auto; }
   .quest-prog-indicator { display: none; }
   .quest-phones { flex-direction: column; align-items: center; gap: 24px; }
   .booster-grid { grid-template-columns: 1fr 1fr; }
@@ -838,10 +855,17 @@ body { overflow-x: clip; }
 
 @media(max-width:900px) {
   .market-outer { height: 400vh; }
-  .market-scene-content { padding: 0 7%; max-width: 100%; }
+  /* extra right padding keeps the copy clear of the progress rail */
+  .market-scene-content { padding: 0 13% 0 7%; max-width: 100%; }
   .market-scene-copy { max-width: 100%; }
-  .market-nav { right: 5%; gap: 12px; }
-  .market-nav-item { font-size: 9px; }
+  /* The scene labels sat on top of the now full-width copy. On mobile the
+     rail becomes a set of ticks — same progress cue, no collision. */
+  .market-nav { right: 3%; gap: 12px; }
+  .market-nav-item {
+    font-size: 0; width: 14px; height: 1px; background: rgba(247,244,238,0.28);
+    transition: background 0.4s ease, width 0.4s ease;
+  }
+  .market-nav-item.active { background: var(--gold); width: 24px; }
   .market-loop-line { left: 7%; font-size: 9px; max-width: 70%; }
   .market-mark-logo { width: 70vw; }
 }
@@ -853,6 +877,47 @@ body { overflow-x: clip; }
 /* ══════════════════════════════════════════════
    SECTION 9 — INTEGRATIONS
 ══════════════════════════════════════════════ */
+/* .int-section-inner / -left / -right carried no rules at all, so the three
+   parts of this section fell back to full-width blocks and the whole thing
+   read as one long stack. It is now a single editorial spread: a statement
+   column (the claim, and the device the claim is about) set against a
+   content column (the six platforms). */
+.int-section-inner {
+  /* 1200px is .divider-inner's measure, so the spread now lines up with the
+     hairline rules immediately above and below the section. */
+  max-width: 1200px; margin: 0 auto;
+}
+.int-section-left .s-body { max-width: 100%; }
+
+/* ── the device plate that closes the statement column ── */
+.int-visual {
+  position: relative;
+  margin-top: clamp(34px, 5vh, 56px);
+  padding-top: clamp(28px, 4vh, 44px);
+  border-top: 1px solid rgba(247,244,238,0.09);
+}
+/* whoop.png is a true-alpha cutout of a near-black band, so unaided it reads
+   as a silhouette against the mineral ground. A soft warm wash sits behind
+   it — the transparent interior of the ring lets the wash through, which is
+   what separates the band from the page. Decorative only, never hit-tested. */
+.int-visual::before {
+  content: ''; position: absolute; left: 50%; top: 57%;
+  /* 112%, not 120%: at 375px the column is 315px wide and sits in a 30px
+     gutter, so a wider wash pushed ~1.5px past the viewport edge. */
+  width: min(112%, 430px); aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle,
+    rgba(196,138,90,0.13) 0%, rgba(196,138,90,0.05) 40%, rgba(196,138,90,0) 68%);
+  pointer-events: none;
+}
+/* whoop.png is 1209px wide and .whoop-img had no rule at all, so it rendered
+   at natural size and gave every viewport under ~1272px a horizontal scroll. */
+.whoop-img {
+  position: relative;                 /* paints above the wash */
+  display: block; height: auto;
+  width: min(100%, 300px); max-width: 100%;
+}
+
 .int-grid {
   display: grid; grid-template-columns: repeat(3, 1fr);
   gap: 3px; margin-top: 6vh; max-width: 1100px;
@@ -870,14 +935,61 @@ body { overflow-x: clip; }
   font-family: 'Cormorant Garamond', serif; font-size: 22px;
   color: var(--warm-white); font-weight: 300; margin-bottom: 8px;
 }
-.int-card-desc { font-size: 13px; color: #5f5a52; line-height: 1.6; }
+/* #5f5a52 on the #211D1A card was 2.4:1 — the descriptions were decorative
+   rather than readable, worst at 375px where they carry the section alone.
+   #8a8377 is the site's existing muted body tone and lands at ~4.5:1. */
+.int-card-desc { font-size: 13px; color: #8a8377; line-height: 1.6; }
 .int-card-tag {
   margin-top: auto; padding-top: 20px; font-size: 10px;
-  letter-spacing: 0.14em; text-transform: uppercase; color: rgba(196,138,90,0.5);
+  letter-spacing: 0.14em; text-transform: uppercase;
+  /* was 0.5 — 2.4:1 at 10px uppercase. 0.72 keeps the tag subordinate to
+     the name while making it legible. */
+  color: rgba(196,138,90,0.72);
 }
 
 @media(max-width:900px) { .int-grid { grid-template-columns: 1fr 1fr; } }
 @media(max-width:480px) { .int-grid { grid-template-columns: 1fr; } }
+
+/* ── DESKTOP: the two-column spread ──
+   1160px, not 900: below this the content column cannot hold two cards
+   without squeezing the descriptions to ~25 characters a line. */
+@media(min-width:1160px) {
+  .int-section-inner {
+    display: grid;
+    grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr);
+    column-gap: clamp(48px, 5vw, 88px);
+    align-items: start;
+  }
+  /* the first card row starts on the kicker's baseline, so the two columns
+     share a top edge instead of the grid hanging below the copy */
+  .int-section-right .int-grid {
+    grid-template-columns: 1fr 1fr; margin-top: 0; max-width: none;
+  }
+  .int-section-right .int-card { padding: 36px 32px; }
+  .whoop-img { width: min(100%, 320px); }
+}
+/* The statement holds while the platform list travels past it. Gated on
+   viewport height as well as width: on a short window a sticky column
+   taller than the viewport pins with its foot cut off. */
+@media(min-width:1160px) and (min-height:820px) {
+  .int-section-left { position: sticky; top: 96px; }
+}
+
+/* ── STACKED: statement → device → platforms, in that order ── */
+@media(max-width:1159px) {
+  /* the plate stays on the body copy's measure rather than running the full
+     width of the section, so the rule above it reads as part of the
+     statement instead of as another divider */
+  .int-visual { max-width: 640px; }
+  .whoop-img { width: min(100%, 340px); }
+  .int-section-right { margin-top: clamp(40px, 6vh, 72px); }
+  .int-grid { margin-top: 0; max-width: none; }
+}
+@media(max-width:480px) {
+  .int-visual { margin-top: 32px; padding-top: 26px; }
+  .int-card { padding: 30px 26px; }
+  .int-card-tag { padding-top: 16px; }
+}
 
 /* ══════════════════════════════════════════════
    SECTION 10 — FINAL CTA
@@ -1742,6 +1854,12 @@ body { overflow-x: clip; }
   <h2 class="s-headline reveal reveal-delay-1">Works with what<br><em>you already use.</em></h2>
   <p class="s-body reveal reveal-delay-2">DAOasis connects to your existing health platforms so your data flows automatically — steps, sleep, heart rate. You live your life. The app does the rest.</p>
 
+  <div class="int-visual reveal reveal-delay-3">
+    <img class="whoop-img" src="images/whoop.png" alt="Whoop band" />
+  </div>
+  </div><!-- /int-section-left -->
+
+  <div class="int-section-right">
   <div class="int-grid" id="intGrid">
 
     <!-- Apple Health -->
@@ -1819,11 +1937,8 @@ body { overflow-x: clip; }
       <div class="int-card-tag">Steps · Sleep · Heart Rate</div>
     </div>
 
-  </div>
-  </div><!-- /int-section-left -->
-  <div class="int-section-right">
-    <img class="whoop-img" src="images/whoop.png" alt="Whoop band" />
-  </div>
+  </div><!-- /int-grid -->
+  </div><!-- /int-section-right -->
   </div><!-- /int-section-inner -->
 </section>
 
@@ -1994,9 +2109,16 @@ body { overflow-x: clip; }
   function applyFrame(raw){
     const isMobile = window.innerWidth <= 900;
 
+    /* Mobile runs a shorter pin, so the beats land at different fractions:
+       the phones finish settling earlier and then hold still while the
+       bridge panel slides up over them. */
+    const P = isMobile
+      ? { outStart: 0.16, outLen: 0.08, phase: 0.24, appear: 0.34, zoom: 0.42, bridge: 0.62, bridgeLen: 0.34 }
+      : { outStart: 0.20, outLen: 0.10, phase: 0.30, appear: 0.38, zoom: 0.48, bridge: 0.68, bridgeLen: 0.32 };
+
     /* Phase 1: "Meet the App" title card — visible immediately on load */
     const titleIn  = raw <= 0.001 ? 1 : ease(clamp01((raw-0.001)/0.05));
-    const titleOut = ease(clamp01((raw-0.20)/0.10));
+    const titleOut = ease(clamp01((raw-P.outStart)/P.outLen));
     if(titleCard){
       const cardT = Math.min(titleIn, 1-titleOut);
       titleCard.style.opacity = cardT;
@@ -2005,11 +2127,11 @@ body { overflow-x: clip; }
     }
 
     /* Remap remaining phases after the title card clears */
-    const r = clamp01((raw-0.30)/0.70);
+    const r = clamp01((raw-P.phase)/(1-P.phase));
 
     /* Phase 2: phones emerge from depth (slow, deliberate) */
-    const appearT = ease(clamp01(r/0.38));
-    const zoomT   = ease(clamp01(r/0.48));
+    const appearT = ease(clamp01(r/P.appear));
+    const zoomT   = ease(clamp01(r/P.zoom));
 
     const startW = isMobile ? 150 : 220;
     /* Cap width so the phone's height (portrait, ~1:2.05) always fits within the viewport with breathing room */
@@ -2033,7 +2155,9 @@ body { overflow-x: clip; }
 
     const sideAppear = clamp01((r-0.05)/0.34);
     const sideEase   = ease(sideAppear);
-    const parallax   = reducedMotion ? 0 : (clamp01((r-0.5)/0.5)) * 14; // subtle post-settle scroll parallax
+    /* no post-settle drift on mobile — the phones hold still while the
+       bridge slides up over them */
+    const parallax   = (reducedMotion || isMobile) ? 0 : (clamp01((r-0.5)/0.5)) * 14;
     const sideOffsetBase = isMobile ? widthC*0.62 : endW*0.74;
     const sideOffset = lerp(sideOffsetBase*0.4, sideOffsetBase, sideEase) - parallax;
     const sideW      = widthC * (isMobile ? 0.82 : 0.88);
@@ -2058,13 +2182,26 @@ body { overflow-x: clip; }
     phoneRight.style.pointerEvents  = sideEase>0.6 ? 'auto' : 'none';
     phoneRight.style.cursor         = 'pointer';
 
-    /* Bridge hand-off — long, gentle crossfade rather than a hard cut */
-    const bp = ease(clamp01((raw-0.68)/0.32));
-    bridge.style.opacity       = bp;
-    bridge.style.pointerEvents = bp>0.05?'auto':'none';
-    phoneCenter.style.opacity  = appearT * (1 - bp*0.85);
-    phoneLeft.style.opacity    = appearT*sideEase * (1 - bp*0.85);
-    phoneRight.style.opacity   = appearT*sideEase * (1 - bp*0.85);
+    /* Bridge hand-off.
+       Desktop keeps its long crossfade. Mobile slides the panel up from the
+       bottom of the screen instead, so it arrives from off-screen rather than
+       materialising mid-frame, and the phones simply sit still underneath. */
+    const bp = ease(clamp01((raw-P.bridge)/P.bridgeLen));
+    if(isMobile){
+      bridge.style.opacity       = 1;
+      bridge.style.transform     = `translateY(${(1-bp)*100}%)`;
+      bridge.style.pointerEvents = bp>0.5?'auto':'none';
+      phoneCenter.style.opacity  = appearT;
+      phoneLeft.style.opacity    = appearT*sideEase;
+      phoneRight.style.opacity   = appearT*sideEase;
+    } else {
+      bridge.style.opacity       = bp;
+      bridge.style.transform     = 'none';
+      bridge.style.pointerEvents = bp>0.05?'auto':'none';
+      phoneCenter.style.opacity  = appearT * (1 - bp*0.85);
+      phoneLeft.style.opacity    = appearT*sideEase * (1 - bp*0.85);
+      phoneRight.style.opacity   = appearT*sideEase * (1 - bp*0.85);
+    }
   }
 
   function tick(){
@@ -2236,16 +2373,38 @@ body { overflow-x: clip; }
     lastWp = idx;
   }
 
+  const svgEl  = document.querySelector('.quest-svg');
+  const svgWrap = document.querySelector('.quest-svg-wrap');
+
   function questScroll(){
     const rect  = outer.getBoundingClientRect();
     const maxS  = outer.offsetHeight - window.innerHeight;
-    const p     = Math.max(0, Math.min(1, -rect.top / maxS));
+    /* Guard the divide: a non-positive scroll range used to invert the sign
+       and drive the quest backwards. */
+    const p     = maxS > 0 ? Math.max(0, Math.min(1, -rect.top / maxS)) : 0;
 
     if (pathLen > 0) pathFill.style.strokeDashoffset = pathLen * (1 - p);
 
+    /* Mobile draws the route oversize and pans it, keeping the leading dot
+       near the centre of the window instead of shrinking it to illegibility. */
+    if (svgEl && svgWrap && window.innerWidth <= 768) {
+      const svgW  = svgEl.getBoundingClientRect().width;
+      const wrapW = svgWrap.clientWidth;
+      const over  = Math.max(0, svgW - wrapW);
+      const tx    = Math.max(-over, Math.min(0, -(p * svgW - wrapW * 0.5)));
+      svgEl.style.transform = `translateX(${tx}px)`;
+    } else if (svgEl) {
+      svgEl.style.transform = '';
+    }
+
+    /* The destination sits at threshold 1.0, but sub-pixel rounding means the
+       raw fraction tops out around 0.9998 even at the very end of the pin — so
+       Phuket never activated. Reserve the last 3% as a hold on the final
+       waypoint while the path itself still fills to completion. */
+    const wpP = Math.min(1, p / 0.97);
     let activeWp = 0;
     for (let i = WPS.length - 1; i >= 0; i--) {
-      if (p >= WPS[i].threshold) { activeWp = i; break; }
+      if (wpP >= WPS[i].threshold) { activeWp = i; break; }
     }
 
     for (let i = 0; i < WPS.length; i++) {

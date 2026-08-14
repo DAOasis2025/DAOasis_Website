@@ -279,14 +279,33 @@
     #heroContent{transition:none !important;}
   }
 
-  .journey-mobile{display:none;flex-direction:column;gap:0;width:100%;max-width:330px;margin:5vh auto 0;text-align:left;
+  /* The mobile stand-in for the route drawing. It used to be a static list
+     while the desktop SVG was the hero's signature scroll animation, so it
+     now runs off the same progress value: the spine fills, stops light in
+     sequence, and the current one is marked — the same language the Journey
+     section's own mobile fallback (.jm-list) already uses. */
+  .journey-mobile{position:relative;display:none;flex-direction:column;gap:0;width:100%;max-width:330px;margin:5vh auto 0;text-align:left;
     opacity:0;animation:fadeUp 1.6s ease-out forwards;animation-delay:6.9s;}
-  .journey-mobile .stop{position:relative;padding:0 0 20px 24px;border-left:1px solid rgba(196,138,90,0.28);}
-  .journey-mobile .stop:last-child{border-left:1px solid transparent;padding-bottom:0;}
-  .journey-mobile .dot{position:absolute;left:-3.5px;top:5px;width:7px;height:7px;border-radius:50%;background:var(--gold);}
-  .journey-mobile .dot.end{background:none;border:1px solid var(--warm-white);width:9px;height:9px;left:-4.5px;}
+  .jh-line-base{position:absolute;left:0;top:6px;bottom:12px;width:1px;background:rgba(247,244,238,0.14);}
+  .jh-line-fill{position:absolute;left:0;top:6px;width:1px;height:0;
+    background:linear-gradient(180deg, var(--gold), #e0b083);box-shadow:0 0 10px rgba(196,138,90,0.5);
+    transition:height 0.5s ease-out;}
+  .journey-mobile .stop{position:relative;padding:0 0 20px 24px;opacity:0.4;transition:opacity 0.5s ease;}
+  .journey-mobile .stop:last-child{padding-bottom:0;}
+  .journey-mobile .stop.done,.journey-mobile .stop.active{opacity:1;}
+  .journey-mobile .dot{position:absolute;left:-3.5px;top:5px;width:7px;height:7px;border-radius:50%;
+    background:rgba(247,244,238,0.22);transition:background 0.5s ease, box-shadow 0.5s ease, transform 0.5s cubic-bezier(0.34,1.56,0.64,1);}
+  .journey-mobile .stop.done .dot{background:var(--gold);}
+  .journey-mobile .stop.active .dot{background:radial-gradient(circle at 35% 30%, #f0c39a, #c48a5a);
+    box-shadow:0 0 0 4px rgba(196,138,90,0.18);transform:scale(1.2);}
+  .journey-mobile .dot.end{background:none;border:1px solid rgba(247,244,238,0.35);width:9px;height:9px;left:-4.5px;}
+  .journey-mobile .stop.done .dot.end,.journey-mobile .stop.active .dot.end{border-color:var(--warm-white);background:var(--warm-white);}
   .journey-mobile .stop-title{font-family:'Frank Ruhl Libre',serif;font-size:11px;color:var(--warm-white);letter-spacing:0.18em;text-transform:uppercase;}
   .journey-mobile .stop-sub{font-family:'Frank Ruhl Libre',serif;font-size:11.5px;color:rgba(247,244,238,0.5);margin-top:5px;letter-spacing:0.02em;}
+  @media (prefers-reduced-motion: reduce){
+    .jh-line-fill{transition:none;}
+    .journey-mobile .dot{transition:background 0.2s ease;}
+  }
   @media (max-width:800px){
     .journey-wrap{display:none;}
     .journey-mobile{display:flex;}
@@ -413,6 +432,16 @@
 
   .divider.light .divider-line{background:rgba(43,38,35,0.2);}
   .divider.shown.light .divider-mark{opacity:0.55;}
+
+  /* Every divider carries the background of the section above it. Below 900px
+     the Principle pin is replaced by its warm-stone fallback, so this one has
+     to follow — including inverting the white mark so it stays visible. */
+  @media (max-width:900px){
+    .divider.divider-after-principle{background:var(--warm-stone);}
+    .divider.divider-after-principle .divider-line{background:rgba(43,38,35,0.2);}
+    .divider.divider-after-principle .divider-mark{filter:invert(1);}
+    .divider.shown.divider-after-principle .divider-mark{opacity:0.55;}
+  }
 
   /* WHY DAOASIS */
   .pin{position:relative;height:820vh;}
@@ -998,6 +1027,8 @@
   .intro { display: none !important; }
   .hero { opacity: 1 !important; }
   #heroH1, .kicker, .h1, .sub, .ctas, .journey-wrap, .journey-mobile, .scroll-hint { opacity: 1 !important; animation: none !important; }
+  .journey-mobile .stop { opacity: 1 !important; }
+  .journey-mobile .dot { background: var(--gold) !important; }
   .nav.nav-waiting { opacity: 1 !important; pointer-events: auto !important; }
 </style></noscript>
 </head>
@@ -1059,7 +1090,9 @@
               stroke="#C48A5A" stroke-width="2.5" stroke-dasharray="5 7" opacity="0.65" fill="none" mask="url(#routeMask)"/>
           </svg>
         </div>
-        <div class="journey-mobile">
+        <div class="journey-mobile" id="journeyMobileHero">
+          <div class="jh-line-base"></div>
+          <div class="jh-line-fill" id="jhLineFill"></div>
           <div class="stop"><span class="dot"></span><div class="stop-title">Bangkok</div><div class="stop-sub">Day 1 · Begins the journey</div></div>
           <div class="stop"><span class="dot"></span><div class="stop-title">Hua Hin</div><div class="stop-sub">Day 6 · First 3-day streak</div></div>
           <div class="stop"><span class="dot"></span><div class="stop-title">Krabi</div><div class="stop-sub">Day 14 · Learn module complete</div></div>
@@ -1426,8 +1459,9 @@
   <div class="pr-para">Built for founders, traders, technical professionals, solo operators, creators and location independent digital nomads seeking clarity, structure and long term sustainability.</div>
 </div>
 
-<!-- Divider: Principle (dark) → Closing (dark photo) -->
-<div class="divider dark bg-mineral">
+<!-- Divider: Principle → Closing. Desktop sits below the dark .pin5; mobile
+     sits below the warm-stone principle fallback, so it restyles to match. -->
+<div class="divider dark bg-mineral divider-after-principle">
   <div class="divider-inner">
     <div class="divider-line"></div>
     <img src="images/img-09-white.png" alt="" class="divider-mark" />
@@ -1577,6 +1611,9 @@
     const heroContentEl = document.getElementById('heroContent');
     const maskPath = document.getElementById('routeMaskPath');
     const routeLen = document.getElementById('route').getTotalLength();
+    const jmHero = document.getElementById('journeyMobileHero');
+    const jhFill = document.getElementById('jhLineFill');
+    const jmStops = jmHero ? [...jmHero.querySelectorAll('.stop')] : [];
     let entranceStarted = false;
     let maxProgress = 0;
 
@@ -1604,6 +1641,22 @@
         g.classList.remove('wp-active','wp-passed','wp-upcoming','wp-anticipate');
         g.classList.add('wp-' + cls);
       });
+
+      /* the mobile stand-in runs off the same progress value as the route */
+      if(jmStops.length && jmHero.offsetParent !== null){
+        let activeIdx = 0;
+        waypoints.forEach((wp, i) => { if(progress >= wp.frac - 0.02) activeIdx = i; });
+        jmStops.forEach((el, i) => {
+          el.classList.toggle('done', i < activeIdx);
+          el.classList.toggle('active', i === activeIdx);
+        });
+        if(jhFill){
+          const contTop = jmHero.getBoundingClientRect().top;
+          const dot = jmStops[activeIdx].querySelector('.dot');
+          const dr = dot.getBoundingClientRect();
+          jhFill.style.height = Math.max(0, (dr.top + dr.height / 2) - contTop - 6) + 'px';
+        }
+      }
 
       if(!reducedMotion){
         bgEl.style.setProperty('--py', (progress * -16) + 'px');
