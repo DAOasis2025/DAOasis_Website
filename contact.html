@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<script>
+  (function(){
+    var h = document.documentElement;
+    try {
+      var t = localStorage.getItem('daoasis-theme') || 'dark';
+      if(t === 'light') h.setAttribute('data-theme','light');
+    } catch(e) { /* private mode: fall through to the dark default */ }
+
+    /* ── FAIL-VISIBLE GATE ──
+       Every hidden reveal start-state in css/trust.css is scoped to
+       `html.js`. Adding the class here — inline, in the same file as the
+       markup, so it cannot 404 — is what switches the animation on.
+
+       If js/trust.js never runs (blocked, stripped, 404, or it throws
+       before attaching its observer) the class is dropped 2.5s later and
+       the whole document paints at full strength. A privacy policy must
+       never be able to render as invisible type. */
+    h.className += (h.className ? ' ' : '') + 'js';
+    setTimeout(function(){
+      if(h.getAttribute('data-trust') !== 'ready'){
+        h.className = h.className.replace(/(^|\s)js(\s|$)/, '$1$2');
+      }
+    }, 2500);
+  })();
+</script>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Contact DAOasis | Let's talk</title>
+<meta name="description" content="Whether you are interested in DAOasis as a member, partner, investor or contributor, here is how to reach the right part of the company." />
+<link rel="canonical" href="https://da-oasis-website.vercel.app/contact" />
+<meta property="og:title" content="Contact DAOasis | Let's talk" />
+<meta property="og:description" content="Members, partners, investors, contributors and privacy enquiries — the routes into DAOasis, and what to expect from each." />
+<meta property="og:image" content="images/img-07.jpg" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://da-oasis-website.vercel.app/contact" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Frank+Ruhl+Libre:wght@300;400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/trust.css" />
+</head>
+<body>
+
+<a class="skip-link" href="#doc">Skip to content</a>
+<div class="scroll-prog" id="scrollProg"></div>
+
+<!-- ══ NAV ══ -->
+<nav class="nav">
+  <a class="nav-brand" href="index.html">
+    <img src="images/img-09-white.png" alt="DAOasis" />
+    <span>DAOasis</span>
+  </a>
+  <div class="nav-links">
+    <a href="app.html">The App</a>
+    <a href="sanctuary.html">The Sanctuary</a>
+    <a href="web3.html">The Web3 Layer</a>
+    <a href="about.html">About Us</a>
+    <a href="investors.html">Investors</a>
+  </div>
+  <a class="nav-cta" href="index.html#waitlistSection">Join the waitlist</a>
+  <button class="nav-burger" id="navBurger" aria-label="Menu" aria-expanded="false" aria-controls="navDrawer"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="nav-drawer" id="navDrawer">
+  <a href="app.html">The App</a>
+  <a href="sanctuary.html">The Sanctuary</a>
+  <a href="web3.html">The Web3 Layer</a>
+  <a href="about.html">About Us</a>
+  <a href="investors.html">Investors</a>
+  <a class="nav-cta" href="index.html#waitlistSection">Join the waitlist</a>
+</div>
+
+<main>
+
+<!-- ══ THE COVER ══ -->
+<header class="th grain">
+  <div class="th-inner rv">
+    <div class="th-kick">Contact</div>
+    <h1 class="th-h1">
+      <span class="ln"><i>Let's <em>talk.</em></i></span>
+    </h1>
+    <p class="th-sub soft d1">Whether you are interested in DAOasis as a <strong>member, partner,
+      investor or contributor</strong>, we'd like to hear from you. This page tells you which route
+      reaches which part of the company — and is honest about which routes are open yet.</p>
+    <div class="th-meta soft d2">
+      <div class="th-m-i"><div class="th-m-k">Based</div><div class="th-m-v">Phuket &middot; Global</div></div>
+      <div class="th-m-i"><div class="th-m-k">Investor materials</div><div class="th-m-v"><a href="investors.html#resources">Available on request</a></div></div>
+      <div class="th-m-i"><div class="th-m-k">Early access</div><div class="th-m-v"><a href="index.html#waitlistSection">Join the waitlist</a></div></div>
+      <div class="th-m-i"><div class="th-m-k">The team</div><div class="th-m-v"><a href="about.html#team">About DAOasis</a></div></div>
+    </div>
+  </div>
+</header>
+
+
+<!-- ══════════════════════════════════════════════
+     PATHWAYS
+══════════════════════════════════════════════ -->
+<div class="doc-wrap" id="doc">
+  <div class="ct-wrap">
+
+    <div class="ct-head rv">
+      <div class="doc-lead">
+        <p class="soft">DAOasis is a small team building something with a lot of parts to it. Sending
+          your message to the right place is the difference between <em>a proper answer</em> and a
+          forwarded email.</p>
+      </div>
+    </div>
+
+    <!-- ── THE FIVE ROUTES ── -->
+    <div class="rv">
+      <div class="paths soft">
+
+        <div class="path">
+          <div class="path-k">01 &middot; General</div>
+          <h2 class="path-t">General enquiries</h2>
+          <div class="path-b">Questions about DAOasis, the Companion App, the Sanctuary, the learning
+            curriculum, or anything on this website that is not covered elsewhere on this page. Also the
+            right route if you are not sure which route you want — we will point you to the right
+            place.</div>
+          <div class="path-a">
+            <div class="path-a-k">Address</div>
+            <span class="tbc">General contact to be confirmed</span>
+          </div>
+        </div>
+
+        <div class="path">
+          <div class="path-k">02 &middot; Investors</div>
+          <h2 class="path-t">Investor relations</h2>
+          <div class="path-b">Investment enquiries, and access to the document pack — the Investor Pack,
+            Business Plan, Whitepaper, Tokenomics, Feasibility Study and the rest. Those documents are
+            issued directly rather than published openly, because several contain commercial and financial
+            detail that does not belong on a public page.</div>
+          <div class="path-a">
+            <div class="path-a-k">Start here</div>
+            <a href="investors.html#resources">The investor resources index</a><br />
+            <span class="path-a-k" style="display:block;margin-top:14px;">Address</span>
+            <span class="tbc">Investor contact to be confirmed</span>
+          </div>
+        </div>
+
+        <div class="path">
+          <div class="path-k">03 &middot; Partnerships</div>
+          <h2 class="path-t">Partnerships</h2>
+          <div class="path-b">Wellness practitioners, hospitality operators, device and platform
+            integrations, educational content partners, and organisations interested in the Sanctuary or
+            the marketplace. Tell us what you do and where you think the overlap is — that is more useful
+            than a deck.</div>
+          <div class="path-a">
+            <div class="path-a-k">Address</div>
+            <span class="tbc">Partnerships contact to be confirmed</span>
+          </div>
+        </div>
+
+        <div class="path">
+          <div class="path-k">04 &middot; Privacy</div>
+          <h2 class="path-t">Privacy and data</h2>
+          <div class="path-b">Questions about the <a href="privacy.html">Privacy Policy</a>, requests to
+            access, correct or delete information, questions about
+            <a href="health-data.html">health data</a>, and anything else about how information is
+            handled. Accessibility reports are welcome here too until a dedicated address exists.</div>
+          <div class="path-a">
+            <div class="path-a-k">Address</div>
+            <span class="tbc">Privacy contact to be confirmed</span>
+          </div>
+        </div>
+
+        <div class="path">
+          <div class="path-k">05 &middot; Contributors</div>
+          <h2 class="path-t">Contributors and community</h2>
+          <div class="path-b">People who want to help build DAOasis — creators, educators, community
+            builders, ambassadors, and anyone interested in Stake to Create. Note that Stake to Create is
+            <span class="chip chip-design">In design</span> and not yet operational, so this is a
+            conversation rather than an application.</div>
+          <div class="path-a">
+            <div class="path-a-k">Address</div>
+            <span class="tbc">Contributor contact to be confirmed</span>
+          </div>
+        </div>
+
+        <div class="path">
+          <div class="path-k">06 &middot; Careers</div>
+          <h2 class="path-t">Working with us</h2>
+          <div class="path-b">There is no published careers page and no open role listing today. If you
+            think you should be working on this, the general route is the right one — say what you would
+            want to own rather than attaching a CV to a blank message.</div>
+          <div class="path-a">
+            <div class="path-a-k">Route</div>
+            <a href="about.html">Read about the team first</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── WHAT TO EXPECT ── -->
+    <section class="ct-s rv">
+      <h2 class="ct-s-h soft">What to expect</h2>
+      <div class="ct-s-b soft d1">
+        <p>Being straight about this is more useful than a promise nobody keeps.</p>
+      </div>
+      <div class="cards soft d2">
+        <div class="card-i">
+          <div class="card-h"><div class="card-t">No contact addresses are published yet</div><span class="chip chip-building">Being set up</span></div>
+            <div class="card-b">DAOasis has not yet published public contact addresses for these routes.
+              Rather than invent addresses that would bounce, this page marks each one as
+              <span class="tbc">to be confirmed</span> and will be updated as each is created. If you have
+              an existing DAOasis contact, that remains the fastest route.</div>
+        </div>
+        <div class="card-i">
+          <div class="card-h"><div class="card-t">There is no contact form</div><span class="chip chip-none">By design</span></div>
+          <div class="card-b">DAOasis has no form-handling backend, and a form that silently discarded your
+            message would be worse than no form at all. When addresses are published, they will be
+            ordinary email links. The one form on this website — the Sanctuary early access
+            list — states clearly on submission that nothing is sent or stored, because that is
+            true.</div>
+        </div>
+        <div class="card-i">
+          <div class="card-h"><div class="card-t">Response times</div></div>
+          <div class="card-b">A target response time is
+            <span class="tbc">Response time commitment to be confirmed</span>. We would rather publish a
+            commitment we can keep than a reassuring number we cannot. Privacy requests will be answered
+            within the period the applicable law requires.</div>
+        </div>
+        <div class="card-i">
+          <div class="card-h"><div class="card-t">What not to send</div></div>
+          <div class="card-b">Please do not send medical records, clinical information, or your wallet's
+            private key or recovery phrase — <strong>nobody from DAOasis will ever ask for the
+            latter</strong>, and any message that does is fraudulent. For a privacy request, send only what
+            is needed to identify your account.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── WHERE TO GO INSTEAD ── -->
+    <section class="ct-s rv">
+      <h2 class="ct-s-h soft">You may not need to write to us</h2>
+      <div class="ct-s-b soft d1">
+        <p>Three things people usually contact a company for, which are already on this website.</p>
+      </div>
+      <div class="cards soft d2">
+        <div class="card-i">
+          <div class="card-h"><div class="card-t">The investor pack</div></div>
+          <div class="card-b">Nine documents — Investor Pack, Business Plan, One Page Overview,
+            Whitepaper, Tokenomics, Feasibility Study, Competitor Analysis, Brand Kit and the latest
+            Quarterly Update. The index, with a description of each, is on the Investor Overview
+            page.</div>
+          <div class="card-m">
+            <div class="card-m-i"><div class="card-m-k">Go to</div><div class="card-m-v"><a href="investors.html#resources">Investor resources</a></div></div>
+          </div>
+        </div>
+        <div class="card-i">
+          <div class="card-h"><div class="card-t">Early access</div></div>
+          <div class="card-b">To be among the first to use the Companion App, join the waitlist. For the
+            Phuket Sanctuary pilot planned for 2027, the early access section on the Sanctuary page is
+            the right place — and note it is an expression of interest, not a booking.</div>
+          <div class="card-m">
+            <div class="card-m-i"><div class="card-m-k">Go to</div><div class="card-m-v"><a href="index.html#waitlistSection">The waitlist</a></div></div>
+            <div class="card-m-i"><div class="card-m-k">Or</div><div class="card-m-v"><a href="sanctuary.html#earlyAccess">Sanctuary early access</a></div></div>
+          </div>
+        </div>
+        <div class="card-i">
+          <div class="card-h"><div class="card-t">Who we are, and what is real</div></div>
+          <div class="card-b">The team, the six remits and how DAOasis is being built are on the About
+            page. What is built, in development, in design and merely explored is stated on each product
+            page and collected on the Token &amp; Web3 Disclaimer.</div>
+          <div class="card-m">
+            <div class="card-m-i"><div class="card-m-k">Go to</div><div class="card-m-v"><a href="about.html">About DAOasis</a></div></div>
+            <div class="card-m-i"><div class="card-m-k">Or</div><div class="card-m-v"><a href="token-disclaimer.html#s11">Current status</a></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="btn-row soft d3" style="margin-top:6vh;">
+        <a class="btn btn-dark" href="investors.html#resources">Investor Pack</a>
+        <a class="btn btn-outline" href="index.html#waitlistSection">Join the waitlist</a>
+        <a class="btn btn-outline" href="about.html">About DAOasis</a>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+
+<!-- ══ CROSS-LINKS ══ -->
+<section class="cx grain">
+  <div class="cx-inner rv">
+    <div class="cx-k">The trust layer</div>
+    <h2 class="cx-h soft">Everything we <em>put in writing.</em></h2>
+    <div class="cx-grid soft d1">
+      <a class="cx-i" href="privacy.html"><div class="cx-i-t">Privacy Policy</div><div class="cx-i-b">What may be collected, why, and your choices</div></a>
+      <a class="cx-i" href="health-data.html"><div class="cx-i-t">Health Data</div><div class="cx-i-b">Wellness information, in plain language</div></a>
+      <a class="cx-i" href="terms.html"><div class="cx-i-t">Terms of Use</div><div class="cx-i-b">The agreement that governs using DAOasis</div></a>
+      <a class="cx-i" href="cookies.html"><div class="cx-i-t">Cookie Policy</div><div class="cx-i-b">What this site stores in your browser</div></a>
+      <a class="cx-i" href="token-disclaimer.html"><div class="cx-i-t">Token &amp; Web3</div><div class="cx-i-b">What DRC and $DVT are — and are not</div></a>
+      <a class="cx-i" href="accessibility.html"><div class="cx-i-t">Accessibility</div><div class="cx-i-b">Designing for more people, and how to tell us</div></a>
+      <a class="cx-i here" href="contact.html"><div class="cx-i-t">Contact</div><div class="cx-i-b">How to reach the right part of DAOasis</div></a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ CLOSING NOTE ══ -->
+<section class="foot-note">
+  <div class="foot-note-inner">
+    <div class="foot-note-k">A note on this page</div>
+    <p>Every address on this page is marked <span class="tbc">to be confirmed</span> because DAOasis has
+      not published public contact addresses yet. Inventing them would be worse than admitting it. This
+      page will be updated as each route opens. In the meantime, an existing DAOasis contact remains the
+      fastest way in.</p>
+  </div>
+</section>
+
+</main>
+
+
+<!-- ══ FOOTER ══ -->
+<footer class="site-footer">
+  <div class="footer-top">
+    <div>
+      <div class="footer-brand-logo"><img src="images/img-09-white.png" alt="DAOasis mark" /><span>DAOasis</span></div>
+      <div class="footer-tagline"><strong>Wellness meets Web3.</strong><em>Rest. Learn. Earn. Return.</em></div>
+      <div class="footer-appearance">
+        <div class="footer-appearance-label">Appearance</div>
+        <div class="footer-toggle"><button id="ftLight">Light</button><button id="ftDark" class="active">Dark</button></div>
+      </div>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-label">Explore</div>
+      <a href="index.html">Home</a><a href="app.html">Companion App</a><a href="sanctuary.html">The Sanctuary</a><a href="web3.html">The Web3 Layer</a><a href="about.html">About</a><a href="investors.html">Investors</a><a class="on" href="contact.html">Contact</a>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-label">Resources</div>
+      <a href="investors.html#resources">Investor Pack</a><a href="investors.html#resources">Business Plan</a><a href="investors.html#resources">Whitepaper</a><a href="investors.html#resources">Brand Kit</a><a href="index.html#waitlistSection">Waitlist</a>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-label">Trust</div>
+      <a href="privacy.html">Privacy</a><a href="health-data.html">Health Data</a><a href="terms.html">Terms</a><a href="cookies.html">Cookies</a><a href="token-disclaimer.html">Token Disclaimer</a><a href="accessibility.html">Accessibility</a>
+    </div>
+  </div>
+  <div class="footer-bottom"><span>© 2026 DAOasis. All rights reserved.</span><span>Phuket · Global</span></div>
+</footer>
+
+<script src="js/trust.js"></script>
+</body>
+</html>

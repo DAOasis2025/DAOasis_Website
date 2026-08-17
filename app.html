@@ -11,9 +11,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>The Companion App — DAOasis</title>
-<meta name="description" content="Track your habits, complete real-world quests, and earn Reward Credits that convert to $DVT. The wellness app that pays you to show up." />
+<meta name="description" content="Track your habits, complete real-world quests, and earn DAOasis Reward Credits (DRC), which convert to $DVT. The wellness app that rewards you for showing up." />
 <meta property="og:title" content="The Companion App — DAOasis" />
-<meta property="og:description" content="Track your habits, complete real-world quests, and earn Reward Credits that convert to $DVT." />
+<meta property="og:description" content="Track your habits, complete real-world quests, and earn DAOasis Reward Credits (DRC), which convert to $DVT." />
 <meta property="og:image" content="images/img-10.jpg" />
 <meta property="og:type" content="website" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -197,19 +197,19 @@ body { overflow-x: clip; }
 /* ── FOOTER ── */
 .site-footer { background: var(--mineral); color: #8a8377; padding: 7vh 8% 4vh; border-top: 1px solid rgba(247,244,238,0.07); }
 .footer-top {
-  display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr; gap: 40px;
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px;
   padding-bottom: 5vh; border-bottom: 1px solid rgba(247,244,238,0.1);
 }
 .footer-brand-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
 .footer-brand-logo img { width: 28px; opacity: 0.9; }
 .footer-brand-logo span { font-family: 'Cormorant Garamond', serif; font-size: 18px; color: var(--warm-white); }
-.footer-tagline { font-size: 13px; line-height: 1.6; color: #7a746a; }
+.footer-tagline { font-size: 13px; line-height: 1.6; color: #8f887d; }
 .footer-tagline strong { display: block; color: #b8b1a4; font-weight: 500; }
 .footer-tagline em { font-style: italic; }
-.footer-col-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #5f5a52; margin-bottom: 18px; }
+.footer-col-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #8f887d; margin-bottom: 18px; }
 .footer-col a { display: block; font-size: 13.5px; color: #8a8377; text-decoration: none; margin-bottom: 11px; transition: color 0.2s; }
 .footer-col a:hover { color: var(--warm-white); }
-.footer-bottom { display: flex; justify-content: space-between; padding-top: 4vh; font-size: 12px; color: #4a4540; }
+.footer-bottom { display: flex; justify-content: space-between; padding-top: 4vh; font-size: 12px; color: #8a8377; }
 @media(max-width:768px) {
   .footer-top { grid-template-columns: 1fr 1fr; gap: 32px; }
   .footer-bottom { flex-direction: column; gap: 8px; }
@@ -537,7 +537,7 @@ body { overflow-x: clip; }
   overflow: hidden;
 }
 .quest-hd-wrap { padding: 0 8%; position: relative; z-index: 2; }
-.quest-hd-kicker { font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: #5f5a52; margin-bottom: 10px; }
+.quest-hd-kicker { font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: #8f887d; margin-bottom: 10px; }
 .quest-hd-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(28px,3.5vw,46px); color: var(--warm-white); font-weight: 300; }
 .quest-hd-title em { font-style: italic; color: var(--gold); }
 .quest-hd-desc { font-size: 13px; color: #5f5a52; margin-top: 8px; }
@@ -603,7 +603,7 @@ body { overflow-x: clip; }
 }
 .quest-phone-label {
   margin-top: 14px; font-size: 11px; letter-spacing: 0.1em;
-  text-transform: uppercase; color: #5f5a52;
+  text-transform: uppercase; color: #8f887d;
 }
 
 /* Booster mechanic */
@@ -1264,14 +1264,14 @@ body { overflow-x: clip; }
   .footer-appearance { margin-top: 22px; }
   .footer-appearance-label {
     font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
-    color: #5f5a52; margin-bottom: 8px;
+    color: #8f887d; margin-bottom: 8px;
   }
   .footer-toggle {
     display: inline-flex; background: rgba(247,244,238,0.08);
     border-radius: 20px; padding: 3px; gap: 0;
   }
   .footer-toggle button {
-    background: none; border: none; color: #7a746a; font-size: 12px;
+    background: none; border: none; color: #9a9285; font-size: 12px;
     padding: 6px 14px; border-radius: 16px; cursor: pointer;
     transition: all 0.2s ease; letter-spacing: 0.04em; text-transform: uppercase;
   }
@@ -1293,7 +1293,7 @@ body { overflow-x: clip; }
     <a href="app.html" class="active">The App</a>
     <a href="sanctuary.html">The Sanctuary</a>
     <a href="web3.html">The Web3 Layer</a>
-    <span>About Us</span>
+    <a href="about.html">About Us</a>
     <a href="investors.html">Investors</a>
   </div>
   <a class="nav-cta" href="#waitlist">Join the waitlist</a>
@@ -1306,7 +1306,7 @@ body { overflow-x: clip; }
   <a href="app.html" class="active">The App</a>
   <a href="sanctuary.html">The Sanctuary</a>
   <a href="web3.html">The Web3 Layer</a>
-  <span class="drawer-dead">About Us</span>
+  <a href="about.html">About Us</a>
   <a href="investors.html">Investors</a>
   <a class="nav-cta" href="#waitlist">Join the waitlist</a>
 </div>
@@ -1392,9 +1392,9 @@ body { overflow-x: clip; }
       <div class="how-phone-wrap">
         <img src="images/06.png" alt="Wallet screen" />
       </div>
-      <div class="how-title">Earn Reward Credits → $DVT</div>
-      <div class="how-text">Consistency earns Reward Credits. Reward Credits convert to $DVT — DAOasis's utility token. Use $DVT for premium access, marketplace discounts, and Sanctuary stays in Phuket.</div>
-      <div class="how-tag">Reward Credits → $DVT</div>
+      <div class="how-title">Earn DRC → $DVT</div>
+      <div class="how-text">Consistency earns DAOasis Reward Credits — DRC. DRC converts to $DVT, the on-chain layer. $DVT is designed to carry premium access, the marketplace and Sanctuary stays in Phuket, each introduced in stages as it is built.</div>
+      <div class="how-tag">DRC → $DVT</div>
     </div>
   </div>
 </section>
@@ -1727,7 +1727,7 @@ body { overflow-x: clip; }
 <section class="s-dark" id="rewards" style="padding-bottom:0;">
   <div class="s-kicker reveal">The Reward System</div>
   <h2 class="s-headline reveal reveal-delay-1">Every habit earns.<br><em>Every credit counts.</em></h2>
-  <p class="s-body reveal reveal-delay-2">Reward Credits accumulate every time you complete a quest, finish a lesson, or hit a daily target. They convert to $DVT — and $DVT opens doors across the entire DAOasis ecosystem.</p>
+  <p class="s-body reveal reveal-delay-2">DAOasis Reward Credits — DRC — accumulate every time you complete a quest, finish a lesson, or hit a daily target. DRC converts to $DVT, and $DVT is the layer that carries deeper participation across the ecosystem.</p>
   <div class="reward-pipeline" id="rewardFlow">
     <div class="reward-pipe-node">
       <svg class="reward-pipe-icon" viewBox="0 0 24 24" fill="none" stroke="#C48A5A" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2z"/><path d="M8 8.5L6.5 15l3 1L11 20h2l1.5-4 2.5 1L18 9l-4-1-.5-1.5H10L8 8.5z"/></svg>
@@ -1747,7 +1747,7 @@ body { overflow-x: clip; }
       <svg class="reward-pipe-icon" viewBox="0 0 24 24" fill="none" stroke="#C48A5A" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M9 10h4.5a1.5 1.5 0 0 1 0 3H9m0 0h5a1.5 1.5 0 0 1 0 3H9"/></svg>
       <div class="reward-pipe-label">Step 03</div>
       <div class="reward-pipe-name">$DVT</div>
-      <div class="reward-pipe-desc">Reward Credits convert to $DVT — DAOasis's on-chain utility token. Real value, transferable ownership, and the key to everything the ecosystem unlocks.</div>
+      <div class="reward-pipe-desc">DRC converts to $DVT — DAOasis's on-chain utility layer. Transferable ownership, and the layer that carries deeper participation across the ecosystem.</div>
     </div>
   </div>
   <div class="s-kicker reveal" style="text-align:center;margin-bottom:24px;">What $DVT unlocks</div>
@@ -1755,8 +1755,8 @@ body { overflow-x: clip; }
     <div class="reward-use">
       <svg class="reward-use-icon" viewBox="0 0 24 24" fill="none" stroke="#C48A5A" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>
       <div class="reward-use-title">Sanctuary Stays</div>
-      <div class="reward-use-text">Reward Credits and $DVT contribute toward a real stay at the DAOasis Sanctuary in Phuket — the physical destination your journey has been walking toward. The app moves you there. $DVT gets you through the door.</div>
-      <div class="reward-use-tag">Phuket · Thailand · Physical destination</div>
+      <div class="reward-use-text">DRC and $DVT are designed to contribute toward a stay at the DAOasis Sanctuary in Phuket — the physical destination your journey has been walking toward. The app moves you there. The Sanctuary is planned for 2027.</div>
+      <div class="reward-use-tag">Phuket · Thailand · Planned for 2027</div>
     </div>
     <div class="reward-use">
       <svg class="reward-use-icon" viewBox="0 0 24 24" fill="none" stroke="#C48A5A" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
@@ -1793,7 +1793,7 @@ body { overflow-x: clip; }
       <div class="market-scene-content">
         <div class="market-eyebrow">The Marketplace</div>
         <h2 class="market-scene-headline">A place to spend<br><em>what you've earned.</em></h2>
-        <p class="market-scene-copy">Your Reward Credits and $DVT have a real home. Explore what the DAOasis Marketplace makes possible.</p>
+        <p class="market-scene-copy">Your DRC and $DVT have a real home. Explore what the DAOasis Marketplace is being built to make possible.</p>
         <div class="market-scroll-cue" id="marketScrollCue">Scroll to explore ↓</div>
       </div>
     </div>
@@ -1805,8 +1805,8 @@ body { overflow-x: clip; }
       <div class="market-scene-content">
         <div class="market-eyebrow">Sanctuary Experiences</div>
         <h2 class="market-scene-headline">The destination<br><em>you walked to.</em></h2>
-        <p class="market-scene-copy">Retreats, workshops and stays at the DAOasis Sanctuary in Phuket — bookable with $DVT. Every step in the app was moving you here. Redeem your credits. Show up in person.</p>
-        <div class="market-scene-tag">Phuket · Thailand · $DVT redeemable</div>
+        <p class="market-scene-copy">Retreats, workshops and stays at the DAOasis Sanctuary in Phuket, planned for 2027 — with $DVT designed to carry access. Every step in the app was moving you here.</p>
+        <div class="market-scene-tag">Phuket · Thailand · Planned for 2027</div>
       </div>
     </div>
 
@@ -1836,7 +1836,7 @@ body { overflow-x: clip; }
       </div>
     </div>
 
-    <div class="market-loop-line" id="marketLoopLine">EARNED THROUGH PARTICIPATION · REDEEMED IN THE REAL WORLD</div>
+    <div class="market-loop-line" id="marketLoopLine">EARNED THROUGH PARTICIPATION · USED IN THE REAL WORLD</div>
 
     <div class="market-nav" id="marketNav">
       <span class="market-nav-item active" data-nav="0">INTRO</span>
@@ -1966,7 +1966,7 @@ body { overflow-x: clip; }
 <section class="final-cta" id="waitlist">
   <div class="s-kicker" style="color:var(--gold);">Early Access</div>
   <h2 class="s-headline" style="color:var(--warm-white);">Your journey starts<br><em>when you decide it does.</em></h2>
-  <p class="s-body" style="color:#8a8377;text-align:center;margin:0 auto 40px;">Join a community building better habits one deliberate day at a time — and earning real value for doing it.</p>
+  <p class="s-body" style="color:#8a8377;text-align:center;margin:0 auto 40px;">Join a community building better habits one deliberate day at a time — and being recognised for doing it.</p>
   <a class="btn-primary" href="#">Join the Waitlist</a>
   <div class="final-note">Free to join. No crypto knowledge required.</div>
 </section>
@@ -1982,7 +1982,7 @@ body { overflow-x: clip; }
       </div>
       <div class="footer-tagline">
         <strong>Wellness meets Web3.</strong>
-        <em>Built for long-term impact.</em>
+        <em>Rest. Learn. Earn. Return.</em>
       </div>
       <div class="footer-appearance">
         <div class="footer-appearance-label">Appearance</div>
@@ -1994,30 +1994,30 @@ body { overflow-x: clip; }
     </div>
     <div class="footer-col">
       <div class="footer-col-label">Explore</div>
-      <a href="app.html">The App</a>
+      <a href="index.html">Home</a>
+      <a href="app.html">Companion App</a>
       <a href="sanctuary.html">The Sanctuary</a>
       <a href="web3.html">The Web3 Layer</a>
-      <a href="#">Waitlist</a>
-    </div>
-    <div class="footer-col">
-      <div class="footer-col-label">Company</div>
-      <a href="#">About</a>
-      <a href="#">Team</a>
-      <a href="#">Careers</a>
+      <a href="about.html">About</a>
       <a href="investors.html">Investors</a>
+      <a href="contact.html">Contact</a>
     </div>
     <div class="footer-col">
-      <div class="footer-col-label">Legal</div>
-      <a href="#">Privacy Policy</a>
-      <a href="#">Terms of Service</a>
-      <a href="#">Risk Disclaimer</a>
+      <div class="footer-col-label">Resources</div>
+      <a href="investors.html#resources">Investor Pack</a>
+      <a href="investors.html#resources">Business Plan</a>
+      <a href="investors.html#resources">Whitepaper</a>
+      <a href="investors.html#resources">Brand Kit</a>
+      <a href="index.html#waitlistSection">Waitlist</a>
     </div>
     <div class="footer-col">
-      <div class="footer-col-label">Follow Us</div>
-      <a href="#">X / Twitter</a>
-      <a href="#">Instagram</a>
-      <a href="#">LinkedIn</a>
-      <a href="#">YouTube</a>
+      <div class="footer-col-label">Trust</div>
+      <a href="privacy.html">Privacy</a>
+      <a href="health-data.html">Health Data</a>
+      <a href="terms.html">Terms</a>
+      <a href="cookies.html">Cookies</a>
+      <a href="token-disclaimer.html">Token Disclaimer</a>
+      <a href="accessibility.html">Accessibility</a>
     </div>
   </div>
   <div class="footer-bottom">
@@ -2296,7 +2296,7 @@ function cine(el, o){
     { svg:'<path d="M12 2L6 10a6 6 0 1 0 12 0L12 2z"/>', name:'Hydration', color:'#5a8aad', glow:'rgba(90,138,173,0.12)', tag:'Booster', tagBg:'rgba(90,138,173,0.15)', what:'Log your daily water intake and hit your 3L target to earn a bonus kilometre on your quest.', quest:'+1 km every day you hit your hydration goal. The river in your world rises with every bottle logged.' },
     { svg:'<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>', name:'Sleep', color:'#9B8CA8', glow:'rgba(155,140,168,0.12)', tag:'Booster', tagBg:'rgba(155,140,168,0.15)', what:'Quality sleep earns a nightly distance bonus. The app reads your sleep score from connected health devices.', quest:'+2 km for 7+ hours of quality sleep. Streak constellations grow in your app sky.' },
     { svg:'<path d="M12 2a5 5 0 0 1 5 5c0 3-2 5-5 8-3-3-5-5-5-8a5 5 0 0 1 5-5z"/><circle cx="12" cy="7" r="1.5"/>', name:'Nutrition', color:'#A8B7A2', glow:'rgba(168,183,162,0.10)', tag:'Booster', tagBg:'rgba(168,183,162,0.15)', what:'Log meals and earn Reward Credits. The app rewards dietary variety, consistency, and nutritional balance.', quest:'Logging varied meals earns credits and grows a garden inside your world. One of the most direct routes to $DVT.' },
-    { svg:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>', name:'Learning', color:'#DDD1C2', glow:'rgba(221,209,194,0.10)', tag:'Earner', tagBg:'rgba(221,209,194,0.15)', what:'Complete wellness and Web3 lessons to earn Reward Credits directly. Knowledge is treated as a habit with real value.', quest:'Every lesson earns credits that convert to $DVT. 128 lessons across Wellness and Web3 — all rewarded.' }
+    { svg:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>', name:'Learning', color:'#DDD1C2', glow:'rgba(221,209,194,0.10)', tag:'Earner', tagBg:'rgba(221,209,194,0.15)', what:'Complete wellness and Web3 lessons to earn DAOasis Reward Credits directly. Knowledge is treated as a habit, and recognised like one.', quest:'Every lesson earns credits that convert to $DVT. 128 lessons across Wellness and Web3 — all rewarded.' }
   ];
 
   const tiles    = document.querySelectorAll('.eco-tile');
@@ -2665,8 +2665,8 @@ function cine(el, o){
       icon: '🌐',
       kicker: 'The Web3 Layer',
       title: 'Ownership you actually earned.',
-      body: '<p>Every quest completed, every lesson finished, every streak maintained generates Reward Credits. Those credits accumulate in your in-app wallet and convert to DVT — the DAOasis Value Token.</p><p>DVT is yours. It can be held, used within the ecosystem for sanctuary bookings and premium content, or traded. The wallet screen gives you a live view of your balance, price, and transaction history.</p>',
-      tag: 'Earn · Hold · Use · Trade'
+      body: '<p>Every quest completed, every lesson finished, every streak maintained generates DAOasis Reward Credits — DRC. Those credits accumulate in your in-app wallet, and can be converted into $DVT — the DAOasis Value Token.</p><p>$DVT is yours. It is designed to be held or used within the ecosystem for Sanctuary stays and premium content, introduced in stages as each is built. The wallet screen gives you a live view of your balance and transaction history.</p>',
+      tag: 'Earn · Convert · Hold · Use'
     }
   };
 

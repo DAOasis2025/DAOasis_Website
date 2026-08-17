@@ -991,27 +991,27 @@
   /* FOOTER */
   .site-footer{background:var(--mineral);color:#8a8377;padding:7vh 8% 4vh;border-top:1px solid rgba(247,244,238,0.07);}
   .site-footer > *{max-width:1360px;margin-left:auto;margin-right:auto;}
-  .footer-top{display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;gap:40px;padding-bottom:5vh;
+  .footer-top{display:grid;grid-template-columns:repeat(4,1fr);gap:40px;padding-bottom:5vh;
     border-bottom:1px solid rgba(247,244,238,0.1);}
   .footer-brand{grid-column:1;}
   .footer-brand-logo{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
   .footer-brand-logo img{width:28px;opacity:0.9;}
   .footer-brand-logo span{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--warm-white);}
-  .footer-tagline{font-size:13px;line-height:1.6;color:#7a746a;margin-bottom:20px;}
+  .footer-tagline{font-size:13px;line-height:1.6;color:#8f887d;margin-bottom:20px;}
   .footer-tagline strong{display:block;color:#b8b1a4;font-weight:500;}
   .footer-tagline em{font-style:italic;color:#8a8377;}
   .footer-appearance{margin-top:22px;}
-  .footer-appearance-label{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#5f5a52;margin-bottom:8px;}
+  .footer-appearance-label{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#8f887d;margin-bottom:8px;}
   .footer-toggle{display:inline-flex;background:rgba(247,244,238,0.08);border-radius:20px;padding:3px;gap:0;}
-  .footer-toggle button{background:none;border:none;color:#7a746a;font-size:12px;padding:6px 14px;
+  .footer-toggle button{background:none;border:none;color:#9a9285;font-size:12px;padding:6px 14px;
     border-radius:16px;cursor:pointer;transition:all 0.2s ease;letter-spacing:0.04em;text-transform:uppercase;}
   .footer-toggle button.active{background:rgba(247,244,238,0.14);color:var(--warm-white);}
-  .footer-col-label{font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:#5f5a52;margin-bottom:22px;}
+  .footer-col-label{font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:#8f887d;margin-bottom:22px;}
   .footer-col a{display:block;font-size:13.5px;color:#8a8377;text-decoration:none;margin-bottom:13px;
     transition:color 0.2s ease;}
   .footer-col a:hover{color:var(--warm-white);}
   .footer-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:4vh;
-    font-size:11px;letter-spacing:0.08em;color:#4a4540;}
+    font-size:11px;letter-spacing:0.08em;color:#8a8377;}
   @media(max-width:900px){
     .footer-top{grid-template-columns:1fr 1fr;gap:34px;}
     .footer-brand{grid-column:1/-1;}
@@ -1119,7 +1119,7 @@
       <a href="app.html">The App</a>
       <a href="sanctuary.html">The Sanctuary</a>
       <a href="web3.html">The Web3 Layer</a>
-      <span>About Us</span>
+      <a href="about.html">About Us</a>
       <a href="investors.html">Investors</a>
     </div>
     <a class="nav-cta" href="#waitlistSection">Join the waitlist</a>
@@ -1130,7 +1130,7 @@
     <a href="app.html">The App</a>
     <a href="sanctuary.html">The Sanctuary</a>
     <a href="web3.html">The Web3 Layer</a>
-    <span class="drawer-dead">About Us</span>
+    <a href="about.html">About Us</a>
     <a href="investors.html">Investors</a>
     <a class="nav-cta" href="#waitlistSection">Join the waitlist</a>
   </div>
@@ -1312,7 +1312,7 @@
         <div class="co-dot"></div><div class="co-line"></div>
         <div class="co-card">
           <div class="co-label">Reward Credits</div>
-          <div class="co-text">Every ritual you complete earns real Reward Credits — a balance that grows in value as your consistency compounds, not just a points tally.</div>
+          <div class="co-text">Every ritual you complete earns DAOasis Reward Credits — DRC — recognition that compounds with your consistency, not just a points tally.</div>
         </div>
       </div>
       <div class="callout co-dir-left co2" id="co2">
@@ -1351,7 +1351,7 @@
   <div class="eco-sub">Your daily wellness, at a glance. Build better habits, earn rewards, and grow toward a healthier you.</div>
   <div class="tm-dash"><img src="images/img-10.jpg" alt="DAOasis Companion App daily dashboard" /></div>
   <div class="tm-list">
-    <div class="tm-item"><div class="tm-label">Reward Credits</div><div class="tm-text">Every ritual you complete earns real Reward Credits — a balance that grows in value as your consistency compounds.</div></div>
+    <div class="tm-item"><div class="tm-label">Reward Credits</div><div class="tm-text">Every ritual you complete earns DAOasis Reward Credits — DRC — recognition that compounds with your consistency.</div></div>
     <div class="tm-item"><div class="tm-label">Daily Wellness Metrics</div><div class="tm-text">Steps, hydration, calories and sleep, rolled into one ring — feel on top of your day without manually logging any of it.</div></div>
     <div class="tm-item"><div class="tm-label">Progress</div><div class="tm-text">Earnings, streak, level and quests completed — effort turns into visible status, not just good intentions.</div></div>
     <div class="tm-item"><div class="tm-label">Keep It Up</div><div class="tm-text">The weekly goal keeps you honest and the streak keeps you accountable — small daily wins are the whole design.</div></div>
@@ -1386,9 +1386,9 @@
         <div class="j-node" id="jNode0" style="left:0%;"><div class="j-dot">01</div><div class="j-title">Download the App</div><div class="j-sub">Your journey starts with a single tap.</div></div>
         <div class="j-node" id="jNode1" style="left:16.667%;"><div class="j-dot">02</div><div class="j-title">Build Healthy Habits</div><div class="j-sub">Small daily actions, tracked and rewarded.</div></div>
         <div class="j-node" id="jNode2" style="left:33.333%;"><div class="j-dot">03</div><div class="j-title">Join the Community</div><div class="j-sub">Connect with others building the same habits.</div></div>
-        <div class="j-node" id="jNode3" style="left:50%;"><div class="j-dot">04</div><div class="j-title">Earn Reward Credits</div><div class="j-sub">Quests, learning, and referrals turn effort into credits.</div></div>
-        <div class="j-node" id="jNode4" style="left:66.667%;"><div class="j-dot">05</div><div class="j-title">Own DVT (Optional)</div><div class="j-sub">Go deeper — hold the token, unlock governance.</div></div>
-        <div class="j-node" id="jNode5" style="left:83.333%;"><div class="j-dot">06</div><div class="j-title">Help Shape DAOasis</div><div class="j-sub">Vote, propose, and steer where DAOasis goes next.</div></div>
+        <div class="j-node" id="jNode3" style="left:50%;"><div class="j-dot">04</div><div class="j-title">Earn DRC</div><div class="j-sub">Quests, learning and referrals turn effort into Reward Credits.</div></div>
+        <div class="j-node" id="jNode4" style="left:66.667%;"><div class="j-dot">05</div><div class="j-title">Convert to $DVT (Optional)</div><div class="j-sub">Go deeper — convert DRC into the on-chain layer.</div></div>
+        <div class="j-node" id="jNode5" style="left:83.333%;"><div class="j-dot">06</div><div class="j-title">Help Shape DAOasis</div><div class="j-sub">Propose and steer where DAOasis goes, as governance develops.</div></div>
         <div class="j-node" id="jNode6" style="left:100%;"><div class="j-dot">07</div><div class="j-title">Visit the Sanctuary</div><div class="j-sub">For the few who go all the way: a real-world retreat, earned.</div></div>
       </div>
     </div>
@@ -1405,9 +1405,9 @@
     <div class="jm-item"><div class="jm-dot"></div><div class="jm-label">01 — Download the App</div><div class="jm-text">Your journey starts with a single tap.</div></div>
     <div class="jm-item"><div class="jm-dot"></div><div class="jm-label">02 — Build Healthy Habits</div><div class="jm-text">Small daily actions, tracked and rewarded.</div></div>
     <div class="jm-item"><div class="jm-dot"></div><div class="jm-label">03 — Join the Community</div><div class="jm-text">Connect with others building the same habits.</div></div>
-    <div class="jm-item"><div class="jm-dot"></div><div class="jm-label">04 — Earn Reward Credits</div><div class="jm-text">Quests, learning, and referrals turn effort into credits.</div></div>
-    <div class="jm-item"><div class="jm-dot"></div><div class="jm-label">05 — Own DVT (Optional)</div><div class="jm-text">Go deeper — hold the token, unlock governance.</div></div>
-    <div class="jm-item"><div class="jm-dot"></div><div class="jm-label">06 — Help Shape DAOasis</div><div class="jm-text">Vote, propose, and steer where DAOasis goes next.</div></div>
+    <div class="jm-item"><div class="jm-dot"></div><div class="jm-label">04 — Earn DRC</div><div class="jm-text">Quests, learning and referrals turn effort into Reward Credits.</div></div>
+    <div class="jm-item"><div class="jm-dot"></div><div class="jm-label">05 — Convert to $DVT (Optional)</div><div class="jm-text">Go deeper — convert DRC into the on-chain layer.</div></div>
+    <div class="jm-item"><div class="jm-dot"></div><div class="jm-label">06 — Help Shape DAOasis</div><div class="jm-text">Propose and steer where DAOasis goes, as governance develops.</div></div>
     <div class="jm-item"><div class="jm-dot"></div><div class="jm-label">07 — Visit the Sanctuary</div><div class="jm-text">For the few who go all the way: a real-world retreat, earned.</div></div>
   </div>
 </div>
@@ -1469,7 +1469,7 @@
     <div class="cm-pillar">
       <div class="cm-pillar-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3"/><path d="M6 20v-1a6 6 0 0112 0v1"/><path d="M18 12l2 2-4 4"/></svg></div>
       <div class="cm-pillar-title">DAO Governance</div>
-      <p class="cm-pillar-text">DVT holders participate in decentralised governance — voting on product direction, community initiatives, treasury use, and the future shape of DAOasis. Consistency earns influence.</p>
+      <p class="cm-pillar-text">$DVT is designed to carry governance — a say in product direction, community initiatives and the future shape of DAOasis. Governance will be introduced in stages as the ecosystem matures.</p>
     </div>
     <div class="cm-pillar">
       <div class="cm-pillar-icon"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
@@ -1578,7 +1578,7 @@
       </div>
       <div class="footer-tagline">
         <strong>Wellness meets Web3.</strong>
-        <em>Built for long term impact.</em>
+        <em>Rest. Learn. Earn. Return.</em>
       </div>
       <div class="footer-appearance">
         <div class="footer-appearance-label">Appearance</div>
@@ -1590,19 +1590,15 @@
     </div>
     <div class="footer-col">
       <div class="footer-col-label">Explore</div>
-      <a href="app.html">The App</a><a href="sanctuary.html">The Sanctuary</a><a href="web3.html">The Web3 Layer</a><a href="#waitlistSection">Waitlist</a><a href="#">FAQ</a>
+      <a href="index.html">Home</a><a href="app.html">Companion App</a><a href="sanctuary.html">The Sanctuary</a><a href="web3.html">The Web3 Layer</a><a href="about.html">About</a><a href="investors.html">Investors</a><a href="contact.html">Contact</a>
     </div>
     <div class="footer-col">
-      <div class="footer-col-label">Company</div>
-      <a href="#">About</a><a href="#">Team</a><a href="#">Careers</a><a href="investors.html">Investors</a><a href="#">Contact</a>
+      <div class="footer-col-label">Resources</div>
+      <a href="investors.html#resources">Investor Pack</a><a href="investors.html#resources">Business Plan</a><a href="investors.html#resources">Whitepaper</a><a href="investors.html#resources">Brand Kit</a><a href="#waitlistSection">Waitlist</a>
     </div>
     <div class="footer-col">
-      <div class="footer-col-label">Legal</div>
-      <a href="#">Privacy Policy</a><a href="#">Terms of Service</a><a href="#">Risk Disclaimer</a>
-    </div>
-    <div class="footer-col">
-      <div class="footer-col-label">Follow Us</div>
-      <a href="#">X</a><a href="#">Instagram</a><a href="#">LinkedIn</a><a href="#">YouTube</a><a href="#">Email</a>
+      <div class="footer-col-label">Trust</div>
+      <a href="privacy.html">Privacy</a><a href="health-data.html">Health Data</a><a href="terms.html">Terms</a><a href="cookies.html">Cookies</a><a href="token-disclaimer.html">Token Disclaimer</a><a href="accessibility.html">Accessibility</a>
     </div>
   </div>
   <div class="footer-bottom">
@@ -2490,7 +2486,7 @@
     'No paperwork, no onboarding friction — install and your first ritual is already waiting.',
     'Steps, water, sleep and mindful moments — logged automatically and reflected back in a ring you actually want to fill.',
     'Quests and streaks are more fun, and stickier, shared. Find your circle inside the app.',
-    'Every completed ritual has real value attached — credits that grow as your consistency does.',
+    'Every completed ritual is recognised — DRC that accumulates as your consistency does.',
     'For those who want more than a badge: DVT turns participation into actual ownership.',
     "Token holders don't just use the ecosystem — they help decide what it becomes.",
     'The physical culmination of the digital journey — Phuket, and beyond.'

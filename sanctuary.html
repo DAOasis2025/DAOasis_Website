@@ -655,7 +655,7 @@ img { max-width: 100%; }
 @media (prefers-reduced-motion: reduce) { .place-pin { animation: none; } }
 .place-pin-label { position: absolute; left: 20px; top: -7px; white-space: nowrap; font-size: 10px; letter-spacing: 0.26em; text-transform: uppercase; color: rgba(247,244,238,0.8); }
 .place-coords { margin-top: 34px; padding-top: 22px; border-top: 1px solid rgba(247,244,238,0.12); display: flex; gap: 46px; flex-wrap: wrap; }
-.place-coord-k { font-size: 9.5px; letter-spacing: 0.22em; text-transform: uppercase; color: #5f5a52; margin-bottom: 8px; }
+.place-coord-k { font-size: 9.5px; letter-spacing: 0.22em; text-transform: uppercase; color: #8f887d; margin-bottom: 8px; }
 .place-coord-v { font-family: 'Cormorant Garamond', serif; font-size: 22px; color: var(--warm-white); font-weight: 300; }
 @media(max-width:900px){ .place-grid { grid-template-columns: 1fr; gap: 8vh; } .place-map { height: 48vh; min-height: 300px; order: 2; } }
 
@@ -739,21 +739,21 @@ img { max-width: 100%; }
    FOOTER
 ══════════════════════════════════════════════ */
 .site-footer { background: var(--mineral); color: #8a8377; padding: 7vh 8% 4vh; border-top: 1px solid rgba(247,244,238,0.07); }
-.footer-top { display: grid; grid-template-columns: repeat(5,1fr); gap: 40px; padding-bottom: 5vh; border-bottom: 1px solid rgba(247,244,238,0.1); }
+.footer-top { display: grid; grid-template-columns: repeat(4,1fr); gap: 40px; padding-bottom: 5vh; border-bottom: 1px solid rgba(247,244,238,0.1); }
 .footer-brand-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
 .footer-brand-logo img { width: 28px; opacity: 0.9; }
 .footer-brand-logo span { font-family: 'Cormorant Garamond', serif; font-size: 18px; color: var(--warm-white); }
-.footer-tagline { font-size: 13px; line-height: 1.6; color: #7a746a; }
+.footer-tagline { font-size: 13px; line-height: 1.6; color: #8f887d; }
 .footer-tagline strong { display: block; color: #b8b1a4; font-weight: 500; }
 .footer-tagline em { font-style: italic; }
-.footer-col-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #5f5a52; margin-bottom: 18px; }
+.footer-col-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #8f887d; margin-bottom: 18px; }
 .footer-col a, .footer-col span { display: block; font-size: 13.5px; color: #8a8377; text-decoration: none; margin-bottom: 11px; transition: color 0.2s; }
 .footer-col a:hover { color: var(--warm-white); }
-.footer-bottom { display: flex; justify-content: space-between; padding-top: 4vh; font-size: 12px; color: #4a4540; }
+.footer-bottom { display: flex; justify-content: space-between; padding-top: 4vh; font-size: 12px; color: #8a8377; }
 .footer-appearance { margin-top: 22px; }
-.footer-appearance-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: #5f5a52; margin-bottom: 8px; }
+.footer-appearance-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: #8f887d; margin-bottom: 8px; }
 .footer-toggle { display: inline-flex; background: rgba(247,244,238,0.08); border-radius: 20px; padding: 3px; }
-.footer-toggle button { background: none; border: none; color: #7a746a; font-size: 12px; padding: 6px 14px; border-radius: 16px; cursor: pointer; transition: all 0.2s ease; letter-spacing: 0.04em; text-transform: uppercase; font-family: 'Frank Ruhl Libre', serif; }
+.footer-toggle button { background: none; border: none; color: #9a9285; font-size: 12px; padding: 6px 14px; border-radius: 16px; cursor: pointer; transition: all 0.2s ease; letter-spacing: 0.04em; text-transform: uppercase; font-family: 'Frank Ruhl Libre', serif; }
 .footer-toggle button.active { background: rgba(247,244,238,0.14); color: var(--warm-white); }
 @media(max-width:768px) { .footer-top { grid-template-columns: 1fr 1fr; gap: 32px; } .footer-bottom { flex-direction: column; gap: 8px; } }
 
@@ -803,7 +803,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
     <a href="app.html">The App</a>
     <a href="sanctuary.html" class="active">The Sanctuary</a>
     <a href="web3.html">The Web3 Layer</a>
-    <span>About Us</span>
+    <a href="about.html">About Us</a>
     <a href="investors.html">Investors</a>
   </div>
   <a class="nav-cta" href="#earlyAccess">Join the waitlist</a>
@@ -814,7 +814,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
   <a href="app.html">The App</a>
   <a href="sanctuary.html" class="active">The Sanctuary</a>
   <a href="web3.html">The Web3 Layer</a>
-  <span class="drawer-dead">About Us</span>
+  <a href="about.html">About Us</a>
   <a href="investors.html">Investors</a>
   <a class="nav-cta" href="#earlyAccess">Join the waitlist</a>
 </div>
@@ -1413,7 +1413,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
   <div class="footer-top">
     <div>
       <div class="footer-brand-logo"><img src="images/img-09-white.png" alt="DAOasis mark" /><span>DAOasis</span></div>
-      <div class="footer-tagline"><strong>Wellness meets Web3.</strong><em>Built for long-term impact.</em></div>
+      <div class="footer-tagline"><strong>Wellness meets Web3.</strong><em>Rest. Learn. Earn. Return.</em></div>
       <div class="footer-appearance">
         <div class="footer-appearance-label">Appearance</div>
         <div class="footer-toggle"><button id="ftLight">Light</button><button id="ftDark" class="active">Dark</button></div>
@@ -1421,19 +1421,15 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
     </div>
     <div class="footer-col">
       <div class="footer-col-label">Explore</div>
-      <a href="app.html">The App</a><a href="sanctuary.html">The Sanctuary</a><a href="web3.html">The Web3 Layer</a><a href="#earlyAccess">Early Access</a>
+      <a href="index.html">Home</a><a href="app.html">Companion App</a><a href="sanctuary.html">The Sanctuary</a><a href="web3.html">The Web3 Layer</a><a href="about.html">About</a><a href="investors.html">Investors</a><a href="contact.html">Contact</a>
     </div>
     <div class="footer-col">
-      <div class="footer-col-label">Company</div>
-      <span>About</span><span>Team</span><span>Careers</span><a href="investors.html">Investors</a>
+      <div class="footer-col-label">Resources</div>
+      <a href="investors.html#resources">Investor Pack</a><a href="investors.html#resources">Business Plan</a><a href="investors.html#resources">Whitepaper</a><a href="investors.html#resources">Brand Kit</a><a href="#earlyAccess">Early Access</a><a href="index.html#waitlistSection">Waitlist</a>
     </div>
     <div class="footer-col">
-      <div class="footer-col-label">Legal</div>
-      <span>Privacy Policy</span><span>Terms of Service</span><span>Risk Disclaimer</span>
-    </div>
-    <div class="footer-col">
-      <div class="footer-col-label">Follow Us</div>
-      <span>X / Twitter</span><span>Instagram</span><span>LinkedIn</span><span>YouTube</span>
+      <div class="footer-col-label">Trust</div>
+      <a href="privacy.html">Privacy</a><a href="health-data.html">Health Data</a><a href="terms.html">Terms</a><a href="cookies.html">Cookies</a><a href="token-disclaimer.html">Token Disclaimer</a><a href="accessibility.html">Accessibility</a>
     </div>
   </div>
   <div class="footer-bottom"><span>© 2026 DAOasis. All rights reserved.</span><span>Phuket · Global</span></div>

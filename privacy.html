@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<script>
+  (function(){
+    var h = document.documentElement;
+    try {
+      var t = localStorage.getItem('daoasis-theme') || 'dark';
+      if(t === 'light') h.setAttribute('data-theme','light');
+    } catch(e) { /* private mode: fall through to the dark default */ }
+
+    /* ── FAIL-VISIBLE GATE ──
+       Every hidden reveal start-state in css/trust.css is scoped to
+       `html.js`. Adding the class here — inline, in the same file as the
+       markup, so it cannot 404 — is what switches the animation on.
+
+       If js/trust.js never runs (blocked, stripped, 404, or it throws
+       before attaching its observer) the class is dropped 2.5s later and
+       the whole document paints at full strength. A privacy policy must
+       never be able to render as invisible type. */
+    h.className += (h.className ? ' ' : '') + 'js';
+    setTimeout(function(){
+      if(h.getAttribute('data-trust') !== 'ready'){
+        h.className = h.className.replace(/(^|\s)js(\s|$)/, '$1$2');
+      }
+    }, 2500);
+  })();
+</script>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>DAOasis Privacy Policy | Your data deserves clarity</title>
+<meta name="description" content="What information DAOasis may collect, why it may be used, how it may be shared, and the choices you have. Written to be read, not skimmed past." />
+<link rel="canonical" href="https://da-oasis-website.vercel.app/privacy" />
+<meta property="og:title" content="DAOasis Privacy Policy | Your data deserves clarity" />
+<meta property="og:description" content="What information DAOasis may collect, why it may be used, how it may be shared, and the choices you have." />
+<meta property="og:image" content="images/img-07.jpg" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://da-oasis-website.vercel.app/privacy" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Frank+Ruhl+Libre:wght@300;400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/trust.css" />
+</head>
+<body>
+
+<a class="skip-link" href="#doc">Skip to content</a>
+<div class="scroll-prog" id="scrollProg"></div>
+
+<!-- ══ NAV ══ -->
+<nav class="nav">
+  <a class="nav-brand" href="index.html">
+    <img src="images/img-09-white.png" alt="DAOasis" />
+    <span>DAOasis</span>
+  </a>
+  <div class="nav-links">
+    <a href="app.html">The App</a>
+    <a href="sanctuary.html">The Sanctuary</a>
+    <a href="web3.html">The Web3 Layer</a>
+    <a href="about.html">About Us</a>
+    <a href="investors.html">Investors</a>
+  </div>
+  <a class="nav-cta" href="index.html#waitlistSection">Join the waitlist</a>
+  <button class="nav-burger" id="navBurger" aria-label="Menu" aria-expanded="false" aria-controls="navDrawer"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="nav-drawer" id="navDrawer">
+  <a href="app.html">The App</a>
+  <a href="sanctuary.html">The Sanctuary</a>
+  <a href="web3.html">The Web3 Layer</a>
+  <a href="about.html">About Us</a>
+  <a href="investors.html">Investors</a>
+  <a class="nav-cta" href="index.html#waitlistSection">Join the waitlist</a>
+</div>
+
+<main>
+
+<!-- ══════════════════════════════════════════════
+     THE COVER
+══════════════════════════════════════════════ -->
+<header class="th grain">
+  <div class="th-inner rv">
+    <div class="th-kick">Trust &middot; Privacy</div>
+    <h1 class="th-h1">
+      <span class="ln"><i>Your data deserves</i></span>
+      <span class="ln"><i><em>clarity.</em></i></span>
+    </h1>
+    <p class="th-sub soft d1">DAOasis is a wellness ecosystem, which means the information people
+      trust us with is personal by nature. This policy explains what may be collected, why it may be
+      used, who it may be shared with and what choices you have — <strong>in language you can
+      actually hold on to</strong>.</p>
+    <div class="th-meta soft d2">
+      <div class="th-m-i"><div class="th-m-k">Last updated</div><div class="th-m-v">17 August 2026</div></div>
+      <div class="th-m-i"><div class="th-m-k">Version</div><div class="th-m-v">1.0</div></div>
+      <div class="th-m-i"><div class="th-m-k">Applies to</div><div class="th-m-v">This website and the DAOasis Companion App</div></div>
+      <div class="th-m-i"><div class="th-m-k">Health data</div><div class="th-m-v"><a href="health-data.html">Read the plain-language version</a></div></div>
+    </div>
+  </div>
+</header>
+
+
+<!-- ══════════════════════════════════════════════
+     THE DOCUMENT
+══════════════════════════════════════════════ -->
+<div class="doc-wrap" id="doc">
+  <div class="doc-grid">
+
+    <!-- CONTENTS RAIL (desktop ≥1081px) -->
+    <aside class="doc-rail" aria-label="Contents">
+      <div class="doc-rail-k">Contents</div>
+      <ol>
+        <li><a href="#s01"><span class="n">01</span> Who this policy applies to</a></li>
+        <li><a href="#s02"><span class="n">02</span> What exists today</a></li>
+        <li><a href="#s03"><span class="n">03</span> Information we collect</a></li>
+        <li><a href="#s04"><span class="n">04</span> Wellness and health information</a></li>
+        <li><a href="#s05"><span class="n">05</span> How information is collected</a></li>
+        <li><a href="#s06"><span class="n">06</span> Why we use information</a></li>
+        <li><a href="#s07"><span class="n">07</span> Reward Credits and participation</a></li>
+        <li><a href="#s08"><span class="n">08</span> $DVT and transaction information</a></li>
+        <li><a href="#s09"><span class="n">09</span> Cookies and analytics</a></li>
+        <li><a href="#s10"><span class="n">10</span> How information may be shared</a></li>
+        <li><a href="#s11"><span class="n">11</span> Health data</a></li>
+        <li><a href="#s12"><span class="n">12</span> Data security</a></li>
+        <li><a href="#s13"><span class="n">13</span> Data retention</a></li>
+        <li><a href="#s14"><span class="n">14</span> International transfers</a></li>
+        <li><a href="#s15"><span class="n">15</span> Your rights and choices</a></li>
+        <li><a href="#s16"><span class="n">16</span> Children</a></li>
+        <li><a href="#s17"><span class="n">17</span> Third-party links</a></li>
+        <li><a href="#s18"><span class="n">18</span> Changes to this policy</a></li>
+        <li><a href="#s19"><span class="n">19</span> Contact</a></li>
+      </ol>
+    </aside>
+
+    <article class="doc">
+
+      <!-- CONTENTS (mobile ≤1080px) -->
+      <details class="doc-toc-m">
+        <summary>Contents &middot; 19 sections</summary>
+        <ol>
+          <li><a href="#s01"><span class="n">01</span> Who this policy applies to</a></li>
+          <li><a href="#s02"><span class="n">02</span> What exists today</a></li>
+          <li><a href="#s03"><span class="n">03</span> Information we collect</a></li>
+          <li><a href="#s04"><span class="n">04</span> Wellness and health information</a></li>
+          <li><a href="#s05"><span class="n">05</span> How information is collected</a></li>
+          <li><a href="#s06"><span class="n">06</span> Why we use information</a></li>
+          <li><a href="#s07"><span class="n">07</span> Reward Credits and participation</a></li>
+          <li><a href="#s08"><span class="n">08</span> $DVT and transaction information</a></li>
+          <li><a href="#s09"><span class="n">09</span> Cookies and analytics</a></li>
+          <li><a href="#s10"><span class="n">10</span> How information may be shared</a></li>
+          <li><a href="#s11"><span class="n">11</span> Health data</a></li>
+          <li><a href="#s12"><span class="n">12</span> Data security</a></li>
+          <li><a href="#s13"><span class="n">13</span> Data retention</a></li>
+          <li><a href="#s14"><span class="n">14</span> International transfers</a></li>
+          <li><a href="#s15"><span class="n">15</span> Your rights and choices</a></li>
+          <li><a href="#s16"><span class="n">16</span> Children</a></li>
+          <li><a href="#s17"><span class="n">17</span> Third-party links</a></li>
+          <li><a href="#s18"><span class="n">18</span> Changes to this policy</a></li>
+          <li><a href="#s19"><span class="n">19</span> Contact</a></li>
+        </ol>
+      </details>
+
+      <div class="doc-lead rv">
+        <p class="soft">Most privacy policies are written to be survived rather than read. This one is
+          written on the assumption that <em>someone will actually read it</em> — because DAOasis is
+          asking people to bring their sleep, their movement and their habits into a product, and that
+          is not a small thing to ask.</p>
+        <p class="soft d1">Two principles run through everything below. Information should be collected
+          because it is needed to do something you asked for, not because it happened to be available.
+          And where something is not built yet, this policy says so instead of describing it as though
+          it were.</p>
+      </div>
+
+      <!-- 01 ────────────────────────────────── -->
+      <section class="doc-s rv" id="s01">
+        <div class="doc-s-n soft">01</div>
+        <h2 class="soft">Who this policy applies to</h2>
+        <div class="soft d1">
+          <p>This policy applies to everyone who uses the DAOasis website, joins a DAOasis waitlist,
+            uses the DAOasis Companion App, takes part in DAOasis learning, quests or community
+            features, or contacts us directly.</p>
+          <p>It covers the DAOasis website at this address and the DAOasis Companion App. It does not
+            cover independent third-party services you may choose to connect to DAOasis — your device
+            manufacturer, a health platform, a wallet provider or an app store. Those services have
+            their own privacy policies, and the information they hold is governed by those policies
+            rather than this one.</p>
+          <p>The DAOasis legal entity responsible for information described in this policy is
+            <span class="tbc">Legal entity to be confirmed</span>.</p>
+        </div>
+        <div class="pt soft d2">
+          <div class="pt-k">In plain terms</div>
+          <p>If you use the DAOasis website or app, this applies to you. If you connect another
+            company's device or platform, that company's own policy applies to what they hold.</p>
+        </div>
+      </section>
+
+      <!-- 02 ────────────────────────────────── -->
+      <section class="doc-s rv" id="s02">
+        <div class="doc-s-n soft">02</div>
+        <h2 class="soft">What exists today</h2>
+        <div class="soft d1">
+          <p>DAOasis is being built in stages, and being straight about the stage matters more than
+            sounding finished. As at the date of this policy:</p>
+          <ul>
+            <li><strong>This website does not collect personal information.</strong> It has no account
+              system, no login and no working sign-up form. The waitlist sections describe what is
+              coming rather than capturing details today.</li>
+            <li><strong>This website sets no cookies and runs no analytics.</strong> There is no
+              tracking pixel, no advertising tag and no third-party measurement script anywhere in it.
+              The only thing stored in your browser is a single preference recording whether you chose
+              the light or dark appearance. See the <a href="cookies.html">Cookie Policy</a>.</li>
+            <li><strong>The Companion App is in development.</strong> Its core architecture is built
+              and end-to-end flows are still being completed. The sections below describe how
+              information will be handled as each part of the app is released.</li>
+            <li><strong>Device and health-platform integrations are not live yet.</strong> Apple
+              HealthKit and Google Health Connect are the priority integrations identified for the
+              app's first release. Nothing reads from a health platform until you connect it and
+              grant permission.</li>
+          </ul>
+          <p>The rest of this policy is written to cover DAOasis as described across this website,
+            including functionality that is still being built. Where that is the case it is
+            labelled. This is deliberate: a policy that only described a website collecting nothing
+            would be accurate today and useless the moment the app ships.</p>
+        </div>
+        <div class="callout soft d2">
+          <div class="callout-k">The short version</div>
+          <p>Today, using this website means <strong>no account, no cookies, no analytics and no
+            personal information collected</strong>. Everything below becomes relevant as the
+            Companion App and the wider ecosystem are released.</p>
+        </div>
+      </section>
+
+      <!-- 03 ────────────────────────────────── -->
+      <section class="doc-s rv" id="s03">
+        <div class="doc-s-n soft">03</div>
+        <h2 class="soft">Information we collect</h2>
+        <div class="soft d1">
+          <p>The categories below describe what DAOasis expects to collect to operate the product
+            described on this website. Not every category applies to every person: much of it depends
+            on which features you use and what you choose to connect.</p>
+
+          <h3>Identity and contact information</h3>
+          <p>Your name or chosen display name, email address, and any other contact details you give
+            us — for example when you join a waitlist, register interest in the Sanctuary, or write
+            to us.</p>
+
+          <h3>Account information</h3>
+          <p>Login credentials and authentication data, account settings, and records of the
+            permissions you have granted or withdrawn. Passwords are stored in hashed form and are
+            never readable by us in plain text.</p>
+
+          <h3>Wellness and activity information</h3>
+          <p>The participation data the Companion App is designed around — steps, breathing sessions,
+            hydration, sleep, nutrition logging and general activity. Covered in more detail in
+            <a href="#s04">section 04</a> and in full on the
+            <a href="health-data.html">Health Data</a> page.</p>
+
+          <h3>Quest and participation information</h3>
+          <p>Quests started and completed across the five categories (Rest, Move, Learn, Reflect and
+            Community), streaks, progress along the Bangkok-to-Phuket journey, and how each action was
+            verified — automatically through a connected platform, manually logged by you, or recorded
+            on the honour system.</p>
+
+          <h3>Learning activity</h3>
+          <p>Lessons started and completed across the two learning tracks, progress through depth
+            levels, and assessment results where a lesson includes one.</p>
+
+          <h3>Community activity</h3>
+          <p>Content you post, comments, reactions, group membership, and reports you submit or that
+            are submitted about your content.</p>
+
+          <h3>Referral activity</h3>
+          <p>Where you were referred by an existing member, or referred someone else, the record
+            connecting those accounts.</p>
+
+          <h3>Device and technical information</h3>
+          <p>Device model and operating system, app version, language and region settings, general
+            location inferred from IP address at country or region level, crash reports and diagnostic
+            logs, and IP address.</p>
+
+          <h3>Usage information</h3>
+          <p>Which features you use and when, screens viewed, session length and frequency, and
+            interactions with notifications.</p>
+
+          <h3>Transaction information</h3>
+          <p>Records of DRC earned and converted, and — only if you choose to use on-chain
+            functionality — the wallet address you connect and the transactions associated with it.
+            See <a href="#s08">section 08</a>.</p>
+
+          <h3>Communication information</h3>
+          <p>Messages you send to support or to any DAOasis address, and records of our replies.</p>
+
+          <h3>Preferences</h3>
+          <p>Notification settings, appearance choice, communication and marketing preferences, and
+            language.</p>
+        </div>
+        <div class="callout soft d2">
+          <div class="callout-k">What we do not collect</div>
+          <p>DAOasis does <strong>not</strong> collect medical records, diagnoses, prescriptions,
+            clinical test results or genetic information, and does not ask for them. DAOasis is a
+            wellness and behavioural product, not a medical one. We also do not collect payment card
+            numbers directly — where payments are introduced, they will be handled by a specialist
+            payment provider so that card details never reach DAOasis systems.</p>
+        </div>
+      </section>
+
+      <!-- 04 ────────────────────────────────── -->
+      <section class="doc-s rv" id="s04">
+        <div class="doc-s-n soft">04</div>
+        <h2 class="soft">Wellness and health-related information</h2>
+        <div class="soft d1">
+          <p>This is the category that matters most, so it gets its own treatment.</p>
+          <p>The Companion App is designed to work with wellness metrics: <strong>steps, breathing,
+            hydration, sleep, nutrition and learning</strong>. Some of that can be read automatically
+            from a health platform if you connect one. Some of it you log yourself. Some of it is
+            recorded on the honour system, and credited accordingly.</p>
+          <p>Depending on where you live, some of this information may be treated in law as sensitive
+            personal information, special category data, or health data — even when it is a step count
+            rather than anything clinical. DAOasis treats the whole category as sensitive regardless of
+            whether a particular law requires it, because that is the right default for a wellness
+            product.</p>
+          <p>What that means in practice:</p>
+          <ul>
+            <li>Wellness information is used to run the experience you asked for — tracking progress,
+              crediting participation, moving your journey forward — and to improve the product.</li>
+            <li>Connecting a health platform is always a choice, is never required to use DAOasis, and
+              can be disconnected.</li>
+            <li>Wellness information is not sold. It is not shared with advertisers or data brokers,
+              and it is not used to build advertising profiles.</li>
+            <li>Where the law requires your explicit consent before this category of information can
+              be processed, we will ask for it separately and clearly, rather than burying it in a
+              general acceptance.</li>
+          </ul>
+        </div>
+        <div class="callout soft d2">
+          <div class="callout-k">Read this instead</div>
+          <p>The <a href="health-data.html">Health Data &amp; Privacy</a> page answers
+            &ldquo;what happens to my wellness data?&rdquo; without requiring you to read a legal
+            document. If you only read one page on this site about your data, read that one.</p>
+        </div>
+      </section>
+
+      <!-- 05 ────────────────────────────────── -->
+      <section class="doc-s rv" id="s05">
+        <div class="doc-s-n soft">05</div>
+        <h2 class="soft">How information is collected</h2>
+        <div class="soft d1">
+          <p>Information reaches DAOasis in five ways.</p>
+        </div>
+        <div class="cards soft d2">
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">Directly from you</div></div>
+            <div class="card-b">What you type, choose or upload: your name, email, preferences, logged
+              activity, community posts and messages to us.</div>
+          </div>
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">Generated by using the app</div></div>
+            <div class="card-b">Records created as a by-product of use: quests completed, lessons
+              finished, streaks, DRC recognised, journey progress, session and diagnostic data.</div>
+          </div>
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">Connected platforms and devices</div><span class="chip chip-building">Not live yet</span></div>
+            <div class="card-b">Where you choose to connect a health platform or wearable, DAOasis reads
+              the specific categories you have permitted, so you do not have to enter them by hand. You
+              grant that access, and you can withdraw it in the platform's own settings or in DAOasis.</div>
+          </div>
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">Website use</div><span class="chip chip-none">Nothing collected today</span></div>
+            <div class="card-b">Ordinary web server request information may be processed by our hosting
+              provider in order to serve the site. This website itself sets no cookies and runs no
+              analytics. See the <a href="cookies.html">Cookie Policy</a>.</div>
+          </div>
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">Communications</div></div>
+            <div class="card-b">What you tell us when you write to us, and the record of the
+              conversation.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 06 ────────────────────────────────── -->
+      <section class="doc-s rv" id="s06">
+        <div class="doc-s-n soft">06</div>
+        <h2 class="soft">Why we use information</h2>
+        <div class="soft d1">
+          <p>Each use below is tied to something the product actually does.</p>
+          <ul>
+            <li><strong>To provide the service</strong> — running the app, showing your progress,
+              keeping your data consistent across your devices.</li>
+            <li><strong>To operate accounts</strong> — creating and authenticating your account,
+              honouring your settings, responding to your requests.</li>
+            <li><strong>To recognise participation</strong> — recording quests, lessons, streaks and
+              journey progress, and calculating the DRC that recognises them.</li>
+            <li><strong>To support quests and learning</strong> — verifying that an action happened, at
+              the level of confidence the action allows, and unlocking what follows.</li>
+            <li><strong>To provide insights</strong> — showing you patterns in your own participation.
+              These are informational reflections of your own data, not medical or diagnostic
+              assessments.</li>
+            <li><strong>To communicate with you</strong> — service messages, changes to terms,
+              security notices, and marketing only where you have opted in and can opt out.</li>
+            <li><strong>To improve the product</strong> — understanding which features work, where
+              people get stuck, and what to fix, using aggregated and de-identified information
+              wherever that is sufficient.</li>
+            <li><strong>To maintain security and prevent abuse</strong> — detecting fraudulent
+              participation, protecting against attempts to game reward mechanics, investigating
+              breaches of the <a href="terms.html">Terms of Use</a>.</li>
+            <li><strong>To comply with legal obligations</strong> — meeting requirements that apply to
+              us, responding to lawful requests, and keeping records we are required to keep.</li>
+          </ul>
+          <p>Where the law requires a legal basis for each use — as it does under the UK and EU General
+            Data Protection Regulation and comparable regimes — we rely on performance of a contract
+            with you, your consent, our legitimate interests, and compliance with legal obligations, as
+            appropriate to the purpose. The specific mapping of legal bases to purposes is
+            <span class="tbc">Pending legal review</span>.</p>
+        </div>
+        <div class="pt soft d3">
+          <div class="pt-k">In plain terms</div>
+          <p>We use your information to run the thing you signed up for, to keep it secure and honest,
+            and to make it better. We do not use it to sell you to someone else.</p>
+        </div>
+      </section>
+
+      <!-- 07 ────────────────────────────────── -->
+      <section class="doc-s rv" id="s07">
+        <div class="doc-s-n soft">07</div>
+        <h2 class="soft">Reward Credits and participation data</h2>
+        <div class="soft d1">
+          <p><strong>DAOasis Reward Credits (DRC)</strong> are the in-app mechanism that recognises
+            participation. Operating them requires keeping a record of what you did: which quests you
+            completed, which lessons you finished, how a given action was verified, and the resulting
+            credit. Without that record there is no way to recognise participation at all.</p>
+          <p>Those records are also used to protect the integrity of the system — to identify attempts
+            to generate credit for activity that did not happen, which would devalue the recognition
+            for everyone who did the work.</p>
+          <p>DRC is a recognition mechanism inside the DAOasis experience. It is not money, it is not a
+            deposit, it is not a security, and it carries no monetary guarantee. That is a product fact
+            rather than a privacy one, but it matters here too: participation records are operational
+            records, not financial account statements.</p>
+        </div>
+        <div class="callout soft d2">
+          <div class="callout-k">Where this is explained properly</div>
+          <p>The <a href="token-disclaimer.html">Token &amp; Web3 Disclaimer</a> sets out what DRC and
+            $DVT are, and what they are not.</p>
+        </div>
+      </section>
+
+      <!-- 08 ────────────────────────────────── -->
+      <section class="doc-s rv" id="s08">
+        <div class="doc-s-n soft">08</div>
+        <h2 class="soft">$DVT and transaction information</h2>
+        <div class="soft d1">
+          <p><strong>$DVT is the DAOasis Value Token</strong> — the on-chain layer of the ecosystem.
+            Converting DRC into $DVT, and anything you do with $DVT afterwards, is voluntary. You can
+            use the Companion App fully without ever touching it.</p>
+          <p>If you do choose to use on-chain functionality, we may process the wallet address you
+            connect, the record of conversions you have requested, and transaction references needed to
+            confirm that an action completed.</p>
+          <h3>Two things worth understanding about public blockchains</h3>
+          <ul>
+            <li><strong>Transactions on a public blockchain are public and permanent.</strong> Anyone
+              can read them, and neither DAOasis nor anyone else can edit or delete them. A wallet
+              address is pseudonymous rather than anonymous: if it is ever linked to you, the history
+              attached to it is linked too.</li>
+            <li><strong>A deletion request cannot remove an on-chain record.</strong> We can delete
+              what we hold in our own systems. We cannot delete what is written to a public ledger,
+              because nobody can. This is a genuine limit, and it is better stated plainly than
+              discovered later.</li>
+          </ul>
+          <p>DAOasis does not take custody of your wallet and does not hold your private keys or
+            recovery phrase. No one at DAOasis will ever ask you for them. The specific chain, wallet
+            connection method and infrastructure to be used are
+            <span class="tbc">Technical architecture to be confirmed</span>.</p>
+          <p>DAOasis does <strong>not</strong> write health or wellness data to a blockchain. See
+            <a href="health-data.html#s05">Health Data</a> for the full position, including the
+            direction we are exploring and the fact that it is a direction rather than a feature.</p>
+        </div>
+      </section>
+
+      <!-- 09 ────────────────────────────────── -->
+      <section class="doc-s rv" id="s09">
+        <div class="doc-s-n soft">09</div>
+        <h2 class="soft">Cookies and analytics</h2>
+        <div class="soft d1">
+          <p>This website currently sets <strong>no cookies</strong> and runs <strong>no
+            analytics</strong>. There is no advertising tag, no tracking pixel and no third-party
+            measurement script in it.</p>
+          <p>One item is stored locally in your browser: your choice of light or dark appearance. It
+            never leaves your device, is not readable by anyone else, and exists only so the site
+            remembers how you like to read it.</p>
+          <p>If analytics or additional cookies are introduced, the <a href="cookies.html">Cookie
+            Policy</a> will be updated before they go live, and consent will be requested first where
+            the law requires it.</p>
+        </div>
+        <div class="pt soft d2">
+          <div class="pt-k">In plain terms</div>
+          <p>Nothing on this site is watching you. The full detail is on the
+            <a href="cookies.html">Cookie Policy</a> page, and it is a short read.</p>
+        </div>
+      </section>
+
+      <!-- 10 ────────────────────────────────── -->
+      <section class="doc-s rv" id="s10">
+        <div class="doc-s-n soft">10</div>
+        <h2 class="soft">How information may be shared</h2>
+        <div class="soft d1">
+          <p>DAOasis does not sell personal information, and does not share it with advertisers or data
+            brokers. Information may be shared in the following circumstances.</p>
+          <ul>
+            <li><strong>Service providers.</strong> Companies that operate parts of the service on our
+              behalf under contract — hosting, storage, email delivery, customer support tooling, crash
+              reporting — and only to the extent needed to do that work.</li>
+            <li><strong>Technology providers.</strong> Platform and infrastructure providers involved in
+              delivering the app and website.</li>
+            <li><strong>Analytics providers.</strong> None are used today. If any are introduced, this
+              policy and the <a href="cookies.html">Cookie Policy</a> will name the category before
+              they go live.</li>
+            <li><strong>Payment providers.</strong> Where paid features are introduced, a specialist
+              provider will process payment details directly, so that card and bank information does
+              not reach DAOasis systems.</li>
+            <li><strong>Legal and professional advisers.</strong> Lawyers, accountants, auditors and
+              insurers, where they need the information to advise us and are bound by professional
+              confidentiality.</li>
+            <li><strong>Authorities.</strong> Where we are legally required to disclose information, or
+              where disclosure is necessary to protect the rights, safety or property of DAOasis, our
+              members or the public. We will not disclose more than is required.</li>
+            <li><strong>Business transfers.</strong> In connection with a merger, acquisition,
+              financing or sale of assets, information may be transferred as part of the transaction.
+              If that happens, this policy will continue to apply to the information transferred until
+              the recipient provides notice of a different policy.</li>
+            <li><strong>With your direction.</strong> Where you ask us to share something, or connect
+              DAOasis to another service yourself.</li>
+          </ul>
+          <p>The specific processors DAOasis engages are
+            <span class="tbc">Processor list to be confirmed</span>. A current list will be published
+            here once the app's production infrastructure is finalised.</p>
+        </div>
+      </section>
+
+      <!-- 11 ────────────────────────────────── -->
+      <section class="doc-s rv" id="s11">
+        <div class="doc-s-n soft">11</div>
+        <h2 class="soft">Health data</h2>
+        <div class="soft d1">
+          <p>Wellness and health-related information is covered in <a href="#s04">section 04</a> of this
+            policy. It also has a page of its own, written to be understood rather than merely
+            complied with.</p>
+        </div>
+        <div class="callout soft d2">
+          <div class="callout-k">The page to read</div>
+          <p><a href="health-data.html">Health Data &amp; Privacy</a> covers what DAOasis uses, how it
+            flows, why it is used, what we deliberately will not do with it, and the exact position on
+            blockchains and health data — <strong>which is that DAOasis does not store health data on a
+            blockchain</strong>.</p>
+        </div>
+      </section>
+
+      <!-- 12 ────────────────────────────────── -->
+      <section class="doc-s rv" id="s12">
+        <div class="doc-s-n soft">12</div>
+        <h2 class="soft">Data security</h2>
+        <div class="soft d1">
+          <p>DAOasis applies technical and organisational measures appropriate to the sensitivity of
+            the information it handles. The principles we design to:</p>
+          <ul>
+            <li>Encryption of data in transit, and of stored data where appropriate.</li>
+            <li>Access limited to the people who need it for their role, rather than granted broadly by
+              default.</li>
+            <li>Authentication controls on internal systems, and separation between development and
+              production environments.</li>
+            <li>Collecting less rather than more, so that there is less to protect.</li>
+            <li>Reviewing the security of providers before engaging them.</li>
+            <li>Logging and monitoring, so that unusual access can be detected and investigated.</li>
+            <li>A defined process for assessing and reporting incidents, and for notifying affected
+              people and regulators where required.</li>
+          </ul>
+          <p>Two honest qualifications. First, <strong>no service can guarantee absolute
+            security</strong>, and any policy claiming otherwise should be read sceptically. Second,
+            DAOasis does not currently hold any security certification, and this page will not imply
+            one. Where a formal certification or independent audit is obtained, it will be stated here
+            with its scope and date. Current status:
+            <span class="tbc">Security review and certification status to be confirmed</span>.</p>
+          <p>You have a part in this too: use a strong and unique password, keep your device updated,
+            and be careful what you connect. If you use a wallet, nobody from DAOasis will ever ask
+            for your private key or recovery phrase — any message that does is fraudulent.</p>
+        </div>
+      </section>
+
+      <!-- 13 ────────────────────────────────── -->
+      <section class="doc-s rv" id="s13">
+        <div class="doc-s-n soft">13</div>
+        <h2 class="soft">Data retention</h2>
+        <div class="soft d1">
+          <p>Information is kept for as long as it is needed for the purpose it was collected for, and
+            then deleted or anonymised. How long that is depends on the purpose:</p>
+          <ul>
+            <li><strong>Account information</strong> — for as long as your account is active, and for a
+              limited period afterwards to handle recovery, disputes and legal obligations.</li>
+            <li><strong>Wellness and participation information</strong> — while your account is active,
+              because your history is the product. Deleting your account removes it, subject to the
+              limits below.</li>
+            <li><strong>Communications</strong> — for as long as needed to resolve the matter and keep a
+              reasonable record of it.</li>
+            <li><strong>Legal, financial and tax records</strong> — for the period the applicable law
+              requires, which may be longer than any of the above.</li>
+            <li><strong>Security and abuse-prevention records</strong> — for as long as needed to
+              protect the service, including a limited record of enforcement so that a suspension
+              cannot simply be re-registered around.</li>
+            <li><strong>Aggregated and de-identified information</strong> — may be kept indefinitely,
+              because it is no longer about an identifiable person.</li>
+            <li><strong>On-chain records</strong> — cannot be deleted by anyone, as explained in
+              <a href="#s08">section 08</a>.</li>
+          </ul>
+          <p>Specific retention periods are
+            <span class="tbc">Retention schedule to be confirmed</span>. They will be published here
+            once set, rather than stated approximately now and quietly corrected later.</p>
+        </div>
+      </section>
+
+      <!-- 14 ────────────────────────────────── -->
+      <section class="doc-s rv" id="s14">
+        <div class="doc-s-n soft">14</div>
+        <h2 class="soft">International data transfers</h2>
+        <div class="soft d1">
+          <p>DAOasis is being built as an international product with a planned physical pilot in
+            Phuket, Thailand, and a team distributed across several countries. Information may
+            therefore be processed in a country other than the one you live in, including by service
+            providers located elsewhere.</p>
+          <p>Where information is transferred out of a jurisdiction that restricts international
+            transfers, we will use a transfer mechanism recognised by the applicable law — for example
+            an adequacy decision, standard contractual clauses, or another approved safeguard — together
+            with additional measures where they are needed.</p>
+          <p>The countries in which DAOasis and its providers process information, and the specific
+            transfer mechanisms relied on, are
+            <span class="tbc">Hosting locations and transfer mechanisms to be confirmed</span>.</p>
+        </div>
+      </section>
+
+      <!-- 15 ────────────────────────────────── -->
+      <section class="doc-s rv" id="s15">
+        <div class="doc-s-n soft">15</div>
+        <h2 class="soft">Your rights and choices</h2>
+        <div class="soft d1">
+          <p>Depending on where you live, you may have some or all of the following rights. Which of
+            them apply to you, and how they apply, is determined by your local law rather than by this
+            page — so this section describes them without claiming that every one is available to
+            everyone.</p>
+          <ul>
+            <li><strong>Access</strong> — to be told what information we hold about you and to receive a
+              copy.</li>
+            <li><strong>Correction</strong> — to have inaccurate or incomplete information put
+              right.</li>
+            <li><strong>Deletion</strong> — to ask us to delete information, subject to the limits in
+              <a href="#s13">section 13</a>.</li>
+            <li><strong>Restriction</strong> — to ask us to limit how we use information while a
+              question about it is resolved.</li>
+            <li><strong>Objection</strong> — to object to certain uses, including any use based on our
+              legitimate interests.</li>
+            <li><strong>Portability</strong> — to receive certain information in a portable format, or
+              to have it sent to another provider.</li>
+            <li><strong>Withdrawing consent</strong> — where we rely on your consent, to withdraw it at
+              any time. Withdrawal applies going forward and does not undo processing already carried
+              out lawfully.</li>
+            <li><strong>Marketing preferences</strong> — to opt out of marketing at any time, in the
+              app, in your settings, or using the unsubscribe link in any marketing email. Service and
+              security messages are not marketing and will continue.</li>
+            <li><strong>Complaint</strong> — to complain to your local data protection authority. We
+              would rather you came to us first, but that right does not depend on doing so.</li>
+          </ul>
+          <h3>Exercising a right</h3>
+          <p>Contact us using the details in <a href="#s19">section 19</a>. We will respond within the
+            period required by the applicable law. We may need to verify your identity first, so that
+            we do not disclose your information to someone who is not you.</p>
+          <p>There are limits worth knowing in advance. Some information must be kept to meet legal
+            obligations. Deleting participation history removes the record that recognises it. And
+            records already written to a public blockchain cannot be deleted by anyone.</p>
+        </div>
+        <div class="pt soft d2">
+          <div class="pt-k">In plain terms</div>
+          <p>You can ask what we hold, ask us to fix it, ask us to delete it, and tell us to stop
+            marketing to you. Write to us and we will handle it.</p>
+        </div>
+      </section>
+
+      <!-- 16 ────────────────────────────────── -->
+      <section class="doc-s rv" id="s16">
+        <div class="doc-s-n soft">16</div>
+        <h2 class="soft">Children</h2>
+        <div class="soft d1">
+          <p>DAOasis is designed for adults. The Companion App involves wellness tracking, learning
+            about digital ownership, community features and — for those who choose it — a token layer,
+            and it is not built for children.</p>
+          <p>The minimum age for a DAOasis account is
+            <span class="tbc">Minimum age to be confirmed</span>. This is being set with legal advice,
+            because the answer depends on the jurisdictions DAOasis operates in, on the age of digital
+            consent in each, and on whether any part of the ecosystem is subject to additional
+            restrictions.</p>
+          <p>We do not knowingly collect information from children below the applicable minimum age. If
+            you believe a child has provided information to DAOasis, contact us using the details in
+            <a href="#s19">section 19</a> and we will look into it and delete what we should not
+            hold.</p>
+        </div>
+      </section>
+
+      <!-- 17 ────────────────────────────────── -->
+      <section class="doc-s rv" id="s17">
+        <div class="doc-s-n soft">17</div>
+        <h2 class="soft">Third-party links and services</h2>
+        <div class="soft d1">
+          <p>The DAOasis website and app may link to, or let you connect, services operated by other
+            companies — health platforms, wearable manufacturers, app stores, wallet providers,
+            community platforms and social networks.</p>
+          <p>Those services are independent of DAOasis. We do not control them and we are not
+            responsible for their privacy practices. When you follow a link or connect a service, the
+            information you give them is governed by their policy. It is worth reading, particularly
+            for anything that will be handling your wellness data.</p>
+          <p>Connecting a service is always a choice, and can be disconnected — in DAOasis, and in the
+            other service's own settings.</p>
+        </div>
+      </section>
+
+      <!-- 18 ────────────────────────────────── -->
+      <section class="doc-s rv" id="s18">
+        <div class="doc-s-n soft">18</div>
+        <h2 class="soft">Changes to this policy</h2>
+        <div class="soft d1">
+          <p>This policy will change, because DAOasis is being built. Each version carries a version
+            number and a date at the top of the page, so you can tell what you are reading.</p>
+          <p>Where a change materially affects how your information is handled, we will give notice
+            before it takes effect — by email, in the app, or prominently on this website — rather than
+            changing the page quietly. Where a change requires your consent, we will ask for it rather
+            than assume it.</p>
+          <p>Continuing to use DAOasis after a change takes effect means the updated policy applies to
+            you.</p>
+        </div>
+      </section>
+
+      <!-- 19 ────────────────────────────────── -->
+      <section class="doc-s rv" id="s19">
+        <div class="doc-s-n soft">19</div>
+        <h2 class="soft">Contact</h2>
+        <div class="soft d1">
+          <p>Questions about this policy, or about how your information is handled, should go to the
+            DAOasis privacy contact.</p>
+        </div>
+        <div class="cards soft d2">
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">Privacy enquiries</div></div>
+            <div class="card-b">Questions about this policy, requests to exercise a right, or a concern
+              about how information has been handled.</div>
+            <div class="card-m">
+              <div class="card-m-i"><div class="card-m-k">Address</div><div class="card-m-v"><span class="tbc">Privacy contact to be confirmed</span></div></div>
+            </div>
+          </div>
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">Data protection officer</div></div>
+            <div class="card-b">Whether DAOasis is required to appoint a data protection officer or
+              representative, and in which jurisdictions, is being determined with legal advice.</div>
+            <div class="card-m">
+              <div class="card-m-i"><div class="card-m-k">Status</div><div class="card-m-v"><span class="tbc">To be confirmed</span></div></div>
+            </div>
+          </div>
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">Registered address</div></div>
+            <div class="card-b">The DAOasis legal entity and its registered address.</div>
+            <div class="card-m">
+              <div class="card-m-i"><div class="card-m-k">Entity</div><div class="card-m-v"><span class="tbc">Legal entity to be confirmed</span></div></div>
+              <div class="card-m-i"><div class="card-m-k">Address</div><div class="card-m-v"><span class="tbc">Registered address to be confirmed</span></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="soft d3">
+          <p>Until the privacy address is published, general enquiries can be routed through the
+            <a href="contact.html">Contact</a> page, which lists every pathway currently available.</p>
+        </div>
+      </section>
+
+    </article>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     CROSS-LINKS
+══════════════════════════════════════════════ -->
+<section class="cx grain">
+  <div class="cx-inner rv">
+    <div class="cx-k">The trust layer</div>
+    <h2 class="cx-h soft">Everything else we <em>put in writing.</em></h2>
+    <div class="cx-grid soft d1">
+      <a class="cx-i here" href="privacy.html"><div class="cx-i-t">Privacy Policy</div><div class="cx-i-b">What may be collected, why, and your choices</div></a>
+      <a class="cx-i" href="health-data.html"><div class="cx-i-t">Health Data</div><div class="cx-i-b">Wellness information, in plain language</div></a>
+      <a class="cx-i" href="terms.html"><div class="cx-i-t">Terms of Use</div><div class="cx-i-b">The agreement that governs using DAOasis</div></a>
+      <a class="cx-i" href="cookies.html"><div class="cx-i-t">Cookie Policy</div><div class="cx-i-b">What this site stores in your browser</div></a>
+      <a class="cx-i" href="token-disclaimer.html"><div class="cx-i-t">Token &amp; Web3</div><div class="cx-i-b">What DRC and $DVT are — and are not</div></a>
+      <a class="cx-i" href="accessibility.html"><div class="cx-i-t">Accessibility</div><div class="cx-i-b">Designing for more people, and how to tell us</div></a>
+      <a class="cx-i" href="contact.html"><div class="cx-i-t">Contact</div><div class="cx-i-b">How to reach the right part of DAOasis</div></a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ CLOSING NOTE ══ -->
+<section class="foot-note">
+  <div class="foot-note-inner">
+    <div class="foot-note-k">A note on this page</div>
+    <p>DAOasis is being built in stages and this policy will change as it is. Items marked
+      <span class="tbc">to be confirmed</span> are unresolved legal inputs rather than omissions, and
+      will be completed before the Companion App collects information from anyone. Nothing on this page
+      is legal advice. If something here is unclear, or looks wrong, please
+      <a href="contact.html">tell us</a>.</p>
+  </div>
+</section>
+
+</main>
+
+
+<!-- ══ FOOTER ══ -->
+<footer class="site-footer">
+  <div class="footer-top">
+    <div>
+      <div class="footer-brand-logo"><img src="images/img-09-white.png" alt="DAOasis mark" /><span>DAOasis</span></div>
+      <div class="footer-tagline"><strong>Wellness meets Web3.</strong><em>Rest. Learn. Earn. Return.</em></div>
+      <div class="footer-appearance">
+        <div class="footer-appearance-label">Appearance</div>
+        <div class="footer-toggle"><button id="ftLight">Light</button><button id="ftDark" class="active">Dark</button></div>
+      </div>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-label">Explore</div>
+      <a href="index.html">Home</a><a href="app.html">Companion App</a><a href="sanctuary.html">The Sanctuary</a><a href="web3.html">The Web3 Layer</a><a href="about.html">About</a><a href="investors.html">Investors</a><a href="contact.html">Contact</a>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-label">Resources</div>
+      <a href="investors.html#resources">Investor Pack</a><a href="investors.html#resources">Business Plan</a><a href="investors.html#resources">Whitepaper</a><a href="investors.html#resources">Brand Kit</a><a href="index.html#waitlistSection">Waitlist</a>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-label">Trust</div>
+      <a class="on" href="privacy.html">Privacy</a><a href="health-data.html">Health Data</a><a href="terms.html">Terms</a><a href="cookies.html">Cookies</a><a href="token-disclaimer.html">Token Disclaimer</a><a href="accessibility.html">Accessibility</a>
+    </div>
+  </div>
+  <div class="footer-bottom"><span>© 2026 DAOasis. All rights reserved.</span><span>Phuket · Global</span></div>
+</footer>
+
+<script src="js/trust.js"></script>
+</body>
+</html>

@@ -1,0 +1,1251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<script>
+  (function(){
+    var t = localStorage.getItem('daoasis-theme') || 'dark';
+    if(t === 'light') document.documentElement.setAttribute('data-theme','light');
+  })();
+</script>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>About DAOasis | The people building it</title>
+<meta name="description" content="DAOasis brings together experience across strategy, operations, technology, digital ownership, hospitality and community to build a different kind of wellness ecosystem." />
+<meta property="og:title" content="About DAOasis | The people building it" />
+<meta property="og:description" content="Different disciplines. One direction. The team building the DAOasis Companion App, the digital ownership layer and the Sanctuary." />
+<meta property="og:image" content="images/img-07.jpg" />
+<meta property="og:type" content="website" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Frank+Ruhl+Libre:wght@300;400;500&display=swap" rel="stylesheet" />
+
+<style>
+/* ══════════════════════════════════════════════════════════════
+   ██  ABOUT PAGE IMAGE SLOTS  ██
+   ──────────────────────────────────────────────────────────────
+   Every photograph on this page is referenced from this block and
+   nowhere else. To swap an image, change the path here only.
+
+   ── THE HERO ──
+   `about-hero.jpg` is the raked-sand garden with six stones
+   (landscape). `about-hero-mobile.jpg` is the portrait crop of the
+   same image — a landscape file cropped by CSS on a 390×844 screen
+   loses the outer ring entirely, which is the part that makes the
+   composition read, so the mobile frame is a separate asset rather
+   than the same file re-cropped.
+
+   Neither file is in the repository yet. Until they are, the hero
+   paints the warm sand tone below and still reads as designed —
+   it degrades to a colour field, never to a broken image.
+══════════════════════════════════════════════════════════════ */
+:root {
+  --img-about-hero:        url('images/about-hero.jpg');
+  --img-about-hero-mobile: url('images/about-hero-mobile.jpg');
+  --img-hospitality:       url('images/img-07.jpg');
+  --img-close:             url('images/img-11.jpg');
+  /* the ground the hero falls back to, sampled from the garden image */
+  --sand: #E7E0D4;
+}
+
+/* ── BRAND TOKENS (identical to the other five pages) ── */
+:root {
+  --warm-white: #F7F4EE;
+  --warm-stone: #E8E1D6;
+  --soft-stone: #CFC8BE;
+  --charcoal: #2B2623;
+  --mineral: #171412;
+  --sanctuary: #31463F;
+  --gold: #C48A5A;
+  --blue: #7F97A2;
+  --sage: #A8B7A2;
+  --purple: #9B8CA8;
+  --dark-surface: #211D1A;
+  --space: #030609;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --nav-h: 61px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { font-family: 'Frank Ruhl Libre', serif; background: var(--mineral); color: var(--warm-white); }
+body { overflow-x: clip; }
+img { max-width: 100%; }
+::selection { background: rgba(196,138,90,0.3); }
+[id] { scroll-margin-top: var(--nav-h); }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+
+.grain { position: relative; }
+.grain::after {
+  content: ''; position: absolute; inset: 0; z-index: 6;
+  pointer-events: none; opacity: 0.038;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.scroll-prog {
+  position: fixed; top: 0; left: 0; height: 2px; width: 0;
+  background: linear-gradient(90deg, rgba(196,138,90,0.4), var(--gold));
+  z-index: 95; pointer-events: none;
+}
+
+.skip-link {
+  position: absolute; left: -9999px; top: 0; z-index: 200;
+  background: var(--warm-white); color: var(--charcoal);
+  padding: 12px 22px; border-radius: 0 0 8px 0; font-size: 13px; text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 2px; }
+
+/* ══════════════════════════════════════════════
+   NAV  (identical to the other pages)
+══════════════════════════════════════════════ */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 90;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 5%;
+  background: rgba(23,20,18,0.88); backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(247,244,238,0.07);
+  transition: transform 0.35s ease;
+}
+.nav.nav-hidden { transform: translateY(-100%); }
+.nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0; }
+.nav-brand img { width: 26px; opacity: 0.9; }
+.nav-brand span { font-family: 'Cormorant Garamond', serif; font-size: 18px; color: var(--warm-white); }
+.nav-links { display: flex; gap: 28px; }
+.nav-links a, .nav-links span { font-size: 13px; color: #8a8377; text-decoration: none; letter-spacing: 0.04em; transition: color 0.2s; }
+.nav-links a:hover, .nav-links a.active { color: var(--warm-white); }
+.nav-cta {
+  background: var(--warm-white); color: var(--charcoal); font-size: 13px;
+  padding: 10px 24px; border-radius: 24px; text-decoration: none;
+  letter-spacing: 0.03em; transition: opacity 0.2s; flex-shrink: 0;
+}
+.nav-cta:hover { opacity: 0.88; }
+.nav-burger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; background: none; border: none; }
+.nav-burger span { display: block; width: 22px; height: 1.5px; background: var(--warm-white); transition: all 0.3s; }
+.nav-burger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+.nav-burger.open span:nth-child(2) { opacity: 0; }
+.nav-burger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+.nav-drawer {
+  position: fixed; inset: 0; z-index: 89;
+  background: rgba(23,20,18,0.97); backdrop-filter: blur(16px);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 30px;
+  opacity: 0; pointer-events: none; transition: opacity 0.35s;
+}
+.nav-drawer.open { opacity: 1; pointer-events: auto; }
+.nav-drawer a, .nav-drawer span.drawer-dead { font-family: 'Cormorant Garamond', serif; font-size: 28px; color: #8a8377; text-decoration: none; transition: color 0.2s; }
+.nav-drawer a:hover, .nav-drawer a.active { color: var(--warm-white); }
+.nav-drawer .nav-cta { font-family: 'Frank Ruhl Libre', serif; font-size: 15px; margin-top: 16px; padding: 14px 40px; }
+@media(max-width:900px) { .nav-links, .nav > .nav-cta { display: none; } .nav-burger { display: flex; } }
+
+/* ══════════════════════════════════════════════
+   DIVIDERS  (homepage system)
+══════════════════════════════════════════════ */
+.divider { --divider-h: calc(14vh + 26px);
+  padding: 11vh 8% 3vh; position: relative; z-index: 5; pointer-events: none;
+  margin-top: calc(-1 * var(--divider-h)); background: transparent; }
+.divider-inner { display: flex; align-items: center; gap: 24px; max-width: 1200px; margin: 0 auto; }
+.divider-line { flex: 1; height: 1px; }
+.divider-mark { width: 26px; height: 26px; object-fit: contain; flex-shrink: 0; }
+.divider.dark  .divider-line { background: rgba(247,244,238,0.16); }
+.divider.light .divider-line { background: rgba(43,38,35,0.2); }
+.divider.green .divider-line { background: rgba(247,244,238,0.22); }
+.divider .divider-line { transform: scaleX(0); transition: transform 1.4s var(--ease); }
+.divider.shown .divider-line { transform: scaleX(1); }
+.divider .divider-line:first-child { transform-origin: right; }
+.divider .divider-line:last-child  { transform-origin: left; }
+.divider .divider-mark { opacity: 0; transition: opacity 0.9s ease; }
+.divider.shown.dark  .divider-mark { opacity: 0.8; }
+.divider.shown.light .divider-mark { opacity: 0.55; }
+.divider.shown.green .divider-mark { opacity: 0.7; }
+
+/* ══════════════════════════════════════════════
+   EDITORIAL PRIMITIVES
+══════════════════════════════════════════════ */
+.sect { padding: 16vh 8%; }
+.sect-inner { max-width: 1360px; margin: 0 auto; }
+.bg-ivory   { background: var(--warm-white); }
+.bg-stone   { background: var(--warm-stone); }
+.bg-green   { background: var(--sanctuary); }
+.bg-mineral { background: var(--mineral); }
+.bg-surface { background: var(--dark-surface); }
+
+.eyebrow {
+  font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+  display: flex; align-items: center; gap: 14px; margin-bottom: 26px;
+}
+.eyebrow::before { content: ''; display: block; width: 0; height: 1px; background: currentColor; opacity: 0.55; transition: width 1.1s var(--ease) 0.15s; }
+.rv.show .eyebrow::before, .eyebrow.show::before { width: 28px; }
+.eyebrow.centered { justify-content: center; }
+.on-light .eyebrow { color: #8a7f6d; }
+.on-dark  .eyebrow { color: var(--gold); }
+.on-green .eyebrow { color: rgba(247,244,238,0.66); }
+
+.display {
+  font-family: 'Cormorant Garamond', serif; font-weight: 300;
+  font-size: clamp(36px,5.4vw,78px); line-height: 1.06; letter-spacing: -0.008em;
+}
+.display em { font-style: italic; color: var(--gold); }
+.on-light .display { color: var(--charcoal); }
+.on-dark .display, .on-green .display { color: var(--warm-white); }
+
+.display-sm {
+  font-family: 'Cormorant Garamond', serif; font-weight: 300;
+  font-size: clamp(28px,3.6vw,52px); line-height: 1.1; letter-spacing: -0.006em;
+}
+.display-sm em { font-style: italic; color: var(--gold); }
+.on-light .display-sm { color: var(--charcoal); }
+.on-dark .display-sm, .on-green .display-sm { color: var(--warm-white); }
+
+.copy { font-size: 16.5px; line-height: 1.9; max-width: 620px; }
+.copy.wide { max-width: 760px; }
+.copy p + p { margin-top: 20px; }
+.on-light .copy { color: #5c554c; }
+.on-dark  .copy { color: #b0a99b; }
+.on-green .copy { color: rgba(247,244,238,0.78); }
+.copy strong { font-weight: 500; }
+.on-light .copy strong { color: var(--charcoal); }
+.on-dark .copy strong, .on-green .copy strong { color: var(--warm-white); }
+
+/* ── LINE-MASK REVEAL ── */
+.ln { display: block; overflow: hidden; padding-bottom: 0.14em; margin-bottom: -0.14em; }
+.ln > i { display: block; font-style: inherit; color: inherit; transform: translateY(108%); transition: transform 1.15s var(--ease); }
+.rv.show .ln > i { transform: translateY(0); }
+.rv .ln:nth-child(2) > i { transition-delay: 0.09s; }
+.rv .ln:nth-child(3) > i { transition-delay: 0.18s; }
+.rv .ln:nth-child(4) > i { transition-delay: 0.27s; }
+
+/* ── SOFT REVEAL ── */
+.rv { opacity: 1; }
+.rv .soft { opacity: 0; transform: translateY(20px); transition: opacity 1s var(--ease), transform 1s var(--ease); }
+.rv.show .soft { opacity: 1; transform: translateY(0); }
+.rv.show .soft.d1 { transition-delay: 0.14s; }
+.rv.show .soft.d2 { transition-delay: 0.26s; }
+.rv.show .soft.d3 { transition-delay: 0.38s; }
+.rv.show .soft.d4 { transition-delay: 0.50s; }
+.rv.show .soft.d5 { transition-delay: 0.62s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ln > i, .rv .soft { transition-duration: 0.25s; }
+  .ln > i { transform: none; }
+}
+
+/* ── BUTTONS ── */
+.btn { display: inline-block; padding: 16px 36px; border-radius: 40px; text-decoration: none;
+       font-size: 12.5px; letter-spacing: 0.16em; text-transform: uppercase;
+       transition: opacity 0.3s, border-color 0.3s, background 0.3s, color 0.3s; }
+.btn-light { background: var(--warm-white); color: var(--charcoal); }
+.btn-light:hover { opacity: 0.86; }
+.btn-ghost { border: 1px solid rgba(247,244,238,0.3); color: var(--warm-white); }
+.btn-ghost:hover { border-color: rgba(247,244,238,0.8); }
+.btn-dark { background: var(--mineral); color: var(--warm-white); }
+.btn-dark:hover { opacity: 0.86; }
+.btn-outline { border: 1px solid rgba(43,38,35,0.28); color: var(--charcoal); }
+.btn-outline:hover { border-color: rgba(43,38,35,0.75); }
+.btn-row { display: flex; flex-wrap: wrap; gap: 12px; }
+
+/* ── PARALLAX PHOTO ── */
+.par { position: relative; overflow: hidden; }
+.par-layer { position: absolute; inset: -12% 0; background-size: cover; background-position: center 50%; will-change: transform; }
+
+/* ══════════════════════════════════════════════
+   01 — HERO
+   The garden is a pale, warm image, so this is the
+   one light-ground hero on the site. No pin, no
+   scrub — a still frame that breathes.
+══════════════════════════════════════════════ */
+.ah {
+  position: relative; min-height: 100vh; display: flex; align-items: flex-end;
+  padding: calc(var(--nav-h) + 14vh) 8% 12vh; overflow: hidden;
+  background: var(--sand);
+}
+.ah-bg {
+  position: absolute; inset: 0; z-index: 0;
+  background-color: var(--sand);
+  background-image:
+    linear-gradient(180deg, rgba(231,224,212,0.30) 0%, rgba(231,224,212,0.10) 34%, rgba(231,224,212,0.62) 74%, rgba(231,224,212,0.94) 100%),
+    var(--img-about-hero);
+  background-size: cover; background-position: center 42%;
+  transform: scale(1.04); opacity: 0;
+  transition: opacity 2s var(--ease), transform 2.6s var(--ease);
+}
+.ah.on .ah-bg { opacity: 1; transform: scale(1); }
+.ah-inner { position: relative; z-index: 2; max-width: 1360px; margin: 0 auto; width: 100%; }
+.ah-h1 { font-family: 'Cormorant Garamond', serif; font-weight: 300;
+  font-size: clamp(40px,6.6vw,92px); line-height: 1.0; letter-spacing: -0.014em;
+  color: var(--charcoal); max-width: 15ch; }
+.ah-h1 em { font-style: italic; color: #9a6a3c; }
+.ah-sub { margin-top: 34px; font-size: clamp(16px,1.35vw,19px); line-height: 1.85;
+  color: #5c554c; max-width: 620px; }
+.ah-ctas { margin-top: 44px; }
+
+/* Centred with left/right rather than a translateX, because the fade-in
+   animation ends on a transform and `forwards` would replace the shift —
+   the exact trap that put the homepage's scroll hint 80px off-centre. */
+.ah-hint {
+  position: absolute; bottom: 30px; left: 0; right: 0; text-align: center; z-index: 3;
+  font-size: 10.5px; letter-spacing: 0.26em; text-transform: uppercase; color: #8a7f6d;
+  opacity: 0; animation: hintIn 1.1s var(--ease) 1.5s forwards;
+}
+.ah-hint span { display: block; width: 1px; height: 34px; margin: 12px auto 0;
+  background: linear-gradient(180deg, rgba(138,127,109,0.7), transparent); }
+@keyframes hintIn { to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .ah-hint { animation: none; opacity: 1; } }
+
+@media(max-width:900px){
+  .ah { min-height: auto; padding: calc(var(--nav-h) + 16vh) 8% 16vh; }
+  /* A landscape frame centre-cropped into a portrait viewport loses the
+     outer ring of the composition, so mobile gets its own asset. */
+  .ah-bg { background-image:
+    linear-gradient(180deg, rgba(231,224,212,0.26) 0%, rgba(231,224,212,0.08) 30%, rgba(231,224,212,0.7) 72%, rgba(231,224,212,0.96) 100%),
+    var(--img-about-hero-mobile);
+    background-position: center 38%; }
+  .ah-h1 { max-width: 100%; }
+  .ah-ctas .btn { width: 100%; text-align: center; }
+  .ah-hint { bottom: 20px; }
+}
+
+/* ══════════════════════════════════════════════
+   SHARED — two-column editorial spread
+══════════════════════════════════════════════ */
+.spread { display: grid; grid-template-columns: minmax(0,0.86fr) minmax(0,1.14fr); gap: 8%; align-items: start; }
+.spread-even { grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 7%; }
+@media(max-width:1000px){ .spread, .spread-even { grid-template-columns: 1fr; gap: 7vh; } }
+
+/* ══════════════════════════════════════════════
+   02 — SIX DISCIPLINES
+══════════════════════════════════════════════ */
+.disc { display: grid; grid-template-columns: repeat(3,1fr); gap: 0 6%; margin-top: 11vh; }
+.disc-i { border-top: 1px solid rgba(43,38,35,0.18); padding: 28px 0 34px; }
+.disc-n { font-family: 'Cormorant Garamond', serif; font-size: 13px; letter-spacing: 0.14em; color: #a8a093; }
+.disc-t { margin-top: 16px; font-family: 'Cormorant Garamond', serif; font-weight: 300;
+  font-size: clamp(26px,2.7vw,36px); color: var(--charcoal); line-height: 1.12; }
+.disc-b { margin-top: 13px; font-size: 14.5px; line-height: 1.82; color: #5c554c; }
+.disc-w { margin-top: 16px; font-size: 10.5px; letter-spacing: 0.2em; text-transform: uppercase; color: #8a5f34; }
+@media(max-width:900px){ .disc { grid-template-columns: 1fr 1fr; gap: 0 7%; margin-top: 8vh; } }
+@media(max-width:600px){ .disc { grid-template-columns: 1fr; } }
+
+/* ══════════════════════════════════════════════
+   PROFILES
+   No team photography exists in the project yet, so
+   each portrait plate carries a set monogram until a
+   real photograph is dropped in. Adding an <img>
+   inside the plate covers the monogram — that is the
+   whole swap, no CSS change needed.
+══════════════════════════════════════════════ */
+.pt { position: relative; overflow: hidden; background: var(--soft-stone);
+  aspect-ratio: 4 / 5; display: flex; align-items: center; justify-content: center; }
+.pt::after { content: ''; position: absolute; inset: 0; z-index: 3; pointer-events: none;
+  border: 1px solid rgba(43,38,35,0.10); }
+.pt img { position: absolute; inset: 0; z-index: 2; width: 100%; height: 100%; object-fit: cover; display: block; }
+.pt-mono { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: clamp(72px,11vw,150px);
+  line-height: 1; color: rgba(43,38,35,0.17); user-select: none; }
+.pt-tag { position: absolute; z-index: 4; left: 0; right: 0; bottom: 18px; text-align: center;
+  font-size: 10.5px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(43,38,35,0.4); }
+.on-dark .pt, .on-green .pt { background: #2a2521; }
+.on-dark .pt::after, .on-green .pt::after { border-color: rgba(247,244,238,0.10); }
+.on-dark .pt-mono, .on-green .pt-mono { color: rgba(247,244,238,0.14); }
+.on-dark .pt-tag, .on-green .pt-tag { color: rgba(247,244,238,0.34); }
+
+.pf-name { font-family: 'Cormorant Garamond', serif; font-weight: 300;
+  font-size: clamp(38px,4.6vw,64px); line-height: 1.02; letter-spacing: -0.01em; }
+.on-light .pf-name { color: var(--charcoal); }
+.on-dark .pf-name, .on-green .pf-name { color: var(--warm-white); }
+.pf-role { margin-top: 14px; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; }
+.on-light .pf-role { color: #8a5f34; }
+.on-dark .pf-role { color: rgba(196,138,90,0.9); }
+.on-green .pf-role { color: rgba(247,244,238,0.66); }
+.pf-bio { margin-top: 26px; font-size: 16px; line-height: 1.9; max-width: 560px; }
+.on-light .pf-bio { color: #5c554c; }
+.on-dark .pf-bio { color: #b0a99b; }
+.on-green .pf-bio { color: rgba(247,244,238,0.78); }
+
+/* the quote — set as pull-quote type, not a speech bubble */
+.pf-q { margin-top: 36px; padding-top: 28px; border-top: 1px solid;
+  font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300;
+  font-size: clamp(21px,2.3vw,30px); line-height: 1.45; max-width: 24ch; }
+.on-light .pf-q { border-color: rgba(43,38,35,0.16); color: #3f3a34; }
+.on-dark .pf-q { border-color: rgba(247,244,238,0.14); color: rgba(247,244,238,0.82); }
+.on-green .pf-q { border-color: rgba(247,244,238,0.2); color: rgba(247,244,238,0.88); }
+
+/* FOUNDER — asymmetric, portrait offset below the name */
+.founder { display: grid; grid-template-columns: minmax(0,0.82fr) minmax(0,1.18fr); gap: 7%; align-items: start; }
+.founder .pt { margin-top: 7vh; }
+@media(max-width:1000px){ .founder { grid-template-columns: 1fr; gap: 5vh; }
+  .founder .pt { margin-top: 0; max-width: 420px; order: -1; } }
+
+/* TEAM ROW — three across, staggered vertically on desktop */
+.team { display: grid; grid-template-columns: repeat(3,1fr); gap: 5%; margin-top: 11vh; }
+.team-i:nth-child(2) { margin-top: 6vh; }
+.team-i:nth-child(3) { margin-top: 12vh; }
+.team-i .pf-name { font-size: clamp(30px,3vw,42px); }
+.team-i .pf-bio { margin-top: 20px; font-size: 15px; }
+.team-i .pf-q { margin-top: 26px; padding-top: 22px; font-size: clamp(18px,1.8vw,23px); max-width: 100%; }
+.team-i .pt { margin-bottom: 28px; }
+@media(max-width:1000px){
+  .team { grid-template-columns: 1fr; gap: 9vh; margin-top: 8vh; }
+  .team-i:nth-child(2), .team-i:nth-child(3) { margin-top: 0; }
+  .team-i { display: grid; grid-template-columns: minmax(0,0.8fr) minmax(0,1.2fr); gap: 6%; align-items: start; }
+  .team-i .pt { margin-bottom: 0; }
+}
+@media(max-width:640px){
+  .team-i { grid-template-columns: 1fr; gap: 26px; }
+  .team-i .pt { max-width: 300px; }
+}
+
+/* PAIRED PROFILE — image left, copy right (technology, hospitality) */
+.pair { display: grid; grid-template-columns: minmax(0,0.78fr) minmax(0,1.22fr); gap: 7%; align-items: center; }
+.pair.flip { grid-template-columns: minmax(0,1.22fr) minmax(0,0.78fr); }
+.pair.flip .pair-media { order: 2; }
+@media(max-width:1000px){
+  .pair, .pair.flip { grid-template-columns: 1fr; gap: 5vh; }
+  .pair .pair-media, .pair.flip .pair-media { order: -1; max-width: 420px; }
+}
+
+/* ══════════════════════════════════════════════
+   07 — ONE TEAM, ONE ECOSYSTEM
+   Built in CSS rather than SVG on purpose: an SVG
+   scales its own type with its viewBox, and a
+   systems diagram that has to survive 375px to
+   1920px is far more reliable as a grid with rules.
+══════════════════════════════════════════════ */
+.sys { margin-top: 11vh; }
+.sys-row { display: grid; grid-template-columns: repeat(6,1fr); gap: 2px; }
+.sys-c { background: rgba(247,244,238,0.035); border: 1px solid rgba(247,244,238,0.09);
+  padding: 26px 20px 24px; text-align: center; }
+.sys-k { font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(196,138,90,0.85); line-height: 1.6; }
+.sys-p { margin-top: 14px; font-family: 'Cormorant Garamond', serif; font-weight: 300;
+  font-size: 24px; color: var(--warm-white); line-height: 1.2; }
+
+/* the convergence: six stems into one rule, then one stem down */
+.sys-conv { position: relative; height: 92px; }
+.sys-stems { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(6,1fr); }
+.sys-stems i { display: block; justify-self: center; width: 1px; height: 46px;
+  background: rgba(247,244,238,0.18); }
+.sys-bar { position: absolute; top: 46px; left: 8.33%; right: 8.33%; height: 1px; background: rgba(196,138,90,0.55); }
+.sys-drop { position: absolute; top: 46px; left: 50%; width: 1px; height: 46px; background: rgba(196,138,90,0.55); }
+
+.sys-hub { text-align: center; padding: 34px 20px; border: 1px solid rgba(196,138,90,0.4);
+  background: rgba(196,138,90,0.05); }
+.sys-hub-t { font-family: 'Cormorant Garamond', serif; font-weight: 300;
+  font-size: clamp(34px,4vw,54px); color: var(--warm-white); letter-spacing: 0.02em; line-height: 1; }
+.sys-hub-s { margin-top: 14px; font-size: 10.5px; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(196,138,90,0.9); }
+
+.sys-conv2 { position: relative; height: 66px; }
+.sys-conv2 .sys-drop { top: 0; height: 33px; }
+.sys-conv2 .sys-bar { top: 33px; left: 16.66%; right: 16.66%; }
+.sys-conv2 .sys-stems { top: 33px; bottom: 0; grid-template-columns: repeat(3,1fr); }
+.sys-conv2 .sys-stems i { height: 33px; }
+
+.sys-out { display: grid; grid-template-columns: repeat(3,1fr); gap: 2px; }
+.sys-o { background: rgba(247,244,238,0.035); border: 1px solid rgba(247,244,238,0.09);
+  padding: 28px 22px; text-align: center; }
+.sys-o-t { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: clamp(22px,2.3vw,30px); color: var(--warm-white); line-height: 1.16; }
+.sys-o-b { margin-top: 12px; font-size: 13.5px; line-height: 1.75; color: #a29b8f; }
+
+/* Below 900 the six-across row would give 55px columns, so the diagram
+   becomes a vertical list with the same reading order. */
+@media(max-width:900px){
+  .sys-row { grid-template-columns: 1fr 1fr; }
+  .sys-conv, .sys-conv2 { height: 54px; }
+  .sys-stems { display: none; }
+  .sys-bar { display: none; }
+  .sys-drop { top: 0; height: 54px; }
+  .sys-conv2 .sys-drop { top: 0; height: 54px; }
+  .sys-out { grid-template-columns: 1fr; }
+}
+@media(max-width:480px){ .sys-row { grid-template-columns: 1fr; } .sys-c { padding: 22px 18px; } }
+
+/* ══════════════════════════════════════════════
+   08 — PRINCIPLES
+══════════════════════════════════════════════ */
+.pr { display: grid; grid-template-columns: repeat(2,1fr); gap: 0 8%; margin-top: 10vh; }
+.pr-i { border-top: 1px solid rgba(43,38,35,0.18); padding: 30px 0; }
+.pr-n { font-family: 'Cormorant Garamond', serif; font-size: 13px; letter-spacing: 0.14em; color: #a8a093; }
+.pr-t { margin-top: 14px; font-family: 'Cormorant Garamond', serif; font-weight: 300;
+  font-size: clamp(24px,2.6vw,34px); color: var(--charcoal); line-height: 1.16; }
+.pr-b { margin-top: 13px; font-size: 14.5px; line-height: 1.85; color: #5c554c; }
+@media(max-width:800px){ .pr { grid-template-columns: 1fr; } }
+
+/* ══════════════════════════════════════════════
+   09 — BUILDING DELIBERATELY
+══════════════════════════════════════════════ */
+.stage { margin-top: 10vh; display: grid; grid-template-columns: repeat(3,1fr); gap: 3%; }
+.stage-i { border-top: 1px solid rgba(43,38,35,0.22); padding-top: 26px; position: relative; }
+.stage-n { font-size: 10.5px; letter-spacing: 0.2em; color: #918977; }
+.stage-t { margin-top: 16px; font-family: 'Cormorant Garamond', serif; font-weight: 300;
+  font-size: clamp(24px,2.5vw,34px); color: var(--charcoal); line-height: 1.14; }
+.stage-s { margin-top: 12px; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #8a5f34; }
+.stage-b { margin-top: 16px; font-size: 14.5px; line-height: 1.82; color: #5c554c; }
+.stage-arrow { display: none; text-align: center; color: rgba(196,138,90,0.9); font-size: 17px; padding: 22px 0 4px; }
+@media(max-width:860px){
+  .stage { grid-template-columns: 1fr; gap: 0; }
+  .stage-arrow { display: block; }
+}
+
+/* ══════════════════════════════════════════════
+   10 — CLOSING
+══════════════════════════════════════════════ */
+.close { position: relative; padding: 24vh 8%; overflow: hidden; text-align: center; }
+.close .par-layer { background-image: linear-gradient(180deg, rgba(3,6,9,0.9) 0%, rgba(3,6,9,0.74) 45%, rgba(3,6,9,0.95) 100%), var(--img-close); }
+.close-inner { position: relative; z-index: 3; max-width: 1000px; margin: 0 auto; }
+.close .display { max-width: 20ch; margin: 0 auto; }
+.close .copy { margin: 38px auto 0; text-align: center; }
+.close-tag { margin-top: 8vh; font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300;
+  font-size: clamp(22px,2.8vw,38px); line-height: 1.5; color: rgba(247,244,238,0.68); }
+.close-ctas { margin-top: 8vh; }
+.close-ctas .btn-row { justify-content: center; }
+.close-second { margin-top: 26px; }
+@media(max-width:900px){ .close { padding: 16vh 8%; } .close-ctas .btn { width: 100%; text-align: center; } }
+
+/* ══════════════════════════════════════════════
+   FOOTER
+══════════════════════════════════════════════ */
+.site-footer { background: var(--mineral); color: #8a8377; padding: 7vh 8% 4vh; border-top: 1px solid rgba(247,244,238,0.07); }
+.footer-top { display: grid; grid-template-columns: repeat(4,1fr); gap: 40px; padding-bottom: 5vh; border-bottom: 1px solid rgba(247,244,238,0.1); }
+.footer-brand-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+.footer-brand-logo img { width: 28px; opacity: 0.9; }
+.footer-brand-logo span { font-family: 'Cormorant Garamond', serif; font-size: 18px; color: var(--warm-white); }
+.footer-tagline { font-size: 13px; line-height: 1.6; color: #8f887d; }
+.footer-tagline strong { display: block; color: #b8b1a4; font-weight: 500; }
+.footer-tagline em { font-style: italic; }
+.footer-col-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #8f887d; margin-bottom: 18px; }
+.footer-col a, .footer-col span { display: block; font-size: 13.5px; color: #8a8377; text-decoration: none; margin-bottom: 11px; transition: color 0.2s; }
+.footer-col a:hover { color: var(--warm-white); }
+.footer-bottom { display: flex; justify-content: space-between; padding-top: 4vh; font-size: 12px; color: #8a8377; }
+.footer-appearance { margin-top: 22px; }
+.footer-appearance-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: #8f887d; margin-bottom: 8px; }
+.footer-toggle { display: inline-flex; background: rgba(247,244,238,0.08); border-radius: 20px; padding: 3px; }
+.footer-toggle button { background: none; border: none; color: #9a9285; font-size: 12px; padding: 6px 14px; border-radius: 16px; cursor: pointer; transition: all 0.2s ease; letter-spacing: 0.04em; text-transform: uppercase; font-family: 'Frank Ruhl Libre', serif; }
+.footer-toggle button.active { background: rgba(247,244,238,0.14); color: var(--warm-white); }
+@media(max-width:768px) { .footer-top { grid-template-columns: 1fr 1fr; gap: 32px; } .footer-bottom { flex-direction: column; gap: 8px; } }
+
+/* ══════════════════════════════════════════════
+   LIGHT THEME — chrome only, as on every other page
+══════════════════════════════════════════════ */
+html[data-theme="light"], html[data-theme="light"] body { background: #F7F4EE; color: #2B2623; }
+html[data-theme="light"] .nav { background: rgba(247,244,238,0.94); border-bottom-color: rgba(43,38,35,0.1); }
+html[data-theme="light"] .nav-brand span { color: #171412; }
+html[data-theme="light"] .nav-brand img { filter: invert(1) brightness(0.3); }
+html[data-theme="light"] .nav-links a, html[data-theme="light"] .nav-links span { color: #6b6459; }
+html[data-theme="light"] .nav-links a:hover, html[data-theme="light"] .nav-links a.active { color: #171412; }
+html[data-theme="light"] .nav-cta { background: #171412; color: #F7F4EE; }
+html[data-theme="light"] .nav-burger span { background: #2B2623; }
+html[data-theme="light"] .nav-drawer { background: rgba(247,244,238,0.98); }
+html[data-theme="light"] .nav-drawer a, html[data-theme="light"] .nav-drawer span.drawer-dead { color: #6b6459; }
+html[data-theme="light"] .nav-drawer a:hover, html[data-theme="light"] .nav-drawer a.active { color: #171412; }
+html[data-theme="light"] .nav-drawer .nav-cta { background: #171412; color: #F7F4EE; }
+html[data-theme="light"] .footer-toggle button#ftLight { background: rgba(247,244,238,0.18); color: var(--warm-white); }
+html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; background: none; }
+</style>
+
+<noscript><style>
+  /* Masked headlines, soft blocks and dividers are revealed by script.
+     Without it, show everything rather than serve invisible type. */
+  .ln > i { transform: none !important; }
+  .rv .soft { opacity: 1 !important; transform: none !important; }
+  .eyebrow::before { width: 28px !important; }
+  .divider .divider-line { transform: scaleX(1) !important; }
+  .divider .divider-mark { opacity: 0.7 !important; }
+  .ah-bg { opacity: 1 !important; transform: none !important; }
+</style></noscript>
+</head>
+<body>
+
+<a class="skip-link" href="#team">Skip to content</a>
+<div class="scroll-prog" id="scrollProg"></div>
+
+<!-- ══ NAV ══ -->
+<nav class="nav">
+  <a class="nav-brand" href="index.html">
+    <img src="images/img-09-white.png" alt="DAOasis" />
+    <span>DAOasis</span>
+  </a>
+  <div class="nav-links">
+    <a href="app.html">The App</a>
+    <a href="sanctuary.html">The Sanctuary</a>
+    <a href="web3.html">The Web3 Layer</a>
+    <a href="about.html" class="active">About Us</a>
+    <a href="investors.html">Investors</a>
+  </div>
+  <a class="nav-cta" href="index.html#waitlistSection">Join the waitlist</a>
+  <button class="nav-burger" id="navBurger" aria-label="Menu" aria-expanded="false" aria-controls="navDrawer"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="nav-drawer" id="navDrawer">
+  <a href="app.html">The App</a>
+  <a href="sanctuary.html">The Sanctuary</a>
+  <a href="web3.html">The Web3 Layer</a>
+  <a href="about.html" class="active">About Us</a>
+  <a href="investors.html">Investors</a>
+  <a class="nav-cta" href="index.html#waitlistSection">Join the waitlist</a>
+</div>
+
+<main>
+
+<!-- ══════════════════════════════════════════════
+     01 — HERO
+══════════════════════════════════════════════ -->
+<header class="ah grain on-light" id="aboutHero">
+  <div class="ah-bg"></div>
+  <div class="ah-inner rv">
+    <div class="eyebrow">About DAOasis</div>
+    <h1 class="ah-h1">
+      <span class="ln"><i>The people behind</i></span>
+      <span class="ln"><i>something <em>bigger.</em></i></span>
+    </h1>
+    <p class="ah-sub soft d1">
+      DAOasis brings together experience across strategy, operations, technology,
+      digital ownership, hospitality and community to build a different kind of
+      wellness ecosystem.
+    </p>
+    <div class="ah-ctas btn-row soft d2">
+      <a class="btn btn-dark" href="#team">Meet the team</a>
+      <a class="btn btn-outline" href="app.html">Explore the Companion App</a>
+    </div>
+  </div>
+  <div class="ah-hint">Scroll<span></span></div>
+</header>
+
+
+<!-- ══════════════════════════════════════════════
+     02 — WHY THIS TEAM
+══════════════════════════════════════════════ -->
+<section class="sect bg-ivory on-light" id="team">
+  <div class="sect-inner">
+    <div class="spread rv">
+      <div>
+        <div class="eyebrow">The team</div>
+        <h2 class="display">
+          <span class="ln"><i>Different</i></span>
+          <span class="ln"><i>disciplines.</i></span>
+          <span class="ln"><i>One <em>direction.</em></i></span>
+        </h2>
+      </div>
+      <div class="copy wide soft d1">
+        <p>DAOasis sits at the intersection of wellness, technology, digital ownership
+        and real-world hospitality.</p>
+        <p>Building it requires more than one discipline. It requires people who
+        understand strategy, operations, technology, Web3, hospitality and the human
+        experience — and who can bring those disciplines together around
+        <strong>one coherent system</strong> rather than six parallel projects.</p>
+      </div>
+    </div>
+
+    <div class="disc rv">
+      <div class="disc-i soft">
+        <div class="disc-n">01</div>
+        <div class="disc-t">Strategy</div>
+        <div class="disc-b">Where the company is going, how it is funded, and which decisions are worth making now rather than later.</div>
+        <div class="disc-w">Jamie · Dan</div>
+      </div>
+      <div class="disc-i soft d1">
+        <div class="disc-n">02</div>
+        <div class="disc-t">Operations</div>
+        <div class="disc-b">Turning a broad vision into a sequence that can actually be executed by a small team.</div>
+        <div class="disc-w">Nelson</div>
+      </div>
+      <div class="disc-i soft d1">
+        <div class="disc-n">03</div>
+        <div class="disc-t">Technology</div>
+        <div class="disc-b">The Companion App, the platform beneath it, and the architecture that has to scale after it works.</div>
+        <div class="disc-w">Trong</div>
+      </div>
+      <div class="disc-i soft d2">
+        <div class="disc-n">04</div>
+        <div class="disc-t">Digital ownership</div>
+        <div class="disc-b">DRC, $DVT and the on-chain layer — designed so that a member never has to understand it to begin.</div>
+        <div class="disc-w">Nelson · Etiosa</div>
+      </div>
+      <div class="disc-i soft d2">
+        <div class="disc-n">05</div>
+        <div class="disc-t">Hospitality</div>
+        <div class="disc-b">The Sanctuary, and everything that has to be true for a digital journey to end somewhere real.</div>
+        <div class="disc-w">George</div>
+      </div>
+      <div class="disc-i soft d3">
+        <div class="disc-n">06</div>
+        <div class="disc-t">Community</div>
+        <div class="disc-b">The people who participate, contribute and eventually help shape what DAOasis becomes.</div>
+        <div class="disc-w">Across the team</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider light bg-ivory">
+  <div class="divider-inner"><span class="divider-line"></span><img class="divider-mark" src="images/img-09.png" alt="" /><span class="divider-line"></span></div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     03 — FOUNDER
+══════════════════════════════════════════════ -->
+<section class="sect bg-stone on-light" id="founder">
+  <div class="sect-inner">
+    <div class="founder rv">
+      <div>
+        <div class="eyebrow soft">Founder</div>
+        <!-- PORTRAIT SLOT — replace the monogram with:
+             <img src="images/team-jamie.jpg" alt="Jamie, Founder and CEO of DAOasis" /> -->
+        <figure class="pt soft d1">
+          <span class="pt-mono" aria-hidden="true">J</span>
+          <figcaption class="pt-tag">Portrait to follow</figcaption>
+        </figure>
+      </div>
+      <div>
+        <h2 class="pf-name">
+          <span class="ln"><i>Jamie</i></span>
+        </h2>
+        <div class="pf-role soft d1">Founder &amp; CEO</div>
+        <p class="pf-bio soft d2">Jamie blends experience across banking, consultancy and
+        startup ecosystems. He leads on vision, investor relations, experience design and
+        team culture.</p>
+        <blockquote class="pf-q soft d3">
+          "DAOasis is about giving people the tools to reset, reconnect and reimagine
+          their future — and then rewarding them for it."
+        </blockquote>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider light bg-stone">
+  <div class="divider-inner"><span class="divider-line"></span><img class="divider-mark" src="images/img-09.png" alt="" /><span class="divider-line"></span></div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     04 — THE FOUNDING TEAM
+══════════════════════════════════════════════ -->
+<section class="sect bg-ivory on-light" id="founding">
+  <div class="sect-inner">
+    <div class="spread rv">
+      <div>
+        <div class="eyebrow">The founding team</div>
+        <h2 class="display">
+          <span class="ln"><i>Built from</i></span>
+          <span class="ln"><i>complementary</i></span>
+          <span class="ln"><i><em>perspectives.</em></i></span>
+        </h2>
+      </div>
+      <div class="copy wide soft d1">
+        <p>No single discipline can build DAOasis.</p>
+        <p>The founding team combines company strategy, operations, technology and token
+        strategy to build the ecosystem from different sides of the same idea — and to
+        argue about it properly before anything gets shipped.</p>
+      </div>
+    </div>
+
+    <div class="team rv">
+      <article class="team-i soft">
+        <!-- PORTRAIT SLOT — <img src="images/team-nelson.jpg" alt="Nelson, Co-Founder and COO of DAOasis" /> -->
+        <figure class="pt">
+          <span class="pt-mono" aria-hidden="true">N</span>
+          <figcaption class="pt-tag">Portrait to follow</figcaption>
+        </figure>
+        <div>
+          <h3 class="pf-name">Nelson</h3>
+          <div class="pf-role">Co-Founder, COO &amp; Token Strategy</div>
+          <p class="pf-bio">Nelson oversees operations, tokenomics and feasibility
+          execution. His crypto-native background helps architect DAOasis as a scalable,
+          community-powered venture.</p>
+          <blockquote class="pf-q">
+            "Our tokens aren't about speculation. DRC rewards your participation.
+            $DVT gives you deeper ownership."
+          </blockquote>
+        </div>
+      </article>
+
+      <article class="team-i soft d1">
+        <!-- PORTRAIT SLOT — <img src="images/team-dan.jpg" alt="Dan, Co-Founder, Company Strategy at DAOasis" /> -->
+        <figure class="pt">
+          <span class="pt-mono" aria-hidden="true">D</span>
+          <figcaption class="pt-tag">Portrait to follow</figcaption>
+        </figure>
+        <div>
+          <h3 class="pf-name">Dan</h3>
+          <div class="pf-role">Co-Founder, Company Strategy</div>
+          <p class="pf-bio">Dan supports founder decisions, financial planning and long
+          term strategy. Background in scaling ventures, advising founders and structuring
+          capital.</p>
+          <blockquote class="pf-q">
+            "Wellness and Web3 both thrive on one thing — community. DAOasis brings them
+            together in a way that feels natural and lasting."
+          </blockquote>
+        </div>
+      </article>
+
+      <article class="team-i soft d2">
+        <!-- PORTRAIT SLOT — <img src="images/team-trong.jpg" alt="Trong, Chief Technology Officer at DAOasis" /> -->
+        <figure class="pt">
+          <span class="pt-mono" aria-hidden="true">T</span>
+          <figcaption class="pt-tag">Portrait to follow</figcaption>
+        </figure>
+        <div>
+          <h3 class="pf-name">Trong</h3>
+          <div class="pf-role">Chief Technology Officer</div>
+          <p class="pf-bio">Trong brings 20+ years leading developer teams across mobile,
+          web platforms and Web3 projects. He oversees the technical direction of the
+          ecosystem.</p>
+          <blockquote class="pf-q">
+            "Good technology should feel invisible. My focus is building systems that are
+            robust, intuitive and ready to scale."
+          </blockquote>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<div class="divider light bg-ivory">
+  <div class="divider-inner"><span class="divider-line"></span><img class="divider-mark" src="images/img-09.png" alt="" /><span class="divider-line"></span></div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     05 — TECHNOLOGY & WEB3
+     Trong's full profile sits above in the founding
+     team; this section is the technology remit and
+     Etiosa's profile, so nothing is stated twice.
+══════════════════════════════════════════════ -->
+<section class="sect bg-mineral on-dark grain" id="technology">
+  <div class="sect-inner">
+    <div class="spread rv">
+      <div>
+        <div class="eyebrow">Technology</div>
+        <h2 class="display">
+          <span class="ln"><i>The infrastructure</i></span>
+          <span class="ln"><i>underneath the</i></span>
+          <span class="ln"><i><em>experience.</em></i></span>
+        </h2>
+      </div>
+      <div class="copy wide soft d1">
+        <p>The DAOasis experience should feel simple to the person using it. Someone
+        opens the app, goes for a walk, and their journey moves.</p>
+        <p>Behind that simplicity is technology designed to support the Companion App,
+        digital ownership, smart contracts and the infrastructure required to grow the
+        ecosystem responsibly. <strong>Trong directs that technical architecture</strong>;
+        Etiosa works on the on-chain layer beneath it.</p>
+      </div>
+    </div>
+
+    <div class="pair rv" style="margin-top:11vh;">
+      <div class="pair-media soft d1">
+        <!-- PORTRAIT SLOT — <img src="images/team-etiosa.jpg" alt="Etiosa, Smart Contract Development at DAOasis" /> -->
+        <figure class="pt">
+          <span class="pt-mono" aria-hidden="true">E</span>
+          <figcaption class="pt-tag">Portrait to follow</figcaption>
+        </figure>
+      </div>
+      <div class="soft d2">
+        <h3 class="pf-name">Etiosa</h3>
+        <div class="pf-role">Smart Contract Development</div>
+        <p class="pf-bio">Etiosa works across smart contract deployment, tokenomics design
+        and the broader technical vision of the on-chain architecture.</p>
+        <blockquote class="pf-q">
+          "Smart contracts are about trust — my goal is clean, secure code that supports
+          both the vision and the users behind it."
+        </blockquote>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider dark bg-mineral">
+  <div class="divider-inner"><span class="divider-line"></span><img class="divider-mark" src="images/img-09-white.png" alt="" /><span class="divider-line"></span></div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     06 — HOSPITALITY
+══════════════════════════════════════════════ -->
+<section class="sect bg-green on-green grain" id="hospitality">
+  <div class="sect-inner">
+    <div class="rv">
+      <div class="eyebrow">The real world</div>
+      <h2 class="display" style="max-width:16ch;">
+        <span class="ln"><i>Because the journey</i></span>
+        <span class="ln"><i>should eventually</i></span>
+        <span class="ln"><i>become <em>physical.</em></i></span>
+      </h2>
+      <div class="copy wide soft d1" style="margin-top:38px;">
+        <p>The Companion App creates the daily practice. The digital layer creates deeper
+        participation. The Sanctuary is where the journey stops being a number on a screen
+        and becomes somewhere a person actually goes.</p>
+        <p>That last step is a hospitality problem, not a software one — and it needs
+        someone who has run real buildings full of real guests.</p>
+      </div>
+    </div>
+
+    <div class="pair flip rv" style="margin-top:11vh;">
+      <div class="soft d1">
+        <h3 class="pf-name">George</h3>
+        <div class="pf-role">Hospitality</div>
+        <p class="pf-bio">George brings two decades of international hospitality
+        leadership, including GM roles at multiple 5-star properties. He leads sanctuary
+        feasibility and the long term hospitality vision.</p>
+        <blockquote class="pf-q">
+          "DAOasis is a chance to reinvent hospitality — moving beyond service into
+          transformation."
+        </blockquote>
+        <div class="btn-row" style="margin-top:40px;">
+          <a class="btn btn-ghost" href="sanctuary.html">Explore the Sanctuary</a>
+        </div>
+      </div>
+      <div class="pair-media soft d2">
+        <div class="par" data-par="0.12" style="height:min(58vh,540px);">
+          <div class="par-layer" style="background-image:linear-gradient(180deg,rgba(20,26,23,0.3),rgba(20,26,23,0.48)),var(--img-hospitality);"></div>
+        </div>
+        <div style="margin-top:20px;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(247,244,238,0.5);">
+          The Sanctuary · Phuket · Planned for 2027
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider green bg-green">
+  <div class="divider-inner"><span class="divider-line"></span><img class="divider-mark" src="images/img-09-white.png" alt="" /><span class="divider-line"></span></div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     07 — ONE TEAM, ONE ECOSYSTEM
+══════════════════════════════════════════════ -->
+<section class="sect bg-surface on-dark grain" id="system">
+  <div class="sect-inner">
+    <div class="rv">
+      <div class="eyebrow">One team</div>
+      <h2 class="display" style="max-width:16ch;">
+        <span class="ln"><i>Six remits.</i></span>
+        <span class="ln"><i>One <em>ecosystem.</em></i></span>
+      </h2>
+      <div class="copy wide soft d1" style="margin-top:38px;">
+        <p>The team is not organised around job titles. It is organised around the parts
+        of the system that have to work — and each part has someone whose name is on it.</p>
+      </div>
+    </div>
+
+    <div class="sys rv" role="img"
+         aria-label="Six remits — vision led by Jamie, strategy by Dan, operations by Nelson, technology by Trong, digital ownership by Nelson and Etiosa, and hospitality by George — converge into DAOasis, which produces the Companion App, digital ownership, and the Sanctuary.">
+      <div class="sys-row soft">
+        <div class="sys-c"><div class="sys-k">Vision</div><div class="sys-p">Jamie</div></div>
+        <div class="sys-c"><div class="sys-k">Strategy</div><div class="sys-p">Dan</div></div>
+        <div class="sys-c"><div class="sys-k">Operations</div><div class="sys-p">Nelson</div></div>
+        <div class="sys-c"><div class="sys-k">Technology</div><div class="sys-p">Trong</div></div>
+        <div class="sys-c"><div class="sys-k">Digital ownership</div><div class="sys-p">Nelson + Etiosa</div></div>
+        <div class="sys-c"><div class="sys-k">Hospitality</div><div class="sys-p">George</div></div>
+      </div>
+
+      <div class="sys-conv soft d1" aria-hidden="true">
+        <div class="sys-stems"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="sys-bar"></div>
+        <div class="sys-drop"></div>
+      </div>
+
+      <div class="sys-hub soft d2">
+        <div class="sys-hub-t">DAOasis</div>
+        <div class="sys-hub-s">One connected system</div>
+      </div>
+
+      <div class="sys-conv2 soft d3" aria-hidden="true">
+        <div class="sys-drop"></div>
+        <div class="sys-bar"></div>
+        <div class="sys-stems"><i></i><i></i><i></i></div>
+      </div>
+
+      <div class="sys-out soft d3">
+        <div class="sys-o">
+          <div class="sys-o-t">Companion App</div>
+          <div class="sys-o-b">The daily practice, and the only near-term scalable product.</div>
+        </div>
+        <div class="sys-o">
+          <div class="sys-o-t">Digital ownership</div>
+          <div class="sys-o-b">DRC recognises participation. DRC converts to $DVT.</div>
+        </div>
+        <div class="sys-o">
+          <div class="sys-o-t">Sanctuary</div>
+          <div class="sys-o-b">The physical destination. Planned for Phuket in 2027.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider dark bg-surface">
+  <div class="divider-inner"><span class="divider-line"></span><img class="divider-mark" src="images/img-09-white.png" alt="" /><span class="divider-line"></span></div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     08 — WHAT WE BELIEVE
+══════════════════════════════════════════════ -->
+<section class="sect bg-ivory on-light" id="principles">
+  <div class="sect-inner">
+    <div class="rv">
+      <div class="eyebrow">Our principles</div>
+      <h2 class="display" style="max-width:14ch;">
+        <span class="ln"><i>Build with</i></span>
+        <span class="ln"><i><em>intention.</em></i></span>
+      </h2>
+    </div>
+
+    <div class="pr rv">
+      <div class="pr-i soft"><div class="pr-n">01</div>
+        <div class="pr-t">Clarity over noise</div>
+        <div class="pr-b">If something needs a paragraph of explanation to justify its existence, it is usually the wrong thing. We would rather ship less and have it understood.</div></div>
+      <div class="pr-i soft d1"><div class="pr-n">02</div>
+        <div class="pr-t">Structure creates freedom</div>
+        <div class="pr-b">Routine is not the opposite of spontaneity. It is what makes room for it. The same is true of a company.</div></div>
+      <div class="pr-i soft d1"><div class="pr-n">03</div>
+        <div class="pr-t">Long term thinking over short term speculation</div>
+        <div class="pr-b">We would rather earn the right to introduce something than rush it to market. That principle governs the product and the token equally.</div></div>
+      <div class="pr-i soft d2"><div class="pr-n">04</div>
+        <div class="pr-t">Technology should serve people</div>
+        <div class="pr-b">Nobody should need to understand a wallet to go for a walk. The infrastructure is our problem, not the member's.</div></div>
+      <div class="pr-i soft d2"><div class="pr-n">05</div>
+        <div class="pr-t">Participation should mean something</div>
+        <div class="pr-b">Recognition is only worth having if it is earned. That is why DRC is tied to genuine participation rather than handed out to acquire attention.</div></div>
+      <div class="pr-i soft d3"><div class="pr-n">06</div>
+        <div class="pr-t">The real world still matters</div>
+        <div class="pr-b">A wellness ecosystem that never leaves the screen has misunderstood the assignment. The journey has to be able to end somewhere.</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider light bg-ivory">
+  <div class="divider-inner"><span class="divider-line"></span><img class="divider-mark" src="images/img-09.png" alt="" /><span class="divider-line"></span></div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     09 — BUILDING DELIBERATELY
+══════════════════════════════════════════════ -->
+<section class="sect bg-stone on-light" id="building">
+  <div class="sect-inner">
+    <div class="spread rv">
+      <div>
+        <div class="eyebrow">How we are building</div>
+        <h2 class="display">
+          <span class="ln"><i>DAOasis is being</i></span>
+          <span class="ln"><i>built one layer</i></span>
+          <span class="ln"><i>at a <em>time.</em></i></span>
+        </h2>
+      </div>
+      <div class="copy wide soft d1">
+        <p>The vision is broad. The execution is deliberate.</p>
+        <p>DAOasis begins with the Companion App — daily habits, learning, quests and
+        community. Participation is recognised through DAOasis Reward Credits. Those
+        credits create a pathway toward $DVT and deeper participation across the
+        ecosystem. And the long term vision extends into real-world Sanctuary experiences
+        and a community that can help shape what comes next.</p>
+      </div>
+    </div>
+
+    <div class="stage rv">
+      <div class="stage-i soft">
+        <div class="stage-n">01</div>
+        <div class="stage-t">Companion App</div>
+        <div class="stage-s">Daily practice</div>
+        <div class="stage-b">Habits, quests, learning and community. Free to join, no wallet required. Core architecture is built; end-to-end flows are in development.</div>
+      </div>
+      <div class="stage-arrow" aria-hidden="true">↓</div>
+      <div class="stage-i soft d1">
+        <div class="stage-n">02</div>
+        <div class="stage-t">Digital ownership</div>
+        <div class="stage-s">DRC → $DVT</div>
+        <div class="stage-b">Participation earns DAOasis Reward Credits. DRC converts to $DVT, the on-chain layer. $DVT follows completion of its legal and structural review.</div>
+      </div>
+      <div class="stage-arrow" aria-hidden="true">↓</div>
+      <div class="stage-i soft d2">
+        <div class="stage-n">03</div>
+        <div class="stage-t">Sanctuary</div>
+        <div class="stage-s">Real-world experience</div>
+        <div class="stage-b">The physical expression of the ecosystem, planned as a pilot in Phuket in 2027. No property is contracted and no bookings are open.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     10 — CLOSING
+══════════════════════════════════════════════ -->
+<section class="close par grain on-dark" data-par="0.1" id="closing">
+  <div class="par-layer"></div>
+  <div class="close-inner rv">
+    <h2 class="display">
+      <span class="ln"><i>We're not building</i></span>
+      <span class="ln"><i>another app.</i></span>
+    </h2>
+    <div class="copy wide soft d1">
+      <p>We're building a system around the way people actually want to live — where the
+      small things done consistently add up to something, and where that something
+      eventually belongs to the person who earned it.</p>
+    </div>
+    <div class="close-tag soft d2">Rest. Learn. Earn. Return.</div>
+
+    <div class="close-ctas soft d3">
+      <div class="btn-row">
+        <a class="btn btn-light" href="app.html">Explore the Companion App</a>
+        <a class="btn btn-ghost" href="web3.html">Explore the Web3 Layer</a>
+        <a class="btn btn-ghost" href="investors.html">Investor overview</a>
+      </div>
+      <div class="close-second btn-row" style="justify-content:center;">
+        <a class="btn btn-ghost" href="index.html#waitlistSection">Join the waitlist</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+
+<!-- ══ FOOTER ══ -->
+<footer class="site-footer">
+  <div class="footer-top">
+    <div>
+      <div class="footer-brand-logo"><img src="images/img-09-white.png" alt="DAOasis mark" /><span>DAOasis</span></div>
+      <div class="footer-tagline"><strong>Wellness meets Web3.</strong><em>Rest. Learn. Earn. Return.</em></div>
+      <div class="footer-appearance">
+        <div class="footer-appearance-label">Appearance</div>
+        <div class="footer-toggle"><button id="ftLight">Light</button><button id="ftDark" class="active">Dark</button></div>
+      </div>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-label">Explore</div>
+      <a href="index.html">Home</a><a href="app.html">Companion App</a><a href="sanctuary.html">The Sanctuary</a><a href="web3.html">The Web3 Layer</a><a href="about.html">About</a><a href="investors.html">Investors</a><a href="contact.html">Contact</a>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-label">Resources</div>
+      <a href="investors.html#resources">Investor Pack</a><a href="investors.html#resources">Business Plan</a><a href="investors.html#resources">Whitepaper</a><a href="investors.html#resources">Brand Kit</a><a href="index.html#waitlistSection">Waitlist</a>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-label">Trust</div>
+      <a href="privacy.html">Privacy</a><a href="health-data.html">Health Data</a><a href="terms.html">Terms</a><a href="cookies.html">Cookies</a><a href="token-disclaimer.html">Token Disclaimer</a><a href="accessibility.html">Accessibility</a>
+    </div>
+  </div>
+  <div class="footer-bottom"><span>© 2026 DAOasis. All rights reserved.</span><span>Phuket · Global</span></div>
+</footer>
+
+
+<script>
+/* ════════════════════════════════════════════
+   ABOUT PAGE — SCRIPT
+
+   Deliberately minimal. No pinned sections, no
+   scroll scrubbing, no libraries: every animation
+   is a one-shot IntersectionObserver reveal, so
+   there is no sticky state that can be left behind
+   when the reader scrolls back up. The page is
+   fully legible with JavaScript disabled.
+════════════════════════════════════════════ */
+const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ── NAV ── */
+(function(){
+  const burger = document.getElementById('navBurger');
+  const drawer = document.getElementById('navDrawer');
+  if(!burger) return;
+  burger.addEventListener('click', () => {
+    const open = drawer.classList.toggle('open');
+    burger.classList.toggle('open', open);
+    burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    document.body.style.overflow = open ? 'hidden' : '';
+  });
+  drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    drawer.classList.remove('open');
+    burger.classList.remove('open');
+    burger.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  }));
+})();
+
+/* ── NAV HIDE ON SCROLL + PROGRESS RULE ── */
+(function(){
+  const nav = document.querySelector('.nav');
+  const prog = document.getElementById('scrollProg');
+  if(!nav) return;
+  let lastY = 0, ticking = false;
+  window.addEventListener('scroll', () => {
+    if(ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      const y = window.scrollY;
+      if(y > lastY && y > 80) nav.classList.add('nav-hidden'); else nav.classList.remove('nav-hidden');
+      if(prog){
+        const max = document.body.scrollHeight - window.innerHeight;
+        prog.style.width = (max > 0 ? (y / max) * 100 : 0) + '%';
+      }
+      lastY = y; ticking = false;
+    });
+  }, { passive: true });
+})();
+
+/* ── HERO ── */
+(function(){
+  const hero = document.getElementById('aboutHero');
+  if(!hero) return;
+  requestAnimationFrame(() => hero.classList.add('on'));
+})();
+
+/* ── REVEAL (line masks + soft blocks + dividers) ── */
+(function(){
+  if(!('IntersectionObserver' in window)){
+    document.querySelectorAll('.rv, .divider').forEach(el => el.classList.add('show', 'shown'));
+    return;
+  }
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('show'); obs.unobserve(e.target); } });
+  }, { threshold: 0.16, rootMargin: '0px 0px -6% 0px' });
+  document.querySelectorAll('.rv').forEach(el => obs.observe(el));
+
+  const dObs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('shown'); dObs.unobserve(e.target); } });
+  }, { threshold: 0.5 });
+  document.querySelectorAll('.divider').forEach(el => dObs.observe(el));
+})();
+
+/* ── PARALLAX on full-bleed photography ── */
+(function(){
+  const items = [...document.querySelectorAll('.par')]
+    .map(el => ({ el, layer: el.querySelector('.par-layer'), amt: parseFloat(el.dataset.par) || 0.12 }))
+    .filter(i => i.layer);
+  if(!items.length || REDUCED) return;
+  let ticking = false;
+  function run(){
+    const vh = window.innerHeight;
+    items.forEach(({ el, layer, amt }) => {
+      const r = el.getBoundingClientRect();
+      if(r.bottom < -200 || r.top > vh + 200) return;
+      const centre = (r.top + r.height / 2 - vh / 2) / vh;
+      layer.style.transform = 'translate3d(0,' + (centre * amt * 100).toFixed(2) + 'px,0)';
+    });
+    ticking = false;
+  }
+  window.addEventListener('scroll', () => { if(!ticking){ ticking = true; requestAnimationFrame(run); } }, { passive: true });
+  window.addEventListener('resize', run, { passive: true });
+  run();
+})();
+
+/* ── THEME TOGGLE ── */
+(function(){
+  const btnLight = document.getElementById('ftLight');
+  const btnDark = document.getElementById('ftDark');
+  if(!btnLight) return;
+  function applyTheme(theme){
+    if(theme === 'light'){
+      document.documentElement.setAttribute('data-theme','light');
+      btnLight.classList.add('active'); btnDark.classList.remove('active');
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+      btnDark.classList.add('active'); btnLight.classList.remove('active');
+    }
+    localStorage.setItem('daoasis-theme', theme);
+  }
+  applyTheme(localStorage.getItem('daoasis-theme') || 'dark');
+  btnLight.addEventListener('click', () => applyTheme('light'));
+  btnDark.addEventListener('click', () => applyTheme('dark'));
+})();
+</script>
+</body>
+</html>

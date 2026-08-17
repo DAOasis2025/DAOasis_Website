@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<script>
+  (function(){
+    var h = document.documentElement;
+    try {
+      var t = localStorage.getItem('daoasis-theme') || 'dark';
+      if(t === 'light') h.setAttribute('data-theme','light');
+    } catch(e) { /* private mode: fall through to the dark default */ }
+
+    /* ── FAIL-VISIBLE GATE ──
+       Every hidden reveal start-state in css/trust.css is scoped to
+       `html.js`. Adding the class here — inline, in the same file as the
+       markup, so it cannot 404 — is what switches the animation on.
+
+       If js/trust.js never runs (blocked, stripped, 404, or it throws
+       before attaching its observer) the class is dropped 2.5s later and
+       the whole document paints at full strength. A privacy policy must
+       never be able to render as invisible type. */
+    h.className += (h.className ? ' ' : '') + 'js';
+    setTimeout(function(){
+      if(h.getAttribute('data-trust') !== 'ready'){
+        h.className = h.className.replace(/(^|\s)js(\s|$)/, '$1$2');
+      }
+    }, 2500);
+  })();
+</script>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>DAOasis Accessibility | Designed for more people</title>
+<meta name="description" content="What DAOasis has built for accessibility, what is not there yet, and how to tell us when something does not work for you." />
+<link rel="canonical" href="https://da-oasis-website.vercel.app/accessibility" />
+<meta property="og:title" content="DAOasis Accessibility | Designed for more people" />
+<meta property="og:description" content="Keyboard navigation, readable typography, semantic structure, contrast, motion — what is done, what is not, and how to report a problem." />
+<meta property="og:image" content="images/img-07.jpg" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://da-oasis-website.vercel.app/accessibility" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Frank+Ruhl+Libre:wght@300;400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/trust.css" />
+</head>
+<body>
+
+<a class="skip-link" href="#doc">Skip to content</a>
+<div class="scroll-prog" id="scrollProg"></div>
+
+<!-- ══ NAV ══ -->
+<nav class="nav">
+  <a class="nav-brand" href="index.html">
+    <img src="images/img-09-white.png" alt="DAOasis" />
+    <span>DAOasis</span>
+  </a>
+  <div class="nav-links">
+    <a href="app.html">The App</a>
+    <a href="sanctuary.html">The Sanctuary</a>
+    <a href="web3.html">The Web3 Layer</a>
+    <a href="about.html">About Us</a>
+    <a href="investors.html">Investors</a>
+  </div>
+  <a class="nav-cta" href="index.html#waitlistSection">Join the waitlist</a>
+  <button class="nav-burger" id="navBurger" aria-label="Menu" aria-expanded="false" aria-controls="navDrawer"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="nav-drawer" id="navDrawer">
+  <a href="app.html">The App</a>
+  <a href="sanctuary.html">The Sanctuary</a>
+  <a href="web3.html">The Web3 Layer</a>
+  <a href="about.html">About Us</a>
+  <a href="investors.html">Investors</a>
+  <a class="nav-cta" href="index.html#waitlistSection">Join the waitlist</a>
+</div>
+
+<main>
+
+<!-- ══ THE COVER ══ -->
+<header class="th grain">
+  <div class="th-inner rv">
+    <div class="th-kick">Trust &middot; Accessibility</div>
+    <h1 class="th-h1">
+      <span class="ln"><i>Designed for</i></span>
+      <span class="ln"><i><em>more people.</em></i></span>
+    </h1>
+    <p class="th-sub soft d1">A wellness product that only works for people with perfect vision, steady
+      hands and no sensitivity to motion is not much of a wellness product. This page sets out
+      <strong>what has been built, what has not been done yet, and how to tell us</strong> when something
+      does not work for you.</p>
+    <div class="th-meta soft d2">
+      <div class="th-m-i"><div class="th-m-k">Last updated</div><div class="th-m-v">17 August 2026</div></div>
+      <div class="th-m-i"><div class="th-m-k">Target standard</div><div class="th-m-v">WCAG 2.2 Level AA &mdash; working toward</div></div>
+      <div class="th-m-i"><div class="th-m-k">Formally audited</div><div class="th-m-v">Not yet &mdash; <a href="#s04">see section 04</a></div></div>
+      <div class="th-m-i"><div class="th-m-k">Report a problem</div><div class="th-m-v"><a href="#s06">Section 06</a></div></div>
+    </div>
+  </div>
+</header>
+
+
+<div class="doc-wrap" id="doc">
+  <div class="doc-grid">
+
+    <aside class="doc-rail" aria-label="Contents">
+      <div class="doc-rail-k">Contents</div>
+      <ol>
+        <li><a href="#s01"><span class="n">01</span> Our commitment</a></li>
+        <li><a href="#s02"><span class="n">02</span> What is built in</a></li>
+        <li><a href="#s03"><span class="n">03</span> Motion, and why it matters here</a></li>
+        <li><a href="#s04"><span class="n">04</span> Where we are honestly not there</a></li>
+        <li><a href="#s05"><span class="n">05</span> The Companion App</a></li>
+        <li><a href="#s06"><span class="n">06</span> Tell us</a></li>
+        <li><a href="#s07"><span class="n">07</span> Third-party limits</a></li>
+      </ol>
+    </aside>
+
+    <article class="doc">
+
+      <details class="doc-toc-m">
+        <summary>Contents &middot; 7 sections</summary>
+        <ol>
+          <li><a href="#s01"><span class="n">01</span> Our commitment</a></li>
+          <li><a href="#s02"><span class="n">02</span> What is built in</a></li>
+          <li><a href="#s03"><span class="n">03</span> Motion, and why it matters here</a></li>
+          <li><a href="#s04"><span class="n">04</span> Where we are honestly not there</a></li>
+          <li><a href="#s05"><span class="n">05</span> The Companion App</a></li>
+          <li><a href="#s06"><span class="n">06</span> Tell us</a></li>
+          <li><a href="#s07"><span class="n">07</span> Third-party limits</a></li>
+        </ol>
+      </details>
+
+      <div class="doc-lead rv">
+        <p class="soft">DAOasis is a visually ambitious website. Ambitious design and accessible design are
+          often treated as a trade-off, and <em>mostly that is an excuse</em>.</p>
+        <p class="soft d1">Where we have got it right, this page says how. Where we have not, it says
+          that too — because a page claiming full compliance without having tested for it would be the
+          least trustworthy thing in the trust layer.</p>
+      </div>
+
+      <!-- 01 -->
+      <section class="doc-s rv" id="s01">
+        <div class="doc-s-n soft">01</div>
+        <h2 class="soft">Our commitment</h2>
+        <div class="soft d1">
+          <p>DAOasis is committed to improving accessibility across its website and digital experiences,
+            and to treating it as part of designing something well rather than as a compliance task
+            bolted on at the end.</p>
+          <p>We are <strong>working toward</strong> the Web Content Accessibility Guidelines (WCAG) 2.2 at
+            Level AA as our reference standard, and we are treating it as a design target rather than a
+            badge.</p>
+        </div>
+        <div class="callout soft d2">
+          <div class="callout-k">What we are not claiming</div>
+          <p>DAOasis has <strong>not</strong> completed a formal third-party accessibility audit, and this
+            page does not claim conformance with WCAG or any other standard. We are working toward
+            recognised standards and improving continuously. When an independent audit is carried out, its
+            scope, date and findings will be stated here — including the parts that failed.</p>
+        </div>
+      </section>
+
+      <!-- 02 -->
+      <section class="doc-s rv" id="s02">
+        <div class="doc-s-n soft">02</div>
+        <h2 class="soft">What is built in</h2>
+        <div class="soft d1">
+          <p>Specific things, present today across the website.</p>
+        </div>
+        <div class="cards soft d2">
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">Keyboard navigation</div></div>
+            <div class="card-b">Every page can be navigated with a keyboard. Links and controls are real
+              links and real buttons rather than styled <em>divs</em>, so they are focusable and operable
+              in the order you would expect. Focus is <strong>visibly indicated</strong> with a gold
+              outline — never removed, which is one of the most common and most damaging shortcuts on the
+              web. Each page starts with a skip link so you can jump straight to the content instead of
+              tabbing through the navigation. The mobile menu closes with the Escape key.</div>
+          </div>
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">Readable typography</div></div>
+            <div class="card-b">Body text is set at 16&ndash;16.5px with line height near 1.9, and reading
+              columns are capped at a comfortable measure rather than running the full width of a large
+              screen. Text scales with your browser's zoom and text-size settings. There is no 10px legal
+              small print anywhere in the trust layer — a policy set too small to read is not
+              disclosure.</div>
+          </div>
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">Semantic structure</div></div>
+            <div class="card-b">Landmark elements — <em>nav</em>, <em>main</em>, <em>header</em>,
+              <em>section</em>, <em>footer</em> — and a single logical heading hierarchy per page, so a
+              screen reader can present an outline and jump between sections. Contents lists are real
+              ordered lists. Accordions use native <em>details</em> and <em>summary</em> elements, which
+              are keyboard-operable and announced correctly without any custom scripting.</div>
+          </div>
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">Colour contrast</div></div>
+            <div class="card-b">Body text is set against its background at a contrast ratio intended to
+              meet or exceed WCAG AA for normal text. Contrast has been corrected where it was found
+              wanting — the app page's integration descriptions previously sat at roughly 2.4:1 and were
+              lifted to about 4.5:1. Colour is never the only way information is conveyed: status is
+              always carried by a text label as well as a tint.</div>
+          </div>
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">Alternative text</div></div>
+            <div class="card-b">Meaningful images carry descriptive alternative text. Purely decorative
+              images carry empty alt attributes so that assistive technology skips them rather than
+              reading out a filename. Diagrams carry a text description of what they show, and the
+              information in every diagram is also available as text.</div>
+          </div>
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">Responsive design</div></div>
+            <div class="card-b">Every page is built and checked from 375px to 1920px wide, with no
+              horizontal scrolling and no content trapped off screen. Where a layout would compress into
+              something unreadable, it is <strong>recomposed rather than shrunk</strong> — diagrams become
+              vertical sequences and side rails become collapsible contents lists, so the information
+              survives the small screen instead of merely fitting on it.</div>
+          </div>
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">Light and dark</div></div>
+            <div class="card-b">An appearance control in the footer of every page, remembered between
+              visits. Useful for light sensitivity, and for reading a long policy at night.</div>
+          </div>
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">Works without JavaScript</div></div>
+            <div class="card-b">Animated reveals default to <em>visible</em> rather than hidden, so a
+              scripting failure cannot leave a page blank. This matters most on the trust pages: a privacy
+              policy that renders as invisible text is a privacy policy nobody can read.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 03 -->
+      <section class="doc-s rv" id="s03">
+        <div class="doc-s-n soft">03</div>
+        <h2 class="soft">Motion, and why it matters here</h2>
+        <div class="soft d1">
+          <p>The DAOasis marketing pages use scroll-driven animation, three-dimensional scenes and camera
+            movement. For people with vestibular disorders, migraine or motion sensitivity, that kind of
+            movement is not a stylistic preference — it can cause genuine nausea and disorientation.</p>
+          <p>Two things follow from that.</p>
+          <h3>Reduced motion is respected</h3>
+          <p>If your operating system is set to reduce motion, DAOasis honours it. Animations are
+            shortened or removed, masked text appears without movement, parallax is switched off, and the
+            paced scrolling used on the marketing pages is bypassed so that scrolling maps directly to
+            your input. You can set this in your system accessibility settings — <em>Reduce motion</em> on
+            macOS and iOS, <em>Show animations</em> on Windows, <em>Remove animations</em> on Android — and
+            every page on this site will respect it without you telling us.</p>
+          <h3>The trust pages have no scroll choreography at all</h3>
+          <p>These seven pages — Privacy, Health Data, Terms, Cookies, Token Disclaimer, Accessibility and
+            Contact — contain <strong>no pinned sections, no scroll-scrubbed animation and no
+            three-dimensional scenes</strong>. Scrolling is ordinary browser scrolling. The only motion is
+            a brief fade as sections come into view.</p>
+          <p>That is a deliberate decision. If you need to read a policy, you should not have to negotiate
+            a cinematic experience to do it.</p>
+        </div>
+        <div class="pt soft d2">
+          <div class="pt-k">In plain terms</div>
+          <p>Turn on reduce motion in your system settings and the animation goes away site-wide. On these
+            legal pages there is barely any to begin with.</p>
+        </div>
+      </section>
+
+      <!-- 04 -->
+      <section class="doc-s rv" id="s04">
+        <div class="doc-s-n soft">04</div>
+        <h2 class="soft">Where we are honestly not there</h2>
+        <div class="soft d1">
+          <p>The useful half of an accessibility statement. These are known gaps.</p>
+          <ul>
+            <li><strong>No formal audit has been carried out.</strong> Accessibility has been designed and
+              checked by the team, not verified independently. Status:
+              <span class="tbc">Independent accessibility audit to be commissioned</span>.</li>
+            <li><strong>No testing with assistive technology users.</strong> Structural and keyboard
+              testing is not the same as watching someone who relies on a screen reader every day try to
+              use the site. That testing has not happened yet, and it is the gap we consider most
+              significant.</li>
+            <li><strong>Screen reader compatibility is designed for, not certified.</strong> The site uses
+              semantic HTML and accessible names, which is the foundation — but it has not been verified
+              across the range of screen reader and browser combinations people actually use.</li>
+            <li><strong>The marketing pages' animated scenes are inherently visual.</strong> Where a scene
+              carries meaning, the same information appears in the surrounding text — but the experience of
+              those pages is not equivalent for everyone, and pretending otherwise would be
+              dishonest.</li>
+            <li><strong>Some visual sequences are decorative rather than described.</strong> They are
+              marked so assistive technology skips them, which avoids noise but does not convey what a
+              sighted reader sees.</li>
+            <li><strong>No accessibility contact address is published yet.</strong> See
+              <a href="#s06">section 06</a>.</li>
+          </ul>
+          <p>This list will get shorter. It is published in this state because a specific gap someone can
+            hold us to is worth more than a general commitment nobody can check.</p>
+        </div>
+      </section>
+
+      <!-- 05 -->
+      <section class="doc-s rv" id="s05">
+        <div class="doc-s-n soft">05</div>
+        <h2 class="soft">The Companion App</h2>
+        <div class="soft d1">
+          <p><span class="chip chip-building">In development</span> The DAOasis Companion App is being
+            built and is not released.</p>
+          <p>The intention is for it to support the platform accessibility features people already rely
+            on — the operating system's screen reader, dynamic text sizing, increased contrast, reduced
+            motion and voice control — rather than to build a separate and inevitably worse set of its
+            own.</p>
+          <p>That is an intention rather than a verified claim, and this page will be updated with the
+            actual position when the app is released, including what does not work yet.</p>
+          <p>One structural point worth stating now: because DAOasis recognises participation, accessible
+            participation matters more than it would in an app that only displays information. A quest
+            system that can only be completed by people who move in a particular way would not be a
+            wellness product for everyone. How participation is recognised for people with different
+            physical capabilities is
+            <span class="tbc">Inclusive participation design to be confirmed</span>, and it is a product
+            question, not only an interface one.</p>
+        </div>
+      </section>
+
+      <!-- 06 -->
+      <section class="doc-s rv" id="s06">
+        <div class="doc-s-n soft">06</div>
+        <h2 class="soft">Tell us</h2>
+        <div class="soft d1">
+          <p>If any part of DAOasis is difficult or impossible for you to use, we want to know. A specific
+            report is more useful than a general one — but send it however is easiest for you, and do not
+            spend effort formatting it.</p>
+          <p>If you can, tell us what you were trying to do, which page or screen you were on, what
+            happened, and what you were using — browser, device, and any assistive technology. Any of
+            those helps; all of them is a luxury.</p>
+        </div>
+        <div class="cards soft d2">
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">Accessibility reports</div></div>
+            <div class="card-b">Problems using the website, or anything on it that does not work with your
+              assistive technology.</div>
+            <div class="card-m">
+              <div class="card-m-i"><div class="card-m-k">Address</div><div class="card-m-v"><span class="tbc">Accessibility contact to be confirmed</span></div></div>
+              <div class="card-m-i"><div class="card-m-k">Meanwhile</div><div class="card-m-v">Use any route on the <a href="contact.html">Contact</a> page</div></div>
+            </div>
+          </div>
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">If you need this content another way</div></div>
+            <div class="card-b">If a page on this site is not accessible to you and you need the
+              information in it — a policy, the terms, anything on the trust layer — ask, and we will
+              provide it in another format. That applies whether or not we have fixed the underlying
+              problem yet.</div>
+          </div>
+        </div>
+        <div class="soft d3">
+          <p>We aim to acknowledge accessibility reports promptly and to tell you what we intend to do
+            about them, including when the answer is that it will take a while. A target response time is
+            <span class="tbc">Response time commitment to be confirmed</span>, and we would rather set one
+            we can keep than publish one we cannot.</p>
+        </div>
+      </section>
+
+      <!-- 07 -->
+      <section class="doc-s rv" id="s07">
+        <div class="doc-s-n soft">07</div>
+        <h2 class="soft">Third-party limits</h2>
+        <div class="soft d1">
+          <p>Parts of the DAOasis experience depend on services we do not build — app stores, health
+            platforms, wallet providers and, in future, payment providers. Their accessibility is theirs,
+            and we cannot fix it directly.</p>
+          <p>Where a third-party dependency creates a barrier, we will say so rather than leave you
+            wondering whether the problem is ours, and we will raise it with the provider and look for an
+            alternative route where one exists.</p>
+          <p>The DAOasis website itself is built with no third-party interface components at all — no
+            embedded widgets, no chat bubbles, no consent banners, no social embeds. That is partly a
+            performance and privacy decision, and partly an accessibility one: embedded third-party
+            widgets are among the most reliable sources of keyboard traps and unlabelled controls on the
+            web, and the simplest way to avoid them is not to have any.</p>
+        </div>
+        <div class="btn-row soft d2" style="margin-top:44px;">
+          <a class="btn btn-dark" href="contact.html">Report a problem</a>
+          <a class="btn btn-outline" href="privacy.html">Privacy Policy</a>
+        </div>
+      </section>
+
+    </article>
+  </div>
+</div>
+
+
+<!-- ══ CROSS-LINKS ══ -->
+<section class="cx grain">
+  <div class="cx-inner rv">
+    <div class="cx-k">The trust layer</div>
+    <h2 class="cx-h soft">Everything else we <em>put in writing.</em></h2>
+    <div class="cx-grid soft d1">
+      <a class="cx-i" href="privacy.html"><div class="cx-i-t">Privacy Policy</div><div class="cx-i-b">What may be collected, why, and your choices</div></a>
+      <a class="cx-i" href="health-data.html"><div class="cx-i-t">Health Data</div><div class="cx-i-b">Wellness information, in plain language</div></a>
+      <a class="cx-i" href="terms.html"><div class="cx-i-t">Terms of Use</div><div class="cx-i-b">The agreement that governs using DAOasis</div></a>
+      <a class="cx-i" href="cookies.html"><div class="cx-i-t">Cookie Policy</div><div class="cx-i-b">What this site stores in your browser</div></a>
+      <a class="cx-i" href="token-disclaimer.html"><div class="cx-i-t">Token &amp; Web3</div><div class="cx-i-b">What DRC and $DVT are — and are not</div></a>
+      <a class="cx-i here" href="accessibility.html"><div class="cx-i-t">Accessibility</div><div class="cx-i-b">Designing for more people, and how to tell us</div></a>
+      <a class="cx-i" href="contact.html"><div class="cx-i-t">Contact</div><div class="cx-i-b">How to reach the right part of DAOasis</div></a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ CLOSING NOTE ══ -->
+<section class="foot-note">
+  <div class="foot-note-inner">
+    <div class="foot-note-k">A note on this page</div>
+    <p>This statement describes the DAOasis website as at the date above. It does not claim conformance
+      with any accessibility standard, because no independent audit has been carried out. Items marked
+      <span class="tbc">to be confirmed</span> are open commitments rather than omissions. If something
+      here is inaccurate, or if the site fails you in a way this page does not mention,
+      <a href="contact.html">please tell us</a> — that is the most useful thing anyone can send us.</p>
+  </div>
+</section>
+
+</main>
+
+
+<!-- ══ FOOTER ══ -->
+<footer class="site-footer">
+  <div class="footer-top">
+    <div>
+      <div class="footer-brand-logo"><img src="images/img-09-white.png" alt="DAOasis mark" /><span>DAOasis</span></div>
+      <div class="footer-tagline"><strong>Wellness meets Web3.</strong><em>Rest. Learn. Earn. Return.</em></div>
+      <div class="footer-appearance">
+        <div class="footer-appearance-label">Appearance</div>
+        <div class="footer-toggle"><button id="ftLight">Light</button><button id="ftDark" class="active">Dark</button></div>
+      </div>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-label">Explore</div>
+      <a href="index.html">Home</a><a href="app.html">Companion App</a><a href="sanctuary.html">The Sanctuary</a><a href="web3.html">The Web3 Layer</a><a href="about.html">About</a><a href="investors.html">Investors</a><a href="contact.html">Contact</a>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-label">Resources</div>
+      <a href="investors.html#resources">Investor Pack</a><a href="investors.html#resources">Business Plan</a><a href="investors.html#resources">Whitepaper</a><a href="investors.html#resources">Brand Kit</a><a href="index.html#waitlistSection">Waitlist</a>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-label">Trust</div>
+      <a href="privacy.html">Privacy</a><a href="health-data.html">Health Data</a><a href="terms.html">Terms</a><a href="cookies.html">Cookies</a><a href="token-disclaimer.html">Token Disclaimer</a><a class="on" href="accessibility.html">Accessibility</a>
+    </div>
+  </div>
+  <div class="footer-bottom"><span>© 2026 DAOasis. All rights reserved.</span><span>Phuket · Global</span></div>
+</footer>
+
+<script src="js/trust.js"></script>
+</body>
+</html>

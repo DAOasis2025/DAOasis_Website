@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<script>
+  (function(){
+    var h = document.documentElement;
+    try {
+      var t = localStorage.getItem('daoasis-theme') || 'dark';
+      if(t === 'light') h.setAttribute('data-theme','light');
+    } catch(e) { /* private mode: fall through to the dark default */ }
+
+    /* ── FAIL-VISIBLE GATE ──
+       Every hidden reveal start-state in css/trust.css is scoped to
+       `html.js`. Adding the class here — inline, in the same file as the
+       markup, so it cannot 404 — is what switches the animation on.
+
+       If js/trust.js never runs (blocked, stripped, 404, or it throws
+       before attaching its observer) the class is dropped 2.5s later and
+       the whole document paints at full strength. A privacy policy must
+       never be able to render as invisible type. */
+    h.className += (h.className ? ' ' : '') + 'js';
+    setTimeout(function(){
+      if(h.getAttribute('data-trust') !== 'ready'){
+        h.className = h.className.replace(/(^|\s)js(\s|$)/, '$1$2');
+      }
+    }, 2500);
+  })();
+</script>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>DAOasis Terms of Use | The agreement between us</title>
+<meta name="description" content="The terms that govern using the DAOasis website, Companion App, learning, quests, community, DRC and $DVT functionality — written plainly." />
+<link rel="canonical" href="https://da-oasis-website.vercel.app/terms" />
+<meta property="og:title" content="DAOasis Terms of Use | The agreement between us" />
+<meta property="og:description" content="What you can expect from DAOasis, what we expect from you, and what we are careful not to promise." />
+<meta property="og:image" content="images/img-07.jpg" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://da-oasis-website.vercel.app/terms" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Frank+Ruhl+Libre:wght@300;400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/trust.css" />
+</head>
+<body>
+
+<a class="skip-link" href="#doc">Skip to content</a>
+<div class="scroll-prog" id="scrollProg"></div>
+
+<!-- ══ NAV ══ -->
+<nav class="nav">
+  <a class="nav-brand" href="index.html">
+    <img src="images/img-09-white.png" alt="DAOasis" />
+    <span>DAOasis</span>
+  </a>
+  <div class="nav-links">
+    <a href="app.html">The App</a>
+    <a href="sanctuary.html">The Sanctuary</a>
+    <a href="web3.html">The Web3 Layer</a>
+    <a href="about.html">About Us</a>
+    <a href="investors.html">Investors</a>
+  </div>
+  <a class="nav-cta" href="index.html#waitlistSection">Join the waitlist</a>
+  <button class="nav-burger" id="navBurger" aria-label="Menu" aria-expanded="false" aria-controls="navDrawer"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="nav-drawer" id="navDrawer">
+  <a href="app.html">The App</a>
+  <a href="sanctuary.html">The Sanctuary</a>
+  <a href="web3.html">The Web3 Layer</a>
+  <a href="about.html">About Us</a>
+  <a href="investors.html">Investors</a>
+  <a class="nav-cta" href="index.html#waitlistSection">Join the waitlist</a>
+</div>
+
+<main>
+
+<!-- ══ THE COVER ══ -->
+<header class="th grain">
+  <div class="th-inner rv">
+    <div class="th-kick">Trust &middot; Terms of Use</div>
+    <h1 class="th-h1">
+      <span class="ln"><i>The agreement</i></span>
+      <span class="ln"><i><em>between us.</em></i></span>
+    </h1>
+    <p class="th-sub soft d1">What you can expect from DAOasis, what we expect from you, and the things
+      we are deliberately careful not to promise. <strong>Written to be understood</strong> — the
+      protections are still here, they are just not hiding.</p>
+    <div class="th-meta soft d2">
+      <div class="th-m-i"><div class="th-m-k">Last updated</div><div class="th-m-v">17 August 2026</div></div>
+      <div class="th-m-i"><div class="th-m-k">Version</div><div class="th-m-v">1.0</div></div>
+      <div class="th-m-i"><div class="th-m-k">Applies to</div><div class="th-m-v">This website and the DAOasis Companion App</div></div>
+      <div class="th-m-i"><div class="th-m-k">Your data</div><div class="th-m-v"><a href="privacy.html">Privacy Policy</a></div></div>
+    </div>
+  </div>
+</header>
+
+
+<div class="doc-wrap" id="doc">
+  <div class="doc-grid">
+
+    <aside class="doc-rail" aria-label="Contents">
+      <div class="doc-rail-k">Contents</div>
+      <ol>
+        <li><a href="#s01"><span class="n">01</span> Introduction</a></li>
+        <li><a href="#s02"><span class="n">02</span> Definitions</a></li>
+        <li><a href="#s03"><span class="n">03</span> Eligibility</a></li>
+        <li><a href="#s04"><span class="n">04</span> Using DAOasis</a></li>
+        <li><a href="#s05"><span class="n">05</span> Accounts</a></li>
+        <li><a href="#s06"><span class="n">06</span> The Companion App</a></li>
+        <li><a href="#s07"><span class="n">07</span> Wellness and educational content</a></li>
+        <li><a href="#s08"><span class="n">08</span> Quests and participation</a></li>
+        <li><a href="#s09"><span class="n">09</span> Reward Credits (DRC)</a></li>
+        <li><a href="#s10"><span class="n">10</span> $DVT and Web3 functionality</a></li>
+        <li><a href="#s11"><span class="n">11</span> Marketplace</a></li>
+        <li><a href="#s12"><span class="n">12</span> Sanctuary and physical experiences</a></li>
+        <li><a href="#s13"><span class="n">13</span> Community and contributions</a></li>
+        <li><a href="#s14"><span class="n">14</span> Stake to Create</a></li>
+        <li><a href="#s15"><span class="n">15</span> Intellectual property</a></li>
+        <li><a href="#s16"><span class="n">16</span> Third-party services</a></li>
+        <li><a href="#s17"><span class="n">17</span> Prohibited conduct</a></li>
+        <li><a href="#s18"><span class="n">18</span> Availability and changes</a></li>
+        <li><a href="#s19"><span class="n">19</span> Disclaimers</a></li>
+        <li><a href="#s20"><span class="n">20</span> Limitation of liability</a></li>
+        <li><a href="#s21"><span class="n">21</span> Indemnification</a></li>
+        <li><a href="#s22"><span class="n">22</span> Suspension and termination</a></li>
+        <li><a href="#s23"><span class="n">23</span> Governing law</a></li>
+        <li><a href="#s24"><span class="n">24</span> Contact</a></li>
+      </ol>
+    </aside>
+
+    <article class="doc">
+
+      <details class="doc-toc-m">
+        <summary>Contents &middot; 24 sections</summary>
+        <ol>
+          <li><a href="#s01"><span class="n">01</span> Introduction</a></li>
+          <li><a href="#s02"><span class="n">02</span> Definitions</a></li>
+          <li><a href="#s03"><span class="n">03</span> Eligibility</a></li>
+          <li><a href="#s04"><span class="n">04</span> Using DAOasis</a></li>
+          <li><a href="#s05"><span class="n">05</span> Accounts</a></li>
+          <li><a href="#s06"><span class="n">06</span> The Companion App</a></li>
+          <li><a href="#s07"><span class="n">07</span> Wellness and educational content</a></li>
+          <li><a href="#s08"><span class="n">08</span> Quests and participation</a></li>
+          <li><a href="#s09"><span class="n">09</span> Reward Credits (DRC)</a></li>
+          <li><a href="#s10"><span class="n">10</span> $DVT and Web3 functionality</a></li>
+          <li><a href="#s11"><span class="n">11</span> Marketplace</a></li>
+          <li><a href="#s12"><span class="n">12</span> Sanctuary and physical experiences</a></li>
+          <li><a href="#s13"><span class="n">13</span> Community and contributions</a></li>
+          <li><a href="#s14"><span class="n">14</span> Stake to Create</a></li>
+          <li><a href="#s15"><span class="n">15</span> Intellectual property</a></li>
+          <li><a href="#s16"><span class="n">16</span> Third-party services</a></li>
+          <li><a href="#s17"><span class="n">17</span> Prohibited conduct</a></li>
+          <li><a href="#s18"><span class="n">18</span> Availability and changes</a></li>
+          <li><a href="#s19"><span class="n">19</span> Disclaimers</a></li>
+          <li><a href="#s20"><span class="n">20</span> Limitation of liability</a></li>
+          <li><a href="#s21"><span class="n">21</span> Indemnification</a></li>
+          <li><a href="#s22"><span class="n">22</span> Suspension and termination</a></li>
+          <li><a href="#s23"><span class="n">23</span> Governing law</a></li>
+          <li><a href="#s24"><span class="n">24</span> Contact</a></li>
+        </ol>
+      </details>
+
+      <div class="doc-lead rv">
+        <p class="soft">These terms are the agreement between you and DAOasis. They matter most on the
+          day something goes wrong, which is exactly when nobody wants to be deciphering
+          <em>legalese</em>.</p>
+        <p class="soft d1">So they are written in plain English. The substance is not softened —
+          particularly the parts about what DAOasis does not promise.</p>
+      </div>
+
+      <!-- 01 -->
+      <section class="doc-s rv" id="s01">
+        <div class="doc-s-n soft">01</div>
+        <h2 class="soft">Introduction</h2>
+        <div class="soft d1">
+          <p>These Terms of Use govern your access to and use of the DAOasis website, the DAOasis
+            Companion App, and the related features, content and services DAOasis makes available. By
+            using any of them, you agree to these terms. If you do not agree, please do not use
+            DAOasis.</p>
+          <p>These terms should be read together with the <a href="privacy.html">Privacy Policy</a>, the
+            <a href="cookies.html">Cookie Policy</a>, the <a href="health-data.html">Health Data</a> page
+            and the <a href="token-disclaimer.html">Token &amp; Web3 Disclaimer</a>. Where any of those
+            documents deals with a subject specifically, that document governs it.</p>
+          <p>The DAOasis entity you are contracting with is
+            <span class="tbc">Legal entity to be confirmed</span>.</p>
+        </div>
+        <div class="callout soft d2">
+          <div class="callout-k">The three things most worth knowing</div>
+          <p><strong>One.</strong> DAOasis is a wellness and educational product, not a medical service.
+            Nothing in it is medical advice.<br />
+            <strong>Two.</strong> DRC and $DVT are participation and utility mechanisms. They are not
+            investments, and no financial return is promised.<br />
+            <strong>Three.</strong> Much of what this website describes is still being built. Features
+            marked as planned, in development or in design may change, be delayed, or not be released
+            at all.</p>
+        </div>
+      </section>
+
+      <!-- 02 -->
+      <section class="doc-s rv" id="s02">
+        <div class="doc-s-n soft">02</div>
+        <h2 class="soft">Definitions</h2>
+        <div class="dl soft d1">
+          <div class="dl-i">
+            <div class="dl-t">DAOasis</div>
+            <div class="dl-b">The wellness ecosystem described on this website, and the entity operating
+              it, its website, Companion App, learning content, community features and related
+              services.</div>
+          </div>
+          <div class="dl-i">
+            <div class="dl-t">Companion App</div>
+            <div class="dl-b">The DAOasis mobile application, through which daily participation is
+              tracked and recognised. Currently <strong>in development</strong>.</div>
+          </div>
+          <div class="dl-i">
+            <div class="dl-t">DRC &mdash; DAOasis Reward Credits</div>
+            <div class="dl-b">The in-app mechanism that <strong>recognises participation</strong>. Held
+              inside the app. Not money, not a deposit, not a security, and carrying no monetary
+              guarantee. DRC may be converted into $DVT, subject to section 09.</div>
+          </div>
+          <div class="dl-i">
+            <div class="dl-t">$DVT &mdash; DAOasis Value Token</div>
+            <div class="dl-b">The on-chain utility token of the ecosystem, designed to support
+              marketplace use, governance, staking, Stake to Create and contribution to DAOasis.
+              <strong>Not an investment product.</strong></div>
+          </div>
+          <div class="dl-i">
+            <div class="dl-t">Quest</div>
+            <div class="dl-b">A defined participation activity in the Companion App, across the
+              categories Rest, Move, Learn, Reflect and Community.</div>
+          </div>
+          <div class="dl-i">
+            <div class="dl-t">The Journey</div>
+            <div class="dl-b">The Bangkok-to-Phuket progression within the Companion App, along which
+              participation moves you. A product mechanic, not a physical entitlement or a travel
+              arrangement.</div>
+          </div>
+          <div class="dl-i">
+            <div class="dl-t">The Sanctuary</div>
+            <div class="dl-b">The planned physical expression of the ecosystem, with a first pilot
+              planned for Phuket in 2027. <strong>In development.</strong> Not currently open, bookable
+              or operational.</div>
+          </div>
+          <div class="dl-i">
+            <div class="dl-t">Marketplace</div>
+            <div class="dl-b">The planned facility for using $DVT for eligible products, experiences and
+              ecosystem offerings. <strong>In development.</strong></div>
+          </div>
+          <div class="dl-i">
+            <div class="dl-t">Stake to Create</div>
+            <div class="dl-b">The planned mechanism through which a member may stake $DVT to put forward
+              and deliver approved contributions to the ecosystem. <strong>In design</strong> and not
+              yet operational.</div>
+          </div>
+          <div class="dl-i">
+            <div class="dl-t">Content</div>
+            <div class="dl-b">Text, images, video, audio, lessons, designs, code and other material made
+              available through DAOasis.</div>
+          </div>
+          <div class="dl-i">
+            <div class="dl-t">User Contributions</div>
+            <div class="dl-b">Anything you submit, post or upload — community posts, comments, media, and
+              material submitted under Stake to Create.</div>
+          </div>
+          <div class="dl-i">
+            <div class="dl-t">You / member</div>
+            <div class="dl-b">The person using DAOasis under these terms.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 03 -->
+      <section class="doc-s rv" id="s03">
+        <div class="doc-s-n soft">03</div>
+        <h2 class="soft">Eligibility</h2>
+        <div class="soft d1">
+          <p>To use DAOasis you must be at least the minimum age that applies where you live, be able to
+            enter a binding contract, and not be barred from using the service under any applicable law
+            or sanctions regime.</p>
+          <p>The minimum age for a DAOasis account is
+            <span class="tbc">Minimum age to be confirmed</span>. DAOasis is designed for adults and is
+            not built for children.</p>
+          <p>Some parts of the ecosystem may be unavailable, or available only on different terms, in
+            certain jurisdictions — particularly anything involving $DVT. Where that is the case,
+            DAOasis may restrict access to that functionality. It is your responsibility to know whether
+            using a given feature is lawful where you are, and to stop if it is not.</p>
+          <p>DAOasis may require verification of your identity, age or location before providing certain
+            functionality, where that is necessary to meet a legal or regulatory requirement.</p>
+        </div>
+      </section>
+
+      <!-- 04 -->
+      <section class="doc-s rv" id="s04">
+        <div class="doc-s-n soft">04</div>
+        <h2 class="soft">Using DAOasis</h2>
+        <div class="soft d1">
+          <p>Subject to these terms, DAOasis grants you a limited, personal, non-exclusive,
+            non-transferable and revocable right to access and use the service for your own
+            non-commercial use.</p>
+          <p>You agree to use DAOasis for its intended purpose, to comply with applicable law, and to
+            respect other members. What is specifically not allowed is set out in
+            <a href="#s17">section 17</a>.</p>
+          <p>You are responsible for the device, connectivity and software you need in order to use
+            DAOasis, and for any costs your provider charges you for that.</p>
+        </div>
+      </section>
+
+      <!-- 05 -->
+      <section class="doc-s rv" id="s05">
+        <div class="doc-s-n soft">05</div>
+        <h2 class="soft">Accounts</h2>
+        <div class="soft d1">
+          <p>Some features require an account. When you create one, you agree to provide accurate
+            information and to keep it up to date.</p>
+          <p>You are responsible for keeping your credentials confidential and for activity that occurs
+            under your account. Tell us promptly if you believe your account has been accessed without
+            your permission.</p>
+          <p>One person, one account. Accounts are personal and may not be sold, rented, shared or
+            transferred. Creating multiple accounts to obtain additional DRC or other benefits is a
+            breach of these terms.</p>
+          <p>You may close your account at any time. What happens to your information when you do is
+            covered in <a href="privacy.html#s13">section 13 of the Privacy Policy</a>. Closing your
+            account ends any DRC balance associated with it — DRC is a recognition mechanism tied to your
+            participation record, and it does not survive as a claim against DAOasis.</p>
+        </div>
+      </section>
+
+      <!-- 06 -->
+      <section class="doc-s rv" id="s06">
+        <div class="doc-s-n soft">06</div>
+        <h2 class="soft">The Companion App</h2>
+        <div class="soft d1">
+          <p>The Companion App is where daily participation begins. It is currently
+            <span class="chip chip-building">In development</span> — its core architecture is built and
+            end-to-end flows are being completed.</p>
+          <h3>Device and platform integrations</h3>
+          <p>The app is designed to work with health platforms and wearable devices so that information
+            you already generate does not have to be entered by hand. Connecting a platform is optional
+            and requires your permission. Apple HealthKit and Google Health Connect are the priority
+            integrations identified for the app's first release; other integrations described on this
+            website are planned rather than live.</p>
+          <p>DAOasis does not control third-party platforms or devices, and cannot guarantee their
+            accuracy, availability or continued support. If a platform changes or withdraws its
+            interface, related DAOasis functionality may change or stop working.</p>
+          <h3>Accuracy</h3>
+          <p>Activity and wellness measurements — whether read from a device or entered by you — are
+            estimates. They are not clinical measurements and should not be relied on as such.</p>
+          <h3>Availability</h3>
+          <p>App store distribution, supported operating system versions, and the features available in
+            a given release are subject to change, and are also subject to the rules of the app stores
+            themselves.</p>
+        </div>
+      </section>
+
+      <!-- 07 -->
+      <section class="doc-s rv" id="s07">
+        <div class="doc-s-n soft">07</div>
+        <h2 class="soft">Wellness information and educational content</h2>
+        <div class="soft d1">
+          <p>DAOasis provides wellness content, behavioural guidance, learning material across two
+            tracks, and insights based on your own logged activity.</p>
+        </div>
+        <div class="callout soft d2">
+          <div class="callout-k">Not medical advice</div>
+          <p>All wellness information, guidance, insights and educational content provided through
+            DAOasis is for <strong>general informational and educational purposes only</strong>. It is
+            not medical advice, diagnosis or treatment, and it is not a substitute for consultation with
+            a qualified healthcare professional.</p>
+          <p>Always seek the advice of a qualified professional with any question about a medical
+            condition, and <strong>never disregard or delay seeking that advice because of something you
+            read or saw in DAOasis</strong>. If you think you may have a medical emergency, contact your
+            local emergency services immediately.</p>
+          <p>If DAOasis ever offers a service delivered by appropriately qualified professionals, that
+            service will state so explicitly and will be governed by its own additional terms. Absent
+            such an explicit statement, nothing in DAOasis is a professional healthcare service.</p>
+        </div>
+        <div class="soft d3">
+          <p>Before beginning any new exercise, breathing, nutrition or wellness practice, consider
+            whether it is appropriate for you, and consult a healthcare professional if you have any
+            condition, are pregnant, are taking medication, or are in any doubt. You participate in
+            physical activity at your own risk.</p>
+          <p>Educational content about digital ownership, tokens and blockchains is provided for
+            education only. It is not financial, investment, legal or tax advice. See
+            <a href="#s10">section 10</a> and the
+            <a href="token-disclaimer.html">Token &amp; Web3 Disclaimer</a>.</p>
+        </div>
+      </section>
+
+      <!-- 08 -->
+      <section class="doc-s rv" id="s08">
+        <div class="doc-s-n soft">08</div>
+        <h2 class="soft">Quests and participation</h2>
+        <div class="soft d1">
+          <p>Quests are participation activities across five categories — Rest, Move, Learn, Reflect and
+            Community. Completing them moves your journey forward and is recognised through DRC.</p>
+          <p>Verification is tiered according to how confirmable an action genuinely is: automatically
+            verified through a connected platform, manually logged by you, or recorded on the honour
+            system, with recognition weighted accordingly.</p>
+          <p>You agree to log participation honestly. Falsifying activity — by manipulating device data,
+            using automation or simulation, or logging activity that did not happen — is a breach of
+            these terms and may result in adjustment of your record, loss of DRC, or suspension. This is
+            not a technicality: fabricated participation devalues the recognition earned by people who
+            did the work.</p>
+          <p>DAOasis may adjust, correct or reverse participation records and DRC where they resulted
+            from error, a technical fault, or a breach of these terms.</p>
+          <p>The design of quests, categories, journey mechanics, verification tiers and recognition
+            weightings may change as the product develops.</p>
+        </div>
+      </section>
+
+      <!-- 09 -->
+      <section class="doc-s rv" id="s09">
+        <div class="doc-s-n soft">09</div>
+        <h2 class="soft">DAOasis Reward Credits (DRC)</h2>
+        <div class="soft d1">
+          <p>DRC recognises participation inside the DAOasis experience. It is earned through
+            participation and held inside the app.</p>
+        </div>
+        <div class="callout soft d2">
+          <div class="callout-k">What DRC is not</div>
+          <p>DRC is <strong>not</strong> money, legal tender, electronic money, a deposit, a bank
+            balance, a payment instrument, a financial product, a security or an investment. It has
+            <strong>no monetary value guaranteed by DAOasis</strong>, is not redeemable for cash, and
+            confers no ownership interest in DAOasis or any claim against it.</p>
+          <p>DRC exists to recognise participation. It should not be acquired, held or treated as
+            something to speculate on.</p>
+        </div>
+        <div class="soft d3">
+          <p>DRC is personal to your account and may not be sold, transferred or traded except through a
+            facility DAOasis expressly provides.</p>
+          <p>DRC may be convertible into $DVT. Conversion rates, caps, eligibility criteria and timing
+            are <span class="chip chip-design">In design</span> and are subject to change, to
+            implementation, and to applicable legal and regulatory requirements. DAOasis does not
+            guarantee that conversion will be available to you, in your jurisdiction, at any particular
+            rate, or at all.</p>
+          <p>DAOasis may modify how DRC is earned, weighted, capped or expired as the product develops.
+            Where a change materially reduces DRC already recognised, we will give notice before it takes
+            effect. DRC associated with an account ends when that account is closed or terminated.</p>
+        </div>
+      </section>
+
+      <!-- 10 -->
+      <section class="doc-s rv" id="s10">
+        <div class="doc-s-n soft">10</div>
+        <h2 class="soft">$DVT and Web3 functionality</h2>
+        <div class="soft d1">
+          <p>$DVT is the DAOasis Value Token, the on-chain layer of the ecosystem. Using it is
+            <strong>entirely voluntary</strong>. The Companion App can be used in full without ever
+            interacting with a token, a wallet or a blockchain.</p>
+          <p>$DVT is designed for utility within the ecosystem: marketplace use, governance, staking,
+            Stake to Create, and contribution to DAOasis. Each of those is at a different stage of
+            development, and the relevant section below says which.</p>
+        </div>
+        <div class="callout soft d2">
+          <div class="callout-k">No investment, no promise of return</div>
+          <p>$DVT is <strong>not offered as an investment</strong>. DAOasis does not promise, project or
+            guarantee any price, appreciation, profit, income, yield or return of any kind, and nothing
+            on this website should be read as doing so. $DVT is not a security, a share, a fund unit or a
+            financial product offered by DAOasis, and nothing here is an offer or solicitation to buy or
+            sell any financial instrument.</p>
+          <p>Digital assets carry significant risk, including complete and permanent loss of value.
+            Nothing here is financial, investment, legal or tax advice.</p>
+        </div>
+        <div class="soft d3">
+          <h3>Your responsibilities</h3>
+          <ul>
+            <li><strong>Your wallet is yours.</strong> DAOasis does not take custody of your wallet and
+              does not hold your private keys or recovery phrase. If you lose them, neither DAOasis nor
+              anyone else can recover your assets.</li>
+            <li><strong>Transactions are irreversible.</strong> Once confirmed on a blockchain, a
+              transaction cannot be undone by DAOasis or by anyone.</li>
+            <li><strong>Network conditions are not ours.</strong> Fees, congestion, forks, outages and
+              protocol changes are outside DAOasis's control.</li>
+            <li><strong>Nobody from DAOasis will ever ask for your recovery phrase or private key.</strong>
+              Any message that does is fraudulent.</li>
+            <li><strong>Tax is yours.</strong> You are responsible for determining and meeting any tax
+              obligations arising from your activity.</li>
+            <li><strong>Local law is yours to know.</strong> You are responsible for complying with the
+              laws that apply where you are.</li>
+          </ul>
+          <p>Token functionality is subject to applicable law and may be changed, restricted, delayed,
+            suspended or withdrawn — including in particular jurisdictions — where legal, regulatory or
+            technical circumstances require it. DAOasis may be required to make such changes at short
+            notice.</p>
+          <p>The specific blockchain, wallet connection method and technical infrastructure to be used
+            are <span class="tbc">Technical architecture to be confirmed</span>.</p>
+          <h3>Staking</h3>
+          <p><span class="chip chip-design">In design</span> Staking is intended as a way of signalling
+            longer-term alignment with the ecosystem. Its mechanics remain subject to development and to
+            applicable legal and regulatory requirements. <strong>No returns are promised.</strong>
+            Staking is not a deposit, not an interest-bearing product, and not a way of generating income
+            from DAOasis.</p>
+          <h3>Governance</h3>
+          <p><span class="chip chip-design">Introduced in stages</span> $DVT is designed to carry
+            governance participation. Governance is being introduced progressively rather than switched on
+            at once. The scope of what may be decided, who may participate, and how, will be published as
+            each part is implemented. Governance participation does not create a shareholding, a
+            partnership, a directorship or any legal control over DAOasis, and DAOasis retains
+            responsibility for legal, regulatory, safety and operational decisions.</p>
+        </div>
+      </section>
+
+      <!-- 11 -->
+      <section class="doc-s rv" id="s11">
+        <div class="doc-s-n soft">11</div>
+        <h2 class="soft">Marketplace</h2>
+        <div class="soft d1">
+          <p><span class="chip chip-building">In development</span> The marketplace is intended to be
+            where $DVT can be used for eligible products, experiences and ecosystem offerings. It is
+            being developed and is not operational today.</p>
+          <p>When it launches, additional terms will apply to purchases made through it, covering the
+            things purchase terms have to cover: pricing, cancellation, refunds, delivery and dispute
+            handling. Where a third party supplies a product or experience through the marketplace, that
+            supplier's terms may also apply, and DAOasis's role may be limited to facilitating the
+            transaction.</p>
+          <p>Which offerings are eligible, and in which jurisdictions, will be determined by legal,
+            regulatory and operational requirements.</p>
+        </div>
+      </section>
+
+      <!-- 12 -->
+      <section class="doc-s rv" id="s12">
+        <div class="doc-s-n soft">12</div>
+        <h2 class="soft">The Sanctuary and physical experiences</h2>
+        <div class="soft d1">
+          <p><span class="chip chip-building">In development</span> The Sanctuary is the planned physical
+            expression of the DAOasis ecosystem, with a first pilot planned for Phuket in 2027.</p>
+        </div>
+        <div class="callout soft d2">
+          <div class="callout-k">Not currently bookable</div>
+          <p>The Sanctuary is <strong>planned, not operational</strong>. It is not open, not available
+            and not bookable. Joining the early access list is an expression of interest — it is
+            <strong>not a reservation, not a booking and not a contractual entitlement</strong> to a
+            stay, a place or a price.</p>
+        </div>
+        <div class="soft d3">
+          <p>Descriptions of the Sanctuary on this website — the location, the programme, the facilities,
+            the seven-day rhythm and the illustrative daily timings — describe an intention and are
+            subject to change. They are not a published timetable and not a commitment to specific
+            facilities.</p>
+          <p>$DVT is designed to carry access to Sanctuary experiences. That design is not yet
+            implemented, and holding DRC or $DVT does not currently entitle you to a stay, a booking, a
+            discount or priority.</p>
+          <p>When physical experiences become available, they will be governed by separate booking terms
+            covering payment, cancellation, conduct on site, health and safety, insurance, liability and
+            local law. Nothing in these terms constitutes such a booking.</p>
+        </div>
+      </section>
+
+      <!-- 13 -->
+      <section class="doc-s rv" id="s13">
+        <div class="doc-s-n soft">13</div>
+        <h2 class="soft">Community and user contributions</h2>
+        <div class="soft d1">
+          <p>DAOasis includes community features. What makes them worth having is how people behave in
+            them.</p>
+          <h3>Your contributions remain yours</h3>
+          <p>You keep ownership of your User Contributions. By submitting them, you grant DAOasis a
+            worldwide, non-exclusive, royalty-free, transferable and sub-licensable licence to host,
+            store, reproduce, adapt, publish and display them for the purpose of operating, promoting and
+            improving DAOasis. That licence continues for material others have interacted with or that we
+            are required to retain, and otherwise ends when you delete the contribution or close your
+            account.</p>
+          <p>You confirm that you have the right to submit what you submit, that it does not infringe
+            anyone else's rights, and that it does not breach these terms.</p>
+          <h3>Moderation</h3>
+          <p>DAOasis may — but is not obliged to — review, moderate, edit, restrict, remove or refuse
+            User Contributions, and may suspend access to community features. We will act
+            proportionately, but we do not pre-screen everything, and we do not endorse what members
+            post.</p>
+          <p>Community guidance may be published separately and, where it is, forms part of these terms.
+            Nothing in a community feature is professional advice — including anything another member
+            says about health, wellness, tax, law or digital assets.</p>
+        </div>
+      </section>
+
+      <!-- 14 -->
+      <section class="doc-s rv" id="s14">
+        <div class="doc-s-n soft">14</div>
+        <h2 class="soft">Stake to Create</h2>
+        <div class="soft d1">
+          <p><span class="chip chip-design">In design &middot; not yet operational</span> Stake to Create
+            is the planned mechanism through which a member may stake $DVT to put forward and deliver
+            approved contributions to the ecosystem — content, products, events, education and community
+            initiatives.</p>
+          <p>Three things about it, stated now rather than discovered later:</p>
+          <ul>
+            <li><strong>Approval is required.</strong> Participation is subject to DAOasis rules and
+              approval. Putting forward a proposal — and staking behind it — does not entitle you to
+              have it accepted, published, promoted or funded.</li>
+            <li><strong>It is not an investment.</strong> Staking $DVT in connection with a contribution
+              is not a purchase of a financial interest and carries no promise of return, revenue share,
+              profit or repayment. Any commercial arrangement relating to an approved contribution will
+              be set out in a separate agreement.</li>
+            <li><strong>It is not built yet.</strong> The mechanics, eligibility, approval process,
+              accountability standards and any consequences of non-delivery are in design and subject to
+              future implementation and applicable law.</li>
+          </ul>
+          <p>Contributions accepted through Stake to Create will be governed by additional terms covering
+            scope, rights, standards, accountability and what happens if a contribution is not
+            delivered.</p>
+        </div>
+      </section>
+
+      <!-- 15 -->
+      <section class="doc-s rv" id="s15">
+        <div class="doc-s-n soft">15</div>
+        <h2 class="soft">Intellectual property</h2>
+        <div class="soft d1">
+          <p>DAOasis, the DAOasis name and marks, the website, the Companion App, the learning
+            curriculum, the design system, the photography and illustration, and the software behind them
+            are owned by DAOasis or its licensors and are protected by intellectual property law.</p>
+          <p>You may use them only as these terms allow. You may not copy, reproduce, distribute,
+            publish, modify, create derivative works from, reverse engineer, scrape or extract them, or
+            use them to train a machine learning model, except where these terms permit it, where you
+            have our written permission, or where the law gives you a right that cannot be excluded.</p>
+          <p>DAOasis learning content is provided for your personal use. It may not be redistributed,
+            resold or used to build a competing offering.</p>
+          <p>Feedback and suggestions you send us may be used without obligation or compensation. That is
+            not a claim over anything you have created independently — only over comments about our
+            product.</p>
+          <p>If you believe material on DAOasis infringes your rights, contact us at the details in
+            <a href="#s24">section 24</a> with enough information to identify the material and your
+            claim, and we will investigate.</p>
+        </div>
+      </section>
+
+      <!-- 16 -->
+      <section class="doc-s rv" id="s16">
+        <div class="doc-s-n soft">16</div>
+        <h2 class="soft">Third-party services</h2>
+        <div class="soft d1">
+          <p>DAOasis links to and integrates with services operated by other companies — health
+            platforms, device manufacturers, app stores, wallet providers, community and social
+            platforms, and where relevant payment providers.</p>
+          <p>Those services are independent. DAOasis does not control them, does not endorse them by
+            integrating with them, and is not responsible for their content, availability, accuracy,
+            security or practices. Your use of them is governed by their terms and their privacy
+            policies, and it is worth reading both.</p>
+          <p>If a third-party service changes, restricts or withdraws access, related DAOasis
+            functionality may change or stop working. DAOasis is not liable for that beyond what
+            <a href="#s20">section 20</a> allows.</p>
+        </div>
+      </section>
+
+      <!-- 17 -->
+      <section class="doc-s rv" id="s17">
+        <div class="doc-s-n soft">17</div>
+        <h2 class="soft">Prohibited conduct</h2>
+        <div class="soft d1">
+          <p>You agree not to:</p>
+          <ul>
+            <li>Break the law, or use DAOasis for any unlawful purpose.</li>
+            <li>Falsify participation — manipulating device or platform data, using bots, scripts,
+              emulators or automation, or logging activity that did not happen.</li>
+            <li>Create multiple or fake accounts, or use someone else's account.</li>
+            <li>Attempt to exploit, game or manipulate DRC, $DVT, staking, governance or any reward
+              mechanic, including through coordinated behaviour.</li>
+            <li>Manipulate any market, engage in fraudulent or deceptive trading practices, or use
+              DAOasis in connection with money laundering, terrorist financing or sanctions
+              evasion.</li>
+            <li>Impersonate DAOasis, a DAOasis team member, or anyone else.</li>
+            <li>Post content that is unlawful, hateful, harassing, abusive, defamatory, obscene, or that
+              infringes anyone's rights or privacy.</li>
+            <li>Give medical, financial, legal or tax advice to other members while presenting yourself
+              as qualified when you are not.</li>
+            <li>Promote unrelated investment schemes, tokens, referral programmes or "guaranteed
+              return" offers to members.</li>
+            <li>Interfere with the security or operation of DAOasis — probing, scanning, penetration
+              testing without written authorisation, introducing malware, or attempting to gain
+              unauthorised access.</li>
+            <li>Overload or disrupt the service, or circumvent rate limits or access controls.</li>
+            <li>Scrape or harvest data or personal information from DAOasis, or use it to train a machine
+              learning model.</li>
+            <li>Reverse engineer, decompile or disassemble any part of the service, except where the law
+              expressly permits it.</li>
+            <li>Resell, sublicense or commercially exploit access to DAOasis.</li>
+          </ul>
+          <p>If you find a security vulnerability, please report it to us rather than exploiting it. Good
+            faith reports are welcome and we will not pursue anyone who reports responsibly and does not
+            access or damage other people's data.</p>
+        </div>
+      </section>
+
+      <!-- 18 -->
+      <section class="doc-s rv" id="s18">
+        <div class="doc-s-n soft">18</div>
+        <h2 class="soft">Availability and changes</h2>
+        <div class="soft d1">
+          <p>DAOasis is being actively built. Features may be added, changed, delayed, restricted or
+            removed, and the service may be unavailable at times — for maintenance, for technical
+            reasons, or for reasons outside our control.</p>
+          <p>DAOasis does not guarantee uninterrupted or error-free availability, and does not guarantee
+            that any feature described as planned, in development or in design will be released, or
+            released in the form described.</p>
+          <h3>Changes to these terms</h3>
+          <p>These terms may be updated. Each version carries a version number and date. Where a change
+            materially affects your rights or obligations, we will give reasonable notice before it takes
+            effect — in the app, by email, or prominently on this website. Continuing to use DAOasis
+            after a change takes effect means you accept the updated terms. If you do not accept them,
+            you should stop using DAOasis and may close your account.</p>
+        </div>
+      </section>
+
+      <!-- 19 -->
+      <section class="doc-s rv" id="s19">
+        <div class="doc-s-n soft">19</div>
+        <h2 class="soft">Disclaimers</h2>
+        <div class="soft d1">
+          <p>To the fullest extent permitted by law, DAOasis is provided <strong>"as is" and "as
+            available"</strong>, without warranties of any kind, whether express or implied, including
+            implied warranties of merchantability, fitness for a particular purpose,
+            non-infringement, accuracy and uninterrupted availability.</p>
+          <p>Without limiting that, DAOasis does not warrant that:</p>
+          <ul>
+            <li>the service will be uninterrupted, timely, secure or error-free;</li>
+            <li>activity, wellness or sleep measurements are accurate, complete or clinically
+              reliable;</li>
+            <li>wellness or educational content will produce any particular outcome for you;</li>
+            <li>any planned feature — including the marketplace, governance, staking, Stake to Create or
+              the Sanctuary — will be released, or released as described;</li>
+            <li>DRC or $DVT will have, retain or increase in any value;</li>
+            <li>third-party platforms, devices, wallets or blockchains will remain available, accurate or
+              secure.</li>
+          </ul>
+          <p>Nothing in these terms excludes or limits liability that cannot lawfully be excluded or
+            limited — including, in many jurisdictions, liability for death or personal injury caused by
+            negligence, for fraud or fraudulent misrepresentation, and consumer rights that apply
+            regardless of contract. If you are a consumer, you have statutory rights that these terms do
+            not affect.</p>
+        </div>
+      </section>
+
+      <!-- 20 -->
+      <section class="doc-s rv" id="s20">
+        <div class="doc-s-n soft">20</div>
+        <h2 class="soft">Limitation of liability</h2>
+        <div class="soft d1">
+          <p>To the fullest extent permitted by law, DAOasis and its officers, employees and agents will
+            not be liable for:</p>
+          <ul>
+            <li>indirect, incidental, special, consequential or punitive loss;</li>
+            <li>loss of profit, revenue, business, opportunity, goodwill or anticipated savings;</li>
+            <li>loss or corruption of data, other than to the extent caused by our failure to take
+              reasonable care;</li>
+            <li>any change in the value of DRC or $DVT, or any loss arising from a decision you took in
+              relation to a digital asset;</li>
+            <li>loss of private keys, recovery phrases or wallet access, or transactions you authorised
+              and which cannot be reversed;</li>
+            <li>the acts, omissions, failures or unavailability of third-party platforms, devices,
+              wallets or blockchain networks;</li>
+            <li>any outcome relating to your health, fitness or wellbeing arising from your use of
+              wellness or educational content, subject to the paragraph below.</li>
+          </ul>
+          <p>Where liability cannot lawfully be excluded, and to the extent permitted by law, DAOasis's
+            total liability arising out of or in connection with these terms is limited to the greater of
+            the amount you paid DAOasis in the twelve months before the claim arose, or
+            <span class="tbc">Liability cap to be confirmed</span>.</p>
+          <p>Again, and importantly: nothing here excludes liability for death or personal injury caused
+            by negligence, for fraud, or any other liability that applicable law does not allow to be
+            excluded or limited. Some jurisdictions do not permit certain exclusions, in which case the
+            exclusions above apply only to the extent permitted where you live.</p>
+        </div>
+      </section>
+
+      <!-- 21 -->
+      <section class="doc-s rv" id="s21">
+        <div class="doc-s-n soft">21</div>
+        <h2 class="soft">Indemnification</h2>
+        <div class="soft d1">
+          <p>To the extent permitted by law, you agree to indemnify DAOasis against claims, losses,
+            liabilities and reasonable costs arising from your breach of these terms, your unlawful or
+            infringing use of DAOasis, or your User Contributions.</p>
+          <p>This applies to the extent the claim is caused by you, and does not apply where the loss
+            results from DAOasis's own breach, negligence or wrongdoing. If you are a consumer, this
+            section applies only to the extent permitted by the consumer law that applies to you — in
+            some jurisdictions that means it does not apply at all.</p>
+          <p>DAOasis will notify you of any claim it seeks to be indemnified for, and will not settle it
+            in a way that imposes an obligation on you without your consent.</p>
+        </div>
+      </section>
+
+      <!-- 22 -->
+      <section class="doc-s rv" id="s22">
+        <div class="doc-s-n soft">22</div>
+        <h2 class="soft">Suspension and termination</h2>
+        <div class="soft d1">
+          <p>You may stop using DAOasis and close your account at any time.</p>
+          <p>DAOasis may suspend or terminate your access, or restrict specific functionality, where you
+            have materially breached these terms, where we are required to by law or regulation, where it
+            is necessary to protect the service or other members, or where we reasonably suspect
+            fraudulent or manipulative activity.</p>
+          <p>Except where the law prevents it or where doing so would prejudice an investigation or the
+            security of the service, we will tell you the reason and give you an opportunity to respond.
+            Where a suspension follows from a mistake on our part, we will restore access and correct any
+            affected records.</p>
+          <p>DAOasis may also discontinue the service, or any part of it. Where we do so other than for
+            urgent legal, security or regulatory reasons, we will give reasonable notice.</p>
+          <p>On termination: your right to use DAOasis ends, any DRC balance associated with the account
+            ends, and information is handled as set out in
+            <a href="privacy.html#s13">section 13 of the Privacy Policy</a>. Sections on intellectual
+            property, disclaimers, limitation of liability, indemnification and governing law survive
+            termination. Assets held in your own wallet remain yours and are unaffected by termination of
+            your DAOasis account.</p>
+        </div>
+      </section>
+
+      <!-- 23 -->
+      <section class="doc-s rv" id="s23">
+        <div class="doc-s-n soft">23</div>
+        <h2 class="soft">Governing law and jurisdiction</h2>
+        <div class="soft d1">
+          <p>These terms, and any dispute arising out of or in connection with them, are governed by
+            <span class="tbc">Governing law to be confirmed</span>, and the courts of
+            <span class="tbc">Jurisdiction to be confirmed</span> have jurisdiction, subject to the
+            paragraph below.</p>
+          <p>If you are a consumer, you keep the benefit of any mandatory protections of the law of the
+            country where you live, and you may be entitled to bring proceedings there. Nothing in this
+            section removes a right you have under local consumer law.</p>
+          <h3>Before formal proceedings</h3>
+          <p>If something goes wrong, please contact us first. Most issues are resolved faster and better
+            that way than through a formal process, and we would rather fix a problem than argue about
+            it.</p>
+          <h3>General</h3>
+          <ul>
+            <li>If any provision of these terms is found unenforceable, the rest continues to apply.</li>
+            <li>If we do not enforce a provision immediately, we do not lose the right to enforce it
+              later.</li>
+            <li>You may not transfer your rights under these terms. DAOasis may transfer its rights and
+              obligations as part of a reorganisation or business transfer, and will not do so in a way
+              that reduces your rights.</li>
+            <li>These terms, together with the documents referred to in <a href="#s01">section 01</a>,
+              are the entire agreement between us about DAOasis.</li>
+            <li>These terms are written in English. Where a translation is provided for convenience, the
+              English version governs.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- 24 -->
+      <section class="doc-s rv" id="s24">
+        <div class="doc-s-n soft">24</div>
+        <h2 class="soft">Contact</h2>
+        <div class="soft d1">
+          <p>Questions about these terms, notices under them, or a problem you would like resolved should
+            go to <span class="tbc">Legal contact to be confirmed</span>.</p>
+          <p>The DAOasis legal entity and its registered address are
+            <span class="tbc">Legal entity and registered address to be confirmed</span>.</p>
+          <p>Until those details are published, the <a href="contact.html">Contact</a> page lists every
+            route currently available.</p>
+        </div>
+      </section>
+
+    </article>
+  </div>
+</div>
+
+
+<!-- ══ CROSS-LINKS ══ -->
+<section class="cx grain">
+  <div class="cx-inner rv">
+    <div class="cx-k">The trust layer</div>
+    <h2 class="cx-h soft">Everything else we <em>put in writing.</em></h2>
+    <div class="cx-grid soft d1">
+      <a class="cx-i" href="privacy.html"><div class="cx-i-t">Privacy Policy</div><div class="cx-i-b">What may be collected, why, and your choices</div></a>
+      <a class="cx-i" href="health-data.html"><div class="cx-i-t">Health Data</div><div class="cx-i-b">Wellness information, in plain language</div></a>
+      <a class="cx-i here" href="terms.html"><div class="cx-i-t">Terms of Use</div><div class="cx-i-b">The agreement that governs using DAOasis</div></a>
+      <a class="cx-i" href="cookies.html"><div class="cx-i-t">Cookie Policy</div><div class="cx-i-b">What this site stores in your browser</div></a>
+      <a class="cx-i" href="token-disclaimer.html"><div class="cx-i-t">Token &amp; Web3</div><div class="cx-i-b">What DRC and $DVT are — and are not</div></a>
+      <a class="cx-i" href="accessibility.html"><div class="cx-i-t">Accessibility</div><div class="cx-i-b">Designing for more people, and how to tell us</div></a>
+      <a class="cx-i" href="contact.html"><div class="cx-i-t">Contact</div><div class="cx-i-b">How to reach the right part of DAOasis</div></a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ CLOSING NOTE ══ -->
+<section class="foot-note">
+  <div class="foot-note-inner">
+    <div class="foot-note-k">A note on this page</div>
+    <p>These terms cover DAOasis as it is being built, and will be updated as each part is released.
+      Items marked <span class="tbc">to be confirmed</span> are unresolved legal inputs rather than
+      omissions. This page is not legal advice and is not a substitute for review by qualified legal
+      counsel. If something here is unclear, <a href="contact.html">tell us</a>.</p>
+  </div>
+</section>
+
+</main>
+
+
+<!-- ══ FOOTER ══ -->
+<footer class="site-footer">
+  <div class="footer-top">
+    <div>
+      <div class="footer-brand-logo"><img src="images/img-09-white.png" alt="DAOasis mark" /><span>DAOasis</span></div>
+      <div class="footer-tagline"><strong>Wellness meets Web3.</strong><em>Rest. Learn. Earn. Return.</em></div>
+      <div class="footer-appearance">
+        <div class="footer-appearance-label">Appearance</div>
+        <div class="footer-toggle"><button id="ftLight">Light</button><button id="ftDark" class="active">Dark</button></div>
+      </div>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-label">Explore</div>
+      <a href="index.html">Home</a><a href="app.html">Companion App</a><a href="sanctuary.html">The Sanctuary</a><a href="web3.html">The Web3 Layer</a><a href="about.html">About</a><a href="investors.html">Investors</a><a href="contact.html">Contact</a>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-label">Resources</div>
+      <a href="investors.html#resources">Investor Pack</a><a href="investors.html#resources">Business Plan</a><a href="investors.html#resources">Whitepaper</a><a href="investors.html#resources">Brand Kit</a><a href="index.html#waitlistSection">Waitlist</a>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-label">Trust</div>
+      <a href="privacy.html">Privacy</a><a href="health-data.html">Health Data</a><a class="on" href="terms.html">Terms</a><a href="cookies.html">Cookies</a><a href="token-disclaimer.html">Token Disclaimer</a><a href="accessibility.html">Accessibility</a>
+    </div>
+  </div>
+  <div class="footer-bottom"><span>© 2026 DAOasis. All rights reserved.</span><span>Phuket · Global</span></div>
+</footer>
+
+<script src="js/trust.js"></script>
+</body>
+</html>

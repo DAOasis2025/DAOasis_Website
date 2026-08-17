@@ -1,0 +1,686 @@
+/* ══════════════════════════════════════════════════════════════
+   ██  DAOASIS — TRUST LAYER STYLESHEET  ██
+   ──────────────────────────────────────────────────────────────
+   Shared by the seven trust pages:
+     privacy · health-data · terms · cookies
+     token-disclaimer · accessibility · contact
+
+   WHY THIS IS A FILE AND NOT SEVEN INLINE BLOCKS
+   The six marketing pages each inline their own stylesheet
+   because each one has a bespoke scene language. These seven
+   are the opposite: one document design, seven documents. A
+   shared sheet is the only way they stay identical, and it is
+   one upload instead of seven diffs.
+
+   IT MUST BE UPLOADED TO GITHUB alongside the pages, inside a
+   `css/` folder. Without it the trust pages render as unstyled
+   HTML — legible, but not designed.
+
+   REGISTER
+   The marketing pages are cinematic: dark grounds, pinned
+   scenes, WebGL. These are an annual report — a dark cover,
+   then ivory pages set for reading. There is no pinned
+   section, no scroll scrubbing and no canvas anywhere in the
+   trust layer, by design. Trust comes from typography and
+   hierarchy, not motion.
+
+   The chrome (nav, drawer, dividers, footer, buttons, light
+   theme, reveals) is copied verbatim from the marketing pages
+   so the seam is invisible.
+══════════════════════════════════════════════════════════════ */
+
+/* ── BRAND TOKENS (identical to all six marketing pages) ── */
+:root {
+  --warm-white: #F7F4EE;
+  --warm-stone: #E8E1D6;
+  --soft-stone: #CFC8BE;
+  --charcoal: #2B2623;
+  --mineral: #171412;
+  --sanctuary: #31463F;
+  --gold: #C48A5A;
+  --blue: #7F97A2;
+  --sage: #A8B7A2;
+  --purple: #9B8CA8;
+  --dark-surface: #211D1A;
+  --space: #030609;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --nav-h: 61px;
+
+  /* Trust-layer only. The reading ink is a touch stronger than
+     the marketing pages' `#5c554c` body colour, because these
+     pages carry ten times the words per screen. */
+  --ink: #443E37;
+  --ink-soft: #6b6459;
+  --ink-faint: #8a8377;
+  --rule: rgba(43, 38, 35, 0.14);
+  --rule-strong: rgba(43, 38, 35, 0.26);
+
+  /* THE MEASURE — set by counting characters, not by eye.
+     Frank Ruhl Libre at 16.5px averages ~7.27px per character, so
+     40em (640px) produced 88 characters per line. That is well past
+     the comfortable 45–75 range, and it is the single thing that
+     most affects whether someone can actually read twenty sections
+     of legal prose. 34em ≈ 544px ≈ 75 characters — the top of the
+     comfortable band, which suits dense material set on a generous
+     1.92 line height. Verified by measurement at every breakpoint. */
+  --measure: 34em;
+  --rail-w: 224px;
+  --rail-gap: 84px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { font-family: 'Frank Ruhl Libre', serif; background: var(--mineral); color: var(--warm-white); }
+body { overflow-x: clip; }
+img { max-width: 100%; }
+::selection { background: rgba(196, 138, 90, 0.3); }
+[id] { scroll-margin-top: calc(var(--nav-h) + 18px); }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+
+.grain { position: relative; }
+.grain::after {
+  content: ''; position: absolute; inset: 0; z-index: 6;
+  pointer-events: none; opacity: 0.038;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.scroll-prog {
+  position: fixed; top: 0; left: 0; height: 2px; width: 0;
+  background: linear-gradient(90deg, rgba(196, 138, 90, 0.4), var(--gold));
+  z-index: 95; pointer-events: none;
+}
+
+.skip-link {
+  position: absolute; left: -9999px; top: 0; z-index: 200;
+  background: var(--warm-white); color: var(--charcoal);
+  padding: 12px 22px; border-radius: 0 0 8px 0; font-size: 13px; text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+a:focus-visible, button:focus-visible, summary:focus-visible {
+  outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 2px;
+}
+
+/* ══════════════════════════════════════════════
+   NAV  (identical to the other pages)
+══════════════════════════════════════════════ */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 90;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 5%;
+  background: rgba(23, 20, 18, 0.88); backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(247, 244, 238, 0.07);
+  transition: transform 0.35s ease;
+}
+.nav.nav-hidden { transform: translateY(-100%); }
+.nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0; }
+.nav-brand img { width: 26px; opacity: 0.9; }
+.nav-brand span { font-family: 'Cormorant Garamond', serif; font-size: 18px; color: var(--warm-white); }
+.nav-links { display: flex; gap: 28px; }
+.nav-links a, .nav-links span { font-size: 13px; color: #8a8377; text-decoration: none; letter-spacing: 0.04em; transition: color 0.2s; }
+.nav-links a:hover, .nav-links a.active { color: var(--warm-white); }
+.nav-cta {
+  background: var(--warm-white); color: var(--charcoal); font-size: 13px;
+  padding: 10px 24px; border-radius: 24px; text-decoration: none;
+  letter-spacing: 0.03em; transition: opacity 0.2s; flex-shrink: 0;
+}
+.nav-cta:hover { opacity: 0.88; }
+.nav-burger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; background: none; border: none; }
+.nav-burger span { display: block; width: 22px; height: 1.5px; background: var(--warm-white); transition: all 0.3s; }
+.nav-burger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+.nav-burger.open span:nth-child(2) { opacity: 0; }
+.nav-burger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+.nav-drawer {
+  position: fixed; inset: 0; z-index: 89;
+  background: rgba(23, 20, 18, 0.97); backdrop-filter: blur(16px);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 30px;
+  opacity: 0; pointer-events: none; transition: opacity 0.35s;
+}
+.nav-drawer.open { opacity: 1; pointer-events: auto; }
+.nav-drawer a, .nav-drawer span.drawer-dead { font-family: 'Cormorant Garamond', serif; font-size: 28px; color: #8a8377; text-decoration: none; transition: color 0.2s; }
+.nav-drawer a:hover, .nav-drawer a.active { color: var(--warm-white); }
+.nav-drawer .nav-cta { font-family: 'Frank Ruhl Libre', serif; font-size: 15px; margin-top: 16px; padding: 14px 40px; }
+@media (max-width: 900px) { .nav-links, .nav > .nav-cta { display: none; } .nav-burger { display: flex; } }
+
+/* ══════════════════════════════════════════════
+   REVEALS  (the site's existing vocabulary)
+   Used sparingly here — the hero headline and a
+   soft fade on document sections. Nothing else.
+══════════════════════════════════════════════ */
+/* ── FAIL-VISIBLE BY DEFAULT ──
+   Every hidden start-state below is gated on `html.js`, a class added by
+   the inline script in each page's <head>. The consequence is that the
+   resting state of this stylesheet is FULLY VISIBLE, and animation is
+   something that gets opted into rather than something that has to be
+   switched off.
+
+   That matters more here than anywhere else on the site. The marketing
+   pages hide their reveals by default and rely on a <noscript> block to
+   put them back, which covers "JavaScript is disabled" but NOT
+   "trust.js returned a 404", "a proxy stripped it" or "it threw before
+   the observer was attached". Any of those would serve a privacy policy
+   as invisible type — a legal document nobody can read.
+
+   The inline script also arms a 2.5s failsafe that drops the `js` class
+   if trust.js never reports ready, so a script that loads but dies still
+   ends with a legible page. */
+.ln { display: block; overflow: hidden; padding-bottom: 0.14em; margin-bottom: -0.14em; }
+.ln > i { display: block; font-style: inherit; color: inherit; transition: transform 1.15s var(--ease); }
+html.js .ln > i { transform: translateY(108%); }
+html.js .rv.show .ln > i { transform: translateY(0); }
+.rv .ln:nth-child(2) > i { transition-delay: 0.09s; }
+.rv .ln:nth-child(3) > i { transition-delay: 0.18s; }
+.rv .ln:nth-child(4) > i { transition-delay: 0.27s; }
+
+.rv { opacity: 1; }
+.rv .soft { transition: opacity 0.9s var(--ease), transform 0.9s var(--ease); }
+html.js .rv .soft { opacity: 0; transform: translateY(16px); }
+html.js .rv.show .soft { opacity: 1; transform: translateY(0); }
+.rv.show .soft.d1 { transition-delay: 0.12s; }
+.rv.show .soft.d2 { transition-delay: 0.22s; }
+.rv.show .soft.d3 { transition-delay: 0.32s; }
+.rv.show .soft.d4 { transition-delay: 0.42s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ln > i, .rv .soft { transition-duration: 0.2s; }
+  .ln > i { transform: none; }
+}
+
+.eyebrow {
+  font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+  display: flex; align-items: center; gap: 14px; margin-bottom: 26px;
+}
+.eyebrow::before { content: ''; display: block; width: 28px; height: 1px; background: currentColor; opacity: 0.55; transition: width 1.1s var(--ease) 0.15s; }
+html.js .eyebrow::before { width: 0; }
+html.js .rv.show .eyebrow::before { width: 28px; }
+.on-light .eyebrow { color: #8a7f6d; }
+.on-dark .eyebrow { color: var(--gold); }
+
+/* ── BUTTONS ── */
+.btn { display: inline-block; padding: 16px 36px; border-radius: 40px; text-decoration: none;
+       font-size: 12.5px; letter-spacing: 0.16em; text-transform: uppercase;
+       transition: opacity 0.3s, border-color 0.3s, background 0.3s, color 0.3s; }
+.btn-light { background: var(--warm-white); color: var(--charcoal); }
+.btn-light:hover { opacity: 0.86; }
+.btn-ghost { border: 1px solid rgba(247, 244, 238, 0.3); color: var(--warm-white); }
+.btn-ghost:hover { border-color: rgba(247, 244, 238, 0.8); }
+.btn-dark { background: var(--mineral); color: var(--warm-white); }
+.btn-dark:hover { opacity: 0.86; }
+.btn-outline { border: 1px solid rgba(43, 38, 35, 0.28); color: var(--charcoal); }
+.btn-outline:hover { border-color: rgba(43, 38, 35, 0.75); }
+.btn-row { display: flex; flex-wrap: wrap; gap: 12px; }
+
+/* ══════════════════════════════════════════════
+   01 — THE COVER
+   Every trust page opens on the same dark plate.
+   No photograph: these pages are documents, and a
+   photographic hero would promise a scene that the
+   rest of the page does not deliver.
+══════════════════════════════════════════════ */
+.th {
+  position: relative; overflow: hidden;
+  background:
+    radial-gradient(120% 90% at 12% 0%, rgba(196, 138, 90, 0.10) 0%, transparent 58%),
+    linear-gradient(178deg, var(--mineral) 0%, #14110F 52%, var(--space) 100%);
+  padding: calc(var(--nav-h) + 15vh) 8% 11vh;
+}
+.th-inner { max-width: 1360px; margin: 0 auto; }
+.th-kick { font-size: 11px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--gold);
+  display: flex; align-items: center; gap: 14px; }
+.th-kick::before { content: ''; display: block; width: 28px; height: 1px; background: currentColor; opacity: 0.6;
+  transition: width 1.1s var(--ease) 0.2s; }
+html.js .th-kick::before { width: 0; }
+html.js .rv.show .th-kick::before { width: 28px; }
+.th-h1 {
+  margin-top: 30px;
+  font-family: 'Cormorant Garamond', serif; font-weight: 300;
+  font-size: clamp(40px, 6.4vw, 88px); line-height: 1.02; letter-spacing: -0.014em;
+  color: var(--warm-white); max-width: 17ch;
+}
+.th-h1 em { font-style: italic; color: var(--gold); }
+.th-sub {
+  margin-top: 32px; font-size: clamp(16px, 1.3vw, 18.5px); line-height: 1.85;
+  color: #b0a99b; max-width: 40em;
+}
+.th-sub strong { font-weight: 500; color: var(--warm-white); }
+
+/* The document's masthead: what this is, when it changed. */
+.th-meta {
+  margin-top: 50px; padding-top: 26px; border-top: 1px solid rgba(247, 244, 238, 0.13);
+  display: flex; flex-wrap: wrap; gap: 14px 46px;
+}
+.th-m-i { min-width: 0; }
+.th-m-k { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: #8f887d; }
+.th-m-v { margin-top: 7px; font-size: 13.5px; color: #b0a99b; letter-spacing: 0.01em; }
+.th-m-v a { color: #b0a99b; text-decoration: none; border-bottom: 1px solid rgba(196, 138, 90, 0.4); }
+.th-m-v a:hover { color: var(--warm-white); }
+
+@media (max-width: 900px) {
+  .th { padding: calc(var(--nav-h) + 11vh) 8% 9vh; }
+  .th-meta { gap: 22px 34px; }
+}
+
+/* ══════════════════════════════════════════════
+   02 — THE DOCUMENT
+   Ivory ground, sticky contents rail, one reading
+   column. The rail is the only sticky element in
+   the trust layer and it is a document affordance,
+   not choreography — it never pins the page, never
+   scrubs, and it is simply absent below 1080px.
+══════════════════════════════════════════════ */
+.doc-wrap {
+  background: var(--warm-white); color: var(--ink);
+  padding: 11vh 8% 13vh;
+}
+/* The grid is capped to exactly rail + gap + measure and centred, rather
+   than stretched to the 1360px the marketing sections use. Stretched, the
+   column stayed 640px while the container grew, which left a 229px empty
+   gutter at 1440 and 379px at 1920 — the document sat in the left half of
+   the screen and read as though the layout had failed. Capping it turns
+   the same content into a deliberately centred document plate, and the
+   full-width cover above it becomes the wrapper it was always meant to be. */
+.doc-grid {
+  max-width: calc(var(--rail-w) + var(--rail-gap) + var(--measure));
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: var(--rail-w) minmax(0, var(--measure));
+  gap: 0 var(--rail-gap);
+  align-items: start;
+}
+
+/* ── CONTENTS RAIL ── */
+.doc-rail { position: sticky; top: calc(var(--nav-h) + 34px); }
+.doc-rail-k { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: #6b6459;
+  padding-bottom: 14px; border-bottom: 1px solid var(--rule); }
+.doc-rail ol { list-style: none; margin-top: 16px; max-height: calc(100vh - var(--nav-h) - 150px); overflow-y: auto;
+  /* The rail can outgrow the viewport on the longer documents;
+     it scrolls inside itself rather than clipping. */
+  scrollbar-width: thin; }
+.doc-rail li { margin: 0; }
+.doc-rail a {
+  display: flex; gap: 11px; padding: 7px 0;
+  font-size: 12.5px; line-height: 1.5; color: #6b6459; text-decoration: none;
+  transition: color 0.25s;
+}
+.doc-rail a span.n { flex-shrink: 0; font-variant-numeric: tabular-nums; color: #736c60; transition: color 0.25s; }
+.doc-rail a:hover { color: var(--charcoal); }
+.doc-rail a.on { color: var(--charcoal); }
+.doc-rail a.on span.n { color: #8a5f34; }
+
+/* ── MOBILE CONTENTS ── */
+.doc-toc-m { display: none; margin-bottom: 8vh; border-top: 1px solid var(--rule-strong); border-bottom: 1px solid var(--rule-strong); }
+.doc-toc-m > summary {
+  list-style: none; cursor: pointer; padding: 20px 2px;
+  font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: #6b6459;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.doc-toc-m > summary::-webkit-details-marker { display: none; }
+.doc-toc-m > summary::after { content: '+'; font-size: 15px; color: var(--gold); line-height: 1; }
+.doc-toc-m[open] > summary::after { content: '\2212'; }
+.doc-toc-m ol { list-style: none; padding: 0 2px 20px; }
+.doc-toc-m a { display: flex; gap: 11px; padding: 8px 0; font-size: 14px; color: #6b6459; text-decoration: none; }
+.doc-toc-m a span.n { color: #736c60; font-variant-numeric: tabular-nums; }
+
+/* ── THE READING COLUMN ── */
+.doc { max-width: var(--measure); }
+.doc-lead {
+  font-family: 'Cormorant Garamond', serif; font-weight: 300;
+  font-size: clamp(21px, 2.1vw, 27px); line-height: 1.52; color: var(--charcoal);
+  padding-bottom: 7vh; border-bottom: 1px solid var(--rule-strong);
+}
+.doc-lead em { font-style: italic; color: #9a6a3c; }
+.doc-lead p + p { margin-top: 20px; }
+
+.doc-s { padding-top: 7vh; }
+.doc-s + .doc-s { margin-top: 7vh; border-top: 1px solid var(--rule); }
+.doc-s-n {
+  font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 15px;
+  color: #8a5f34; letter-spacing: 0.02em;
+}
+.doc-s h2 {
+  margin-top: 12px;
+  font-family: 'Cormorant Garamond', serif; font-weight: 300;
+  font-size: clamp(27px, 3.1vw, 40px); line-height: 1.14; letter-spacing: -0.006em;
+  color: var(--charcoal);
+}
+.doc-s h2 em { font-style: italic; color: #9a6a3c; }
+.doc-s h3 {
+  margin-top: 42px;
+  font-family: 'Cormorant Garamond', serif; font-weight: 400;
+  font-size: clamp(19px, 1.9vw, 24px); line-height: 1.28; color: var(--charcoal);
+}
+.doc-s h4 {
+  margin-top: 34px;
+  font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 400;
+  color: #8a7f6d;
+}
+.doc p { margin-top: 22px; font-size: 16.5px; line-height: 1.92; }
+.doc h2 + p, .doc h3 + p, .doc h4 + p { margin-top: 18px; }
+.doc p strong { font-weight: 500; color: var(--charcoal); }
+.doc p em { font-style: italic; }
+.doc a:not(.btn):not(.xl-i):not(.cx-i) {
+  color: #8a5f34; text-decoration: none;
+  border-bottom: 1px solid rgba(196, 138, 90, 0.42);
+  transition: border-color 0.25s, color 0.25s;
+}
+.doc a:not(.btn):not(.xl-i):not(.cx-i):hover { color: var(--charcoal); border-bottom-color: var(--charcoal); }
+
+/* ── LISTS ── */
+.doc ul, .doc ol { margin-top: 22px; list-style: none; }
+.doc ul > li, .doc ol > li { position: relative; padding-left: 26px; font-size: 16.5px; line-height: 1.86; }
+.doc ul > li + li, .doc ol > li + li { margin-top: 11px; }
+.doc ul > li::before {
+  content: ''; position: absolute; left: 0; top: 0.82em;
+  width: 11px; height: 1px; background: rgba(196, 138, 90, 0.75);
+}
+.doc ol { counter-reset: dl; }
+.doc ol > li { padding-left: 32px; counter-increment: dl; }
+.doc ol > li::before {
+  content: counter(dl) '.'; position: absolute; left: 0; top: 0;
+  font-size: 13px; color: #a8a093; font-variant-numeric: tabular-nums;
+  line-height: 2.36;
+}
+.doc li strong { font-weight: 500; color: var(--charcoal); }
+/* A tight list of data categories reads better than prose but must
+   not be mistaken for the body text around it. */
+.doc ul.tight > li { line-height: 1.7; font-size: 15.5px; }
+.doc ul.tight > li + li { margin-top: 7px; }
+
+/* ══════════════════════════════════════════════
+   03 — DOCUMENT FURNITURE
+══════════════════════════════════════════════ */
+
+/* ── PLAIN TERMS ──
+   The WHOOP-benchmark device: every dense section
+   carries one sentence a reader can act on without
+   reading the section. */
+.pt {
+  margin-top: 30px; padding: 22px 26px;
+  background: rgba(43, 38, 35, 0.035);
+  border-left: 1px solid rgba(196, 138, 90, 0.55);
+}
+.pt-k { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: #8a5f34; }
+.pt p { margin-top: 10px; font-size: 15.5px; line-height: 1.78; color: #565047; }
+.pt p:first-of-type { margin-top: 10px; }
+
+/* ── CALLOUT ──
+   For the statements that must not be missed. */
+.callout {
+  margin-top: 34px; padding: 30px 32px;
+  background: var(--charcoal); color: #cdc6b9;
+  border-radius: 2px;
+}
+.callout-k { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); }
+.callout p { margin-top: 14px; font-size: 16px; line-height: 1.82; color: #cdc6b9; }
+.callout p strong { color: var(--warm-white); font-weight: 500; }
+.callout p:first-of-type { margin-top: 14px; }
+.callout a:not(.btn) { color: #e0b48a !important; border-bottom-color: rgba(224, 180, 138, 0.45) !important; }
+.callout a:not(.btn):hover { color: var(--warm-white) !important; border-bottom-color: var(--warm-white) !important; }
+
+/* ── TO BE CONFIRMED ──
+   An unresolved legal input is shown rather than
+   hidden. A policy that quietly omits its own
+   contact address is worse than one that admits the
+   address is not settled yet. These are tracked in
+   CONTENT_REQUIRED.md. */
+.tbc {
+  display: inline; padding: 2px 7px;
+  font-size: 0.82em; letter-spacing: 0.08em; text-transform: uppercase;
+  color: #7d5a33; background: rgba(196, 138, 90, 0.12);
+  border-bottom: 1px dotted rgba(196, 138, 90, 0.7);
+  white-space: normal;
+}
+.callout .tbc { color: #e2bc95; background: rgba(196, 138, 90, 0.2); }
+
+/* ── STATUS CHIP ── (the investors page's vocabulary) */
+.chip {
+  display: inline-block; vertical-align: middle;
+  font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+  padding: 5px 11px; border-radius: 20px; white-space: nowrap;
+}
+.chip-live { background: rgba(168, 183, 162, 0.2); color: #4d6349; }
+.chip-building { background: rgba(127, 151, 162, 0.18); color: #4c6472; }
+.chip-design { background: rgba(155, 140, 168, 0.18); color: #62536f; }
+.chip-none { background: rgba(43, 38, 35, 0.08); color: #6b6459; }
+
+/* ── DEFINITION LIST ── */
+.dl { margin-top: 34px; }
+.dl-i { padding: 24px 0; border-top: 1px solid var(--rule); }
+.dl-i:last-child { border-bottom: 1px solid var(--rule); }
+.dl-t { font-family: 'Cormorant Garamond', serif; font-size: 21px; color: var(--charcoal); line-height: 1.2; }
+.dl-b { margin-top: 9px; font-size: 15.5px; line-height: 1.8; color: var(--ink); }
+.dl-b strong { font-weight: 500; color: var(--charcoal); }
+
+/* ── DATA / DISCLOSURE CARDS ──
+   Used where a table is the obvious instinct but a
+   table is a liability on a 375px screen. Each card
+   is one row of what would have been the table. */
+.cards { margin-top: 34px; display: grid; gap: 1px; background: var(--rule-strong); }
+.card-i { background: var(--warm-white); padding: 26px 28px; }
+.card-h { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
+.card-t { font-family: 'Cormorant Garamond', serif; font-size: 21px; color: var(--charcoal); line-height: 1.2; }
+.card-b { margin-top: 12px; font-size: 15px; line-height: 1.78; color: var(--ink); }
+.card-m { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 8px 30px; }
+.card-m-i { min-width: 0; }
+.card-m-k { font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #6b6459; }
+.card-m-v { margin-top: 5px; font-size: 13.5px; color: var(--ink); line-height: 1.6; }
+
+/* ── ACCORDION ──
+   Native details/summary: keyboard-operable and
+   readable with scripting off, which a div-based
+   accordion is not. */
+.acc { margin-top: 34px; border-top: 1px solid var(--rule); }
+.acc-i { border-bottom: 1px solid var(--rule); }
+.acc-i > summary {
+  list-style: none; cursor: pointer; padding: 24px 44px 24px 0; position: relative;
+  font-family: 'Cormorant Garamond', serif; font-size: clamp(18px, 1.8vw, 22px);
+  color: var(--charcoal); line-height: 1.32;
+}
+.acc-i > summary::-webkit-details-marker { display: none; }
+.acc-i > summary::after {
+  content: ''; position: absolute; right: 6px; top: 50%; width: 11px; height: 11px;
+  border-right: 1px solid var(--gold); border-bottom: 1px solid var(--gold);
+  transform: translateY(-70%) rotate(45deg); transition: transform 0.3s var(--ease);
+}
+.acc-i[open] > summary::after { transform: translateY(-20%) rotate(225deg); }
+.acc-i > summary:hover { color: #9a6a3c; }
+.acc-body { padding: 0 0 28px; }
+.acc-body p:first-child { margin-top: 0; }
+.acc-body p { font-size: 15.5px; line-height: 1.85; }
+
+/* ══════════════════════════════════════════════
+   04 — THE FLOW DIAGRAM  (health-data)
+   CSS, not SVG. On the investors page an
+   11px SVG label rendered at 7.9px, because
+   font-size inside an SVG is viewBox units and not
+   pixels. CSS boxes cannot make that mistake.
+══════════════════════════════════════════════ */
+.flow { margin-top: 40px; }
+.flow-i { border: 1px solid var(--rule-strong); padding: 24px 26px; background: rgba(247, 244, 238, 0.6); }
+.flow-k { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: #6b6459; }
+.flow-t { margin-top: 10px; font-family: 'Cormorant Garamond', serif; font-size: clamp(20px, 2vw, 25px); color: var(--charcoal); line-height: 1.2; }
+.flow-b { margin-top: 9px; font-size: 14.5px; line-height: 1.75; color: var(--ink); }
+.flow-a { text-align: center; color: #8a5f34; font-size: 16px; padding: 14px 0; line-height: 1; }
+
+/* ══════════════════════════════════════════════
+   05 — CONTACT PATHWAYS  (contact)
+══════════════════════════════════════════════ */
+/* The contact page is a pathway page rather than a document, so it
+   uses the ivory ground without the reading-column grid. */
+.ct-wrap { max-width: 1360px; margin: 0 auto; }
+.ct-head { max-width: 46em; }
+.ct-head .doc-lead { border-bottom: none; padding-bottom: 0; }
+.ct-s { margin-top: 12vh; }
+.ct-s-h { font-family: 'Cormorant Garamond', serif; font-weight: 300;
+  font-size: clamp(26px, 3vw, 38px); line-height: 1.14; color: var(--charcoal); }
+.ct-s-b { margin-top: 16px; font-size: 16.5px; line-height: 1.9; color: var(--ink); max-width: 40em; }
+.ct-s-b a { color: #8a5f34; text-decoration: none; border-bottom: 1px solid rgba(196, 138, 90, 0.42); }
+.ct-s-b a:hover { color: var(--charcoal); border-bottom-color: var(--charcoal); }
+@media (max-width: 900px) { .ct-s { margin-top: 9vh; } }
+
+.paths { margin-top: 8vh; display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--rule-strong); }
+.path {
+  background: var(--warm-white); padding: 40px 38px;
+  display: flex; flex-direction: column;
+}
+.path-k { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: #6b6459; }
+.path-t { margin-top: 14px; font-family: 'Cormorant Garamond', serif; font-weight: 300;
+  font-size: clamp(24px, 2.4vw, 32px); color: var(--charcoal); line-height: 1.14; }
+.path-b { margin-top: 14px; font-size: 15px; line-height: 1.82; color: var(--ink); flex: 1; }
+.path-a { margin-top: 26px; padding-top: 20px; border-top: 1px solid var(--rule); }
+.path-a-k { font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #6b6459; margin-bottom: 9px; }
+.path-a a { color: #8a5f34; text-decoration: none; border-bottom: 1px solid rgba(196, 138, 90, 0.42); font-size: 14.5px; }
+.path-a a:hover { color: var(--charcoal); border-bottom-color: var(--charcoal); }
+@media (max-width: 860px) { .paths { grid-template-columns: 1fr; } .path { padding: 32px 28px; } }
+
+/* ══════════════════════════════════════════════
+   06 — CROSS-LINKS
+   Every trust page ends with the other six, so the
+   layer is navigable from inside itself and not
+   only from the footer.
+══════════════════════════════════════════════ */
+.cx { background: var(--dark-surface); padding: 12vh 8%; position: relative; }
+.cx-inner { max-width: 1360px; margin: 0 auto; }
+.cx-k { font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold);
+  display: flex; align-items: center; gap: 14px; }
+.cx-k::before { content: ''; display: block; width: 28px; height: 1px; background: currentColor; opacity: 0.6; transition: width 1.1s var(--ease) 0.2s; }
+html.js .cx-k::before { width: 0; }
+html.js .rv.show .cx-k::before { width: 28px; }
+.cx-h { margin-top: 24px; font-family: 'Cormorant Garamond', serif; font-weight: 300;
+  font-size: clamp(28px, 3.4vw, 46px); line-height: 1.1; color: var(--warm-white); max-width: 20ch; }
+.cx-h em { font-style: italic; color: var(--gold); }
+.cx-grid { margin-top: 7vh; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: rgba(247, 244, 238, 0.1); }
+.cx-i {
+  background: var(--dark-surface); padding: 30px 28px; text-decoration: none; display: block;
+  transition: background 0.3s;
+}
+.cx-i:hover { background: #262220; }
+.cx-i-t { font-family: 'Cormorant Garamond', serif; font-size: clamp(19px, 1.9vw, 24px); color: var(--warm-white); line-height: 1.18; }
+.cx-i-b { margin-top: 11px; font-size: 13.5px; line-height: 1.7; color: #958e82; }
+/* Opaque, not a tint. As a tint this sat on top of `.cx-grid`'s own
+   rgba(247,244,238,0.1) gap colour, and the composite lifted the ground
+   enough to drop the body text to 3.5:1. An opaque plate is the only
+   value that can be reasoned about. */
+.cx-i.here { background: #251F1D; }
+.cx-i.here .cx-i-t { color: var(--gold); }
+.cx-i.here .cx-i-b::after { content: ' · You are here'; color: #a09889; }
+@media (max-width: 900px) { .cx-grid { grid-template-columns: 1fr 1fr; } .cx { padding: 9vh 8%; } }
+@media (max-width: 560px) { .cx-grid { grid-template-columns: 1fr; } }
+
+/* ══════════════════════════════════════════════
+   07 — CLOSING NOTE
+   The one thing every trust page must say: this is
+   not legal advice, and it is going to change.
+══════════════════════════════════════════════ */
+.foot-note { background: var(--mineral); padding: 8vh 8% 9vh; border-top: 1px solid rgba(247, 244, 238, 0.07); }
+.foot-note-inner { max-width: 840px; margin: 0 auto; text-align: center; }
+.foot-note-k { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: #8f887d; }
+.foot-note p { margin-top: 18px; font-size: 14px; line-height: 1.85; color: #8f887d; }
+.foot-note a { color: #a08258; text-decoration: none; border-bottom: 1px solid rgba(160, 130, 88, 0.4); }
+.foot-note a:hover { color: var(--warm-white); border-bottom-color: var(--warm-white); }
+
+/* ══════════════════════════════════════════════
+   FOOTER  (the site-wide footer, unchanged rules)
+══════════════════════════════════════════════ */
+.site-footer { background: var(--mineral); color: #8a8377; padding: 7vh 8% 4vh; border-top: 1px solid rgba(247, 244, 238, 0.07); }
+.footer-top { display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px; padding-bottom: 5vh; border-bottom: 1px solid rgba(247, 244, 238, 0.1); }
+.footer-brand-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+.footer-brand-logo img { width: 28px; opacity: 0.9; }
+.footer-brand-logo span { font-family: 'Cormorant Garamond', serif; font-size: 18px; color: var(--warm-white); }
+.footer-tagline { font-size: 13px; line-height: 1.6; color: #8f887d; }
+.footer-tagline strong { display: block; color: #b8b1a4; font-weight: 500; }
+.footer-tagline em { font-style: italic; }
+.footer-col-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #8f887d; margin-bottom: 18px; }
+.footer-col a, .footer-col span { display: block; font-size: 13.5px; color: #8a8377; text-decoration: none; margin-bottom: 11px; transition: color 0.2s; }
+.footer-col a:hover { color: var(--warm-white); }
+.footer-col a.on { color: var(--warm-white); }
+.footer-bottom { display: flex; justify-content: space-between; gap: 12px; padding-top: 4vh; font-size: 12px; color: #8a8377; }
+.footer-appearance { margin-top: 22px; }
+.footer-appearance-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: #8f887d; margin-bottom: 8px; }
+.footer-toggle { display: inline-flex; background: rgba(247, 244, 238, 0.08); border-radius: 20px; padding: 3px; }
+.footer-toggle button { background: none; border: none; color: #9a9285; font-size: 12px; padding: 6px 14px; border-radius: 16px; cursor: pointer; transition: all 0.2s ease; letter-spacing: 0.04em; text-transform: uppercase; font-family: 'Frank Ruhl Libre', serif; }
+.footer-toggle button.active { background: rgba(247, 244, 238, 0.14); color: var(--warm-white); }
+@media (max-width: 768px) { .footer-top { grid-template-columns: 1fr 1fr; gap: 32px; } .footer-bottom { flex-direction: column; gap: 8px; } }
+
+/* ══════════════════════════════════════════════
+   RESPONSIVE
+   The rail is dropped at 1080 rather than 900. At
+   1024 a 232px rail plus an 8% gutter leaves the
+   reading column ~560px, which pulls the measure
+   under 50 characters — too narrow for legal prose.
+══════════════════════════════════════════════ */
+@media (max-width: 1080px) {
+  .doc-grid { grid-template-columns: minmax(0, 1fr); max-width: var(--measure); }
+  .doc-rail { display: none; }
+  .doc-toc-m { display: block; }
+  /* Was 44em (704px ≈ 97 characters) — wider than the desktop column,
+     which is exactly backwards. The measure does not change just because
+     the rail went away. */
+  .doc { max-width: var(--measure); margin: 0 auto; }
+}
+@media (max-width: 900px) {
+  .doc-wrap { padding: 9vh 8% 11vh; }
+  .doc-lead { padding-bottom: 6vh; }
+  .doc-s { padding-top: 6vh; }
+  .doc-s + .doc-s { margin-top: 6vh; }
+  .callout { padding: 26px 24px; }
+  .pt { padding: 20px 22px; }
+  .card-i { padding: 24px 22px; }
+}
+@media (max-width: 620px) {
+  .doc p, .doc ul > li, .doc ol > li { font-size: 16px; }
+  .doc-wrap { padding: 8vh 7% 10vh; }
+  .cx { padding: 8vh 7%; }
+  .btn { width: 100%; text-align: center; }
+  .btn-row { gap: 10px; }
+  /* A bracketed placeholder must be able to break, or it
+     forces a horizontal scrollbar on a 375px screen. */
+  .tbc { overflow-wrap: anywhere; }
+}
+
+/* ══════════════════════════════════════════════
+   LIGHT THEME — chrome only, as on every other page.
+   The document ground is already ivory, so the body
+   needs nothing. Only the dark plates (cover,
+   cross-links, closing note) and the nav respond.
+══════════════════════════════════════════════ */
+html[data-theme="light"], html[data-theme="light"] body { background: #F7F4EE; color: #2B2623; }
+html[data-theme="light"] .nav { background: rgba(247, 244, 238, 0.94); border-bottom-color: rgba(43, 38, 35, 0.1); }
+html[data-theme="light"] .nav-brand span { color: #171412; }
+html[data-theme="light"] .nav-brand img { filter: invert(1) brightness(0.3); }
+html[data-theme="light"] .nav-links a, html[data-theme="light"] .nav-links span { color: #6b6459; }
+html[data-theme="light"] .nav-links a:hover, html[data-theme="light"] .nav-links a.active { color: #171412; }
+html[data-theme="light"] .nav-cta { background: #171412; color: #F7F4EE; }
+html[data-theme="light"] .nav-burger span { background: #2B2623; }
+html[data-theme="light"] .nav-drawer { background: rgba(247, 244, 238, 0.98); }
+html[data-theme="light"] .nav-drawer a, html[data-theme="light"] .nav-drawer span.drawer-dead { color: #6b6459; }
+html[data-theme="light"] .nav-drawer a:hover, html[data-theme="light"] .nav-drawer a.active { color: #171412; }
+html[data-theme="light"] .nav-drawer .nav-cta { background: #171412; color: #F7F4EE; }
+html[data-theme="light"] .footer-toggle button#ftLight { background: rgba(247, 244, 238, 0.18); color: var(--warm-white); }
+html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; background: none; }
+
+/* ══════════════════════════════════════════════
+   PRINT
+   These are the pages people actually print or save
+   to PDF, which no other page on the site can say.
+══════════════════════════════════════════════ */
+@media print {
+  .nav, .nav-drawer, .scroll-prog, .doc-rail, .doc-toc-m, .cx, .site-footer, .skip-link { display: none !important; }
+  html, body { background: #fff !important; color: #000 !important; }
+  .th { background: #fff !important; padding: 0 0 24pt !important; border-bottom: 1pt solid #000; }
+  .th-h1, .th-sub, .th-m-v, .th-m-k, .th-kick { color: #000 !important; }
+  .doc-wrap { background: #fff !important; padding: 24pt 0 !important; }
+  .doc-grid { display: block !important; }
+  .doc { max-width: none !important; }
+  .doc p, .doc li { font-size: 10.5pt; line-height: 1.6; color: #000 !important; }
+  .callout { background: #f2f2f2 !important; color: #000 !important; border: 1pt solid #999; }
+  .callout p, .callout p strong { color: #000 !important; }
+  .doc-s { page-break-inside: auto; }
+  .doc-s h2, .doc-s h3 { page-break-after: avoid; color: #000 !important; }
+  .ln > i { transform: none !important; }
+  .rv .soft { opacity: 1 !important; transform: none !important; }
+  /* Closed <details> cannot be forced open from CSS — no engine
+     honours a display override on the collapsed content. trust.js
+     opens them on `beforeprint` and restores them afterwards, so a
+     printed policy contains every accordion body. */
+  .foot-note { background: #fff !important; padding: 18pt 0 0 !important; }
+  .foot-note p, .foot-note-k { color: #000 !important; }
+}

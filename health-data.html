@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<script>
+  (function(){
+    var h = document.documentElement;
+    try {
+      var t = localStorage.getItem('daoasis-theme') || 'dark';
+      if(t === 'light') h.setAttribute('data-theme','light');
+    } catch(e) { /* private mode: fall through to the dark default */ }
+
+    /* ── FAIL-VISIBLE GATE ──
+       Every hidden reveal start-state in css/trust.css is scoped to
+       `html.js`. Adding the class here — inline, in the same file as the
+       markup, so it cannot 404 — is what switches the animation on.
+
+       If js/trust.js never runs (blocked, stripped, 404, or it throws
+       before attaching its observer) the class is dropped 2.5s later and
+       the whole document paints at full strength. A privacy policy must
+       never be able to render as invisible type. */
+    h.className += (h.className ? ' ' : '') + 'js';
+    setTimeout(function(){
+      if(h.getAttribute('data-trust') !== 'ready'){
+        h.className = h.className.replace(/(^|\s)js(\s|$)/, '$1$2');
+      }
+    }, 2500);
+  })();
+</script>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>DAOasis Health Data &amp; Privacy | Health data should work for you</title>
+<meta name="description" content="What happens to your wellness data at DAOasis — what is used, why, what we will not do with it, and the exact position on blockchains and health data." />
+<link rel="canonical" href="https://da-oasis-website.vercel.app/health-data" />
+<meta property="og:title" content="DAOasis Health Data &amp; Privacy | Health data should work for you" />
+<meta property="og:description" content="Your wellness information should help you understand your own journey, not become something you lose control of." />
+<meta property="og:image" content="images/img-07.jpg" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://da-oasis-website.vercel.app/health-data" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Frank+Ruhl+Libre:wght@300;400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/trust.css" />
+</head>
+<body>
+
+<a class="skip-link" href="#doc">Skip to content</a>
+<div class="scroll-prog" id="scrollProg"></div>
+
+<!-- ══ NAV ══ -->
+<nav class="nav">
+  <a class="nav-brand" href="index.html">
+    <img src="images/img-09-white.png" alt="DAOasis" />
+    <span>DAOasis</span>
+  </a>
+  <div class="nav-links">
+    <a href="app.html">The App</a>
+    <a href="sanctuary.html">The Sanctuary</a>
+    <a href="web3.html">The Web3 Layer</a>
+    <a href="about.html">About Us</a>
+    <a href="investors.html">Investors</a>
+  </div>
+  <a class="nav-cta" href="index.html#waitlistSection">Join the waitlist</a>
+  <button class="nav-burger" id="navBurger" aria-label="Menu" aria-expanded="false" aria-controls="navDrawer"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="nav-drawer" id="navDrawer">
+  <a href="app.html">The App</a>
+  <a href="sanctuary.html">The Sanctuary</a>
+  <a href="web3.html">The Web3 Layer</a>
+  <a href="about.html">About Us</a>
+  <a href="investors.html">Investors</a>
+  <a class="nav-cta" href="index.html#waitlistSection">Join the waitlist</a>
+</div>
+
+<main>
+
+<!-- ══════════════════════════════════════════════
+     THE COVER
+══════════════════════════════════════════════ -->
+<header class="th grain">
+  <div class="th-inner rv">
+    <div class="th-kick">Trust &middot; Health Data</div>
+    <h1 class="th-h1">
+      <span class="ln"><i>Health data should</i></span>
+      <span class="ln"><i>work <em>for you.</em></i></span>
+    </h1>
+    <p class="th-sub soft d1">DAOasis is being built around a simple principle. <strong>Your wellness
+      information should help you understand your own journey, not become something you lose control
+      of.</strong> This page explains what that means in practice — what is used, why, and what we have
+      decided not to do with it.</p>
+    <div class="th-meta soft d2">
+      <div class="th-m-i"><div class="th-m-k">Last updated</div><div class="th-m-v">17 August 2026</div></div>
+      <div class="th-m-i"><div class="th-m-k">Reading time</div><div class="th-m-v">About six minutes</div></div>
+      <div class="th-m-i"><div class="th-m-k">Health data on a blockchain</div><div class="th-m-v">No &mdash; <a href="#s05">see section 05</a></div></div>
+      <div class="th-m-i"><div class="th-m-k">The formal version</div><div class="th-m-v"><a href="privacy.html">Privacy Policy</a></div></div>
+    </div>
+  </div>
+</header>
+
+
+<!-- ══════════════════════════════════════════════
+     THE DOCUMENT
+══════════════════════════════════════════════ -->
+<div class="doc-wrap" id="doc">
+  <div class="doc-grid">
+
+    <aside class="doc-rail" aria-label="Contents">
+      <div class="doc-rail-k">Contents</div>
+      <ol>
+        <li><a href="#s01"><span class="n">01</span> What DAOasis uses</a></li>
+        <li><a href="#s02"><span class="n">02</span> How it works</a></li>
+        <li><a href="#s03"><span class="n">03</span> Why we use it</a></li>
+        <li><a href="#s04"><span class="n">04</span> What we will not do</a></li>
+        <li><a href="#s05"><span class="n">05</span> Blockchain and health data</a></li>
+        <li><a href="#s06"><span class="n">06</span> Your control</a></li>
+        <li><a href="#s07"><span class="n">07</span> What is not built yet</a></li>
+        <li><a href="#s08"><span class="n">08</span> Questions</a></li>
+      </ol>
+    </aside>
+
+    <article class="doc">
+
+      <details class="doc-toc-m">
+        <summary>Contents &middot; 8 sections</summary>
+        <ol>
+          <li><a href="#s01"><span class="n">01</span> What DAOasis uses</a></li>
+          <li><a href="#s02"><span class="n">02</span> How it works</a></li>
+          <li><a href="#s03"><span class="n">03</span> Why we use it</a></li>
+          <li><a href="#s04"><span class="n">04</span> What we will not do</a></li>
+          <li><a href="#s05"><span class="n">05</span> Blockchain and health data</a></li>
+          <li><a href="#s06"><span class="n">06</span> Your control</a></li>
+          <li><a href="#s07"><span class="n">07</span> What is not built yet</a></li>
+          <li><a href="#s08"><span class="n">08</span> Questions</a></li>
+        </ol>
+      </details>
+
+      <div class="doc-lead rv">
+        <p class="soft">Wellness apps have a habit of treating your data as <em>their</em> asset. You
+          generate it, they hold it, and the value flows one way.</p>
+        <p class="soft d1">DAOasis is trying to build the opposite relationship — and the honest version
+          of that sentence includes the part where we tell you what we have not built yet.</p>
+      </div>
+
+      <!-- 01 ────────────────────────────────── -->
+      <section class="doc-s rv" id="s01">
+        <div class="doc-s-n soft">01</div>
+        <h2 class="soft">What DAOasis uses</h2>
+        <div class="soft d1">
+          <p>The Companion App is designed around six kinds of participation. That list is short on
+            purpose — it is what the product needs, not everything a phone could report.</p>
+        </div>
+        <div class="cards soft d2">
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">Steps</div></div>
+            <div class="card-b">The engine of the Bangkok-to-Phuket journey. Steps move you along the
+              route, which is what turns daily movement into visible progress.</div>
+          </div>
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">Sleep</div></div>
+            <div class="card-b">Rest is one of the five quest categories. Sleep information is used to
+              recognise rest as participation, not to score you or diagnose anything.</div>
+          </div>
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">Hydration</div></div>
+            <div class="card-b">Logged by you. A small, repeatable habit that the app is designed to make
+              visible rather than nag about.</div>
+          </div>
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">Breathing</div></div>
+            <div class="card-b">Breathwork sessions completed in the app. Recorded as participation in
+              the Reflect category.</div>
+          </div>
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">Nutrition</div></div>
+            <div class="card-b">What you choose to log. DAOasis is not a calorie tracker and does not
+              require food logging to use the app.</div>
+          </div>
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">Learning and participation</div></div>
+            <div class="card-b">Lessons completed, quests finished, streaks maintained, and community
+              activity. Not health data, but part of the same record of participation.</div>
+          </div>
+        </div>
+        <div class="pt soft d3">
+          <div class="pt-k">In plain terms</div>
+          <p>Steps, sleep, hydration, breathing, nutrition, and what you learn and complete. That is the
+            list.</p>
+        </div>
+      </section>
+
+      <!-- 02 ────────────────────────────────── -->
+      <section class="doc-s rv" id="s02">
+        <div class="doc-s-n soft">02</div>
+        <h2 class="soft">How it works</h2>
+        <div class="soft d1">
+          <p>Wellness information reaches DAOasis in one of three ways, and how confident we can be
+            about an action determines how it is credited. Auto-verified actions carry the most weight,
+            manual logs less, and honour-system entries least. That tiering exists so that people who
+            do the work are not levelled with people who tap a button.</p>
+        </div>
+        <div class="flow soft d2">
+          <div class="flow-i">
+            <div class="flow-k">Where it starts</div>
+            <div class="flow-t">Your devices and platforms</div>
+            <div class="flow-b">A phone, a watch, a ring, a band — and the health platform they already
+              report to. This stays under your control and under that platform's own privacy policy.</div>
+          </div>
+          <div class="flow-a" aria-hidden="true">&darr;</div>
+          <div class="flow-i">
+            <div class="flow-k">Only what you permit</div>
+            <div class="flow-t">The DAOasis Companion App</div>
+            <div class="flow-b">Where you connect a health platform, DAOasis reads only the categories
+              you have permitted — so you do not have to enter by hand what your phone already knows.
+              Connecting is optional. Everything can also be logged manually.</div>
+          </div>
+          <div class="flow-a" aria-hidden="true">&darr;</div>
+          <div class="flow-i">
+            <div class="flow-k">What it becomes</div>
+            <div class="flow-t">Your wellness journey</div>
+            <div class="flow-b">Participation becomes movement along the route from Bangkok to Phuket,
+              quests completed, streaks held and lessons finished. Consistency becomes something you can
+              see.</div>
+          </div>
+          <div class="flow-a" aria-hidden="true">&darr;</div>
+          <div class="flow-i">
+            <div class="flow-k">And then</div>
+            <div class="flow-t">Your progress and participation</div>
+            <div class="flow-b">Participation is recognised as DAOasis Reward Credits (DRC), held inside
+              the app. What you choose to do with that recognition after that is up to you, and is
+              covered by the <a href="token-disclaimer.html">Token &amp; Web3 Disclaimer</a>.</div>
+          </div>
+        </div>
+        <div class="callout soft d3">
+          <div class="callout-k">Worth being clear about</div>
+          <p>Connecting a health platform is a <strong>convenience, never a requirement</strong>. It
+            exists so you are not retyping a step count your phone already has. You can use DAOasis
+            without connecting anything, and you can disconnect at any time — in DAOasis, and in the
+            platform's own settings.</p>
+        </div>
+      </section>
+
+      <!-- 03 ────────────────────────────────── -->
+      <section class="doc-s rv" id="s03">
+        <div class="doc-s-n soft">03</div>
+        <h2 class="soft">Why we use it</h2>
+        <div class="soft d1">
+          <p>Every use has to earn its place. These are the reasons wellness information is processed at
+            all:</p>
+          <ul>
+            <li><strong>To provide the experience you asked for.</strong> The app is a participation
+              tracker. Without the participation data there is no app.</li>
+            <li><strong>To track progress.</strong> Moving your journey forward, holding your streaks,
+              showing you where you are.</li>
+            <li><strong>To support quests.</strong> Confirming that an action happened, at the level of
+              confidence that action allows.</li>
+            <li><strong>To recognise participation.</strong> Calculating the DRC that reflects what you
+              actually did.</li>
+            <li><strong>To provide insights.</strong> Showing you patterns in your own behaviour — this
+              is a reflection of your data back to you, not an assessment of your health.</li>
+            <li><strong>To improve the product.</strong> Understanding which features help and which do
+              not, using aggregated and de-identified information wherever that is enough.</li>
+            <li><strong>To keep the system honest.</strong> Detecting fabricated participation, which
+              would devalue everyone else's.</li>
+          </ul>
+        </div>
+        <div class="callout soft d2">
+          <div class="callout-k">Not medical</div>
+          <p>DAOasis does not diagnose, treat, cure or prevent any condition, and nothing in the app is
+            medical advice. Insights are informational reflections of your own logged activity.
+            <strong>If you have a health concern, speak to a qualified healthcare professional</strong>
+            — and do not delay doing so because of anything an app told you.</p>
+        </div>
+      </section>
+
+      <!-- 04 ────────────────────────────────── -->
+      <section class="doc-s rv" id="s04">
+        <div class="doc-s-n soft">04</div>
+        <h2 class="soft">What we will not do</h2>
+        <div class="soft d1">
+          <p>Commitments are only meaningful when they rule something out. These are the things DAOasis
+            has decided against — not things we are considering and may revisit.</p>
+        </div>
+        <div class="cards soft d2">
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">We will not sell your health data</div></div>
+            <div class="card-b">Not to advertisers, not to data brokers, not to insurers, not to
+              employers, not to anyone. Personal wellness information is not a DAOasis revenue line and
+              is not planned to become one.</div>
+          </div>
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">We will not use data just because we have it</div></div>
+            <div class="card-b">Having access to a category of information is not a reason to use it.
+              Each use has to be tied to something the product does for you.</div>
+          </div>
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">We will not pretend to be a doctor</div></div>
+            <div class="card-b">No diagnoses, no medical claims, no clinical interpretation. Where
+              DAOasis ever offers a service involving qualified professionals, that service will say so
+              explicitly and on its own terms.</div>
+          </div>
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">We will not turn your wellness into a financial product</div></div>
+            <div class="card-b">Your sleep is not a yield. DRC recognises participation; it is not an
+              investment, and health data is never presented as something to speculate on.</div>
+          </div>
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">We will not write your health data to a blockchain</div></div>
+            <div class="card-b">Not today, and not without addressing everything in
+              <a href="#s05">section 05</a> first. A public ledger is permanent and readable by anyone,
+              which is close to the worst possible property for personal health information.</div>
+          </div>
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">We will not make connection compulsory</div></div>
+            <div class="card-b">DAOasis will not gate the product behind handing over a health platform
+              connection.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 05 ────────────────────────────────── -->
+      <section class="doc-s rv" id="s05">
+        <div class="doc-s-n soft">05</div>
+        <h2 class="soft">Blockchain and <em>health data</em></h2>
+        <div class="soft d1">
+          <p>DAOasis has a Web3 layer, so this question deserves a direct answer rather than a careful
+            one. There are two parts to it, and they must not be blurred together.</p>
+        </div>
+
+        <div class="callout soft d2">
+          <div class="callout-k">Today</div>
+          <p><strong>DAOasis does not store health data on a blockchain.</strong> Wellness information
+            is not written to any public ledger, is not tokenised, and is not made permanently and
+            publicly readable. There is no product feature that does this, and none is being shipped
+            while this page says otherwise.</p>
+        </div>
+
+        <div class="soft d3">
+          <h3>Future direction</h3>
+          <p>DAOasis is exploring whether future infrastructure could give individuals greater control
+            over verified achievements, credentials or selected wellness information — the idea being
+            that a person could prove something about their own record without handing over the
+            underlying data, and could carry that proof with them rather than leaving it inside one
+            company's database.</p>
+          <p>That is genuinely interesting, and it is also the reason one of the two DAOasis learning
+            tracks is called Digital Sovereignty. But it is a <strong>direction of exploration, not a
+            current feature</strong>, and there is a real distance between the two.</p>
+          <p>Any future implementation would have to address, at minimum:</p>
+          <ul>
+            <li><strong>Permanence.</strong> A public ledger cannot be edited or deleted. Anything
+              written to one is written for good, which sits badly with a right to erasure.</li>
+            <li><strong>Consent.</strong> Meaningful, specific, informed and withdrawable — which is
+              difficult to reconcile with a record that cannot be withdrawn.</li>
+            <li><strong>Privacy.</strong> Whether something can be proved without exposing the data
+              behind it, rather than merely obscuring it.</li>
+            <li><strong>Security.</strong> Key loss is unrecoverable. A design that loses someone's
+              health record because they lost a phrase is not an improvement.</li>
+            <li><strong>Data control.</strong> Whether the person genuinely holds it, or simply holds a
+              pointer to something someone else controls.</li>
+            <li><strong>Applicable law.</strong> Health and sensitive-data law across every jurisdiction
+              DAOasis operates in.</li>
+          </ul>
+          <p>If and when something is built here, it will be described on this page in the present
+            tense, with its actual scope — and it will be optional. Until then, this section is the
+            complete position.</p>
+        </div>
+
+        <div class="pt soft d4">
+          <div class="pt-k">In plain terms</div>
+          <p>No, your sleep score is not going on a blockchain. We are exploring whether you could one
+            day prove things about your own record without giving the data away — but that is an idea we
+            are working on, not a feature you have.</p>
+        </div>
+      </section>
+
+      <!-- 06 ────────────────────────────────── -->
+      <section class="doc-s rv" id="s06">
+        <div class="doc-s-n soft">06</div>
+        <h2 class="soft">Your control</h2>
+        <div class="soft d1">
+          <p>Control means specific, usable things rather than a sentiment. Subject to applicable law
+            and to what has been built at the time you ask, you should be able to:</p>
+          <ul>
+            <li><strong>Understand what is used.</strong> That is what <a href="#s01">section 01</a> is
+              for, and it will be kept accurate as the app grows.</li>
+            <li><strong>Choose what to connect.</strong> Health platform connections are opt-in, granted
+              per category where the platform supports it.</li>
+            <li><strong>Disconnect.</strong> In DAOasis, and independently in the platform's own
+              permission settings, which is the control that does not depend on us.</li>
+            <li><strong>Log manually instead.</strong> Using DAOasis without connecting anything is a
+              supported way to use it, not a degraded one.</li>
+            <li><strong>See what we hold.</strong> Request a copy of your information.</li>
+            <li><strong>Correct it.</strong> Fix what is wrong.</li>
+            <li><strong>Delete it.</strong> Delete your data or close your account. Deleting
+              participation history also removes the record that recognises it — that trade-off is real
+              and worth knowing before you ask.</li>
+            <li><strong>Control notifications.</strong> Turn off what you do not want to hear about.</li>
+          </ul>
+          <p>How to exercise any of these, and the limits that apply, are set out in
+            <a href="privacy.html#s15">section 15 of the Privacy Policy</a>.</p>
+        </div>
+      </section>
+
+      <!-- 07 ────────────────────────────────── -->
+      <section class="doc-s rv" id="s07">
+        <div class="doc-s-n soft">07</div>
+        <h2 class="soft">What is not built yet</h2>
+        <div class="soft d1">
+          <p>A trust page that only listed commitments would be leaving out the most useful
+            information. Here is the current state of the things this page describes.</p>
+        </div>
+        <div class="cards soft d2">
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">The Companion App</div><span class="chip chip-building">In development</span></div>
+            <div class="card-b">Core architecture is built; end-to-end flows are being completed. Nothing
+              on this website collects wellness information today.</div>
+          </div>
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">Health platform integrations</div><span class="chip chip-building">In development</span></div>
+            <div class="card-b">Apple HealthKit and Google Health Connect are the priority integrations
+              identified for the app's first release. Wearable support follows the platforms rather than
+              preceding them.</div>
+          </div>
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">In-app data export and deletion controls</div><span class="chip chip-design">In design</span></div>
+            <div class="card-b">Self-service controls are planned. Until they ship, requests are handled
+              directly — see <a href="privacy.html#s19">Privacy Policy, section 19</a>.</div>
+          </div>
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">Digital sovereignty over wellness records</div><span class="chip chip-none">Exploratory</span></div>
+            <div class="card-b">A direction of exploration only. No feature, no timeline, no
+              implementation. See <a href="#s05">section 05</a>.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 08 ────────────────────────────────── -->
+      <section class="doc-s rv" id="s08">
+        <div class="doc-s-n soft">08</div>
+        <h2 class="soft">Questions</h2>
+        <div class="acc soft d1">
+          <details class="acc-i" id="q1">
+            <summary>Do I have to connect a health app to use DAOasis?</summary>
+            <div class="acc-body"><p>No. Connecting a health platform saves you entering information the
+              platform already holds, but everything can be logged manually. Using DAOasis without any
+              connection is a supported way to use it.</p></div>
+          </details>
+          <details class="acc-i" id="q2">
+            <summary>Is my wellness data sold or shared with advertisers?</summary>
+            <div class="acc-body"><p>No. DAOasis does not sell personal information and does not share it
+              with advertisers or data brokers. Information may be shared with service providers who
+              operate parts of the service under contract, and where the law requires disclosure — the
+              full list of circumstances is in
+              <a href="privacy.html#s10">section 10 of the Privacy Policy</a>.</p></div>
+          </details>
+          <details class="acc-i" id="q3">
+            <summary>Does DAOasis store my health data on a blockchain?</summary>
+            <div class="acc-body"><p>No. Health and wellness information is not written to any
+              blockchain. DAOasis is exploring whether future infrastructure could give people greater
+              control over verified achievements and credentials, but that is a direction rather than a
+              feature. <a href="#s05">Section 05</a> covers it in full, including the problems that
+              would have to be solved first.</p></div>
+          </details>
+          <details class="acc-i" id="q4">
+            <summary>Can DAOasis tell me something about my health?</summary>
+            <div class="acc-body"><p>DAOasis can show you patterns in what you have logged. That is a
+              reflection of your own data, not a medical assessment. DAOasis does not diagnose or treat
+              anything, and no insight in the app should be used in place of advice from a qualified
+              healthcare professional.</p></div>
+          </details>
+          <details class="acc-i" id="q5">
+            <summary>What happens to my data if I delete my account?</summary>
+            <div class="acc-body"><p>Your information is deleted, other than what must be kept to meet
+              legal obligations or to protect the service from abuse. Two limits are worth knowing:
+              deleting participation history removes the record that recognises it, and anything already
+              written to a public blockchain cannot be deleted by anyone. Retention is covered in
+              <a href="privacy.html#s13">section 13 of the Privacy Policy</a>.</p></div>
+          </details>
+          <details class="acc-i" id="q6">
+            <summary>Does earning DRC mean my health data has a price?</summary>
+            <div class="acc-body"><p>No, and the distinction matters. DRC recognises
+              <em>participation</em> — that you completed a quest, held a streak, finished a lesson. It
+              is not a payment for data and it does not put a value on your sleep or your step count.
+              DRC is an in-app recognition mechanism, not money and not an investment. The
+              <a href="token-disclaimer.html">Token &amp; Web3 Disclaimer</a> sets that out properly.</p></div>
+          </details>
+        </div>
+        <div class="soft d2" style="margin-top:40px;">
+          <p>If your question is not here, ask it. The <a href="contact.html">Contact</a> page lists
+            every route currently available.</p>
+        </div>
+      </section>
+
+      <div class="doc-s rv" style="border-top:1px solid rgba(43,38,35,0.26);">
+        <div class="btn-row soft" style="margin-top:2vh;">
+          <a class="btn btn-dark" href="privacy.html">Read the full Privacy Policy</a>
+          <a class="btn btn-outline" href="contact.html">Ask a question</a>
+        </div>
+      </div>
+
+    </article>
+  </div>
+</div>
+
+
+<!-- ══ CROSS-LINKS ══ -->
+<section class="cx grain">
+  <div class="cx-inner rv">
+    <div class="cx-k">The trust layer</div>
+    <h2 class="cx-h soft">Everything else we <em>put in writing.</em></h2>
+    <div class="cx-grid soft d1">
+      <a class="cx-i" href="privacy.html"><div class="cx-i-t">Privacy Policy</div><div class="cx-i-b">What may be collected, why, and your choices</div></a>
+      <a class="cx-i here" href="health-data.html"><div class="cx-i-t">Health Data</div><div class="cx-i-b">Wellness information, in plain language</div></a>
+      <a class="cx-i" href="terms.html"><div class="cx-i-t">Terms of Use</div><div class="cx-i-b">The agreement that governs using DAOasis</div></a>
+      <a class="cx-i" href="cookies.html"><div class="cx-i-t">Cookie Policy</div><div class="cx-i-b">What this site stores in your browser</div></a>
+      <a class="cx-i" href="token-disclaimer.html"><div class="cx-i-t">Token &amp; Web3</div><div class="cx-i-b">What DRC and $DVT are — and are not</div></a>
+      <a class="cx-i" href="accessibility.html"><div class="cx-i-t">Accessibility</div><div class="cx-i-b">Designing for more people, and how to tell us</div></a>
+      <a class="cx-i" href="contact.html"><div class="cx-i-t">Contact</div><div class="cx-i-b">How to reach the right part of DAOasis</div></a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ CLOSING NOTE ══ -->
+<section class="foot-note">
+  <div class="foot-note-inner">
+    <div class="foot-note-k">A note on this page</div>
+    <p>This page describes DAOasis as it is being built. Where something is not live it is labelled
+      rather than written in the present tense. Nothing here is medical, legal or financial advice, and
+      nothing in the DAOasis app is a substitute for advice from a qualified healthcare professional. If
+      something on this page is unclear, or turns out to be wrong,
+      <a href="contact.html">please tell us</a>.</p>
+  </div>
+</section>
+
+</main>
+
+
+<!-- ══ FOOTER ══ -->
+<footer class="site-footer">
+  <div class="footer-top">
+    <div>
+      <div class="footer-brand-logo"><img src="images/img-09-white.png" alt="DAOasis mark" /><span>DAOasis</span></div>
+      <div class="footer-tagline"><strong>Wellness meets Web3.</strong><em>Rest. Learn. Earn. Return.</em></div>
+      <div class="footer-appearance">
+        <div class="footer-appearance-label">Appearance</div>
+        <div class="footer-toggle"><button id="ftLight">Light</button><button id="ftDark" class="active">Dark</button></div>
+      </div>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-label">Explore</div>
+      <a href="index.html">Home</a><a href="app.html">Companion App</a><a href="sanctuary.html">The Sanctuary</a><a href="web3.html">The Web3 Layer</a><a href="about.html">About</a><a href="investors.html">Investors</a><a href="contact.html">Contact</a>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-label">Resources</div>
+      <a href="investors.html#resources">Investor Pack</a><a href="investors.html#resources">Business Plan</a><a href="investors.html#resources">Whitepaper</a><a href="investors.html#resources">Brand Kit</a><a href="index.html#waitlistSection">Waitlist</a>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-label">Trust</div>
+      <a href="privacy.html">Privacy</a><a class="on" href="health-data.html">Health Data</a><a href="terms.html">Terms</a><a href="cookies.html">Cookies</a><a href="token-disclaimer.html">Token Disclaimer</a><a href="accessibility.html">Accessibility</a>
+    </div>
+  </div>
+  <div class="footer-bottom"><span>© 2026 DAOasis. All rights reserved.</span><span>Phuket · Global</span></div>
+</footer>
+
+<script src="js/trust.js"></script>
+</body>
+</html>

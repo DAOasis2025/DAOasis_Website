@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<script>
+  (function(){
+    var h = document.documentElement;
+    try {
+      var t = localStorage.getItem('daoasis-theme') || 'dark';
+      if(t === 'light') h.setAttribute('data-theme','light');
+    } catch(e) { /* private mode: fall through to the dark default */ }
+
+    /* ── FAIL-VISIBLE GATE ──
+       Every hidden reveal start-state in css/trust.css is scoped to
+       `html.js`. Adding the class here — inline, in the same file as the
+       markup, so it cannot 404 — is what switches the animation on.
+
+       If js/trust.js never runs (blocked, stripped, 404, or it throws
+       before attaching its observer) the class is dropped 2.5s later and
+       the whole document paints at full strength. A privacy policy must
+       never be able to render as invisible type. */
+    h.className += (h.className ? ' ' : '') + 'js';
+    setTimeout(function(){
+      if(h.getAttribute('data-trust') !== 'ready'){
+        h.className = h.className.replace(/(^|\s)js(\s|$)/, '$1$2');
+      }
+    }, 2500);
+  })();
+</script>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>DAOasis Cookie Policy | What this site stores</title>
+<meta name="description" content="This website sets no cookies and runs no analytics. One preference is stored locally so the site remembers your light or dark setting. Here is the detail." />
+<link rel="canonical" href="https://da-oasis-website.vercel.app/cookies" />
+<meta property="og:title" content="DAOasis Cookie Policy | What this site stores" />
+<meta property="og:description" content="No cookies, no analytics, no tracking pixels. One local preference for light or dark. The short version is the whole version." />
+<meta property="og:image" content="images/img-07.jpg" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://da-oasis-website.vercel.app/cookies" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Frank+Ruhl+Libre:wght@300;400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/trust.css" />
+</head>
+<body>
+
+<a class="skip-link" href="#doc">Skip to content</a>
+<div class="scroll-prog" id="scrollProg"></div>
+
+<!-- ══ NAV ══ -->
+<nav class="nav">
+  <a class="nav-brand" href="index.html">
+    <img src="images/img-09-white.png" alt="DAOasis" />
+    <span>DAOasis</span>
+  </a>
+  <div class="nav-links">
+    <a href="app.html">The App</a>
+    <a href="sanctuary.html">The Sanctuary</a>
+    <a href="web3.html">The Web3 Layer</a>
+    <a href="about.html">About Us</a>
+    <a href="investors.html">Investors</a>
+  </div>
+  <a class="nav-cta" href="index.html#waitlistSection">Join the waitlist</a>
+  <button class="nav-burger" id="navBurger" aria-label="Menu" aria-expanded="false" aria-controls="navDrawer"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="nav-drawer" id="navDrawer">
+  <a href="app.html">The App</a>
+  <a href="sanctuary.html">The Sanctuary</a>
+  <a href="web3.html">The Web3 Layer</a>
+  <a href="about.html">About Us</a>
+  <a href="investors.html">Investors</a>
+  <a class="nav-cta" href="index.html#waitlistSection">Join the waitlist</a>
+</div>
+
+<main>
+
+<!-- ══ THE COVER ══ -->
+<header class="th grain">
+  <div class="th-inner rv">
+    <div class="th-kick">Trust &middot; Cookies</div>
+    <h1 class="th-h1">
+      <span class="ln"><i>What this site</i></span>
+      <span class="ln"><i><em>stores.</em></i></span>
+    </h1>
+    <p class="th-sub soft d1">Almost nothing, as it happens. This website sets <strong>no cookies</strong>
+      and runs <strong>no analytics</strong>. One preference is kept in your browser so the site
+      remembers whether you like it light or dark. That is the entire story — the rest of this page is
+      the detail, and what would change if that ever does.</p>
+    <div class="th-meta soft d2">
+      <div class="th-m-i"><div class="th-m-k">Last updated</div><div class="th-m-v">17 August 2026</div></div>
+      <div class="th-m-i"><div class="th-m-k">Cookies set</div><div class="th-m-v">None</div></div>
+      <div class="th-m-i"><div class="th-m-k">Analytics</div><div class="th-m-v">None</div></div>
+      <div class="th-m-i"><div class="th-m-k">Reading time</div><div class="th-m-v">About four minutes</div></div>
+    </div>
+  </div>
+</header>
+
+
+<div class="doc-wrap" id="doc">
+  <div class="doc-grid">
+
+    <aside class="doc-rail" aria-label="Contents">
+      <div class="doc-rail-k">Contents</div>
+      <ol>
+        <li><a href="#s01"><span class="n">01</span> The short answer</a></li>
+        <li><a href="#s02"><span class="n">02</span> What cookies are</a></li>
+        <li><a href="#s03"><span class="n">03</span> What is stored today</a></li>
+        <li><a href="#s04"><span class="n">04</span> Categories and what they mean</a></li>
+        <li><a href="#s05"><span class="n">05</span> Third-party cookies</a></li>
+        <li><a href="#s06"><span class="n">06</span> Managing cookies</a></li>
+        <li><a href="#s07"><span class="n">07</span> Consent</a></li>
+        <li><a href="#s08"><span class="n">08</span> Changes and contact</a></li>
+      </ol>
+    </aside>
+
+    <article class="doc">
+
+      <details class="doc-toc-m">
+        <summary>Contents &middot; 8 sections</summary>
+        <ol>
+          <li><a href="#s01"><span class="n">01</span> The short answer</a></li>
+          <li><a href="#s02"><span class="n">02</span> What cookies are</a></li>
+          <li><a href="#s03"><span class="n">03</span> What is stored today</a></li>
+          <li><a href="#s04"><span class="n">04</span> Categories and what they mean</a></li>
+          <li><a href="#s05"><span class="n">05</span> Third-party cookies</a></li>
+          <li><a href="#s06"><span class="n">06</span> Managing cookies</a></li>
+          <li><a href="#s07"><span class="n">07</span> Consent</a></li>
+          <li><a href="#s08"><span class="n">08</span> Changes and contact</a></li>
+        </ol>
+      </details>
+
+      <div class="doc-lead rv">
+        <p class="soft">Most cookie policies are long because there is a lot to disclose. This one is
+          short for the opposite reason.</p>
+      </div>
+
+      <!-- 01 -->
+      <section class="doc-s rv" id="s01">
+        <div class="doc-s-n soft">01</div>
+        <h2 class="soft">The short answer</h2>
+        <div class="callout soft d1">
+          <div class="callout-k">As at 17 August 2026</div>
+          <p>This website sets <strong>no cookies</strong>. It contains <strong>no analytics, no tracking
+            pixels, no advertising tags and no third-party measurement scripts</strong> of any kind.
+            Nothing on it profiles you, follows you between sites, or reports your visit to anyone.</p>
+          <p>One item is stored in your browser's local storage: a single value recording whether you
+            chose the light or dark appearance. It never leaves your device.</p>
+        </div>
+        <div class="soft d2">
+          <p>We would rather say this plainly than pad it out. If that changes — and it may, since a
+            product in development eventually needs to understand how it is used — this page will be
+            updated before anything goes live, and consent will be requested first where the law requires
+            it.</p>
+        </div>
+      </section>
+
+      <!-- 02 -->
+      <section class="doc-s rv" id="s02">
+        <div class="doc-s-n soft">02</div>
+        <h2 class="soft">What cookies are</h2>
+        <div class="soft d1">
+          <p>A cookie is a small text file a website asks your browser to store, and which the browser
+            sends back on later visits. It is how a site recognises that two visits came from the same
+            browser.</p>
+          <p>Cookies are not the only mechanism of this kind, and a policy that only mentioned cookies
+            would be misleading. The related technologies:</p>
+          <ul>
+            <li><strong>Local storage</strong> — data kept in your browser that, unlike a cookie, is not
+              automatically sent to the server. This is the only mechanism this site uses.</li>
+            <li><strong>Session storage</strong> — the same idea, but cleared when you close the
+              tab.</li>
+            <li><strong>Pixels and beacons</strong> — a tiny invisible image or script whose only purpose
+              is to report that you loaded a page. None here.</li>
+            <li><strong>Device and browser fingerprinting</strong> — identifying a visitor from the
+              characteristics of their browser rather than from stored data. Not used, and not
+              planned.</li>
+            <li><strong>Software development kits (SDKs)</strong> — the equivalent inside a mobile app.
+              Relevant to the Companion App when it is released, not to this website.</li>
+          </ul>
+          <p>A first-party cookie is set by the site you are visiting. A third-party cookie is set by
+            another company whose code the site has embedded — and it is third-party cookies that do most
+            of the cross-site tracking people object to.</p>
+        </div>
+      </section>
+
+      <!-- 03 -->
+      <section class="doc-s rv" id="s03">
+        <div class="doc-s-n soft">03</div>
+        <h2 class="soft">What is stored today</h2>
+        <div class="soft d1">
+          <p>The complete inventory for this website, in full:</p>
+        </div>
+        <div class="cards soft d2">
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">daoasis-theme</div><span class="chip chip-live">Functional</span></div>
+            <div class="card-b">Stores whether you chose the light or dark appearance, so the site opens
+              the way you left it. Its value is the single word <em>light</em> or <em>dark</em>. It
+              contains nothing that identifies you.</div>
+            <div class="card-m">
+              <div class="card-m-i"><div class="card-m-k">Type</div><div class="card-m-v">Local storage, first-party</div></div>
+              <div class="card-m-i"><div class="card-m-k">Sent to a server</div><div class="card-m-v">No &mdash; never leaves your device</div></div>
+              <div class="card-m-i"><div class="card-m-k">Expires</div><div class="card-m-v">When you clear your browser data</div></div>
+              <div class="card-m-i"><div class="card-m-k">Consent needed</div><div class="card-m-v">No &mdash; strictly a preference you set</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="soft d3">
+          <p>That is the entire list. There is no second entry.</p>
+          <h3>Two things that are not us</h3>
+          <p><strong>Web fonts.</strong> This site loads its typefaces — Cormorant Garamond and Frank Ruhl
+            Libre — from Google Fonts. That request goes to Google's servers and Google may log it as an
+            ordinary server request. No cookie is set by it, and it is not used to track you across
+            sites. It is a genuine third-party request, so it is disclosed here rather than passed
+            over.</p>
+          <p><strong>Hosting.</strong> Serving a web page requires a server to receive the request. Our
+            hosting provider may process ordinary request information — such as IP address and the page
+            requested — in order to deliver the site and keep it secure. That is infrastructure rather
+            than tracking, but it is processing, so it is stated.</p>
+        </div>
+      </section>
+
+      <!-- 04 -->
+      <section class="doc-s rv" id="s04">
+        <div class="doc-s-n soft">04</div>
+        <h2 class="soft">Categories and what they mean</h2>
+        <div class="soft d1">
+          <p>These are the standard categories, with an honest statement of what DAOasis uses each for
+            today. Naming them now means that if one is ever introduced, you can see exactly what
+            changed.</p>
+        </div>
+        <div class="cards soft d2">
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">Strictly necessary</div><span class="chip chip-none">None in use</span></div>
+            <div class="card-b">Required for a site to work at all — security, load balancing, keeping you
+              logged in. This website has no login and needs none. The Companion App will need them.</div>
+          </div>
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">Functional</div><span class="chip chip-live">One in use</span></div>
+            <div class="card-b">Remember choices you made, so the site behaves the way you set it. The
+              appearance preference in section 03 is the only one.</div>
+          </div>
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">Analytics and performance</div><span class="chip chip-none">None in use</span></div>
+            <div class="card-b">Measure how a site is used — pages viewed, features used, where people
+              leave. DAOasis uses none today. If analytics are introduced, this page will name the
+              provider and the category before they go live.</div>
+          </div>
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">Marketing and advertising</div><span class="chip chip-none">None in use, none planned</span></div>
+            <div class="card-b">Build a profile of your interests to target advertising, usually across
+              many sites. DAOasis does not use these, and does not intend to. Personal wellness
+              information is <strong>never</strong> going to be used for advertising targeting.</div>
+          </div>
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">Social media</div><span class="chip chip-none">None in use</span></div>
+            <div class="card-b">Set by embedded social widgets and share buttons, which typically track
+              you whether or not you click them. There are no social embeds on this site.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 05 -->
+      <section class="doc-s rv" id="s05">
+        <div class="doc-s-n soft">05</div>
+        <h2 class="soft">Third-party cookies</h2>
+        <div class="soft d1">
+          <p>No third party sets a cookie through this website. There is no embedded video player, no
+            social widget, no chat widget, no advertising network and no analytics provider in it.</p>
+          <p>The one third-party request the site makes is for its web fonts, described in
+            <a href="#s03">section 03</a>.</p>
+          <p>If you follow a link from DAOasis to another company's website, that site's own cookies and
+            policies apply from the moment you arrive. We have no control over them, and no visibility of
+            them.</p>
+        </div>
+      </section>
+
+      <!-- 06 -->
+      <section class="doc-s rv" id="s06">
+        <div class="doc-s-n soft">06</div>
+        <h2 class="soft">Managing cookies</h2>
+        <div class="soft d1">
+          <p>Since this site sets no cookies, there is nothing here to refuse. The controls below matter
+            for the web generally, and will matter here if this page ever changes.</p>
+          <h3>Clearing the one thing we do store</h3>
+          <p>To remove the appearance preference, clear site data for this website in your browser
+            settings, or use your browser's private browsing mode, in which nothing persists after you
+            close the window. Removing it simply means the site opens in its default dark appearance next
+            time.</p>
+          <h3>Browser controls</h3>
+          <p>Every major browser lets you view and delete stored data, block third-party cookies, block
+            all cookies, and clear everything when you close it. These settings are found under Privacy,
+            Security or Site settings, depending on the browser. Because those menus move between
+            versions, we would rather point you to your browser's own current help pages than print
+            instructions here that will be wrong within a year.</p>
+          <p>Blocking all cookies and local storage will break many websites. On this one, the only
+            effect is that your appearance choice is forgotten.</p>
+          <h3>Wider controls</h3>
+          <p>Your browser may also offer a Do Not Track or Global Privacy Control signal. This site
+            collects nothing to honour or ignore, so those signals make no difference here — but they are
+            worth having switched on generally.</p>
+        </div>
+      </section>
+
+      <!-- 07 -->
+      <section class="doc-s rv" id="s07">
+        <div class="doc-s-n soft">07</div>
+        <h2 class="soft">Consent</h2>
+        <div class="soft d1">
+          <p>In many jurisdictions — including the UK and the EU — a website must obtain consent before
+            setting anything that is not strictly necessary, and must make refusing as easy as
+            accepting.</p>
+          <p><strong>This website does not currently display a cookie banner, and does not currently need
+            one</strong>, because it sets no cookies and runs no analytics. The single stored item is a
+            preference you set yourself by using the appearance control, which is the kind of thing
+            consent requirements are designed to permit.</p>
+          <p>There is no consent management platform on this site. That is an accurate reflection of
+            there being nothing to consent to, rather than a gap. If analytics or any non-essential
+            technology is introduced, a compliant consent mechanism will be implemented
+            <em>before</em> it goes live — with genuine choice, refusal as easy as acceptance, and the
+            ability to change your mind later. Status:
+            <span class="tbc">Consent mechanism required before any analytics are added</span>.</p>
+        </div>
+        <div class="pt soft d2">
+          <div class="pt-k">In plain terms</div>
+          <p>No banner, because there is nothing to ask you about. When there is, you will be asked
+            properly.</p>
+        </div>
+      </section>
+
+      <!-- 08 -->
+      <section class="doc-s rv" id="s08">
+        <div class="doc-s-n soft">08</div>
+        <h2 class="soft">Changes and contact</h2>
+        <div class="soft d1">
+          <p>This page carries the date it was last updated. It will be revised whenever what the site
+            stores changes — and in particular <em>before</em> any analytics or non-essential technology
+            is introduced, not after.</p>
+          <p>The Companion App is a separate matter. When it is released, it will disclose its own
+            storage and SDKs, and this page will be updated to cover it.</p>
+          <p>Questions about this page can go to <span class="tbc">Privacy contact to be confirmed</span>,
+            or through the <a href="contact.html">Contact</a> page. Broader questions about information
+            handling are covered in the <a href="privacy.html">Privacy Policy</a>.</p>
+        </div>
+      </section>
+
+    </article>
+  </div>
+</div>
+
+
+<!-- ══ CROSS-LINKS ══ -->
+<section class="cx grain">
+  <div class="cx-inner rv">
+    <div class="cx-k">The trust layer</div>
+    <h2 class="cx-h soft">Everything else we <em>put in writing.</em></h2>
+    <div class="cx-grid soft d1">
+      <a class="cx-i" href="privacy.html"><div class="cx-i-t">Privacy Policy</div><div class="cx-i-b">What may be collected, why, and your choices</div></a>
+      <a class="cx-i" href="health-data.html"><div class="cx-i-t">Health Data</div><div class="cx-i-b">Wellness information, in plain language</div></a>
+      <a class="cx-i" href="terms.html"><div class="cx-i-t">Terms of Use</div><div class="cx-i-b">The agreement that governs using DAOasis</div></a>
+      <a class="cx-i here" href="cookies.html"><div class="cx-i-t">Cookie Policy</div><div class="cx-i-b">What this site stores in your browser</div></a>
+      <a class="cx-i" href="token-disclaimer.html"><div class="cx-i-t">Token &amp; Web3</div><div class="cx-i-b">What DRC and $DVT are — and are not</div></a>
+      <a class="cx-i" href="accessibility.html"><div class="cx-i-t">Accessibility</div><div class="cx-i-b">Designing for more people, and how to tell us</div></a>
+      <a class="cx-i" href="contact.html"><div class="cx-i-t">Contact</div><div class="cx-i-b">How to reach the right part of DAOasis</div></a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ CLOSING NOTE ══ -->
+<section class="foot-note">
+  <div class="foot-note-inner">
+    <div class="foot-note-k">A note on this page</div>
+    <p>This page describes what the DAOasis website stores as at the date above, verified against the
+      site's own source rather than assumed. Nothing here is legal advice. If you find something on this
+      site that contradicts this page, that is a bug worth reporting —
+      <a href="contact.html">please tell us</a>.</p>
+  </div>
+</section>
+
+</main>
+
+
+<!-- ══ FOOTER ══ -->
+<footer class="site-footer">
+  <div class="footer-top">
+    <div>
+      <div class="footer-brand-logo"><img src="images/img-09-white.png" alt="DAOasis mark" /><span>DAOasis</span></div>
+      <div class="footer-tagline"><strong>Wellness meets Web3.</strong><em>Rest. Learn. Earn. Return.</em></div>
+      <div class="footer-appearance">
+        <div class="footer-appearance-label">Appearance</div>
+        <div class="footer-toggle"><button id="ftLight">Light</button><button id="ftDark" class="active">Dark</button></div>
+      </div>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-label">Explore</div>
+      <a href="index.html">Home</a><a href="app.html">Companion App</a><a href="sanctuary.html">The Sanctuary</a><a href="web3.html">The Web3 Layer</a><a href="about.html">About</a><a href="investors.html">Investors</a><a href="contact.html">Contact</a>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-label">Resources</div>
+      <a href="investors.html#resources">Investor Pack</a><a href="investors.html#resources">Business Plan</a><a href="investors.html#resources">Whitepaper</a><a href="investors.html#resources">Brand Kit</a><a href="index.html#waitlistSection">Waitlist</a>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-label">Trust</div>
+      <a href="privacy.html">Privacy</a><a href="health-data.html">Health Data</a><a href="terms.html">Terms</a><a class="on" href="cookies.html">Cookies</a><a href="token-disclaimer.html">Token Disclaimer</a><a href="accessibility.html">Accessibility</a>
+    </div>
+  </div>
+  <div class="footer-bottom"><span>© 2026 DAOasis. All rights reserved.</span><span>Phuket · Global</span></div>
+</footer>
+
+<script src="js/trust.js"></script>
+</body>
+</html>

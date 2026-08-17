@@ -10,6 +10,8 @@ Files in this folder:
 - `app.html` — Companion App page
 - `sanctuary.html` — The Sanctuary page
 - `web3.html` — The Web3 Layer page
+- `investors.html` — Investor Overview page
+- `about.html` — About Us / team page
 - `images/` — all assets the pages use
 - `vercel.json` — enables clean URLs (`/app`, `/sanctuary`, `/web3`). It now contains **no redirects at all**; every nav destination has a real page.
 - `.claude/launch.json` — local static preview servers. `daoasis-static` on 8791, plus `daoasis-static-alt` on 8792 for when a second session needs its own server (`npx serve` hardcodes its port, so autoPort cannot be used).
@@ -200,7 +202,15 @@ individual acts of participation — and the labels name the layer each act belo
 ---
 
 ## Known gaps
-- Nav items "About Us" and "Investors" are unlinked everywhere.
+- ~~Nav items "About Us" and "Investors" are unlinked everywhere.~~ — **fixed August 17.**
+  Both now resolve to `about.html` / `investors.html` in nav, drawer and footer on all
+  six pages.
+- `about.html` needs `images/about-hero.jpg` and `images/about-hero-mobile.jpg`, plus
+  six team portraits. All are marked in the markup; the page degrades gracefully.
+- There is no public investor contact address, so `investors.html` ends with a plain
+  statement rather than a mailto. The exact insertion point is marked with an HTML
+  comment. No investor PDFs exist in the repo either — the resources grid renders from
+  one `DOCS` array; setting a `file` on an entry turns that card into a download.
 - There is no `favicon.ico` anywhere in the project, so every page logs one 404 in the
   console on load. Pre-existing and site-wide, not a page bug.
 - No signup backend anywhere. The Sanctuary early-access form is front end only and says so on submit: nothing is sent or stored. Do not wire it to a fake confirmation.
@@ -536,6 +546,110 @@ Re-verified after all of the above: pacing figures unchanged (3.23s / 2.51s /
 column fits the stage at all 11 sampled frames with a 12px worst-case bottom
 margin, scroll-past-and-return still resets to a true zero state, 0px horizontal
 overflow anywhere at 1280×720, and 0 console errors on a full sweep.
+
+---
+
+## Investors page + About page + sitewide consistency pass (August 17)
+
+Two new pages — `investors.html` and `about.html` — plus a surgical terminology
+pass across the four existing pages. Numerically verified; **not yet judged by eye**
+(the Browser pane stayed hidden throughout).
+
+### Both new pages deliberately have no pinned sections at all
+No `cine` track, no sticky, no scroll scrubbing, no three.js. Every animation is a
+one-shot IntersectionObserver reveal, so there is no state that can be stranded when
+the reader scrolls back up. This is a design decision for these two pages
+specifically — an investor memorandum and a team page earn their authority from
+typography and hierarchy, not motion. Do not add scroll choreography to either.
+
+### SVG diagram text does not scale the way it looks like it does
+The single most useful lesson from this build, and it bit three times:
+
+> A `font-size: 11px` inside an SVG is **11 viewBox units**, not 11 pixels. The
+> rendered size is `11 × (renderedWidth / viewBoxWidth)`.
+
+On investors.html the route, the participation ring and the metrics flow all had
+sub-labels rendering between **7.9px and 8.6px** at 1024 — present, but not readable,
+and completely invisible to a layout audit (zero overflow, zero collisions). Fixed
+two ways together, and both halves are needed:
+1. **viewBoxes sized close to the width the diagram actually gets.** Route 1200 → 1040
+   (capped at `max-width: 1200px` so 1920 does not inflate it), ring 560 → 520 with
+   `r` 196 → 180, metrics flow 1100 → 900.
+2. **Each diagram hands over to a recomposed vertical version below 1100px** rather
+   than shrinking further — the route to an itinerary list, the ring to its numbered
+   list, the flow to a stacked sequence. 1100, not 900: between 900 and 1100 the
+   labels were still under 10px.
+
+Also: a small label sitting directly **above** a large Cormorant name needs ~30 units
+of clearance, not 20 — the ascent box reaches nearly a full em above the baseline. The
+reverse order (large name above small label) is fine at 20.
+
+### Two more images are now banned, for the same reason as the others
+`images/img-06.jpg` and `images/img-10.jpg` join `06.png` / `19.png` / `img-08.jpg` on
+the do-not-use list. Both show the app dashboard with **"Reward Credits · $0.100 ·
+24H change ↑24%"** — a dollar price and a 24-hour move on DRC. DRC is explicitly not a
+tradeable instrument and carries no monetary guarantee, so those two frames contradict
+the product design, not just the page tone. They are fine as historical mockups; they
+must not appear on investors, web3 or about.
+
+### Terminology fixes applied across index / app / web3
+P0 pass against the canonical model (participation → DRC → convert → $DVT → utility →
+contribution). What changed:
+- **DRC no longer implies monetary value anywhere.** "a balance that grows in value",
+  "real value attached", "earning real value", "a habit with real value" are gone —
+  replaced with recognition language. DRC is introduced by name (`DAOasis Reward
+  Credits — DRC`) rather than only as "Reward Credits".
+- **$DVT is no longer described as tradeable with a price.** The app's Web3 card said
+  DVT "can be held, used … or traded" and that the wallet shows "your balance, price,
+  and transaction history". Both removed.
+- **Governance is no longer present tense.** index.html said "DVT holders participate
+  in decentralised governance — voting on product direction, treasury use". Now
+  "designed to carry governance … introduced in stages".
+- **The Sanctuary is no longer bookable.** app.html's marketplace scene said retreats
+  were "bookable with $DVT" and tagged "$DVT redeemable". Now "planned for 2027 — with
+  $DVT designed to carry access". This was the sharpest violation of the Sanctuary
+  content rules already in this file.
+- index's journey nodes went "Own DVT (Optional)" → "Convert to $DVT (Optional)", which
+  is the actual mechanic.
+
+`sanctuary.html` needed no terminology changes. `web3.html` was already almost fully
+compliant (its status labels predate this pass); only two tense fixes.
+
+### Navigation — every nav entry on the site now resolves
+"About Us" and "Investors" were dead `<span>`s on all four pages. Both are now real
+links in nav, drawer and footer across all six pages, following the same pattern used
+for Sanctuary and Web3. `<span>` is still the convention for genuinely unbuilt
+destinations (Careers, Team on some pages, Legal, social).
+
+### about.html — what is a placeholder and why
+- **No team photography exists in the project.** Each profile has a portrait plate
+  (`.pt`) showing a set monogram and a "Portrait to follow" caption. Dropping an
+  `<img>` inside the `<figure>` covers the monogram automatically — no CSS change.
+  Every slot is marked with an HTML comment giving the intended filename. Do **not**
+  fill these with stock photography or generated portraits.
+- **The hero image is not in the repository.** `about.html` expects
+  `images/about-hero.jpg` (the raked-sand garden with six stones, landscape) and
+  `images/about-hero-mobile.jpg` (portrait crop of the same image). Until they exist
+  the hero paints `--sand` (#E7E0D4) and still reads as designed — it degrades to a
+  colour field, never to a broken image. Mobile gets its own asset because a landscape
+  frame centre-cropped into a 390×844 viewport loses the outer ring of the composition,
+  which is the part that makes it read.
+- **Nelson's quote was updated for current terminology.** The supplied source says
+  "$DRT rewards your wellness journey" — DRT is the retired name. It now reads "DRC
+  rewards your participation." Meaning preserved, terminology current. There is no DRT
+  anywhere on the site.
+- **Trong appears once.** He is profiled in the founding-team row; the Technology
+  section names his remit and gives Etiosa the full profile, so no bio is repeated.
+- The systems diagram in "Six remits. One ecosystem." is **CSS, not SVG** — deliberately,
+  given the scaling problem above. It stacks cleanly to 375px.
+
+### Verified
+All six pages: every internal link, in-page anchor, `<img>` and CSS `url()` asset
+resolves (only the two About hero files 404, by design). Zero console errors on
+index, app, sanctuary, web3 and investors; about logs only the missing hero.
+investors.html and about.html audited at 375, 390, 430, 768, 1024, 1280, 1440 and
+1920 — **0px horizontal overflow and zero escaping elements at every width**, no SVG
+text collisions, and no text below the site's own 10px footer-label convention.
 
 ---
 

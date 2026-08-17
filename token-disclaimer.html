@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<script>
+  (function(){
+    var h = document.documentElement;
+    try {
+      var t = localStorage.getItem('daoasis-theme') || 'dark';
+      if(t === 'light') h.setAttribute('data-theme','light');
+    } catch(e) { /* private mode: fall through to the dark default */ }
+
+    /* ── FAIL-VISIBLE GATE ──
+       Every hidden reveal start-state in css/trust.css is scoped to
+       `html.js`. Adding the class here — inline, in the same file as the
+       markup, so it cannot 404 — is what switches the animation on.
+
+       If js/trust.js never runs (blocked, stripped, 404, or it throws
+       before attaching its observer) the class is dropped 2.5s later and
+       the whole document paints at full strength. A privacy policy must
+       never be able to render as invisible type. */
+    h.className += (h.className ? ' ' : '') + 'js';
+    setTimeout(function(){
+      if(h.getAttribute('data-trust') !== 'ready'){
+        h.className = h.className.replace(/(^|\s)js(\s|$)/, '$1$2');
+      }
+    }, 2500);
+  })();
+</script>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>DAOasis Token &amp; Web3 Disclaimer | Utility, participation, alignment</title>
+<meta name="description" content="What DRC and $DVT are, what they are for, and what they are not. No prices, no projections, no promises of return — and a clear status for every mechanic." />
+<link rel="canonical" href="https://da-oasis-website.vercel.app/token-disclaimer" />
+<meta property="og:title" content="DAOasis Token &amp; Web3 Disclaimer | Utility, participation, alignment" />
+<meta property="og:description" content="$DVT is not the product. DAOasis is the product. Here is what the token is for, and what it is not." />
+<meta property="og:image" content="images/img-07.jpg" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://da-oasis-website.vercel.app/token-disclaimer" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Frank+Ruhl+Libre:wght@300;400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/trust.css" />
+</head>
+<body>
+
+<a class="skip-link" href="#doc">Skip to content</a>
+<div class="scroll-prog" id="scrollProg"></div>
+
+<!-- ══ NAV ══ -->
+<nav class="nav">
+  <a class="nav-brand" href="index.html">
+    <img src="images/img-09-white.png" alt="DAOasis" />
+    <span>DAOasis</span>
+  </a>
+  <div class="nav-links">
+    <a href="app.html">The App</a>
+    <a href="sanctuary.html">The Sanctuary</a>
+    <a href="web3.html">The Web3 Layer</a>
+    <a href="about.html">About Us</a>
+    <a href="investors.html">Investors</a>
+  </div>
+  <a class="nav-cta" href="index.html#waitlistSection">Join the waitlist</a>
+  <button class="nav-burger" id="navBurger" aria-label="Menu" aria-expanded="false" aria-controls="navDrawer"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="nav-drawer" id="navDrawer">
+  <a href="app.html">The App</a>
+  <a href="sanctuary.html">The Sanctuary</a>
+  <a href="web3.html">The Web3 Layer</a>
+  <a href="about.html">About Us</a>
+  <a href="investors.html">Investors</a>
+  <a class="nav-cta" href="index.html#waitlistSection">Join the waitlist</a>
+</div>
+
+<main>
+
+<!-- ══ THE COVER ══ -->
+<header class="th grain">
+  <div class="th-inner rv">
+    <div class="th-kick">Trust &middot; Token &amp; Web3</div>
+    <h1 class="th-h1">
+      <span class="ln"><i>$DVT</i></span>
+      <span class="ln"><i>Utility, participation and</i></span>
+      <span class="ln"><i><em>ecosystem alignment.</em></i></span>
+    </h1>
+    <p class="th-sub soft d1">DAOasis has a token, and a company with a token owes people a straight
+      account of what it is for. <strong>$DVT is designed for utility inside the ecosystem — not as
+      something to speculate on.</strong> This page sets out what DRC and $DVT are, the honest status of
+      every mechanic, and the things DAOasis does not promise.</p>
+    <div class="th-meta soft d2">
+      <div class="th-m-i"><div class="th-m-k">Last updated</div><div class="th-m-v">17 August 2026</div></div>
+      <div class="th-m-i"><div class="th-m-k">Investment advice</div><div class="th-m-v">None given, none implied</div></div>
+      <div class="th-m-i"><div class="th-m-k">Returns promised</div><div class="th-m-v">None</div></div>
+      <div class="th-m-i"><div class="th-m-k">The mechanics</div><div class="th-m-v"><a href="web3.html">The Web3 Layer</a></div></div>
+    </div>
+  </div>
+</header>
+
+
+<div class="doc-wrap" id="doc">
+  <div class="doc-grid">
+
+    <aside class="doc-rail" aria-label="Contents">
+      <div class="doc-rail-k">Contents</div>
+      <ol>
+        <li><a href="#s01"><span class="n">01</span> $DVT is not the product</a></li>
+        <li><a href="#s02"><span class="n">02</span> DRC &mdash; Reward Credits</a></li>
+        <li><a href="#s03"><span class="n">03</span> $DVT &mdash; the Value Token</a></li>
+        <li><a href="#s04"><span class="n">04</span> Conversion</a></li>
+        <li><a href="#s05"><span class="n">05</span> What each mechanic is for</a></li>
+        <li><a href="#s06"><span class="n">06</span> What we do not promise</a></li>
+        <li><a href="#s07"><span class="n">07</span> Not investment advice</a></li>
+        <li><a href="#s08"><span class="n">08</span> Jurisdiction and eligibility</a></li>
+        <li><a href="#s09"><span class="n">09</span> Risks worth understanding</a></li>
+        <li><a href="#s10"><span class="n">10</span> Security and fraud</a></li>
+        <li><a href="#s11"><span class="n">11</span> Current status</a></li>
+      </ol>
+    </aside>
+
+    <article class="doc">
+
+      <details class="doc-toc-m">
+        <summary>Contents &middot; 11 sections</summary>
+        <ol>
+          <li><a href="#s01"><span class="n">01</span> $DVT is not the product</a></li>
+          <li><a href="#s02"><span class="n">02</span> DRC &mdash; Reward Credits</a></li>
+          <li><a href="#s03"><span class="n">03</span> $DVT &mdash; the Value Token</a></li>
+          <li><a href="#s04"><span class="n">04</span> Conversion</a></li>
+          <li><a href="#s05"><span class="n">05</span> What each mechanic is for</a></li>
+          <li><a href="#s06"><span class="n">06</span> What we do not promise</a></li>
+          <li><a href="#s07"><span class="n">07</span> Not investment advice</a></li>
+          <li><a href="#s08"><span class="n">08</span> Jurisdiction and eligibility</a></li>
+          <li><a href="#s09"><span class="n">09</span> Risks worth understanding</a></li>
+          <li><a href="#s10"><span class="n">10</span> Security and fraud</a></li>
+          <li><a href="#s11"><span class="n">11</span> Current status</a></li>
+        </ol>
+      </details>
+
+      <div class="doc-lead rv">
+        <p class="soft">A lot of projects put a token at the centre and build a product around it to
+          justify the token. <em>DAOasis is the other way round.</em></p>
+        <p class="soft d1">The product is a wellness ecosystem: an app that makes consistency visible, a
+          curriculum, a community, and a place in Phuket. The token exists to connect participation in
+          that ecosystem to a stake in it — which is a narrower and more boring claim than the ones
+          usually made, and the point of this page is to keep it that way.</p>
+      </div>
+
+      <!-- 01 -->
+      <section class="doc-s rv" id="s01">
+        <div class="doc-s-n soft">01</div>
+        <h2 class="soft">$DVT is not the <em>product</em></h2>
+        <div class="soft d1">
+          <p>DAOasis is the product and the ecosystem. The Companion App, the two learning tracks, the
+            quests, the journey from Bangkok to Phuket, the community and the planned Sanctuary are what
+            DAOasis is <em>for</em>. Most of that works with no token involved at all.</p>
+          <p>$DVT is a layer that sits behind the experience rather than in front of it. Nothing about
+            walking, sleeping, learning or completing a quest requires you to understand a blockchain, or
+            to hold anything.</p>
+        </div>
+        <div class="callout soft d2">
+          <div class="callout-k">The test we hold ourselves to</div>
+          <p>If the token were removed tomorrow, DAOasis would still be a wellness product worth using.
+            <strong>That is the relationship we are trying to build</strong> — the token adds a layer of
+            ownership and alignment on top of something that stands up on its own, rather than being the
+            reason to show up.</p>
+        </div>
+      </section>
+
+      <!-- 02 -->
+      <section class="doc-s rv" id="s02">
+        <div class="doc-s-n soft">02</div>
+        <h2 class="soft">DRC &mdash; DAOasis Reward Credits</h2>
+        <div class="soft d1">
+          <p><strong>DRC is the recognition layer.</strong> It is earned through participation inside the
+            DAOasis experience — quests completed, lessons finished, streaks held, contributions to the
+            community — and it is held inside the app.</p>
+          <p>No blockchain, no wallet, no market. DRC is a record of what you have done, kept where you
+            did it.</p>
+          <p>DRC can be converted into $DVT. That conversion is the bridge between the everyday layer and
+            the on-chain layer, and it is covered in <a href="#s04">section 04</a>.</p>
+        </div>
+        <div class="callout soft d2">
+          <div class="callout-k">What DRC is not</div>
+          <p>DRC is <strong>not money</strong>, not legal tender, not electronic money, not a deposit, not
+            a payment instrument, not a security and not an investment. It has <strong>no monetary value
+            guaranteed by DAOasis</strong>, is not redeemable for cash, and gives you no ownership of or
+            claim against DAOasis.</p>
+          <p>DRC carries no price and should not be treated as something to speculate on. Any figure you
+            ever see attached to DRC that looks like a currency value is not something DAOasis
+            publishes.</p>
+        </div>
+      </section>
+
+      <!-- 03 -->
+      <section class="doc-s rv" id="s03">
+        <div class="doc-s-n soft">03</div>
+        <h2 class="soft">$DVT &mdash; the DAOasis Value Token</h2>
+        <div class="soft d1">
+          <p><strong>$DVT is the on-chain utility layer.</strong> It is designed to connect deeper
+            participation to the parts of the ecosystem that need a shared unit: the marketplace,
+            governance, staking, Stake to Create, and contribution to DAOasis itself.</p>
+          <p>Interacting with $DVT is <strong>voluntary</strong>. The Companion App can be used in full
+            without it. Nobody is required to hold a token to take part in DAOasis.</p>
+          <p>The distinction between the two layers is the whole architecture, and it is worth holding on
+            to:</p>
+        </div>
+        <div class="cards soft d2">
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">DRC &mdash; the everyday layer</div></div>
+            <div class="card-b">Recognition of participation. Earned by doing. Held inside the app. No
+              wallet, no chain, no market. It answers: <em>what have I done?</em></div>
+          </div>
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">$DVT &mdash; the ownership layer</div></div>
+            <div class="card-b">On-chain utility within the ecosystem. Optional. Held in a wallet you
+              control. It answers: <em>what part do I want to play?</em></div>
+          </div>
+        </div>
+        <div class="pt soft d3">
+          <div class="pt-k">In plain terms</div>
+          <p>DRC recognises what you did. $DVT lets you do something with that recognition inside the
+            ecosystem, if you want to. Neither is an investment.</p>
+        </div>
+      </section>
+
+      <!-- 04 -->
+      <section class="doc-s rv" id="s04">
+        <div class="doc-s-n soft">04</div>
+        <h2 class="soft">Conversion</h2>
+        <div class="soft d1">
+          <p>DRC is designed to be convertible into $DVT. Converting is a choice, and it moves you from a
+            closed in-app record to an on-chain asset — which is a real change in the nature of what you
+            hold, not just a change of name.</p>
+          <p>Conversion rates, caps, eligibility criteria and timing are
+            <span class="chip chip-design">In design</span>. They are subject to change, to
+            implementation, and to applicable legal and regulatory requirements.</p>
+          <p>DAOasis does not guarantee that conversion will be available to you, in your jurisdiction, at
+            any particular rate, or at all. Nothing on this website is a commitment to a conversion ratio,
+            and no ratio published in a draft document should be relied on.</p>
+        </div>
+        <div class="callout soft d2">
+          <div class="callout-k">Before you convert anything</div>
+          <p>Converting DRC into an on-chain asset means taking on the risks in
+            <a href="#s09">section 09</a> — including <strong>irreversibility, key loss and complete loss
+            of value</strong>. Those risks do not exist while your participation is recognised as DRC
+            inside the app. That is a genuine reason many people should simply not convert, and DAOasis
+            would rather say so than encourage it.</p>
+        </div>
+      </section>
+
+      <!-- 05 -->
+      <section class="doc-s rv" id="s05">
+        <div class="doc-s-n soft">05</div>
+        <h2 class="soft">What each mechanic is for</h2>
+        <div class="soft d1">
+          <p>Five mechanics, each with what it is designed to do and where it actually stands. The status
+            labels here match the ones used on the <a href="web3.html">Web3 Layer</a> page and the
+            <a href="investors.html">Investor Overview</a> — deliberately, so nobody has to reconcile
+            three versions.</p>
+        </div>
+        <div class="cards soft d2">
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">Marketplace</div><span class="chip chip-building">In development</span></div>
+            <div class="card-b">Using $DVT for eligible products, experiences and ecosystem offerings — the
+              place where what is built inside the app is spent in the real world. Marketplace
+              functionality is being developed where appropriate and is not operational today. Which
+              offerings are eligible, and where, will depend on legal and operational requirements.</div>
+          </div>
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">Governance</div><span class="chip chip-design">Introduced progressively</span></div>
+            <div class="card-b">$DVT is designed to carry a say in the development of DAOasis. Governance
+              is being introduced <strong>in stages</strong> rather than switched on at once, and what is
+              described publicly is the direction of travel. Governance participation does not create a
+              shareholding, a partnership or legal control over DAOasis, and it is designed so that
+              consistent participation earns a voice rather than balance size alone.</div>
+          </div>
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">Staking</div><span class="chip chip-design">Mechanics in design</span></div>
+            <div class="card-b">A way of signalling longer-term alignment with the ecosystem, and of
+              qualifying for access to capacity-constrained parts of it. Mechanics remain subject to
+              development and to applicable legal and regulatory requirements.
+              <strong>No returns are promised.</strong> Staking at DAOasis is not a deposit, not an
+              interest-bearing product and not a means of generating income.</div>
+          </div>
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">Stake to Create</div><span class="chip chip-design">In design &middot; approved contributions only</span></div>
+            <div class="card-b">Using $DVT to put a position behind a contribution you want to bring into
+              DAOasis — content, products, events, education, community initiatives — and being
+              accountable for delivering it. Participation is subject to DAOasis rules, approval and
+              future implementation. Staking behind a proposal does not entitle you to have it
+              accepted, and is not a purchase of a financial interest.</div>
+          </div>
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">Contribution to DAOasis</div><span class="chip chip-design">In design</span></div>
+            <div class="card-b">The broader idea that members can help build the ecosystem rather than
+              only consume it. Any commercial arrangement relating to a contribution would be set out in
+              a separate agreement rather than implied by holding a token.</div>
+          </div>
+        </div>
+        <div class="soft d3">
+          <p>Where something is not built, this page says so. It will be updated when a mechanic ships —
+            in the present tense, with its actual scope, rather than by quietly upgrading the language
+            here.</p>
+        </div>
+      </section>
+
+      <!-- 06 -->
+      <section class="doc-s rv" id="s06">
+        <div class="doc-s-n soft">06</div>
+        <h2 class="soft">What we do not promise</h2>
+        <div class="soft d1">
+          <p>This is the section that matters most, so it is stated as a list rather than buried in
+            prose.</p>
+        </div>
+        <div class="callout soft d2">
+          <div class="callout-k">DAOasis does not promise</div>
+          <p><strong>Price appreciation.</strong> No projection, target, forecast or expectation of the
+            value of $DVT or DRC.<br />
+            <strong>Investment returns.</strong> $DVT is not offered as an investment and no return is
+            promised.<br />
+            <strong>Profit.</strong> No share of revenue, earnings or profit attaches to holding
+            $DVT.<br />
+            <strong>Passive income.</strong> Holding or staking $DVT is not a way to generate
+            income.<br />
+            <strong>Guaranteed staking returns.</strong> Staking mechanics are in design, and no yield,
+            rate or reward is promised.<br />
+            <strong>Liquidity.</strong> No commitment that $DVT can be sold, exchanged or converted at
+            any time, at any price, or at all.<br />
+            <strong>A listing.</strong> No commitment that $DVT will be listed on any exchange or
+            venue.<br />
+            <strong>Delivery of planned features.</strong> Anything marked in development or in design may
+            change, be delayed, or not be released.</p>
+        </div>
+        <div class="soft d3">
+          <p>You will not find a price, a market capitalisation, a yield, an APY, a projected return or a
+            user count anywhere on this website. That is a deliberate editorial rule, not an
+            oversight — those numbers invite exactly the framing this page exists to avoid.</p>
+          <p>If you encounter material presenting DAOasis, DRC or $DVT with a price chart, a projected
+            return or a promised yield, <strong>it did not come from us</strong>. Please
+            <a href="contact.html">report it</a>.</p>
+        </div>
+      </section>
+
+      <!-- 07 -->
+      <section class="doc-s rv" id="s07">
+        <div class="doc-s-n soft">07</div>
+        <h2 class="soft">Not investment advice</h2>
+        <div class="soft d1">
+          <p>Nothing on this website, in the Companion App, in DAOasis learning content, in DAOasis
+            community channels or in any DAOasis communication constitutes <strong>financial,
+            investment, legal, accounting or tax advice</strong>, or a personal recommendation.</p>
+          <p>Nothing here is an offer to sell, or a solicitation of an offer to buy, any security,
+            financial instrument or investment product, in any jurisdiction where such an offer or
+            solicitation would be unlawful.</p>
+          <p>DAOasis is not a bank, a broker, an exchange, an investment firm, a financial adviser or a
+            licensed financial institution, and does not hold itself out as any of those.</p>
+          <p>The DAOasis learning curriculum includes a Digital Sovereignty track that teaches how
+            blockchains, tokens and wallets work. That is <strong>education, not advice</strong> —
+            explaining how something works is not a recommendation to do it.</p>
+          <p>If you are considering interacting with any digital asset, consider taking independent
+            professional advice from someone qualified and regulated in your own jurisdiction, and only
+            ever risk what you can afford to lose entirely.</p>
+        </div>
+      </section>
+
+      <!-- 08 -->
+      <section class="doc-s rv" id="s08">
+        <div class="doc-s-n soft">08</div>
+        <h2 class="soft">Jurisdiction and eligibility</h2>
+        <div class="soft d1">
+          <p>The legal treatment of digital assets differs sharply between countries, and it changes. What
+            is permitted in one place may be restricted, licensed or prohibited in another.</p>
+          <p>As a result:</p>
+          <ul>
+            <li>Token functionality may be unavailable, limited, or available only on different terms
+              depending on where you are.</li>
+            <li>DAOasis may restrict or withdraw access to $DVT functionality in particular jurisdictions
+              where legal or regulatory circumstances require it, and may have to do so at short
+              notice.</li>
+            <li>Verification of identity, age or location may be required before certain functionality is
+              provided.</li>
+            <li><strong>You are responsible</strong> for understanding and complying with the laws and
+              regulations that apply to you, including tax obligations, before interacting with any
+              digital asset.</li>
+          </ul>
+          <p>The jurisdictions in which $DVT functionality will be offered, and the regulatory analysis
+            supporting that, are <span class="tbc">Pending legal and regulatory review</span>. Nothing on
+            this page should be read as confirmation that $DVT is available, or lawful, where you
+            are.</p>
+        </div>
+      </section>
+
+      <!-- 09 -->
+      <section class="doc-s rv" id="s09">
+        <div class="doc-s-n soft">09</div>
+        <h2 class="soft">Risks worth understanding</h2>
+        <div class="soft d1">
+          <p>Not a wall of warnings for its own sake — these are the specific things that go wrong with
+            digital assets, and they are worth knowing before rather than after.</p>
+          <ul>
+            <li><strong>Complete loss of value.</strong> Digital assets can lose all of their value, and
+              can do so permanently and quickly.</li>
+            <li><strong>Irreversibility.</strong> A confirmed blockchain transaction cannot be undone by
+              DAOasis or by anyone. A mistake in an address is not recoverable.</li>
+            <li><strong>Key loss.</strong> If you lose your private key or recovery phrase, your assets
+              are gone. There is no password reset and no support route that can restore them.</li>
+            <li><strong>No deposit protection.</strong> Digital assets are not covered by deposit
+              insurance or financial compensation schemes.</li>
+            <li><strong>Technology risk.</strong> Smart contracts can contain flaws. Networks can suffer
+              outages, congestion, forks or attacks.</li>
+            <li><strong>Third-party risk.</strong> Wallets, exchanges and infrastructure providers are
+              independent of DAOasis and can fail, be compromised, or withdraw service.</li>
+            <li><strong>Regulatory risk.</strong> Rules can change in a way that restricts or prevents
+              functionality, sometimes with little notice.</li>
+            <li><strong>Liquidity risk.</strong> There may be no market, or no market at a price you would
+              accept, when you want one.</li>
+            <li><strong>Delivery risk.</strong> Planned functionality may change, be delayed or not
+              arrive.</li>
+            <li><strong>Tax risk.</strong> Transactions may create tax obligations, including where no
+              cash changed hands.</li>
+          </ul>
+          <p>None of these are unique to DAOasis. All of them are reasons to be deliberate rather than
+            enthusiastic, and reasons that participating in DAOasis without ever touching the token layer
+            is a completely legitimate way to use it.</p>
+        </div>
+      </section>
+
+      <!-- 10 -->
+      <section class="doc-s rv" id="s10">
+        <div class="doc-s-n soft">10</div>
+        <h2 class="soft">Security and fraud</h2>
+        <div class="soft d1">
+          <p>Projects with tokens attract impersonators. A few rules that will keep you safe:</p>
+          <ul>
+            <li><strong>Nobody from DAOasis will ever ask for your recovery phrase or private
+              key.</strong> Anyone who does is attempting to steal from you, whatever they claim to
+              be.</li>
+            <li><strong>DAOasis does not run token giveaways, airdrops with an entry fee, or
+              "send-to-receive" promotions.</strong> Any such offer is fraudulent.</li>
+            <li><strong>DAOasis will not contact you privately with an investment opportunity, an
+              allocation or a presale.</strong> Announcements are made publicly.</li>
+            <li><strong>Check the address.</strong> Official DAOasis communications come from official
+              DAOasis channels. Look-alike domains and handles are the standard technique.</li>
+            <li><strong>DAOasis does not hold your keys.</strong> Your wallet is yours, which means its
+              security is yours too.</li>
+          </ul>
+          <p>Where official contract addresses and channels exist, they will be published here and on the
+            <a href="web3.html">Web3 Layer</a> page, and should be verified against this website rather
+            than against anything forwarded to you. Current status:
+            <span class="tbc">Official contract addresses and channels to be published when they exist</span>.</p>
+          <p>If you encounter something impersonating DAOasis, please <a href="contact.html">report
+            it</a>.</p>
+        </div>
+      </section>
+
+      <!-- 11 -->
+      <section class="doc-s rv" id="s11">
+        <div class="doc-s-n soft">11</div>
+        <h2 class="soft">Current status</h2>
+        <div class="soft d1">
+          <p>Where everything stands as at the date of this page, in one place.</p>
+        </div>
+        <div class="cards soft d2">
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">Companion App</div><span class="chip chip-building">In development</span></div>
+            <div class="card-b">Core architecture built; end-to-end flows in development.</div>
+          </div>
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">DRC</div><span class="chip chip-building">In development</span></div>
+            <div class="card-b">The recognition layer, delivered with the Companion App.</div>
+          </div>
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">$DVT</div><span class="chip chip-design">In design &middot; subject to legal review</span></div>
+            <div class="card-b">Structure and economics subject to legal and regulatory review. No token
+              is offered for sale through this website.</div>
+          </div>
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">DRC to $DVT conversion</div><span class="chip chip-design">In design</span></div>
+            <div class="card-b">Rates, caps, eligibility and timing not settled.</div>
+          </div>
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">Marketplace</div><span class="chip chip-building">In development</span></div>
+            <div class="card-b">Not operational.</div>
+          </div>
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">Governance</div><span class="chip chip-design">Introduced in stages</span></div>
+            <div class="card-b">Direction published; detail published as each part is implemented.</div>
+          </div>
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">Staking</div><span class="chip chip-design">Mechanics in design</span></div>
+            <div class="card-b">No returns promised.</div>
+          </div>
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">Stake to Create</div><span class="chip chip-design">In design</span></div>
+            <div class="card-b">Not yet operational. Approved contributions only.</div>
+          </div>
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">The Sanctuary</div><span class="chip chip-building">In development</span></div>
+            <div class="card-b">First pilot planned for Phuket in 2027. Not open and not bookable. $DVT is
+              designed to carry access; that design is not implemented.</div>
+          </div>
+        </div>
+        <div class="soft d3">
+          <div class="btn-row" style="margin-top:44px;">
+            <a class="btn btn-dark" href="web3.html">See how the layer works</a>
+            <a class="btn btn-outline" href="terms.html">Read the Terms of Use</a>
+          </div>
+        </div>
+      </section>
+
+    </article>
+  </div>
+</div>
+
+
+<!-- ══ CROSS-LINKS ══ -->
+<section class="cx grain">
+  <div class="cx-inner rv">
+    <div class="cx-k">The trust layer</div>
+    <h2 class="cx-h soft">Everything else we <em>put in writing.</em></h2>
+    <div class="cx-grid soft d1">
+      <a class="cx-i" href="privacy.html"><div class="cx-i-t">Privacy Policy</div><div class="cx-i-b">What may be collected, why, and your choices</div></a>
+      <a class="cx-i" href="health-data.html"><div class="cx-i-t">Health Data</div><div class="cx-i-b">Wellness information, in plain language</div></a>
+      <a class="cx-i" href="terms.html"><div class="cx-i-t">Terms of Use</div><div class="cx-i-b">The agreement that governs using DAOasis</div></a>
+      <a class="cx-i" href="cookies.html"><div class="cx-i-t">Cookie Policy</div><div class="cx-i-b">What this site stores in your browser</div></a>
+      <a class="cx-i here" href="token-disclaimer.html"><div class="cx-i-t">Token &amp; Web3</div><div class="cx-i-b">What DRC and $DVT are — and are not</div></a>
+      <a class="cx-i" href="accessibility.html"><div class="cx-i-t">Accessibility</div><div class="cx-i-b">Designing for more people, and how to tell us</div></a>
+      <a class="cx-i" href="contact.html"><div class="cx-i-t">Contact</div><div class="cx-i-b">How to reach the right part of DAOasis</div></a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ CLOSING NOTE ══ -->
+<section class="foot-note">
+  <div class="foot-note-inner">
+    <div class="foot-note-k">A note on this page</div>
+    <p>DAOasis is being built in stages and this page will be updated as each part is released. Nothing
+      here is financial, investment, legal or tax advice, and nothing here is an offer to sell or a
+      solicitation to buy any financial instrument. Items marked
+      <span class="tbc">to be confirmed</span> are pending legal and regulatory review. If something on
+      this page is unclear, <a href="contact.html">ask us</a>.</p>
+  </div>
+</section>
+
+</main>
+
+
+<!-- ══ FOOTER ══ -->
+<footer class="site-footer">
+  <div class="footer-top">
+    <div>
+      <div class="footer-brand-logo"><img src="images/img-09-white.png" alt="DAOasis mark" /><span>DAOasis</span></div>
+      <div class="footer-tagline"><strong>Wellness meets Web3.</strong><em>Rest. Learn. Earn. Return.</em></div>
+      <div class="footer-appearance">
+        <div class="footer-appearance-label">Appearance</div>
+        <div class="footer-toggle"><button id="ftLight">Light</button><button id="ftDark" class="active">Dark</button></div>
+      </div>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-label">Explore</div>
+      <a href="index.html">Home</a><a href="app.html">Companion App</a><a href="sanctuary.html">The Sanctuary</a><a href="web3.html">The Web3 Layer</a><a href="about.html">About</a><a href="investors.html">Investors</a><a href="contact.html">Contact</a>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-label">Resources</div>
+      <a href="investors.html#resources">Investor Pack</a><a href="investors.html#resources">Business Plan</a><a href="investors.html#resources">Whitepaper</a><a href="investors.html#resources">Brand Kit</a><a href="index.html#waitlistSection">Waitlist</a>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-label">Trust</div>
+      <a href="privacy.html">Privacy</a><a href="health-data.html">Health Data</a><a href="terms.html">Terms</a><a href="cookies.html">Cookies</a><a class="on" href="token-disclaimer.html">Token Disclaimer</a><a href="accessibility.html">Accessibility</a>
+    </div>
+  </div>
+  <div class="footer-bottom"><span>© 2026 DAOasis. All rights reserved.</span><span>Phuket · Global</span></div>
+</footer>
+
+<script src="js/trust.js"></script>
+</body>
+</html>
