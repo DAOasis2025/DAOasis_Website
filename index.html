@@ -248,7 +248,11 @@
   .ctas{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:36px;
     opacity:0;animation:fadeUp 1.3s ease-out forwards;animation-delay:6.65s;}
   @keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
-  .scroll-hint{position:absolute;bottom:5.5vh;left:50%;transform:translateX(-50%);z-index:10;
+  /* Centred with left/right, NOT translateX(-50%): fadeUp ends on
+     transform:translateY(0), and animation-fill-mode:forwards keeps that
+     final keyframe applied, which replaced the -50% shift and left the
+     hint sitting half its own width right of centre. */
+  .scroll-hint{position:absolute;bottom:5.5vh;left:0;right:0;z-index:10;
     text-align:center;color:rgba(247,244,238,0.45);font-size:10px;letter-spacing:0.28em;text-transform:uppercase;
     opacity:0;animation:fadeUp 1.3s ease-out forwards;animation-delay:6.9s;}
 
@@ -415,11 +419,31 @@
 
   /* ═══════════════════════════════════════════
      DIVIDERS — the homepage mark system, now with the Sanctuary's
-     draw-outward entrance. Each divider carries an explicit background
-     matching the section it bridges, rather than relying on negative
-     margins to borrow the background above it.
-  ═══════════════════════════════════════════ */
-  .divider{padding:7vh 8%;position:relative;z-index:5;pointer-events:none;}
+     draw-outward entrance.
+
+     The divider paints NO background of its own. It used to carry an
+     opaque band matched to the section it bridges, but a flat band can
+     only ever match one side: the hero→stage divider was --mineral
+     (#171412) sitting between a photograph above and --space (#030609)
+     below, so it matched neither and read as a lighter stripe across the
+     join. It is now transparent and pulled up over the tail of the
+     section above, so the join shows that section's own background —
+     photograph, gradient or flat colour — and there is no third colour.
+
+     `--divider-h` is its own height, which is what the negative margin
+     has to cancel; keep the two in step if the padding changes.
+
+     The padding is asymmetric (11vh / 3vh) on purpose. With a symmetric
+     7vh the mark landed 70px up inside the section above, which left one
+     divider only 16px of clearance below that section's last line and
+     read as crowded. Loading the top padding drops the mark to ~3vh above
+     the join — still fully inside the section above, so it borrows that
+     background, but sitting where a divider should sit. */
+  .divider{--divider-h:calc(14vh + 26px);
+    padding:11vh 8% 3vh;position:relative;z-index:5;pointer-events:none;
+    margin-top:calc(-1 * var(--divider-h));background:transparent;}
+  /* beat the .bg-* utilities still on the markup */
+  .divider.bg-mineral,.divider.bg-space,.divider.bg-ivory,.divider.bg-stone{background:transparent;}
   .divider-inner{display:flex;align-items:center;gap:24px;max-width:1200px;margin:0 auto;}
   .divider-line{flex:1;height:1px;transform:scaleX(0);transition:transform 1.4s var(--ease);}
   .divider-line:first-child{transform-origin:right;}
@@ -433,11 +457,11 @@
   .divider.light .divider-line{background:rgba(43,38,35,0.2);}
   .divider.shown.light .divider-mark{opacity:0.55;}
 
-  /* Every divider carries the background of the section above it. Below 900px
-     the Principle pin is replaced by its warm-stone fallback, so this one has
-     to follow — including inverting the white mark so it stays visible. */
+  /* Below 900px the Principle pin is replaced by its warm-stone fallback, so
+     this divider now overlays a light section and its mark and rule have to
+     invert to stay visible. No background here — it stays transparent and
+     borrows the warm stone it sits on. */
   @media (max-width:900px){
-    .divider.divider-after-principle{background:var(--warm-stone);}
     .divider.divider-after-principle .divider-line{background:rgba(43,38,35,0.2);}
     .divider.divider-after-principle .divider-mark{filter:invert(1);}
     .divider.shown.divider-after-principle .divider-mark{opacity:0.55;}
@@ -796,9 +820,20 @@
   .cm-pillar-text{font-size:14.5px;color:#5c554c;line-height:1.85;}
 
   /* ═══════════════════════════════════════════
-     PRINCIPLE — image always visible, typewriter headline, card appears after
+     PRINCIPLE — a scroll-scrubbed editorial sequence.
+
+     Every animated value on this stage is a pure function of one paced
+     scroll value t (0→1) supplied by DAO.cine in 'guided' mode. There are
+     no timers and no latched classes anywhere in the section, so reversing
+     the scroll reverses the section exactly, and whatever frame is on
+     screen when the pin releases is the frame that belongs there. That is
+     what makes the sticky lifecycle here residue-free by construction
+     rather than by cleanup. The timeline itself lives in the JS block.
+     Height: 340vh, not the old 300. The section now has four beats to spend
+     scroll on (headline, then each statement) where before it had none — the
+     old 300vh was 100vh of typing followed by 200vh of a frozen pin.
   ═══════════════════════════════════════════ */
-  .pin5{position:relative;height:300vh;}
+  .pin5{position:relative;height:340vh;}
   .stage5{position:sticky;top:0;height:100vh;overflow:hidden;
     background:linear-gradient(135deg,#1a1410 0%,#0e0b08 60%,#141008 100%);
     display:flex;align-items:center;gap:6vw;padding:0 8%;}
@@ -810,66 +845,95 @@
     background:radial-gradient(ellipse,rgba(49,70,63,0.18),transparent 70%);}
 
   /* LEFT: text column */
-  .pr-left{position:relative;z-index:10;flex:0 0 420px;display:flex;flex-direction:column;gap:0;align-self:center;}
+  .pr-left{position:relative;z-index:10;flex:0 0 clamp(380px,33vw,460px);display:flex;flex-direction:column;gap:0;align-self:center;
+    will-change:transform;}
 
   .pr-kicker{font-size:11px;letter-spacing:0.22em;color:var(--gold);text-transform:uppercase;
     display:flex;align-items:center;gap:14px;padding-left:0.22em;
-    opacity:0;transition:opacity 0.6s ease;margin-bottom:30px;}
-  .pr-kicker::before{content:'';display:block;width:28px;height:1px;background:currentColor;opacity:0.55;}
-  .pr-kicker.visible{opacity:1;}
+    opacity:0;margin-bottom:30px;}
+  /* the rule draws outward as the kicker arrives — same idiom as .eyebrow */
+  .pr-kicker::before{content:'';display:block;width:var(--kw,0px);height:1px;background:currentColor;opacity:0.55;}
 
-  /* Headline: always rendered, typewriter fills it in, then it's fully visible */
+  /* Headline: set in the markup as one mask per word. Each word rises out of
+     its own baseline and resolves from blur to sharp, staggered — the site's
+     existing .ln line-mask vocabulary, applied at word scale. */
   .pr-headline{font-family:'Cormorant Garamond',serif;font-weight:300;color:var(--warm-white);
-    font-size:clamp(44px,5.6vw,76px);line-height:1.02;letter-spacing:-0.012em;margin-bottom:44px;
-    opacity:1;min-height:1.1em;}
+    font-size:clamp(44px,5.6vw,76px);line-height:1.06;letter-spacing:-0.012em;margin-bottom:42px;}
   .pr-headline em{font-style:italic;color:var(--gold);}
-  .pr-type-cursor{display:inline-block;width:2px;height:0.8em;background:var(--gold);
-    margin-left:2px;vertical-align:-0.05em;animation:prBlink 0.8s steps(1) infinite;}
-  @keyframes prBlink{50%{opacity:0;}}
+  .pr-w{display:inline-block;overflow:hidden;vertical-align:bottom;
+    padding-bottom:0.16em;margin-bottom:-0.16em;}
+  .pr-w>i{display:block;font-style:normal;color:inherit;transform:translateY(108%);
+    will-change:transform,filter;}
 
-  /* Glass card */
-  .pr-card-wrap{position:relative;z-index:10;width:100%;perspective:900px;
-    opacity:0;transition:opacity 0.9s ease;transform:translateY(16px);
-    transition:opacity 0.9s ease, transform 0.9s ease;}
-  .pr-card-wrap.visible{opacity:1;transform:translateY(0);}
-  .pr-card{
-    background:rgba(247,244,238,0.05);
-    backdrop-filter:blur(18px);
-    border:1px solid rgba(247,244,238,0.1);
-    border-radius:4px;
-    padding:38px 36px;
-    transform-style:preserve-3d;
-    box-shadow:0 30px 80px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06);}
-  .pr-card-line{width:28px;height:1px;background:var(--gold);margin-bottom:28px;}
-  .pr-card p{font-size:14.5px;color:#a49d90;line-height:1.9;margin-bottom:18px;}
-  .pr-card p:last-child{margin-bottom:0;}
-  .pr-card p strong{color:var(--warm-white);font-weight:400;}
-  .pr-card::before{content:'';position:absolute;inset:0;border-radius:4px;
-    background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,0.03) 50%,transparent 60%);}
+  /* The three statements. They are laid out in full from the start — nothing
+     reflows — and each is brought into focus in turn. A statement that has
+     had its moment recedes rather than leaving, so the section closes on the
+     complete thought instead of an orphan paragraph. */
+  .pr-stack{position:relative;padding-left:26px;}
+  /* One hairline that GROWS downward with the statements, rather than a
+     full-height track with a fill inside it. Seen at t=0.44 the track ran
+     well below the only statement on screen and read as a stray line;
+     a rule that is only as long as the argument so far says the same thing
+     about progress without looking like a progress bar. */
+  .pr-spine{position:absolute;left:0;top:0.55em;bottom:0.55em;width:1px;
+    transform-origin:50% 0;transform:scaleY(0);
+    /* Strongest at the BOTTOM, because that is the growing end and the live
+       statement is always the lowest one. The first pass ran the gradient the
+       other way, which put the brightest part of the rule beside the two
+       statements that had already receded. */
+    background:linear-gradient(180deg,rgba(196,138,90,0.14),rgba(196,138,90,0.58));}
+  .pr-stmt{font-size:16.5px;color:#a49d90;line-height:1.9;margin-bottom:24px;opacity:0;
+    will-change:opacity,transform,filter;}
+  .pr-stmt:last-child{margin-bottom:0;}
+  .pr-stmt strong{color:var(--warm-white);font-weight:400;}
 
-  /* RIGHT: large image — always visible */
+  /* RIGHT: large image — always visible, settling slowly across the section */
   .pr-image-col{position:relative;z-index:10;flex:1;align-self:stretch;display:flex;align-items:center;
     min-height:0;}
   .pr-clarity-image{width:100%;height:84vh;max-height:760px;object-fit:cover;border-radius:4px;display:block;
-    box-shadow:0 40px 110px rgba(0,0,0,0.62);}
+    box-shadow:0 40px 110px rgba(0,0,0,0.62);transform-origin:58% 50%;will-change:transform;}
   .pr-image-col::after{content:'';position:absolute;inset:0;pointer-events:none;border-radius:4px;
     box-shadow:inset 0 0 0 1px rgba(247,244,238,0.1);}
 
+  /* MOBILE — the same narrative, told by the page itself rather than by a
+     pin. There is no sticky here at all: each statement is revealed as it
+     reaches the reading line, one at a time, so the pacing comes from the
+     scroll the reader is already doing. Same word-mask headline, so the
+     section reads as the same idea, not as a shrunken desktop layout. */
   .principle-mobile-section{display:none;}
   @media (max-width:900px){
-    .stage5{flex-direction:column;justify-content:center;padding:6vh 8% 4vh;gap:4vh;overflow-y:auto;}
-    .pr-left{flex:none;width:100%;}
-    .pr-image-col{flex:none;width:100%;align-self:auto;}
-    .pr-clarity-image{height:40vh;max-height:320px;}
-    .pr-headline{font-size:clamp(36px,8vw,52px);margin-bottom:24px;}
+    /* Do NOT override the bottom padding here. `.section` gives 16vh, and the
+       divider below overlays the section's tail by its own full height
+       (margin-top: -(14vh+26px)) with 11vh of internal top padding — so the
+       palm mark lands at (bottom - 3vh - 26px). A 6vh tail put the mark's box
+       1px into the last line of the statement; 16vh keeps ~109px clear at
+       390x844 and ~61px at 375x667, against the site's 49px minimum. */
     .principle-mobile-section{display:block;background:var(--warm-stone);}
     .principle-mobile-section .eco-headline{color:var(--charcoal);}
-    .principle-mobile-section .pr-para{font-size:15.5px;color:#5c554c;line-height:1.9;max-width:540px;margin:22px auto 0;text-align:center;
-      opacity:0;transform:translateY(14px);transition:opacity 0.8s var(--ease), transform 0.8s var(--ease);}
-    .principle-mobile-section .pr-para:first-of-type{margin-top:40px;}
-    .principle-mobile-section.in-view .pr-para{opacity:1;transform:translateY(0);}
-    .principle-mobile-section.in-view .pr-para:nth-of-type(2){transition-delay:0.1s;}
-    .principle-mobile-section.in-view .pr-para:nth-of-type(3){transition-delay:0.2s;}
+    .principle-mobile-section .pr-w{display:inline-block;overflow:hidden;vertical-align:bottom;
+      padding-bottom:0.16em;margin-bottom:-0.16em;}
+    .principle-mobile-section .pr-w>i{display:block;font-style:normal;color:inherit;
+      transform:translateY(108%);transition:transform 1.05s var(--ease);}
+    .principle-mobile-section .pr-w.show>i{transform:translateY(0);}
+    .principle-mobile-section .pr-w:nth-of-type(2)>i{transition-delay:0.08s;}
+    .principle-mobile-section .pr-w:nth-of-type(3)>i{transition-delay:0.16s;}
+    /* the statements share the desktop's gold spine, run horizontally */
+    /* The gap between statements is load-bearing, not decoration. Measured
+       at 390x844 the whole section was 663px — shorter than one viewport —
+       so all three crossed the reading line together and the sequence
+       collapsed into a single reveal, which is what the desktop pin was
+       being fixed for. At 9vh apart each statement reaches the reading line
+       on its own, and the reader's own scroll does the pacing. */
+    .principle-mobile-section .pr-para{font-size:15.5px;color:#5c554c;line-height:1.9;max-width:540px;
+      margin:0 auto;text-align:center;padding:9vh 0 0;
+      opacity:0;transform:translateY(16px);filter:blur(3px);
+      transition:opacity 1.05s var(--ease), transform 1.05s var(--ease), filter 1.05s var(--ease);}
+    .principle-mobile-section .pr-para::before{content:'';display:block;width:0;height:1px;
+      background:var(--gold);opacity:0.55;margin:0 auto 26px;
+      transition:width 1.1s var(--ease) 0.18s;}
+    .principle-mobile-section .pr-para:first-of-type{padding-top:7vh;}
+    .principle-mobile-section .pr-para.show{opacity:1;transform:translateY(0);filter:none;}
+    .principle-mobile-section .pr-para.show::before{width:28px;}
     .pin5{display:none;}
   }
 
@@ -1024,6 +1088,13 @@
   .eco-kicker, .eco-headline, .eco-sub, .click-cue, .card,
   .closing-eyebrow, .closing-headline, .closing-body, .closing-tagline,
   .tm-dash, .tm-item, .pr-para { opacity: 1 !important; transform: none !important; }
+  /* the Principle is scrubbed by script; without it, show it as plain type */
+  .pr-para { filter: none !important; }
+  .pr-para::before { width: 28px !important; }
+  .pr-w > i { transform: none !important; }
+  .pr-kicker { opacity: 1 !important; --kw: 28px !important; }
+  .pr-stmt { opacity: 1 !important; }
+  .pr-spine { transform: scaleY(1) !important; }
   .intro { display: none !important; }
   .hero { opacity: 1 !important; }
   #heroH1, .kicker, .h1, .sub, .ctas, .journey-wrap, .journey-mobile, .scroll-hint { opacity: 1 !important; animation: none !important; }
@@ -1049,7 +1120,7 @@
       <a href="sanctuary.html">The Sanctuary</a>
       <a href="web3.html">The Web3 Layer</a>
       <span>About Us</span>
-      <span>Investors</span>
+      <a href="investors.html">Investors</a>
     </div>
     <a class="nav-cta" href="#waitlistSection">Join the waitlist</a>
     <button class="nav-burger" id="navBurger" aria-label="Menu"><span></span><span></span><span></span></button>
@@ -1060,7 +1131,7 @@
     <a href="sanctuary.html">The Sanctuary</a>
     <a href="web3.html">The Web3 Layer</a>
     <span class="drawer-dead">About Us</span>
-    <span class="drawer-dead">Investors</span>
+    <a href="investors.html">Investors</a>
     <a class="nav-cta" href="#waitlistSection">Join the waitlist</a>
   </div>
 
@@ -1428,18 +1499,16 @@
     <div class="pr-blob pr-blob1"></div>
     <div class="pr-blob pr-blob2"></div>
 
-    <!-- LEFT: kicker + headline (typewriter) + glass card -->
+    <!-- LEFT: kicker + word-masked headline + the three statements -->
     <div class="pr-left">
       <div class="pr-kicker" id="prKicker">Principle</div>
-      <div class="pr-headline" id="prHeadline"></div>
+      <div class="pr-headline" id="prHeadline"><span class="pr-w"><i>Clarity</i></span> <span class="pr-w"><i><em>over</em></i></span> <span class="pr-w"><i>Noise.</i></span></div>
 
-      <div class="pr-card-wrap" id="prCardWrap">
-        <div class="pr-card" id="prCard">
-          <div class="pr-card-line"></div>
-          <p>Modern life creates constant <strong>attention demand</strong>, cognitive load and pressure without structure.</p>
-          <p>DAOasis is designed to <strong>remove what distracts</strong> before adding what improves.</p>
-          <p>Built for founders, traders, technical professionals, solo operators, creators and <strong>location independent digital nomads</strong> seeking clarity, structure and long term sustainability.</p>
-        </div>
+      <div class="pr-stack">
+        <div class="pr-spine" id="prSpine"></div>
+        <p class="pr-stmt">Modern life creates constant <strong>attention demand</strong>, cognitive load and pressure without structure.</p>
+        <p class="pr-stmt">DAOasis is designed to <strong>remove what distracts</strong> before adding what improves.</p>
+        <p class="pr-stmt">Built for founders, traders, technical professionals, solo operators, creators and <strong>location independent digital nomads</strong> seeking clarity, structure and long term sustainability.</p>
       </div>
     </div>
 
@@ -1453,7 +1522,7 @@
 <!-- Mobile fallback: Principle -->
 <div class="section principle-mobile-section on-light" id="principleMobileSection">
   <div class="eco-kicker">Principle</div>
-  <div class="eco-headline">Clarity <em>over</em> Noise.</div>
+  <div class="eco-headline"><span class="pr-w"><i>Clarity</i></span> <span class="pr-w"><i><em>over</em></i></span> <span class="pr-w"><i>Noise.</i></span></div>
   <div class="pr-para">Modern life creates constant attention demand, cognitive load and pressure without structure.</div>
   <div class="pr-para">DAOasis is designed to remove what distracts before adding what improves.</div>
   <div class="pr-para">Built for founders, traders, technical professionals, solo operators, creators and location independent digital nomads seeking clarity, structure and long term sustainability.</div>
@@ -1525,7 +1594,7 @@
     </div>
     <div class="footer-col">
       <div class="footer-col-label">Company</div>
-      <a href="#">About</a><a href="#">Team</a><a href="#">Careers</a><a href="#">Investors</a><a href="#">Contact</a>
+      <a href="#">About</a><a href="#">Team</a><a href="#">Careers</a><a href="investors.html">Investors</a><a href="#">Contact</a>
     </div>
     <div class="footer-col">
       <div class="footer-col-label">Legal</div>
@@ -2276,14 +2345,27 @@
     camera.position.x = mouseX * 1.2; camera.position.y = 0.5 - mouseY * 0.8; camera.lookAt(0, 0, 0);
 
     const kicker = document.getElementById('oKicker'), headline = document.getElementById('oHeadline'), lede = document.getElementById('oLede'), body = document.getElementById('oBody'), progressUI = document.getElementById('scrollProgress'), fill = document.getElementById('progressFill');
-    kicker.style.opacity = 1;
-    headline.style.opacity = 1;
-    lede.style.opacity = 1;
-    body.style.opacity = 1;
+    const isMobile = window.innerWidth <= 900;
+
+    /* MOBILE — the copy and the palm take turns instead of sharing the frame.
+       On desktop the copy is a narrow left column and the palm sits centre-
+       right, so they coexist. On a handset the copy spans the full width and
+       the palm assembles directly behind it, which made the body text
+       unreadable. So on mobile the dust stays faint while there is copy to
+       read, then the copy hands the frame over and the palm completes at
+       full strength — the chaos-to-order arc is kept, just not underneath
+       the words. Reduced motion holds the copy up and keeps the palm faint,
+       so nothing is ever lost behind it. */
+    const handover = isMobile && !reducedMotion ? rampT(t, 0.24, 0.34) : 0;
+    const copyA = 1 - handover;
+    kicker.style.opacity = copyA;
+    headline.style.opacity = copyA;
+    lede.style.opacity = copyA;
+    body.style.opacity = copyA;
+    canvas.style.opacity = !isMobile ? 1
+      : (reducedMotion ? 0.22 : 0.16 + 0.84 * rampT(t, 0.22, 0.38));
     progressUI.style.opacity = t > 0.02 ? 1 : 0;
     fill.style.width = (t * 100) + '%';
-
-    const isMobile = window.innerWidth <= 900;
     const centerScale = isMobile ? CENTER_SCALE_MOBILE : CENTER_SCALE_DESKTOP;
     const tl = PANEL_TIMELINE;
     const stackT = rampT(t, tl.stackStart, tl.stackEnd);
@@ -2423,7 +2505,14 @@
   }
   let lastActive = -1;
   function tick(){
-    target = Math.max(target, computeT()); cur += (target - cur) * 0.07; if(Math.abs(target - cur) < 0.0008) cur = target;
+    /* Follows scroll in BOTH directions. This used to be
+       `Math.max(target, computeT())`, which latched: once the route reached
+       Phuket it stayed there, so scrolling back up through 760vh of pinned
+       journey showed a frozen completed route, a comet parked at the end
+       and the stage-07 popcard — a finished animation left pinned on a
+       section the reader was leaving. Reversing now walks the waypoints
+       back the way they came. */
+    target = computeT(); cur += (target - cur) * 0.07; if(Math.abs(target - cur) < 0.0008) cur = target;
     mouseX += (tMouseX - mouseX) * 0.05; mouseY += (tMouseY - mouseY) * 0.05;
     const stageT = Math.min(1, cur / STAGE_END);
     const fillPct = stageT * 100;
@@ -2456,84 +2545,171 @@
 })();
 
 (function(){
+  /* PRINCIPLE — mobile. No pin and no sticky: each part is revealed as it
+     reaches the reading line, so the pacing is the reader's own scroll.
+     Observed individually rather than as one block, which is what makes it
+     arrive one statement at a time instead of all three at once. */
   const section = document.getElementById('principleMobileSection');
   if(!section) return;
+  const parts = [...section.querySelectorAll('.pr-w, .pr-para')];
+  if(!('IntersectionObserver' in window)){
+    section.classList.add('in-view');
+    parts.forEach(el => el.classList.add('show'));
+    return;
+  }
   const obs = new IntersectionObserver((entries) => { entries.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add('in-view'); }); }, { threshold: 0.15 });
   obs.observe(section);
+  const pObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('show'); pObs.unobserve(e.target); } });
+  }, { threshold: 0.4, rootMargin: '0px 0px -14% 0px' });
+  parts.forEach(el => pObs.observe(el));
 })();
 
 (function(){
+  /* ── PRINCIPLE — desktop ────────────────────────────────────────────
+     One paced scroll value in, one rendered frame out. render(t) is a pure
+     function: it reads nothing but t and writes nothing but inline styles,
+     so there is no state to get stranded, nothing to reset on the way back
+     up, and no timer that can still be running once the pin has released.
+     Scroll up and the section plays backwards exactly.
+
+     The track is GUIDED rather than sticky. Quantising would make masked
+     type and blur read as stepping, and the pacing this section needs is
+     not "commit to a state" but "never move faster than this" — a flick
+     across the whole section still takes seconds, while a slow scroll is
+     followed directly and never feels held back. The dwell that makes each
+     statement land is in the timeline below, not in the controller: every
+     statement gets a wide plateau at full strength and a narrow band to
+     arrive in.
+  ── */
   const pin5 = document.getElementById('pin5');
-  const card = document.getElementById('prCard');
-  const cardWrap = document.getElementById('prCardWrap');
+  if(!pin5) return;
   const kicker = document.getElementById('prKicker');
-  const headlineEl = document.getElementById('prHeadline');
-  if(!pin5 || !card) return;
+  const spine  = document.getElementById('prSpine');
+  const img    = document.getElementById('prClarityImage');
+  const left   = pin5.querySelector('.pr-left');
+  const stack  = pin5.querySelector('.pr-stack');
+  const stage  = pin5.querySelector('.stage5');
+  const words  = [...pin5.querySelectorAll('.pr-w > i')];
+  const stmts  = [...pin5.querySelectorAll('.pr-stmt')];
+  if(!kicker || !spine || !img || !left || !stack || !stage || !words.length || !stmts.length) return;
 
-  // Typewriter for "Clarity over Noise."
-  // Renders as: Clarity [italic gold: over] Noise.
-  const HEADLINE_PARTS = [
-    { text: 'Clarity ', em: false },
-    { text: 'over', em: true },
-    { text: ' Noise.', em: false }
+  const cl01 = v => v < 0 ? 0 : v > 1 ? 1 : v;
+  const seg  = (t,a,b) => cl01((t - a) / (b - a));
+  const out  = k => 1 - (1 - k) * (1 - k);
+  const io   = k => k < 0.5 ? 2*k*k : 1 - Math.pow(-2*k + 2, 2) / 2;
+
+  /* in: the band a statement arrives over. recede: the band it steps back
+     over once the next one is arriving. The gap between a statement's `in`
+     end and its `recede` start is its plateau — the time it holds the page
+     alone at full strength. The last statement never recedes, so the
+     section closes on the whole idea rather than on one orphan paragraph.
+
+     A statement recedes only AFTER the next one has essentially landed, not
+     alongside it. Overlapping the two evenly was measured at t=0.50 and gave
+     a frame with one paragraph at 0.58 and another at 0.37 — nothing at full
+     strength, and the least confident moment in the section. Now the
+     arriving statement reaches the page while the previous one is still
+     lit, and the previous one steps back behind it. */
+  const BEATS = [
+    { in: [0.24, 0.37], recede: [0.52, 0.62] },
+    { in: [0.48, 0.61], recede: [0.77, 0.87] },
+    { in: [0.73, 0.86], recede: null }
   ];
-  const SPEED = 55; // ms per character
 
-  function runTypewriter(onDone) {
-    headlineEl.innerHTML = '';
-    const cursor = document.createElement('span');
-    cursor.className = 'pr-type-cursor';
-    headlineEl.appendChild(cursor);
-    let partIdx = 0, charIdx = 0, currentSpan = null;
-    function step() {
-      if (partIdx >= HEADLINE_PARTS.length) {
-        cursor.remove();
-        onDone && onDone();
-        return;
-      }
-      const part = HEADLINE_PARTS[partIdx];
-      if (charIdx === 0) {
-        currentSpan = part.em ? document.createElement('em') : document.createTextNode('');
-        if (part.em) {
-          headlineEl.insertBefore(currentSpan, cursor);
-        }
-      }
-      const char = part.text[charIdx];
-      if (part.em) {
-        currentSpan.textContent += char;
-      } else {
-        headlineEl.insertBefore(document.createTextNode(char), cursor);
-      }
-      charIdx++;
-      if (charIdx >= part.text.length) { partIdx++; charIdx = 0; }
-      setTimeout(step, SPEED);
-    }
-    step();
-  }
-
-  let triggered = false;
-  function checkTrigger(){
-    const rect = pin5.getBoundingClientRect();
-    if(!triggered && rect.top <= 10){
-      triggered = true;
-      // Kicker fades in immediately
-      setTimeout(() => { kicker.classList.add('visible'); }, 200);
-      // Typewriter starts shortly after
-      setTimeout(() => { runTypewriter(() => {
-        // Card appears after typewriter finishes
-        setTimeout(() => { cardWrap.classList.add('visible'); }, 300);
-      }); }, 600);
+  /* The column is laid out for the finished stack, so at the early beats the
+     headline sat in the upper third with the statements' reserved space empty
+     beneath it — a hole, not whitespace. The column is therefore shifted down
+     at the start so whatever is actually visible reads as optically centred,
+     and rises back to its layout position as the statements fill the space in.
+     Clamped to the room actually available, because at 1280x720 half the stack
+     is more than the stage has to give. */
+  let shift = 0, reach = [1, 1, 1], dirty = true;
+  function measure(){
+    dirty = false;
+    const room = (stage.clientHeight - left.offsetHeight) / 2 - 12;
+    shift = Math.max(0, Math.min(stack.offsetHeight / 2, room));
+    /* How far down the rule each statement reaches, from real geometry. A
+       smooth ease over the whole section put the rule at 54% while only the
+       first statement was on screen, so it trailed off into empty column. */
+    const sTop = spine.offsetTop, sH = spine.offsetHeight || 1;
+    for(let i = 0; i < stmts.length; i++){
+      reach[i] = cl01((stmts[i].offsetTop + stmts[i].offsetHeight - sTop) / sH);
     }
   }
-  window.addEventListener('scroll', checkTrigger, { passive: true });
-  checkTrigger();
+  window.addEventListener('resize', () => { dirty = true; }, { passive: true });
 
-  // Mouse tilt on card
-  const stage = card.closest('.stage5');
-  let mx = 0, my = 0, cx = 0, cy = 0;
-  stage.addEventListener('mousemove', e => { const r = stage.getBoundingClientRect(); mx = ((e.clientX - r.left) / r.width - 0.5) * 2; my = ((e.clientY - r.top) / r.height - 0.5) * 2; });
-  stage.addEventListener('mouseleave', () => { mx = 0; my = 0; });
-  (function tick(){ cx += (mx - cx) * 0.08; cy += (my - cy) * 0.08; card.style.transform = `rotateY(${cx * 6}deg) rotateX(${-cy * 4}deg)`; requestAnimationFrame(tick); })();
+  function render(t){
+    if(dirty) measure();
+
+    /* how much of the argument has arrived — the column rises as it fills */
+    const built = out(seg(t, BEATS[0].in[0], BEATS[2].in[1]));
+    left.style.transform = 'translateY(' + (shift * (1 - built)).toFixed(2) + 'px)';
+
+    /* kicker, and its rule drawing outward */
+    const k = out(seg(t, 0.004, 0.07));
+    kicker.style.opacity = k.toFixed(3);
+    kicker.style.setProperty('--kw', (28 * k).toFixed(1) + 'px');
+
+    /* headline — one mask per word, staggered, blur resolving to sharp */
+    for(let i = 0; i < words.length; i++){
+      const a = 0.015 + i * 0.038;
+      const p = io(seg(t, a, a + 0.095));
+      words[i].style.transform = 'translateY(' + ((1 - p) * 108).toFixed(2) + '%)';
+      words[i].style.filter = p > 0.995 ? 'none' : 'blur(' + ((1 - p) * 3.2).toFixed(2) + 'px)';
+    }
+
+    /* statements — arrive, hold, recede */
+    let rule = 0;
+    for(let i = 0; i < stmts.length; i++){
+      const b = BEATS[i];
+      const p = io(seg(t, b.in[0], b.in[1]));
+      if(p * reach[i] > rule) rule = p * reach[i];
+      const r = b.recede ? io(seg(t, b.recede[0], b.recede[1])) : 0;
+      const el = stmts[i];
+      el.style.opacity   = (p * (1 - r * 0.72)).toFixed(3);
+      /* 14px, not 20: the column itself is now rising, and the two movements
+         stacked on top of each other read as overshoot */
+      el.style.transform = 'translateY(' + ((1 - p) * 14 - r * 5).toFixed(2) + 'px)';
+      const blur = (1 - p) * 3 + r * 0.6;
+      el.style.filter = blur < 0.02 ? 'none' : 'blur(' + blur.toFixed(2) + 'px)';
+    }
+
+    /* the rule is only ever as long as the argument so far */
+    spine.style.transform = 'scaleY(' + rule.toFixed(4) + ')';
+
+    /* the photograph settles rather than performing */
+    const s = out(seg(t, 0, 0.55));
+    img.style.transform = 'scale(' + (1.035 - 0.035 * s).toFixed(4) + ') translateY(' + ((1 - s) * 10).toFixed(2) + 'px)';
+    img.style.opacity   = (0.82 + 0.18 * out(seg(t, 0, 0.22))).toFixed(3);
+  }
+
+  /* The paced value. cine settles the track on the true scroll position
+     whenever the section leaves the viewport, so re-entry from either
+     direction always starts from the frame that belongs there. */
+  const track = (window.DAO && DAO.cine)
+    ? DAO.cine.track(pin5, { mode: 'guided', pace: 'epic', states: 4 })
+    : null;
+
+  if(track){
+    track.on(v => render(v));
+  } else {
+    /* no controller: still a pure function of scroll, just unpaced */
+    const rawT = () => {
+      const s = pin5.offsetHeight - window.innerHeight;
+      if(s <= 0) return pin5.getBoundingClientRect().top < 0 ? 1 : 0;
+      return cl01(-pin5.getBoundingClientRect().top / s);
+    };
+    let queued = false;
+    const onScroll = () => {
+      if(queued) return;
+      queued = true;
+      requestAnimationFrame(() => { render(rawT()); queued = false; });
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    render(rawT());
+  }
 })();
 
 (function(){

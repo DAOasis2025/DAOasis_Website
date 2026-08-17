@@ -147,6 +147,35 @@ findable by looking, which is why the eye pass is not optional on this kind of p
    `.three-copy`, which works only because a 3D canvas is full-bleed). At 1280 wide it sat
    on top of the ring's left-hand labels. `.loop-sticky` is now a two-column grid.
 
+### Hero layer labels (August 17)
+The hero's tick marks along thread zero are now labelled with the eight layers the
+thread runs through: Companion App · Learning · Community · Reward Credits · $DVT ·
+Marketplace · Governance · Sanctuary. The ticks keep their original meaning —
+individual acts of participation — and the labels name the layer each act belongs to.
+
+- **Deliberately not Section 6's treatment**, which names the same parts. Section 6 is
+  the diagram (stems, two-line labels, SVG); the hero is the close-up (inline, no
+  stems, no sub-labels, dissolves). Do not converge the two.
+- **DRC and $DVT are separate entries** on purpose, per the content rules below.
+- **The label window is geometry, not taste.** The set spans 7 × 78 world units, so all
+  eight only fit once `z <= (W - 100) / 546` — about 3.2 at desktop width. An earlier
+  ramp keyed off the ticks' own alpha put that moment at ~50% opacity for barely a
+  tenth of the hero, so the full set was never actually readable. `labA` is now
+  `clamp01((z - 2.0) / 0.65)`: full strength while all eight are visible, gone by
+  z = 2.0. The floor is 2.0 rather than 1.7 because **adjacent labels start touching at
+  z ≈ 1.95** — they must be fully gone by then, not merely faint.
+- **Mobile is a different composition, not the desktop one shrunk.** At a legible zoom
+  the ticks are 78 × z apart, so a 375px screen physically holds about two of them —
+  labelling every tick showed 1 of 8 and read as broken. Mobile names **one layer at a
+  time**, advancing as the camera pulls back, with a short stamp in/out at each change.
+  Same eight layers, read in sequence instead of all at once.
+- Canvas letter-spacing is not reliable across engines, so tracking is applied by hand
+  in `trackedText()`; it also yields the exact width that centres a label on its tick.
+- Verified by driving `draw(p)` by hand (pane hidden, rAF frozen): 8/8 labels at full
+  alpha at p≈0.40 with a 53px minimum gap, none overlapping, all clear by p=0.46.
+  Mobile cycles APP → COMMUNITY → DRC → $DVT → MARKETPLACE → SANCTUARY within the
+  viewport at 375 and 390. **Not yet judged by eye.**
+
 ### Content rules for this page — these are firm
 - **DRC and $DVT must never blur together.** DRC = DAOasis Reward Credits, the recognition
   layer, earned through participation, held inside the app. $DVT = DAOasis Value Token, the
@@ -248,6 +277,7 @@ Sections given no track keep completely ordinary scrolling.
 | Page | Section | Mode | States |
 |---|---|---|---|
 | index | hero journey route (`pinContainer`) | guided · epic | 5 waypoints |
+| index | principle (`pin5`) | guided · epic | 4 |
 | app | hero phone fan-out | guided · epic | 3 |
 | app | quest map route | sticky · major | 6 **uneven** stops |
 | app | marketplace scenes | sticky · major | 4 |
@@ -308,6 +338,204 @@ The pacing maths is verified; how the tuned durations *feel* is not.
 ~6px at 768. Confirmed identical with the controller removed, so it predates this
 change. The escaping element sits inside an `overflow:hidden` ancestor, which makes
 it awkward to pin down; worth a separate look.
+
+---
+
+---
+
+## Three homepage fixes (August 17)
+
+### 1. `.scroll-hint` was 80px right of centre
+It was centred with `left:50%; transform:translateX(-50%)`, but its `fadeUp`
+animation ends on `transform:translateY(0)` and `animation-fill-mode:forwards`
+keeps that final keyframe applied — which **replaced** the -50% shift, leaving the
+hint offset by exactly half its own width. `body.intro-skipped`'s
+`transform:none !important` did the same thing.
+Now centred with `left:0; right:0; text-align:center`, so the transform belongs
+solely to the animation. **Do not reintroduce translateX for centring on any
+element that also runs a transform animation** — the same trap applies site-wide.
+
+### 2. Dividers are transparent and overlay the section above
+They used to paint an opaque band matched to the section they bridge, but a flat
+band can only match one side: the hero→stage divider was `--mineral` (#171412)
+between a photograph above and `--space` (#030609) below, so it matched neither
+and read as a lighter stripe across the join.
+
+- `.divider` is now `background: transparent` with
+  `margin-top: calc(-1 * var(--divider-h))`, so it takes no flow height and sits
+  entirely inside the tail of the section above, borrowing that section's own
+  background — photograph, gradient or flat colour.
+- The `.bg-*` classes are **still on the markup** and are overridden by
+  `.divider.bg-*{background:transparent}`. They are now only a record of which
+  colour the divider sits on, which is what picks the mark.
+- **Padding is asymmetric, 11vh / 3vh.** With a symmetric 7vh the mark floated
+  70px up inside the section above and one divider had only **16px** of clearance
+  below that section's last line. Loading the top padding drops the mark to ~3vh
+  above the join; minimum clearance is now 49px.
+- Keep `--divider-h` equal to the real height (`14vh + 26px`) if the padding
+  changes, or the overlay will not cancel.
+- Applied to `index.html`, `sanctuary.html`, `web3.html`. **`app.html` was already
+  `background: transparent`** and was left alone.
+- Verified: all 26 dividers across the three pages still have a correctly
+  contrasting mark against what they now sit on (black on ivory/stone, white on
+  green/dark/photograph), and no mark or rule overlaps any visible text at 390 or
+  1440.
+
+### 3. Mobile "Why DAOasis matters now" — copy and palm now take turns
+On desktop the copy is a narrow left column and the palm sits centre-right, so
+they coexist. On a handset the copy spans the full width and the palm assembled
+directly behind it, which made the body text unreadable.
+
+The copy's opacity was **hardcoded to 1** for the whole section, so it never
+cleared. On mobile it now hands over: the dust holds at 0.16 while there is copy
+to read, then across t 0.22→0.38 the copy fades out as the palm comes to full
+strength. Measured (frame-driven, pane hidden): t≤0.22 copy 1 / palm 0.16 · t=0.30
+copy 0.40 / palm 0.58 · t=0.34 copy 0 / palm 0.79 · t≥0.38 palm 1.
+Desktop is untouched. Under reduced motion the copy stays up and the palm holds at
+0.22, so nothing is ever lost behind it.
+
+**None of the three has been judged by eye** — the pane stayed hidden, so this is
+geometry and opacity verified numerically, not a visual sign-off.
+
+---
+
+## Principle section rebuilt + homepage sticky lifecycle (August 17)
+**Built, numerically verified and judged by eye.**
+
+Scope: `index.html` only. Nothing on app/sanctuary/web3 was touched.
+
+### The Principle section is now scroll-scrubbed, not timer-driven
+The old section was a 300vh pin whose entire content was produced by
+`setTimeout`: a `triggered` flag latched the first time `pin5` reached the top,
+then a 55ms-per-character typewriter ran on wall-clock time, then the glass card
+faded in. Two consequences, both of which the redesign removes:
+- **Scroll did nothing.** The story took ~2.5 seconds and the pin was 300vh, so
+  roughly 200vh of the section was a frozen pinned frame. That is the
+  "sticky whenever the browser happens to be near this section" failure.
+- **It never reset.** `triggered` was one-way, so scrolling back up showed the
+  completed headline and card with no way to replay, and a typewriter could
+  still be running after the reader had left.
+
+**`render(t)` is now a pure function** — reads nothing but the paced scroll
+value, writes nothing but inline styles. There is no timer and no latched class
+anywhere in the section. That is what makes the lifecycle residue-free by
+construction rather than by cleanup: reversing the scroll reverses the section
+exactly, and whatever frame is on screen when the pin releases is the frame that
+belongs there.
+
+- **The typewriter is gone on purpose.** Character-by-character is a terminal
+  metaphor; it reads mechanical no matter how it is eased. Replaced with a
+  **word-mask reveal** — one `.pr-w` mask per word, each rising out of its own
+  baseline with blur resolving to sharp. That is the site's existing `.ln`
+  line-mask vocabulary applied at word scale, not a new idiom.
+- **The glass card is gone too** — `backdrop-filter`, inset highlight, sheen
+  gradient and a `rotateY/rotateX` mouse tilt are the tech-landing-page
+  register the page is moving away from. The three statements are now set as
+  plain editorial type against a 1px spine whose gold fill tracks progress.
+- **Statements arrive one at a time and recede rather than leave.** A statement
+  that has had its moment drops to 0.28 and picks up 0.6px of blur; it does not
+  disappear. The section therefore closes on the complete thought instead of an
+  orphan paragraph, and the column never reflows.
+- **All copy is verbatim.** Headline, three statements, emphasis spans and the
+  photograph are unchanged.
+
+**Track is `guided`, not `sticky`, and that is deliberate.** Quantising makes
+masked type and blur read as stepping. What this section needs is not "commit
+to a state" but "never move faster than this", which is exactly guided's speed
+cap. The dwell that lets each statement land is in the timeline, not the
+controller: every statement gets a wide plateau and a narrow arrival band.
+
+**Two things the numbers caught, both invisible until measured:**
+1. Receding a statement *concurrently* with the next one's arrival produced a
+   frame at t=0.50 with one paragraph at 0.58 and another at 0.37 — nothing at
+   full strength, the least confident moment in the section. A statement now
+   recedes only after the next has essentially landed.
+2. **Mobile was 663px tall at 390×844 — shorter than one viewport**, so all
+   three statements crossed the reading line together and the sequence
+   collapsed into a single reveal. The 9vh gap between statements is
+   load-bearing pacing, not decoration; do not tighten it.
+
+Height went 300vh → 340vh because the section now has four beats to spend
+scroll on where before it had none.
+
+Mobile keeps the same narrative with no sticky at all: `.pin5` is still
+`display:none` below 900px, and each part is revealed by its own
+IntersectionObserver as it reaches the reading line, so the reader's own scroll
+does the pacing. The dead `.stage5` mobile rules (including an `overflow-y:auto`
+inside a sticky) were removed.
+
+### The journey track was a one-way ratchet — fixed
+`pin4`'s tick read `target = Math.max(target, computeT())`. Once the route
+reached Phuket it stayed there, so scrolling back up through **760vh** of pinned
+journey showed a frozen completed route, a comet parked at the end and the
+stage-07 popcard — a finished animation left pinned on a section the reader was
+leaving. It now follows scroll in both directions.
+
+### Left alone deliberately
+- **The hero route's `maxProgress` latch.** It is a trail being drawn across a
+  map; leaving it drawn is defensible, it is documented as intentional, and it
+  is the homepage's signature. Flagged, not changed.
+- **`.stage3`'s callouts overhang the stage by 22px above / 40px below** because
+  `overflow-y:visible` is required for them to escape the dashboard. Pre-existing
+  and small.
+
+### Verified (numerically — see the eye-pass caveat)
+Full-aggression flick across the whole section takes **3.23s** down and 2.51s up,
+max single-frame hop 1.3%, visiting every beat — it cannot flash through. One
+120px wheel notch resolves in **320ms** and a 40px nudge in 160ms, so ordinary
+scrolling is not held back. Direction reversal mid-flight has a max hop of 0.6%
+and lands cleanly. Sweeping the whole document at 400px steps, **no stage ever
+paints outside its own pin** (0 escapes). Scrolling past the Principle and back
+returns it to a true zero state — statements 0/0/0, words at 108% — with no
+leftover `.pr-card`, cursor or `.visible` class. Zero console errors on a full
+sweep down and back up. No horizontal overflow at 375, 390, 430, 1024, 1280 or
+1920; headline stays on one line on mobile; statements become eligible 160–200px
+of scroll apart.
+
+Note that **the pane reports `prefers-reduced-motion: reduce`**, under which
+`cine` emits raw scroll and all pacing is bypassed; the pacing figures above came
+from driving a copy of `js/cine.js` with `reduced` forced to false against this
+section's real geometry.
+
+### The eye pass — four things the numbers had passed clean (August 17)
+Same lesson as the web3 build: the layout audit was green at every breakpoint
+before any of these, and all four were only findable by looking.
+
+1. **The column was designed for the finished stack, so the early beats were a
+   hole rather than whitespace.** With only the headline up, it sat in the upper
+   third with the statements' reserved space empty beneath it. `.pr-left` is now
+   shifted down at the start and rises to its layout position as the statements
+   fill in — so whatever is actually visible reads as optically centred. The
+   shift is **clamped to the room available** (`(stageH - leftH)/2 - 12`), because
+   at 1280×720 half the stack is more than the stage has to give; measured, the
+   clamp binds at 79px there and 119px at 1280×800.
+2. **The rule trailed off into empty column.** It was a full-height track with a
+   gold fill inside it, eased smoothly over the whole section — at t=0.44 it was
+   54% long with only the first statement on screen. It is now a single hairline
+   whose length comes from **real geometry**: `reach[i]` is measured per
+   statement, so the rule ends within a few px of the last arrived statement at
+   every beat (0/1/-9px at the three resting frames).
+3. **The rule's gradient ran the wrong way** — strongest at the top, beside the
+   two statements that had already receded, faintest beside the live one. The
+   live statement is always the lowest, so the gradient now strengthens downward.
+4. **The mobile section crowded the divider.** A `padding-bottom: 6vh` override
+   (added in this same pass) cut `.section`'s 16vh tail, and since the divider
+   overlays that tail by its own full height, the palm mark's box landed **1px
+   into the last line of the statement** against a 49px minimum. The override is
+   gone; clearance is now 68px at 390×844 and 61px at 375×667. **Do not set a
+   bottom padding on `.principle-mobile-section`** — the mark sits at
+   `(section bottom − 3vh − 26px)`, so any tail shorter than ~16vh collides.
+
+Body type also went 15px → 16.5px; at 15px on a 380–460px measure it read as a
+caption next to a 72px display headline. Statement rise dropped 20px → 14px,
+since the column is now rising too and the two movements stacked read as
+overshoot.
+
+Re-verified after all of the above: pacing figures unchanged (3.23s / 2.51s /
+320ms / 160ms / 0.6% reversal hop), 0 stage escapes across the document, the
+column fits the stage at all 11 sampled frames with a 12px worst-case bottom
+margin, scroll-past-and-return still resets to a true zero state, 0px horizontal
+overflow anywhere at 1280×720, and 0 console errors on a full sweep.
 
 ---
 

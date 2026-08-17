@@ -118,7 +118,18 @@ img { max-width: 100%; }
 /* ══════════════════════════════════════════════
    DIVIDERS  (homepage system)
 ══════════════════════════════════════════════ */
-.divider { padding: 7vh 8%; position: relative; z-index: 5; pointer-events: none; }
+/* The divider paints no background of its own: it is transparent and is
+   pulled up over the tail of the section above, so the join shows that
+   section's own background rather than a flat band in a third colour.
+   The .bg-* classes are still on the markup and are overridden below.
+   Padding is asymmetric so the mark lands ~3vh above the join instead of
+   floating half a divider's height up inside the section. Keep
+   --divider-h equal to the actual height if the padding changes. */
+.divider { --divider-h: calc(14vh + 26px);
+  padding: 11vh 8% 3vh; position: relative; z-index: 5; pointer-events: none;
+  margin-top: calc(-1 * var(--divider-h)); background: transparent; }
+.divider.bg-ivory, .divider.bg-stone, .divider.bg-green,
+.divider.bg-mineral, .divider.bg-surface { background: transparent; }
 .divider-inner { display: flex; align-items: center; gap: 24px; max-width: 1200px; margin: 0 auto; }
 .divider-line { flex: 1; height: 1px; }
 .divider-mark { width: 26px; height: 26px; object-fit: contain; flex-shrink: 0; }
@@ -751,7 +762,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
     <a href="sanctuary.html">The Sanctuary</a>
     <a href="web3.html" class="active">The Web3 Layer</a>
     <span>About Us</span>
-    <span>Investors</span>
+    <a href="investors.html">Investors</a>
   </div>
   <a class="nav-cta" href="index.html#waitlistSection">Join the waitlist</a>
   <button class="nav-burger" id="navBurger" aria-label="Menu"><span></span><span></span><span></span></button>
@@ -762,7 +773,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
   <a href="sanctuary.html">The Sanctuary</a>
   <a href="web3.html" class="active">The Web3 Layer</a>
   <span class="drawer-dead">About Us</span>
-  <span class="drawer-dead">Investors</span>
+  <a href="investors.html">Investors</a>
   <a class="nav-cta" href="index.html#waitlistSection">Join the waitlist</a>
 </div>
 
@@ -1415,7 +1426,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
     </div>
     <div class="footer-col">
       <div class="footer-col-label">Company</div>
-      <span>About</span><span>Team</span><span>Careers</span><span>Investors</span>
+      <span>About</span><span>Team</span><span>Careers</span><a href="investors.html">Investors</a>
     </div>
     <div class="footer-col">
       <div class="footer-col-label">Legal</div>
@@ -1592,6 +1603,43 @@ function rnd(i){ const s = Math.sin(i * 127.1 + 311.7) * 43758.5453; return s - 
      late, not the other way round */
   const outQuad = t => t * (2 - t);
 
+  /* The layers the thread runs through. The ticks keep their original
+     meaning — individual acts of participation — and these name the layer
+     each act belongs to.
+
+     Deliberately NOT the stem-and-label treatment of the Ecosystem
+     diagram in Section 6, which names the same parts: these sit inline
+     along the thread, carry no stems and no sub-labels, and dissolve with
+     the close view. Section 6 is the diagram; this is the close-up.
+
+     DRC and $DVT are two separate entries on purpose. They are different
+     layers and the page never lets them blur. */
+  const LAYERS   = ['Companion App','Learning','Community','Reward Credits',
+                    '$DVT','Marketplace','Governance','Sanctuary'];
+  /* a handset shows ~3 of these at once, so the long ones are shortened
+     rather than allowed to collide */
+  const LAYERS_M = ['App','Learning','Community','DRC',
+                    '$DVT','Marketplace','Governance','Sanctuary'];
+  const L_FIRST  = -4;              /* the set is centred on the thread */
+
+  /* Canvas letter-spacing is not reliable across the engines this has to
+     run on, so tracking is applied by hand. It also yields an exact width,
+     which is what centres the label over its tick. */
+  function trackedWidth(s, tr){
+    let w = 0;
+    for(let i = 0; i < s.length; i++){
+      w += ctx.measureText(s[i]).width + (i < s.length - 1 ? tr : 0);
+    }
+    return w;
+  }
+  function trackedText(s, midX, y, tr){
+    let x = midX - trackedWidth(s, tr) / 2;
+    for(let i = 0; i < s.length; i++){
+      ctx.fillText(s[i], x, y);
+      x += ctx.measureText(s[i]).width + tr;
+    }
+  }
+
   function threadAt(i, worldX){
     const amp  = 16 + rnd(i) * 22;
     const freq = 0.0042 + rnd(i + 91) * 0.0036;
@@ -1664,6 +1712,28 @@ function rnd(i){ const s = Math.sin(i * 127.1 + 311.7) * 43758.5453; return s - 
       const spacing = 78;
       const firstN = Math.floor(((0 - cx) / z) / spacing) - 1;
       const lastN  = Math.ceil(((W - cx) / z) / spacing) + 1;
+
+      /* The label window is set by geometry, not by taste. The set spans
+         7 * 78 world units, so all eight only fit on screen once
+         z <= (W - 100) / 546 — about 3.2 at desktop width. Ramping the
+         labels off tickA put that moment at ~50% opacity and held it for
+         barely a tenth of the hero, so the full set was never actually
+         readable. This holds them at full strength through the window
+         where all eight are visible, then clears them well before the
+         densest frame so they never fight the field's arrival.
+
+         The floor is 2.0 rather than 1.7 because adjacent labels start
+         touching at z ≈ 1.95 — they must be fully gone by then, not
+         merely faint, or the overlap shows as a smudge. */
+      const names = mobile ? LAYERS_M : LAYERS;
+      const labA  = clamp01((z - 2.0) / 0.65);
+      const fs    = mobile ? 8.5 : 10;
+      const tr    = fs * (mobile ? 0.14 : 0.2);
+      if(labA > 0.02){
+        ctx.font = '400 ' + fs + 'px "Frank Ruhl Libre", serif';
+        ctx.textBaseline = 'alphabetic';
+      }
+
       for(let n = firstN; n <= lastN; n++){
         const wx = n * spacing;
         const sx = wx * z + cx;
@@ -1674,6 +1744,38 @@ function rnd(i){ const s = Math.sin(i * 127.1 + 311.7) * 43758.5453; return s - 
         ctx.moveTo(sx, sy - h);
         ctx.lineTo(sx, sy + h);
         ctx.stroke();
+
+        const li = n - L_FIRST;
+        if(!mobile && labA > 0.02 && li >= 0 && li < names.length){
+          ctx.fillStyle = 'rgba(247,244,238,' + (0.85 * labA).toFixed(3) + ')';
+          trackedText(names[li].toUpperCase(), sx, sy - h - 12, tr);
+        }
+      }
+
+      /* An intentional mobile composition, not the desktop one shrunk.
+         At a legible zoom the ticks are 78 * z apart, so a 375px screen
+         physically holds about two of them — labelling every tick showed
+         1 of 8 and read as broken. Mobile therefore names one layer at a
+         time, advancing as the camera pulls back: the same eight layers,
+         read in sequence instead of all at once. */
+      if(mobile){
+        const envelope = Math.min(drawT, clamp01((z - 1.15) / 0.5));
+        if(envelope > 0.02){
+          const walk = clamp01((Z0 - z) / (Z0 - 1.2)) * names.length;
+          const idx  = Math.min(names.length - 1, Math.floor(walk));
+          const frac = walk - idx;
+          /* each name is stamped in and out, so the change is deliberate
+             rather than a hard cut between two words */
+          const slot = clamp01(Math.min(frac / 0.12, (1 - frac) / 0.12));
+          const a = 0.85 * envelope * slot;
+          if(a > 0.02){
+            ctx.font = '400 ' + (fs + 1.5) + 'px "Frank Ruhl Libre", serif';
+            ctx.textBaseline = 'alphabetic';
+            ctx.fillStyle = 'rgba(247,244,238,' + a.toFixed(3) + ')';
+            const sy0 = cy + threadAt(0, 0) * z;
+            trackedText(names[idx].toUpperCase(), cx, sy0 - (13 * z * 0.5 + 5) - 15, (fs + 1.5) * 0.24);
+          }
+        }
       }
     }
     ctx.restore();
