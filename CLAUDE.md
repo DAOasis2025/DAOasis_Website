@@ -638,8 +638,28 @@ destinations (Careers, Team on some pages, Legal, social).
   "$DRT rewards your wellness journey" — DRT is the retired name. It now reads "DRC
   rewards your participation." Meaning preserved, terminology current. There is no DRT
   anywhere on the site.
-- **Trong appears once.** He is profiled in the founding-team row; the Technology
-  section names his remit and gives Etiosa the full profile, so no bio is repeated.
+- **Team structure was corrected on 18 August 2026.** Trong is **not** a founder and no
+  longer appears in the founding-team row. Founding team = **Nelson** (Co-Founder, COO &
+  Token Strategy) and **Dan** (Co-Founder, Company Strategy) only. Technology =
+  **Trong** (Chief Technology Officer), **Uchenna** (App Developer) and **Etiosa**
+  (Smart Contract Development). Trong's bio and quote moved verbatim; nothing was
+  invented for him. Uchenna is placeholder copy with no quote.
+  - The founding row uses a new `.team.team-2` two-up variant. Two cards dropped into
+    the three-column `.team` grid left a visible hole that read as a deleted card, so
+    the row is two columns with the portrait plate capped at 430px — without the cap a
+    half-width column renders the 4:5 plate ~60% taller than the three-up cards and the
+    founding team becomes louder than the founder section above it. The stagger is kept.
+    **The mobile `gap` has to be restated inside the `@media(max-width:1000px)` block**,
+    because `.team.team-2` (0,2,0) outranks the mobile `.team` rule (0,1,0).
+  - Technology reuses the plain three-up `.team` grid with no new CSS: `.pt`, `.pf-name`,
+    `.pf-role`, `.pf-bio` and `.pf-q` all already have `.on-dark` variants, so identical
+    markup renders correctly on the dark ground.
+  - `.pf-soon` ("Quote to follow") is a new placeholder that carries `.pf-q`'s rule and
+    spacing in `.pt-tag`'s micro-label treatment. It exists because Uchenna has no quote
+    and one card ending early leaves a ragged hole in a three-up row. **Do not resolve
+    that by writing a quote for a real person.**
+  - The **disciplines block** and the **"Six remits" diagram** were deliberately left
+    alone. They name remit leads, not full rosters, and Trong still leads Technology.
 - The systems diagram in "Six remits. One ecosystem." is **CSS, not SVG** — deliberately,
   given the scaling problem above. It stacks cleanly to 375px.
 
@@ -670,6 +690,78 @@ The Sanctuary is **planned, not operational**. Never imply otherwise.
 - `index.html` is the visual quality benchmark. Do not modify `index.html` or `app.html` without being asked.
 - Confirm which file is being edited before making any change.
 - Verify in the browser before claiming something works. Note that when the Browser pane is hidden the page reports `visibilityState: "hidden"`, which freezes `requestAnimationFrame` and IntersectionObserver — so scroll animations and all 3D silently never run and cannot be verified. Ask for the pane to be displayed, or drive frames manually with a temporary harness.
+
+## Trust & legal layer (August 18) — seven new pages
+
+`privacy.html` · `health-data.html` · `terms.html` · `cookies.html` ·
+`token-disclaimer.html` · `accessibility.html` · `contact.html`
+
+Plus **two new shared files that must be uploaded to GitHub**: `css/trust.css` and
+`js/trust.js`. Unlike the marketing pages these seven do **not** inline their CSS —
+one document design across seven documents is the one case where a shared sheet is
+right, and it is one upload instead of seven diffs.
+
+### Register
+A dark cover plate, then ivory pages set for reading — an annual report, not a
+cinematic page. **No `cine.js`, no pinned sections, no scroll scrubbing, no canvas
+anywhere in the trust layer.** Do not add scroll choreography to these pages.
+
+### Load-bearing decisions — do not undo
+1. **Fail-visible by default.** Every hidden reveal start-state is gated on `html.js`,
+   a class added by the inline `<head>` script. The resting state of `trust.css` is
+   fully visible; animation is opted into. The marketing pages do the opposite and lean
+   on `<noscript>`, which covers "JS disabled" but **not** "`trust.js` 404'd". The head
+   script also arms a 2.5s failsafe that drops the class if `trust.js` never sets
+   `data-trust="ready"`. Verified in all three modes: normal (22/22 reveals, 0 invisible),
+   script missing (failsafe fires, 26,121 characters readable), no JS at all (0 invisible).
+   **A legal page must never be able to render as invisible type.**
+2. **The measure is 34em (~75 characters), set by counting.** 40em gave **88 characters**
+   per line, because Frank Ruhl Libre at 16.5px averages ~7.27px/char. The mobile rule
+   was worse — 44em ≈ 97 characters, wider than desktop.
+3. **`.doc-grid` is capped at `rail + gap + measure` and centred**, not stretched to
+   1360px. Stretched, the column stayed 640px while the container grew, leaving a 229px
+   empty gutter at 1440 and 379px at 1920.
+4. **The contents rail is scroll-position driven, not IntersectionObserver.** A legal
+   section is often three viewports tall, so it is never wholly intersecting and an
+   observer-driven rail goes blank mid-section.
+5. **`.cx-i.here` is an opaque `#251F1D`, not a tint.** As `rgba(196,138,90,0.07)` it
+   composited over `.cx-grid`'s own `rgba(247,244,238,0.1)` gap colour and dropped the
+   body text to 3.5:1.
+
+### Verified
+271 text styles across all 13 pages at **0 contrast failures** (WCAG AA, alpha-composited
+backgrounds). 49 responsive checks (7 pages × 375/390/430/768/1024/1440/1920): **0
+horizontal overflow, 0 escaping elements, 10px minimum type**. Every internal link,
+anchor and asset resolves. Scroll-spy 5/5, theme toggle, drawer + Escape, accordions,
+print-expands-all-details, and deep-link-into-collapsed-accordion all pass.
+
+**The eye pass is partial.** The Browser pane's compositor only painted a fraction of
+the viewport for most captures. The cover and the document body at desktop were seen and
+are right; the rest is verified numerically.
+
+### Content rules
+- Every unresolved legal input is a **visible** `<span class="tbc">` marker, not a
+  silent omission, and is tracked in `CONTENT_REQUIRED.md`. A policy that quietly omits
+  its own contact address is worse than one that admits it is not settled.
+- **No entity name, address, jurisdiction, retention period, processor, analytics
+  vendor or certification was invented.**
+- `cookies.html` states as fact that the site sets **no cookies and runs no analytics**
+  — verified against the source. **If analytics are ever added, `cookies.html` §04/§07
+  and `privacy.html` §09 must be updated before the script goes live.**
+
+### Footer — now identical on all 13 pages
+Four columns: brand + **Explore / Resources / Trust**. The old Legal column of dead
+`<span>`s and the "Follow Us" column of dead `#` links are gone. Footer label, tagline,
+toggle and bottom-line colours were raised for contrast **on all 13 pages** so the shared
+component stays identical (`#5f5a52`→`#8f887d`, `#4a4540`→`#8a8377`, `#7a746a`→`#9a9285`).
+
+### Watch out
+`Get-Content -Raw` + `Set-Content` in Windows PowerShell 5.1 **double-encoded this
+project's UTF-8 box-drawing characters into mojibake.** Use the Edit tool, or
+`[System.IO.File]::ReadAllBytes` + explicit `UTF8.GetString`/`GetBytes`. Never round-trip
+these files through `Get-Content`/`Set-Content`.
+
+---
 
 ## Next planned work
 **`web3.html` is done — built, numerically verified and judged by eye** (August 14).

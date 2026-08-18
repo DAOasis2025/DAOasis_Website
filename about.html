@@ -366,6 +366,18 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--gold); outline-
 .on-dark .pf-q { border-color: rgba(247,244,238,0.14); color: rgba(247,244,238,0.82); }
 .on-green .pf-q { border-color: rgba(247,244,238,0.2); color: rgba(247,244,238,0.88); }
 
+/* QUOTE PLACEHOLDER — same rule, same rhythm, no invented words.
+   In a three-up row one card ending early leaves a ragged hole where
+   the other two carry a closing rule. Fabricating a quote for a real
+   person to fix a layout is not an option, so this borrows the page's
+   existing "Portrait to follow" idiom and is set in the same micro-label
+   treatment as .pt-tag. It reads as pending rather than missing. */
+.pf-soon { margin-top: 26px; padding-top: 22px; border-top: 1px solid;
+  font-size: 10.5px; letter-spacing: 0.2em; text-transform: uppercase; }
+.on-light .pf-soon { border-color: rgba(43,38,35,0.16); color: #6b6459; }
+.on-dark .pf-soon { border-color: rgba(247,244,238,0.14); color: #8f887d; }
+.on-green .pf-soon { border-color: rgba(247,244,238,0.2); color: rgba(247,244,238,0.72); }
+
 /* FOUNDER — asymmetric, portrait offset below the name */
 .founder { display: grid; grid-template-columns: minmax(0,0.82fr) minmax(0,1.18fr); gap: 7%; align-items: start; }
 .founder .pt { margin-top: 7vh; }
@@ -380,6 +392,27 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--gold); outline-
 .team-i .pf-bio { margin-top: 20px; font-size: 15px; }
 .team-i .pf-q { margin-top: 26px; padding-top: 22px; font-size: clamp(18px,1.8vw,23px); max-width: 100%; }
 .team-i .pt { margin-bottom: 28px; }
+
+/* TWO-UP VARIANT — the founding team is two people.
+   Dropped into the three-column grid they would fill two thirds and
+   leave a visible hole, which reads as a card having been deleted
+   rather than as a decision. Two columns instead, so the row rhymes
+   with the .spread above it. The portrait plate is capped because a
+   half-width column would otherwise render a 4:5 plate about 60%
+   taller than the three-up cards, making the founding team louder
+   than the founder section above it. The stagger is kept — it is what
+   stops a two-card row reading as a table. */
+.team.team-2 { grid-template-columns: repeat(2,1fr); gap: 7%; }
+.team.team-2 .pt { max-width: 430px; }
+.team.team-2 .team-i:nth-child(2) { margin-top: 9vh; }
+@media(max-width:1000px){
+  /* the desktop `.team.team-2` gap outranks `.team`s mobile gap on
+     specificity, so the stacked gap has to be restated here */
+  .team.team-2 { grid-template-columns: 1fr; gap: 9vh; }
+  .team.team-2 .team-i:nth-child(2) { margin-top: 0; }
+  .team.team-2 .pt { max-width: none; }
+}
+@media(max-width:640px){ .team.team-2 .pt { max-width: 300px; } }
 @media(max-width:1000px){
   .team { grid-template-columns: 1fr; gap: 9vh; margin-top: 8vh; }
   .team-i:nth-child(2), .team-i:nth-child(3) { margin-top: 0; }
@@ -729,13 +762,13 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
       </div>
       <div class="copy wide soft d1">
         <p>No single discipline can build DAOasis.</p>
-        <p>The founding team combines company strategy, operations, technology and token
+        <p>The founding team combines company strategy, operations and token
         strategy to build the ecosystem from different sides of the same idea — and to
         argue about it properly before anything gets shipped.</p>
       </div>
     </div>
 
-    <div class="team rv">
+    <div class="team team-2 rv">
       <article class="team-i soft">
         <!-- PORTRAIT SLOT — <img src="images/team-nelson.jpg" alt="Nelson, Co-Founder and COO of DAOasis" /> -->
         <figure class="pt">
@@ -773,25 +806,6 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
           </blockquote>
         </div>
       </article>
-
-      <article class="team-i soft d2">
-        <!-- PORTRAIT SLOT — <img src="images/team-trong.jpg" alt="Trong, Chief Technology Officer at DAOasis" /> -->
-        <figure class="pt">
-          <span class="pt-mono" aria-hidden="true">T</span>
-          <figcaption class="pt-tag">Portrait to follow</figcaption>
-        </figure>
-        <div>
-          <h3 class="pf-name">Trong</h3>
-          <div class="pf-role">Chief Technology Officer</div>
-          <p class="pf-bio">Trong brings 20+ years leading developer teams across mobile,
-          web platforms and Web3 projects. He oversees the technical direction of the
-          ecosystem.</p>
-          <blockquote class="pf-q">
-            "Good technology should feel invisible. My focus is building systems that are
-            robust, intuitive and ready to scale."
-          </blockquote>
-        </div>
-      </article>
     </div>
   </div>
 </section>
@@ -803,9 +817,14 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
 
 <!-- ══════════════════════════════════════════════
      05 — TECHNOLOGY & WEB3
-     Trong's full profile sits above in the founding
-     team; this section is the technology remit and
-     Etiosa's profile, so nothing is stated twice.
+     The whole technology team lives here: Trong
+     (who moved out of the founding team row, where
+     he did not belong), Uchenna and Etiosa. Three
+     across, so it uses the same `.team` grid as the
+     founding row — the profile primitives are
+     already theme-aware, so the identical markup
+     renders correctly on this dark ground with no
+     extra CSS.
 ══════════════════════════════════════════════ -->
 <section class="sect bg-mineral on-dark grain" id="technology">
   <div class="sect-inner">
@@ -823,29 +842,65 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
         opens the app, goes for a walk, and their journey moves.</p>
         <p>Behind that simplicity is technology designed to support the Companion App,
         digital ownership, smart contracts and the infrastructure required to grow the
-        ecosystem responsibly. <strong>Trong directs that technical architecture</strong>;
-        Etiosa works on the on-chain layer beneath it.</p>
+        ecosystem responsibly. <strong>Trong directs the technical architecture</strong>,
+        Uchenna builds the Companion App, and Etiosa works on the on-chain layer
+        beneath it.</p>
       </div>
     </div>
 
-    <div class="pair rv" style="margin-top:11vh;">
-      <div class="pair-media soft d1">
+    <div class="team rv">
+      <article class="team-i soft">
+        <!-- PORTRAIT SLOT — <img src="images/team-trong.jpg" alt="Trong, Chief Technology Officer at DAOasis" /> -->
+        <figure class="pt">
+          <span class="pt-mono" aria-hidden="true">T</span>
+          <figcaption class="pt-tag">Portrait to follow</figcaption>
+        </figure>
+        <div>
+          <h3 class="pf-name">Trong</h3>
+          <div class="pf-role">Chief Technology Officer</div>
+          <p class="pf-bio">Trong brings 20+ years leading developer teams across mobile,
+          web platforms and Web3 projects. He oversees the technical direction of the
+          ecosystem.</p>
+          <blockquote class="pf-q">
+            "Good technology should feel invisible. My focus is building systems that are
+            robust, intuitive and ready to scale."
+          </blockquote>
+        </div>
+      </article>
+
+      <article class="team-i soft d1">
+        <!-- PORTRAIT SLOT — <img src="images/team-uchenna.jpg" alt="Uchenna, App Developer at DAOasis" /> -->
+        <figure class="pt">
+          <span class="pt-mono" aria-hidden="true">U</span>
+          <figcaption class="pt-tag">Portrait to follow</figcaption>
+        </figure>
+        <div>
+          <h3 class="pf-name">Uchenna</h3>
+          <div class="pf-role">App Developer</div>
+          <p class="pf-bio">Uchenna works across the development of the DAOasis Companion
+          App, helping turn the product vision into a scalable, intuitive experience for
+          members.</p>
+          <div class="pf-soon">Quote to follow</div>
+        </div>
+      </article>
+
+      <article class="team-i soft d2">
         <!-- PORTRAIT SLOT — <img src="images/team-etiosa.jpg" alt="Etiosa, Smart Contract Development at DAOasis" /> -->
         <figure class="pt">
           <span class="pt-mono" aria-hidden="true">E</span>
           <figcaption class="pt-tag">Portrait to follow</figcaption>
         </figure>
-      </div>
-      <div class="soft d2">
-        <h3 class="pf-name">Etiosa</h3>
-        <div class="pf-role">Smart Contract Development</div>
-        <p class="pf-bio">Etiosa works across smart contract deployment, tokenomics design
-        and the broader technical vision of the on-chain architecture.</p>
-        <blockquote class="pf-q">
-          "Smart contracts are about trust — my goal is clean, secure code that supports
-          both the vision and the users behind it."
-        </blockquote>
-      </div>
+        <div>
+          <h3 class="pf-name">Etiosa</h3>
+          <div class="pf-role">Smart Contract Development</div>
+          <p class="pf-bio">Etiosa works across smart contract deployment, tokenomics design
+          and the broader technical vision of the on-chain architecture.</p>
+          <blockquote class="pf-q">
+            "Smart contracts are about trust — my goal is clean, secure code that supports
+            both the vision and the users behind it."
+          </blockquote>
+        </div>
+      </article>
     </div>
   </div>
 </section>

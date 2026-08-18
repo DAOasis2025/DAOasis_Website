@@ -273,3 +273,28 @@ new pages introduce DRC by its full name (DAOasis Reward Credits) on first use.
 ### 8. Dead lightbox in `index.html`
 Pre-existing, documented in `CLAUDE.md`. CSS and markup with zero JS references. Not
 touched.
+
+---
+
+## TEAM PAGE — added 18 August 2026
+
+The About page team structure was corrected: Trong moved out of the founding team and
+into Technology, and Uchenna was added as App Developer.
+
+| Needed | Appears on |
+|---|---|
+| **Uchenna's real profile copy** — the current bio is placeholder text | `about.html` §Technology |
+| **Uchenna's quote** — his card carries a "Quote to follow" placeholder | `about.html` §Technology |
+| Portrait for Uchenna — `images/team-uchenna.jpg` | `about.html` §Technology |
+
+**Do not write a quote for Uchenna, or for anyone else, to fill the layout.** The
+`.pf-soon` placeholder exists specifically so the three-up row stays balanced without
+words being attributed to a real person who did not say them.
+
+Portrait files still missing for **every** profile on the page: Jamie, Nelson, Dan,
+Trong, Uchenna, Etiosa, George. Each has an HTML comment giving the intended filename;
+dropping an `<img>` inside the `<figure class="pt">` covers the monogram automatically,
+with no CSS change. Do not fill these with stock or generated portraits.
+
+`images/about-hero-mobile.jpg` is also still missing — the hero degrades to a colour
+field by design, and it is the only 404 the page logs.
