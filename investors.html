@@ -647,6 +647,18 @@ a:focus-visible, button:focus-visible {
 .cap-g b { display: block; font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase; color: #918977; margin-bottom: 7px; font-weight: 500; }
 @media(max-width:900px){ .cap { grid-template-columns: 1fr; } }
 
+.cap-use { margin-top: 7vh; border-top: 1px solid rgba(43,38,35,0.2); padding-top: 26px; }
+.cap-use-h { font-size: 10.5px; letter-spacing: 0.2em; text-transform: uppercase; color: #918977; }
+.cap-use-i { margin-top: 10px; font-size: 14.5px; line-height: 1.75; color: #5c554c; max-width: 62ch; }
+.cap-u { margin-top: 40px; display: grid; grid-template-columns: repeat(3,1fr); gap: 34px 6%; }
+.cap-u-i { border-top: 1px solid rgba(43,38,35,0.18); padding-top: 18px; }
+.cap-u-n { font-size: 10.5px; letter-spacing: 0.2em; color: rgba(196,138,90,0.9); }
+.cap-u-t { margin-top: 9px; font-family: 'Cormorant Garamond', serif; font-weight: 300;
+  font-size: clamp(20px,2vw,26px); color: var(--charcoal); line-height: 1.2; }
+.cap-u-b { margin-top: 10px; font-size: 13.5px; line-height: 1.8; color: #5c554c; }
+@media(max-width:1100px){ .cap-u { grid-template-columns: repeat(2,1fr); gap: 30px 6%; } }
+@media(max-width:700px){ .cap-u { grid-template-columns: 1fr; gap: 26px; } }
+
 .rev { margin-top: 9vh; display: grid; grid-template-columns: repeat(2,1fr); gap: 34px 7%; }
 .rev-i { border-top: 1px solid rgba(43,38,35,0.18); padding-top: 20px; }
 .rev-t { font-size: 15.5px; color: var(--charcoal); display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
@@ -852,7 +864,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
 
     <div class="ih-strip soft d3">
       <div>
-        <div class="ih-si-k">Stage</div>
+        <div class="ih-si-k">Programme stage</div>
         <div class="ih-si-v">Feasibility Stage&nbsp;2</div>
         <div class="ih-si-n">Pre-launch. Companion App in build.</div>
       </div>
@@ -2135,40 +2147,94 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
         <span class="ln"><i>against <em>readiness.</em></i></span>
       </h2>
       <div class="copy wide soft d1" style="margin-top:38px;">
-        <p>DAOasis is funding through a three-stage sequence rather than a single raise.
-        Each stage is gated on a specific, observable point of product and legal
-        readiness — so each group of funders takes risk proportional to how derisked the
-        business actually is when they enter.</p>
+        <p>DAOasis is funding through a three-stage sequence — <em>Validate</em>,
+        <em>Build</em>, <em>Scale</em> — rather than a single raise. Each stage is gated
+        on a specific, observable point of product and legal readiness, so each group of
+        funders takes risk proportional to how derisked the business actually is when
+        they enter.</p>
       </div>
     </div>
 
     <div class="cap rv">
       <div class="cap-i soft">
-        <div class="cap-s">Stage 1 &middot; Current</div>
+        <div class="cap-s">Stage 1 &middot; Validate</div>
         <div class="cap-a">US$50,000</div>
-        <div class="cap-t">Feasibility Stage 2</div>
-        <div class="cap-g"><b>Funds</b>Companion App prototype development, $DVT legal and
-        structural groundwork, jurisdictional setup across BVI and Thailand, and early
-        marketing. Approximately US$25,000 has already been deployed into foundational
-        development and infrastructure ahead of this stage.</div>
+        <div class="cap-t">Open now &middot; Founder and private network</div>
+        <div class="cap-g"><b>Purpose</b>To complete the groundwork an institutional
+        raise depends on: incorporation across both jurisdictions, a reviewed legal
+        position, an independently audited technical architecture and a functional
+        Companion App MVP. Approximately US$25,000 has already been deployed into
+        foundational development and infrastructure ahead of this stage.</div>
       </div>
       <div class="cap-i soft d1">
-        <div class="cap-s">Stage 2 &middot; Next</div>
-        <div class="cap-a">US$300–600k</div>
-        <div class="cap-t">Growth raise &middot; VC, angel, individual</div>
-        <div class="cap-g"><b>Gate</b>Triggered once the Companion App prototype is
-        functional and $DVT is legally structured and audit-ready — not yet publicly
-        sold. Indicative range only, sized for roughly 12–18 months of runway for a small
-        core team. A planning estimate, not a committed target.</div>
+        <div class="cap-s">Stage 2 &middot; Build</div>
+        <div class="cap-a">US$3,000,000</div>
+        <div class="cap-t">Growth raise &middot; VC, angel and strategic</div>
+        <div class="cap-g"><b>Gate</b>Opens once the Companion App MVP is functional and
+        $DVT is legally structured and audit-ready — not yet publicly sold. Sized to fund
+        the core team, product build-out and market entry through to the Sanctuary pilot.
+        An indicative target, not a committed or subscribed amount.</div>
       </div>
       <div class="cap-i soft d2">
-        <div class="cap-s">Stage 3 &middot; Later</div>
+        <div class="cap-s">Stage 3 &middot; Scale</div>
         <div class="cap-a">To be set</div>
-        <div class="cap-t">$DVT sale</div>
-        <div class="cap-g"><b>Gate</b>Follows completion of Stage 2. No target is set
-        deliberately: the amount depends entirely on the legal structure counsel
-        confirms, including eligible jurisdictions and participation scope. Intended to
-        fund architecture, marketing and the Phuket pilot.</div>
+        <div class="cap-t">Seed extension and $DVT sale</div>
+        <div class="cap-g"><b>Gate</b>Follows completion of the Build stage. No target is
+        published deliberately: the amount depends entirely on the legal structure
+        counsel confirms, including eligible jurisdictions and participation scope.
+        Intended to fund architecture, marketing and the Phuket pilot.</div>
+      </div>
+    </div>
+
+    <div class="cap-use rv">
+      <div class="cap-use-h">Use of funds &middot; Stage 1 &middot; Validate</div>
+      <div class="cap-use-i soft">The US$50,000 is allocated against six specific,
+      verifiable outcomes. Each one is a precondition of the Build-stage gate rather
+      than general working capital.</div>
+
+      <div class="cap-u">
+        <div class="cap-u-i soft d1">
+          <div class="cap-u-n">01</div>
+          <div class="cap-u-t">Corporate structure</div>
+          <div class="cap-u-b">Finalisation of the group incorporation across the British
+          Virgin Islands and Thailand, including the operating and intercompany
+          arrangements between the digital and hospitality entities.</div>
+        </div>
+        <div class="cap-u-i soft d1">
+          <div class="cap-u-n">02</div>
+          <div class="cap-u-t">Legal review</div>
+          <div class="cap-u-b">External counsel review of the $DVT position, platform
+          terms and user-facing obligations in both jurisdictions, establishing what may
+          be offered, to whom and from where.</div>
+        </div>
+        <div class="cap-u-i soft d2">
+          <div class="cap-u-n">03</div>
+          <div class="cap-u-t">Independent audit</div>
+          <div class="cap-u-b">Third-party audit of the Web3 architecture, smart
+          contracts and supporting technical components, completed ahead of any
+          deployment rather than after it.</div>
+        </div>
+        <div class="cap-u-i soft d2">
+          <div class="cap-u-n">04</div>
+          <div class="cap-u-t">Companion App MVP</div>
+          <div class="cap-u-b">Completion of the MVP to a functional, releasable
+          standard — the core daily habit loop, Reward Credits and health platform
+          integration.</div>
+        </div>
+        <div class="cap-u-i soft d3">
+          <div class="cap-u-n">05</div>
+          <div class="cap-u-t">Market entry</div>
+          <div class="cap-u-b">Brand, marketing and social channel investment to
+          establish the wellness-first position and build an early community ahead of
+          launch.</div>
+        </div>
+        <div class="cap-u-i soft d3">
+          <div class="cap-u-n">06</div>
+          <div class="cap-u-t">Core team</div>
+          <div class="cap-u-b">Selective retention of the founders and founding team on
+          modest stipends, keeping critical capability in place through the pre-revenue
+          period rather than losing it to paid work elsewhere.</div>
+        </div>
       </div>
     </div>
 
@@ -2295,7 +2361,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
             <li>Companion App MVP — working target Q4 2026</li>
             <li>$DVT launch — working target Q4 2026, with the app leading by 4–6 weeks</li>
             <li>Independent smart contract audit ahead of any deployment</li>
-            <li>Stage 2 growth raise, gated on prototype and legal readiness</li>
+            <li>Build-stage growth raise, gated on MVP and legal readiness</li>
             <li>Marketplace and Stake to Create mechanics</li>
             <li>Phuket Sanctuary pilot — 2027</li>
           </ul>

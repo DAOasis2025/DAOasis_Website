@@ -170,7 +170,25 @@
   @media (max-width:800px){.intro-skip{bottom:24px;right:24px;padding:10px 20px;letter-spacing:0.18em;}}
 
   /* SCROLL-PIN CONTAINER */
-  .pin-container{position:relative;height:300vh;}
+  /* ── HOME PAGE SCROLL BUDGET ──────────────────────────────────────────
+     Every pinned section below is sized by ONE number: how much scroll each
+     narrative beat gets. Measured across the page it ranged from 40vh/beat
+     (hero route, daily experience) to 94vh/beat (journey) — a 2.4x spread,
+     which is why the page read as clunky rather than paced. Some sections
+     flew past before the copy could be read; others sat on a finished frame
+     for two-thirds of a screen.
+
+     House rate is ~62-68vh per beat. Section height = beats x rate + 100vh,
+     because the first viewport-height is consumed pinning the section and
+     contributes no scrub. If a beat is added or removed, move the height.
+
+       hero route        5 beats  ~60/beat  -> 400vh
+       wellness shift    6 beats  ~69/beat  -> 516vh
+       daily experience  4 beats  ~68/beat  -> 372vh
+       journey           7 beats  ~68/beat  -> 576vh
+       principle         4 beats  ~68/beat  -> 372vh
+  ────────────────────────────────────────────────────────────────────── */
+  .pin-container{position:relative;height:400vh;}
   .hero{position:sticky;top:0;height:100vh;overflow:hidden;opacity:0;transition:opacity 1.1s ease;}
   .hero.reveal{opacity:1;}
   #heroH1{opacity:0;transition:opacity 0.5s ease;}
@@ -614,14 +632,20 @@
   @media (max-width:900px){.scroll-progress{display:none;}}
 
   /* TRACK WHAT MATTERS */
-  .pin3{position:relative;height:260vh;}
+  /* 4 callouts, each with a paragraph to read — at 260vh they arrived at
+     40vh/beat, faster than the copy could be taken in */
+  .pin3{position:relative;height:372vh;}
   /* Callouts must escape the dashboard vertically, but the right-hand card
      used to hang past the viewport and give the whole page a horizontal
      scroll. `overflow-x:clip` with `overflow-y:visible` is the one legal
      pairing that keeps the vertical overhang and kills the horizontal one. */
+  /* The bottom padding is load-bearing, not decoration: it shifts the
+     flex-centred content upward and is what creates the room co4's card
+     hangs into. Without it the card runs out of the stage and collides with
+     the section divider below. */
   .stage3{position:sticky;top:0;height:100vh;overflow-x:clip;overflow-y:visible;
     background:radial-gradient(ellipse at 50% 40%, #211b16 0%, var(--mineral) 72%);
-    display:flex;align-items:center;justify-content:center;gap:5vw;padding:0 8%;}
+    display:flex;align-items:center;justify-content:center;gap:5vw;padding:0 8% 11vh;}
 
   .track-overlay{position:relative;z-index:10;max-width:380px;flex-shrink:0;align-self:center;}
   .track-kicker{font-size:11px;letter-spacing:0.22em;color:var(--gold);text-transform:uppercase;
@@ -634,7 +658,11 @@
   .track-lede{font-size:15px;color:#a49d90;line-height:1.9;margin-top:26px;max-width:34ch;
     opacity:1;transition:opacity 0.6s ease;}
 
-  .dash-wrap{position:relative;z-index:10;width:min(560px,40vw);aspect-ratio:1004/901;flex-shrink:0;
+  /* The 62vh term is what makes this survive short viewports. Sized on width
+     alone, at 1280x720 the dashboard is 502px tall in a 720px stage and
+     leaves only 130px underneath — less than co4's card needs, so the card
+     could not fit however the connector was tuned. */
+  .dash-wrap{position:relative;z-index:10;width:min(560px,40vw,62vh);aspect-ratio:1004/901;flex-shrink:0;
     opacity:1;transform:scale(1);transition:opacity 0.7s ease, transform 0.7s ease;}
   .dash-img{width:100%;height:100%;object-fit:cover;border-radius:4px;display:block;
     box-shadow:0 40px 110px rgba(0,0,0,0.6);}
@@ -673,13 +701,20 @@
     .co3{left:66%;}
   }
   .co4{left:50%;top:92%;transform:translate(-50%,0);}
-  /* The dot has to stay ON the keep-it-up band, which sits near the foot of
-     the dashboard at ~92% — so the connector, not the dot, is what has to
-     span the remaining ~8% of the image. At the shared 30px the card cleared
-     the image by only 6px and read as touching it.
+  /* co4 is the only callout that hangs BELOW the dashboard, and the space
+     between the image's foot and the bottom of the stage is the tightest
+     budget on the page. Two failure modes sit either side of it: too short a
+     connector and the card touches the image; too long and the card runs out
+     of the stage and collides with the section divider underneath.
+
+     So the card is widened to pull its copy onto fewer lines, the dot moves
+     to the image's bottom edge (the keep-it-up band ends there anyway) and
+     the connector stays modest. Measured, not guessed — see the fit check.
      Written as `.callout.co4` deliberately: `.co4 .co-line` is two classes
      and loses to `.callout.co-dir-down .co-line`, which is three. */
-  .callout.co4 .co-line{height:66px;}
+  .callout.co4{top:99%;}
+  .callout.co4 .co-line{height:30px;}
+  .callout.co4 .co-card{width:min(440px,44vw);}
 
   .track-dots{position:absolute;bottom:6%;left:8%;z-index:16;display:flex;gap:10px;opacity:0;transition:opacity 0.5s ease;}
   .track-dots.show{opacity:1;}
@@ -736,12 +771,22 @@
   }
 
   /* THE JOURNEY */
-  .pin4{position:relative;height:760vh;}
+  /* 7 stages of one short line each. 760vh gave 94vh per stage — by far the
+     slowest beat on the page, and the section that most read as dragging. */
+  .pin4{position:relative;height:576vh;}
+  /* Three explicit bands, not "centre everything and overlay a card".
+     Row 1 header, row 2 the card, row 3 the track. The card used to be
+     absolutely centred on the stage, which put it straight on top of the
+     headline — the headline then had to dim to 0.22 to survive it, and a
+     half-erased headline behind a floating plate is exactly what read as
+     unfinished. With a real row per element nothing overlaps, so nothing has
+     to be hidden. */
   .stage4{position:sticky;top:0;height:100vh;overflow:visible;
     background:radial-gradient(ellipse at 50% 45%, #221c16 0%, var(--mineral) 75%);
-    display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 5%;}
+    display:grid;grid-template-rows:auto minmax(0,1fr) auto;justify-items:center;
+    padding:clamp(52px,8.5vh,86px) 5% clamp(48px,7.5vh,76px);}
 
-  .journey-header{text-align:center;position:relative;z-index:10;margin-bottom:18vh;}
+  .journey-header{text-align:center;position:relative;z-index:10;margin-bottom:0;}
   .j-kicker{font-size:11px;letter-spacing:0.22em;color:var(--gold);text-transform:uppercase;
     display:flex;justify-content:center;align-items:center;gap:14px;padding-left:0.22em;}
   .j-kicker::before,.j-kicker::after{content:'';display:block;width:28px;height:1px;background:currentColor;opacity:0.55;}
@@ -793,21 +838,63 @@
     .j-track{transition:none !important;}
   }
 
-  /* Light card on the dark route — the popcard is the one element here that
-     is speaking TO the reader rather than being part of the map, so it reads
-     as a note laid on top rather than another piece of chrome. */
-  .j-popcard{position:absolute;bottom:calc(100% + 30px);left:0%;transform:translateX(-50%);width:270px;
-    background:#F4F1EA;border:1px solid rgba(43,38,35,0.10);
-    border-radius:4px;padding:20px 22px;z-index:20;opacity:0;transition:left 0.55s cubic-bezier(0.34,1.2,0.64,1), opacity 0.4s ease;
-    box-shadow:0 30px 70px rgba(0,0,0,0.55);pointer-events:none;}
-  .j-popcard.pop{animation:jPop 0.55s cubic-bezier(0.34,1.56,0.64,1);}
-  @keyframes jPop{0%{transform:translateX(-50%) translateY(8px) scale(0.92);}60%{transform:translateX(-50%) translateY(-3px) scale(1.02);}100%{transform:translateX(-50%) translateY(0) scale(1);}}
+  /* THE STAGE CARD.
+
+     A grid item in row 2, top-aligned — NOT absolutely centred any more. Two
+     things follow from that, both of which the old version got wrong:
+
+     1. It cannot collide with the headline or the track, because it has its
+        own row. The `.card-up` headline dimming existed only to survive that
+        collision and is gone with it.
+     2. Its top edge is fixed. The seven stage texts are 1–3 lines, so a
+        vertically centred card grew and shrank about its middle and shifted
+        on every stage change. Anchored at the top it grows downward into the
+        slack the row already holds, and the eyebrow never moves.
+
+     The transform is now scale() alone. The old one carried the -50%/-50%
+     centring inside it, which is the trap documented for `.scroll-hint`: an
+     animation ending on a bare transform replaces the centring and drops the
+     element half its own size off-position. There is nothing left to lose. */
+  .j-popcard{grid-row:2;align-self:start;justify-self:center;
+    margin-top:clamp(30px,5.4vh,64px);width:min(700px,80vw);
+    transform:scale(0.965);text-align:center;
+    background:linear-gradient(168deg,#FAF8F4,#EFEAE0);
+    border:1px solid rgba(43,38,35,0.10);
+    border-radius:3px;padding:clamp(32px,3.9vh,46px) clamp(36px,3.4vw,54px) clamp(34px,4.1vh,48px);
+    z-index:60;opacity:0;
+    box-shadow:0 48px 100px rgba(0,0,0,0.55), 0 8px 24px rgba(0,0,0,0.3),
+               inset 0 1px 0 rgba(255,255,255,0.8);
+    transition:opacity 0.42s ease, transform 0.6s cubic-bezier(0.22,1,0.36,1);
+    pointer-events:none;}
+  /* One gold accent, straddling the top edge. The previous version boxed the
+     whole card in an inset gold hairline, which is the visual grammar of a
+     dialog — a rule that stops reads as a mark, a rule that goes all the way
+     round reads as a frame. */
+  .j-popcard::before{content:'';position:absolute;top:-1px;left:50%;
+    transform:translateX(-50%);width:72px;height:2px;
+    background:linear-gradient(90deg,transparent,var(--gold),transparent);
+    pointer-events:none;}
+  .j-popcard.pop{animation:jPop 0.62s cubic-bezier(0.22,1,0.36,1);}
+  @keyframes jPop{
+    0%{transform:scale(0.955);opacity:0;}
+    55%{transform:scale(1.008);}
+    100%{transform:scale(1);opacity:1;}}
   /* #8A5A2B not --gold: the gold is tuned for dark grounds and drops to
      ~2.4:1 on ivory. This is the same hue carried to AA on a light card. */
-  .j-pop-eyebrow{font-size:9.5px;letter-spacing:0.24em;color:#8A5A2B;text-transform:uppercase;}
-  .j-pop-text{font-size:13px;color:#3A342F;line-height:1.8;margin-top:12px;}
-  .j-pop-arrow{position:absolute;bottom:-6px;left:50%;transform:translateX(-50%) rotate(45deg);width:12px;height:12px;
-    background:#F4F1EA;border-right:1px solid rgba(43,38,35,0.10);border-bottom:1px solid rgba(43,38,35,0.10);}
+  .j-pop-eyebrow{font-size:10px;letter-spacing:0.3em;color:#8A5A2B;text-transform:uppercase;
+    padding-left:0.3em;margin-bottom:clamp(16px,2vh,22px);}
+  /* max-width in ch, and balanced: the seven texts run 62–118 characters, so
+     an unconstrained centred paragraph produced everything from one long line
+     to a two-line block with three orphaned words. */
+  .j-pop-text{font-family:'Cormorant Garamond',serif;font-weight:300;
+    font-size:clamp(20px,1.75vw,27px);color:#2B2623;line-height:1.45;letter-spacing:-0.005em;
+    max-width:24ch;margin:0 auto;text-wrap:balance;}
+  /* the arrow pointed at the node the card used to sit above; a centred card
+     has nothing to point at, so it is retired rather than left dangling */
+  .j-pop-arrow{display:none;}
+
+  .journey-header{transition:opacity 0.55s var(--ease), transform 0.55s var(--ease);}
+  .j-track-wrap{grid-row:3;}
 
   @media (max-width:1100px){.pin4{display:none;}}
   .journey-mobile-section{display:none;}
@@ -938,7 +1025,7 @@
      scroll on (headline, then each statement) where before it had none — the
      old 300vh was 100vh of typing followed by 200vh of a frozen pin.
   ═══════════════════════════════════════════ */
-  .pin5{position:relative;height:340vh;}
+  .pin5{position:relative;height:372vh;}
   .stage5{position:sticky;top:0;height:100vh;overflow:hidden;
     background:linear-gradient(135deg,#1a1410 0%,#0e0b08 60%,#141008 100%);
     display:flex;align-items:center;gap:6vw;padding:0 8%;}
@@ -1478,16 +1565,21 @@
       <div class="j-kicker">The journey</div>
       <div class="j-headline">A path that unfolds <em>at your own pace.</em></div>
     </div>
+    <!-- The stage card is a direct child of .stage4, NOT of .j-track. The
+         track carries a JS-applied rotateX/rotateY, and a transformed
+         ancestor becomes the containing block for its positioned
+         descendants — inside the track the card could never centre on the
+         stage, and it would be tilted by the track's parallax as well. -->
+    <div class="j-popcard" id="jPopcard">
+      <div class="j-pop-eyebrow" id="jPopEyebrow">Stage 01</div>
+      <div class="j-pop-text" id="jPopText"></div>
+      <div class="j-pop-arrow"></div>
+    </div>
     <div class="j-track-wrap">
       <div class="j-track" id="jTrack">
         <div class="j-line-base"></div>
         <div class="j-line-fill" id="jLineFill"></div>
         <div class="j-comet" id="jComet"></div>
-        <div class="j-popcard" id="jPopcard">
-          <div class="j-pop-eyebrow" id="jPopEyebrow">Stage 01</div>
-          <div class="j-pop-text" id="jPopText"></div>
-          <div class="j-pop-arrow"></div>
-        </div>
         <div class="j-node" id="jNode0" style="left:0%;"><div class="j-dot">01</div><div class="j-title">Download the App</div><div class="j-sub">Your journey starts with a single tap.</div></div>
         <div class="j-node" id="jNode1" style="left:16.667%;"><div class="j-dot">02</div><div class="j-title">Build Healthy Habits</div><div class="j-sub">Small daily actions, tracked and rewarded.</div></div>
         <div class="j-node" id="jNode2" style="left:33.333%;"><div class="j-dot">03</div><div class="j-title">Join the Community</div><div class="j-sub">Connect with others building the same habits.</div></div>
@@ -1735,6 +1827,58 @@
   ];
 
   const wpEls = [];
+  const labelItems = [];
+
+  /* Waypoint labels are placed by MEASUREMENT, not by fixed offsets.
+
+     The offsets this replaced (+32 / -22 from the node, 16 between label and
+     sub) were tuned when the type was 11 and 9.5 viewBox units. At the sizes
+     the map now uses they are far too tight, and worse, the two right-hand
+     waypoints sit close together on the curve while carrying the two longest
+     sub-lines on the map — so their text ran straight through each other and
+     through the route.
+
+     So: each label takes the side its own node suggests (a node high on the
+     curve labels below it, a node low on the curve labels above), then any
+     pair that still collides horizontally pushes the later one to the
+     opposite side, and finally every label is clamped inside the viewBox so
+     the end waypoints cannot hang off the edge of the map. */
+  function placeLabels(){
+    if(!labelItems.length) return;
+    const VB_W = 1000, PAD = 12, LABEL_GAP = 42, SUB_GAP = 24, MIN_CLEAR = 16;
+    const widthOf = it => {
+      let a = 0, b = 0;
+      try { a = it.label.getComputedTextLength(); b = it.sub.getComputedTextLength(); } catch(e){}
+      return Math.max(a, b);
+    };
+    /* 1 = below the node, -1 = above it */
+    labelItems.forEach(it => { it.side = it.p.y < 150 ? 1 : -1; });
+    /* the first and last are the anchors of the story — keep them below, so
+       Bangkok and Phuket always read the same way */
+    labelItems[0].side = 1;
+    labelItems[labelItems.length - 1].side = 1;
+
+    for(let i = 1; i < labelItems.length; i++){
+      const a = labelItems[i - 1], b = labelItems[i];
+      if(a.side !== b.side) continue;
+      const clear = Math.abs(b.p.x - a.p.x) - (widthOf(a) + widthOf(b)) / 2;
+      if(clear < MIN_CLEAR) b.side = -a.side;
+    }
+
+    labelItems.forEach(it => {
+      const dir = it.side;
+      const labelY = it.p.y + dir * LABEL_GAP;
+      it.label.setAttribute('y', labelY);
+      /* the place name always sits nearest the node; the day-line sits
+         beyond it, so the pair reads outward from the point it belongs to */
+      it.sub.setAttribute('y', labelY + dir * SUB_GAP);
+      const half = widthOf(it) / 2;
+      const x = Math.min(VB_W - PAD - half, Math.max(PAD + half, it.p.x));
+      it.label.setAttribute('x', x);
+      it.sub.setAttribute('x', x);
+    });
+  }
+
   function buildJourney(){
     const path = document.getElementById('route');
     const svg = document.getElementById('journeySvg');
@@ -1758,19 +1902,23 @@
         dot.setAttribute('cx', p.x); dot.setAttribute('cy', p.y); dot.setAttribute('r', 3.5); dot.setAttribute('fill', '#F7F4EE');
         g.appendChild(dot);
       }
-      const labelY = p.y + (wp.frac === 0 ? 32 : (wp.frac >= 0.9 ? 32 : (p.y > 150 ? 32 : -22)));
-      const subY = labelY + (labelY > p.y ? 16 : -16);
       const label = document.createElementNS('http://www.w3.org/2000/svg','text');
-      label.setAttribute('x', p.x); label.setAttribute('y', labelY);
+      label.setAttribute('x', p.x);
       label.setAttribute('class','wp-label'); label.setAttribute('text-anchor','middle');
       label.textContent = wp.title;
       const sub = document.createElementNS('http://www.w3.org/2000/svg','text');
-      sub.setAttribute('x', p.x); sub.setAttribute('y', subY);
+      sub.setAttribute('x', p.x);
       sub.setAttribute('class','wp-sub'); sub.setAttribute('text-anchor','middle');
       sub.textContent = wp.sub;
       g.appendChild(label); g.appendChild(sub);
       svg.appendChild(g);
+      labelItems.push({ wp, p, label, sub });
     });
+    placeLabels();
+    /* widths are wrong until the webfont has actually loaded, and every
+       placement decision here is width-driven, so solve again once it has */
+    if(document.fonts && document.fonts.ready) document.fonts.ready.then(placeLabels);
+    window.addEventListener('resize', placeLabels, { passive: true });
     const traveler = document.createElementNS('http://www.w3.org/2000/svg','circle');
     traveler.setAttribute('r','5.5'); traveler.setAttribute('fill','#F7F4EE'); traveler.id='traveler';
     svg.appendChild(traveler);
@@ -3050,9 +3198,23 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
   const callouts = [document.getElementById('co1'), document.getElementById('co2'), document.getElementById('co3'), document.getElementById('co4')];
   const CO_TIMELINE = [{ inStart: 0.06, inEnd: 0.12 }, { inStart: 0.22, inEnd: 0.28 }, { inStart: 0.38, inEnd: 0.44 }, { inStart: 0.54, inEnd: 0.60 }];
   function computeT(){ const rect = pin3.getBoundingClientRect(); const scrollable = pin3.offsetHeight - window.innerHeight; if(scrollable <= 0) return 0; return Math.max(0, Math.min(1, -rect.top / scrollable)); }
+
+  /* PACED, not lerped. This section used `cur += (target - cur) * 0.08`,
+     which is a PROPORTIONAL follow, not pacing: the bigger the gap the
+     faster it closes, so a hard flick still raced through all four callouts
+     in a handful of frames. It was one of only two sections on the page that
+     never got migrated onto the shared controller, and it is a large part of
+     why the page felt inconsistent from section to section.
+
+     'sticky' because the callouts are discrete states — one meaningful
+     scroll should land exactly one callout, not smear between two. */
+  const track = (window.DAO && DAO.cine)
+    ? DAO.cine.track(pin3, { mode: 'sticky', pace: 'epic', states: 4 })
+    : null;
   let cur = 0, target = 0;
   function tick(){
-    target = computeT(); cur += (target - cur) * 0.08; if(Math.abs(target - cur) < 0.0008) cur = target;
+    if(track){ cur = track.get(); }
+    else { target = computeT(); cur += (target - cur) * 0.08; if(Math.abs(target - cur) < 0.0008) cur = target; }
     tKicker.style.opacity = Math.min(1, cur * 26);
     tHeadline.style.opacity = Math.max(0, Math.min(1, (cur - 0.006) * 26));
     tLede.style.opacity = Math.max(0, Math.min(1, (cur - 0.012) * 26));
@@ -3137,16 +3299,27 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
   if(!j4ReducedMotion){
     window.addEventListener('mousemove', (e) => { tMouseX = (e.clientX / window.innerWidth - 0.5) * 2; tMouseY = (e.clientY / window.innerHeight - 0.5) * 2; });
   }
+  const track = (window.DAO && DAO.cine)
+    ? DAO.cine.track(pin4, { mode: 'sticky', pace: 'epic', states: 7 })
+    : null;
   let lastActive = -1;
   function tick(){
     /* Follows scroll in BOTH directions. This used to be
        `Math.max(target, computeT())`, which latched: once the route reached
-       Phuket it stayed there, so scrolling back up through 760vh of pinned
+       Phuket it stayed there, so scrolling back up through the pinned
        journey showed a frozen completed route, a comet parked at the end
        and the stage-07 popcard — a finished animation left pinned on a
        section the reader was leaving. Reversing now walks the waypoints
-       back the way they came. */
-    target = computeT(); cur += (target - cur) * 0.07; if(Math.abs(target - cur) < 0.0008) cur = target;
+       back the way they came.
+
+       PACED, not lerped: `cur += (target - cur) * 0.07` closed large gaps
+       fast, so a flick still tore through all seven stages. 'sticky' commits
+       to one stage per meaningful scroll, which is what makes each stage
+       card land rather than smear. The seven stops are evenly spaced here
+       (the nodes sit at 0/16.7/33.3/50/66.7/83.3/100%), so even states are
+       correct — unlike the quest map, which needs explicit stops. */
+    if(track){ cur = track.get(); }
+    else { target = computeT(); cur += (target - cur) * 0.07; if(Math.abs(target - cur) < 0.0008) cur = target; }
     mouseX += (tMouseX - mouseX) * 0.05; mouseY += (tMouseY - mouseY) * 0.05;
     const stageT = Math.min(1, cur / STAGE_END);
     const fillPct = stageT * 100;
@@ -3168,9 +3341,12 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
       lastActive = activeIndex;
       popEyebrow.textContent = 'Stage 0' + (activeIndex + 1);
       popText.textContent = DETAILS[activeIndex];
-      popcard.style.left = (activeIndex / 6 * 100) + '%';
+      /* no `left` any more — the card is fixed to the centre of the viewport
+         and the active node on the track below is what marks the position */
       popcard.classList.remove('pop'); void popcard.offsetWidth; popcard.classList.add('pop');
     }
+    /* no `card-up` any more: the card has its own grid row, so the headline
+       never needs to recede out of its way */
     popcard.style.opacity = stageT > 0.01 ? 1 : 0;
     jTrack.style.transform = j4ReducedMotion ? 'none' : `rotateX(${mouseY * -3}deg) rotateY(${mouseX * 3}deg)`;
     requestAnimationFrame(tick);
