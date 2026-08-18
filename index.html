@@ -140,6 +140,23 @@
     transition:opacity 0.7s ease, filter 0.7s ease;}
   .headline.show{opacity:1;filter:blur(0px);}
   .headline em{font-style:italic;color:var(--gold);}
+  /* Word masks. Each word sits in its own overflow-hidden box and rises out
+     of its own baseline with blur resolving to sharp — the same vocabulary
+     the Principle section uses, applied at word scale.
+     The padding/negative-margin pair is load-bearing: overflow:hidden on an
+     inline-block clips descenders (the p in "apps", the y in "creates
+     stakeholders") without it. */
+  .headline .tw-w{display:inline-block;overflow:hidden;vertical-align:top;
+    padding:0.06em 0.04em 0.16em;margin:-0.06em -0.04em -0.16em;}
+  .headline .tw-w > i{display:inline-block;font-style:inherit;
+    transform:translateY(108%);opacity:0;filter:blur(8px);
+    transition:transform 1.05s cubic-bezier(0.16,1,0.3,1),
+               filter 0.95s cubic-bezier(0.16,1,0.3,1),
+               opacity 0.7s ease;}
+  .headline .tw-w.in > i{transform:translateY(0);opacity:1;filter:blur(0px);}
+  @media (prefers-reduced-motion: reduce){
+    .headline .tw-w > i{transform:none;opacity:1;filter:none;transition:none;}
+  }
   .type-cursor{display:inline-block;width:2px;height:0.85em;background:var(--gold);margin-left:3px;vertical-align:-0.08em;animation:blink 0.85s steps(1) infinite;}
   @keyframes blink{50%{opacity:0;}}
   .intro-skip{position:fixed;bottom:34px;right:34px;z-index:110;
@@ -260,11 +277,17 @@
   /* The route drawing is capped by viewport height as well as width, so the
      whole hero stack still fits inside 100vh on short laptop screens.
      The SVG preserves its aspect ratio and simply scales down to fit. */
-  .journey-wrap{position:relative;width:100%;max-width:1040px;margin:5vh auto 0;opacity:0;
+  /* The map is height-limited, not width-limited, and that is what was
+     keeping it small: the SVG is a 1000x320 viewBox, so at max-height 26vh
+     (~208px on an 800px viewport) it scaled to 0.65 and the 11-unit labels
+     rendered at about 7px. Raising the height cap is what actually enlarges
+     the map; the label sizes below are in VIEWBOX UNITS and are scaled by the
+     same factor, so both have to move together. */
+  .journey-wrap{position:relative;width:100%;max-width:1200px;margin:4.5vh auto 0;opacity:0;
     animation:fadeUp 1.6s ease-out forwards;animation-delay:6.9s;transition:opacity 0.15s linear;}
-  .journey-wrap svg{width:100%;height:auto;max-height:26vh;display:block;overflow:visible;}
-  .wp-label{font-family:'Frank Ruhl Libre',serif;font-size:11px;letter-spacing:0.18em;fill:var(--warm-white);text-transform:uppercase;}
-  .wp-sub{font-family:'Frank Ruhl Libre',serif;font-size:9.5px;letter-spacing:0.06em;fill:#cfc8be;opacity:0.8;}
+  .journey-wrap svg{width:100%;height:auto;max-height:38vh;display:block;overflow:visible;}
+  .wp-label{font-family:'Frank Ruhl Libre',serif;font-size:16px;letter-spacing:0.18em;fill:var(--warm-white);text-transform:uppercase;}
+  .wp-sub{font-family:'Frank Ruhl Libre',serif;font-size:13px;letter-spacing:0.06em;fill:#cfc8be;opacity:0.85;}
 
   #routeMaskPath{transition:stroke-dashoffset 1.8s cubic-bezier(0.22,1,0.36,1);}
   .wp-group{opacity:0.3;transition:opacity 0.7s ease, filter 0.7s ease;}
@@ -468,11 +491,32 @@
   }
 
   /* WHY DAOASIS */
-  .pin{position:relative;height:820vh;}
+  /* 516vh, for a true 30% slowdown.
+
+     What paces a scrubbed section is its SCROLLABLE distance — height minus
+     one viewport, because the first viewport-height is consumed pinning it —
+     not its raw height. 420vh gave 320vh of scroll; 30% more is 416vh, so the
+     height is 516vh. Setting 546vh (420 + 30%) instead would have slowed it
+     by 39%, since the fixed 100vh subtraction inflates the ratio. Every
+     timeline fraction below is unchanged; they all just take proportionally
+     longer to cross. */
+  .pin{position:relative;height:516vh;}
+  .pin.reduced-static{height:auto;}
   .stage{position:sticky;top:0;height:100vh;overflow:hidden;
     background:radial-gradient(ellipse at 45% 28%, #0d1a26 0%, #060c12 55%, #030609 100%);}
+  .pin.reduced-static .stage{position:relative;}
   #starfield{position:absolute;inset:0;z-index:0;}
-  #canvas{position:absolute;inset:0;z-index:1;}
+  /* FULL BLEED. The noise field has to fill the whole frame — that is the
+     "mess" the section resolves out of. The resolved mark is kept clear of
+     the copy and the card dock by placing it in WORLD space at runtime
+     (see placeLogo() in the particle script), not by shrinking this canvas.
+
+     Width and height are explicit and must stay that way. <canvas> is a
+     REPLACED element: given `left:0; right:376px` with `width:auto`, CSS
+     resolves the width to the intrinsic 300x150 and silently drops the
+     `right` constraint, leaving a 300x150 canvas in the top-left corner.
+     `inset:0` fails the same way. Do not convert these to insets. */
+  #canvas{position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;}
 
   .overlay{position:relative;z-index:10;height:100%;display:flex;flex-direction:column;justify-content:center;
     padding:0 8%;pointer-events:none;}
@@ -495,31 +539,45 @@
   .body-copy p.accent{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;
     color:var(--gold);font-size:19px;line-height:1.5;}
 
-  .panels{position:absolute;top:8%;bottom:8%;right:8%;left:auto;width:400px;z-index:15;pointer-events:none;
-    display:flex;flex-direction:column;justify-content:space-between;}
-  .panel{position:relative;width:100%;background:rgba(20,17,15,0.58);backdrop-filter:blur(16px);
-    border:1px solid rgba(247,244,238,0.1);border-radius:4px;padding:32px 34px;color:var(--warm-white);
-    opacity:0;transform-style:preserve-3d;pointer-events:auto;will-change:transform,opacity;
-    transition:box-shadow 0.4s ease, border-color 0.4s ease, background 0.4s ease;}
-  .panel .bar{width:28px;height:1px;background:var(--gold);margin-bottom:22px;}
-  .panel .stat{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(30px,2.6vw,40px);
-    line-height:1.05;letter-spacing:-0.01em;color:var(--warm-white);}
-  .panel .desc{font-size:13.5px;color:#a49d90;line-height:1.8;margin-top:18px;}
-  .panel .source{font-size:9.5px;letter-spacing:0.14em;text-transform:uppercase;color:#6b655c;
-    margin-top:22px;padding-top:16px;border-top:1px solid rgba(247,244,238,0.08);line-height:1.7;}
-  .panel.panel-active{background:rgba(24,20,17,0.72);
-    box-shadow:0 40px 110px rgba(0,0,0,0.6);border-color:rgba(196,138,90,0.45);}
+  /* The dock.
 
-  @media (max-width:1500px){
-    .panels{width:344px;}
-    .panel{padding:26px 28px;}
-  }
+     Every internal measurement is vh-relative with a clamp, because the
+     binding constraint here is HEIGHT, not width: at 1280x720 the previous
+     fixed 32px padding / 13.5px-at-1.8 body gave three cards of ~226px
+     against ~619px of available stage, so the third card ran off the bottom
+     of the screen. Card height is now ~168px at 720 and ~196px at 900, which
+     leaves real gaps at both. If this type scale is changed, re-check the
+     stack against the shortest supported viewport, not the widest. */
+  .panels{position:absolute;top:7%;bottom:7%;right:6%;left:auto;width:min(30vw,380px);z-index:15;
+    pointer-events:none;display:flex;flex-direction:column;justify-content:space-between;}
+  .panel{position:relative;width:100%;
+    background:linear-gradient(158deg, rgba(34,29,26,0.60), rgba(18,16,15,0.50));
+    backdrop-filter:blur(26px) saturate(150%);-webkit-backdrop-filter:blur(26px) saturate(150%);
+    border:1px solid rgba(196,138,90,0.20);border-radius:7px;
+    padding:clamp(15px,2.1vh,23px) clamp(17px,1.5vw,26px);color:var(--warm-white);
+    box-shadow:0 18px 48px rgba(0,0,0,0.40), inset 0 1px 0 rgba(247,244,238,0.06);
+    opacity:0;pointer-events:auto;will-change:transform,opacity;
+    transition:box-shadow 0.55s ease, border-color 0.55s ease;}
+  .panel .bar{width:26px;height:1px;background:var(--gold);opacity:0.8;
+    margin-bottom:clamp(8px,1.3vh,15px);}
+  .panel .stat{font-family:'Cormorant Garamond',serif;font-weight:300;
+    font-size:clamp(21px,1.95vw,31px);line-height:1.05;letter-spacing:-0.01em;color:var(--warm-white);}
+  .panel .desc{font-size:clamp(11.5px,0.9vw,13px);color:#b3ab9e;line-height:1.6;
+    margin-top:clamp(6px,1vh,11px);}
+  .panel .source{font-size:8.5px;letter-spacing:0.12em;text-transform:uppercase;color:#8a8377;
+    margin-top:clamp(7px,1.2vh,13px);padding-top:clamp(6px,0.9vh,10px);
+    border-top:1px solid rgba(247,244,238,0.09);line-height:1.55;}
+  /* the card currently taking its turn — lifted, warmer edge, never a colour
+     change big enough to look like a different component */
+  .panel.panel-active{border-color:rgba(217,165,102,0.48);
+    box-shadow:0 26px 66px rgba(0,0,0,0.5), 0 0 0 1px rgba(217,165,102,0.10),
+               inset 0 1px 0 rgba(247,244,238,0.10);}
   /* Mobile: the resting panels show only their rule + stat (desc/source are
-     toggled off by script until a panel is the active one and has moved to
-     centre), so the stack collapses to roughly a third of the stage and the
-     full overlay copy still fits above it. */
+     toggled off by script until a panel has faded in), so the stack collapses
+     to roughly a third of the stage and the full overlay copy still fits
+     above it. */
   @media (max-width:900px){
-    .panels{width:86vw;left:50%;right:auto;transform:translateX(-50%);top:56%;bottom:8%;gap:8px;}
+    .panels{width:88vw;left:50%;right:auto;transform:translateX(-50%);top:44%;bottom:3.5%;gap:8px;}
     .panel{padding:16px 18px;border-radius:3px;}
     .panel .bar{margin-bottom:11px;width:22px;}
     .panel .stat{font-size:21px;}
@@ -533,6 +591,17 @@
     .body-copy{margin-top:20px;padding-top:18px;max-width:100%;}
     .body-copy p{font-size:12.5px;line-height:1.75;margin-bottom:10px;}
     .body-copy p.accent{font-size:16px;}
+  }
+  /* Short handsets (iPhone SE and similar). The expanded card is the tallest
+     thing in the dock and at 667px of stage it overran the bottom by a hair,
+     so the detail type tightens rather than the citation being dropped —
+     the source line is what makes the statistic credible and it stays. */
+  @media (max-width:900px) and (max-height:720px){
+    .panel{padding:13px 16px;}
+    .panel .bar{margin-bottom:8px;}
+    .panel .stat{font-size:19px;}
+    .panel .desc{font-size:11px;line-height:1.5;margin-top:8px;}
+    .panel .source{font-size:8px;margin-top:8px;padding-top:7px;line-height:1.45;}
   }
 
   .scroll-progress{position:absolute;bottom:6%;left:8%;z-index:16;display:flex;align-items:center;gap:16px;
@@ -604,6 +673,13 @@
     .co3{left:66%;}
   }
   .co4{left:50%;top:92%;transform:translate(-50%,0);}
+  /* The dot has to stay ON the keep-it-up band, which sits near the foot of
+     the dashboard at ~92% — so the connector, not the dot, is what has to
+     span the remaining ~8% of the image. At the shared 30px the card cleared
+     the image by only 6px and read as touching it.
+     Written as `.callout.co4` deliberately: `.co4 .co-line` is two classes
+     and loses to `.callout.co-dir-down .co-line`, which is three. */
+  .callout.co4 .co-line{height:66px;}
 
   .track-dots{position:absolute;bottom:6%;left:8%;z-index:16;display:flex;gap:10px;opacity:0;transition:opacity 0.5s ease;}
   .track-dots.show{opacity:1;}
@@ -717,16 +793,21 @@
     .j-track{transition:none !important;}
   }
 
+  /* Light card on the dark route — the popcard is the one element here that
+     is speaking TO the reader rather than being part of the map, so it reads
+     as a note laid on top rather than another piece of chrome. */
   .j-popcard{position:absolute;bottom:calc(100% + 30px);left:0%;transform:translateX(-50%);width:270px;
-    background:rgba(20,17,15,0.84);backdrop-filter:blur(16px);border:1px solid rgba(196,138,90,0.3);
+    background:#F4F1EA;border:1px solid rgba(43,38,35,0.10);
     border-radius:4px;padding:20px 22px;z-index:20;opacity:0;transition:left 0.55s cubic-bezier(0.34,1.2,0.64,1), opacity 0.4s ease;
     box-shadow:0 30px 70px rgba(0,0,0,0.55);pointer-events:none;}
   .j-popcard.pop{animation:jPop 0.55s cubic-bezier(0.34,1.56,0.64,1);}
   @keyframes jPop{0%{transform:translateX(-50%) translateY(8px) scale(0.92);}60%{transform:translateX(-50%) translateY(-3px) scale(1.02);}100%{transform:translateX(-50%) translateY(0) scale(1);}}
-  .j-pop-eyebrow{font-size:9.5px;letter-spacing:0.24em;color:var(--gold);text-transform:uppercase;}
-  .j-pop-text{font-size:13px;color:#b0a99b;line-height:1.8;margin-top:12px;}
+  /* #8A5A2B not --gold: the gold is tuned for dark grounds and drops to
+     ~2.4:1 on ivory. This is the same hue carried to AA on a light card. */
+  .j-pop-eyebrow{font-size:9.5px;letter-spacing:0.24em;color:#8A5A2B;text-transform:uppercase;}
+  .j-pop-text{font-size:13px;color:#3A342F;line-height:1.8;margin-top:12px;}
   .j-pop-arrow{position:absolute;bottom:-6px;left:50%;transform:translateX(-50%) rotate(45deg);width:12px;height:12px;
-    background:rgba(20,17,15,0.84);border-right:1px solid rgba(196,138,90,0.3);border-bottom:1px solid rgba(196,138,90,0.3);}
+    background:#F4F1EA;border-right:1px solid rgba(43,38,35,0.10);border-bottom:1px solid rgba(43,38,35,0.10);}
 
   @media (max-width:1100px){.pin4{display:none;}}
   .journey-mobile-section{display:none;}
@@ -779,6 +860,30 @@
   @media (max-width:820px){
     .cm-who-item{grid-template-columns:auto 1fr;gap:18px;padding:26px 0;}
     .cm-who-sub{grid-column:2;text-align:left;margin-top:10px;letter-spacing:0.16em;max-width:none;}
+  }
+
+  /* Sits between the four audience profiles and "What membership means".
+     The profiles name four specific groups; this is the paragraph that says
+     the list was illustrative rather than a gate, so it is centred and given
+     its own air instead of being folded into either neighbour. */
+  .cm-open{max-width:740px;margin:0 auto 14vh;text-align:center;
+    opacity:0;transform:translateY(18px);transition:opacity 0.9s var(--ease), transform 0.9s var(--ease);}
+  .community-section.in-view .cm-open{opacity:1;transform:translateY(0);transition-delay:0.36s;}
+  .cm-open-headline{font-family:'Cormorant Garamond',serif;font-weight:300;
+    font-size:clamp(26px,3.4vw,44px);line-height:1.14;letter-spacing:-0.01em;color:var(--charcoal);}
+  .cm-open-lead{font-size:clamp(14px,1.05vw,16px);line-height:1.85;color:#5f584e;margin-top:24px;}
+  /* the three disclaimers read as a set, so they get a bounded block of
+     their own rather than three loose sentences */
+  .cm-open-nots{margin:32px auto 0;display:inline-flex;flex-direction:column;gap:11px;
+    padding:22px 40px;border-top:1px solid rgba(43,38,35,0.14);border-bottom:1px solid rgba(43,38,35,0.14);}
+  .cm-open-not{font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:#7d7466;}
+  .cm-open-close{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;
+    font-size:clamp(18px,1.9vw,26px);line-height:1.5;color:var(--charcoal);margin-top:32px;}
+  /* #8A5A2B, not --gold: the brand gold is tuned for dark grounds and lands
+     at ~2.6:1 on ivory, under the 3:1 large-text floor. Same hue, carried. */
+  .cm-open-close em{font-style:italic;color:#8A5A2B;}
+  @media (max-width:820px){
+    .cm-open-nots{display:flex;padding:20px 0;width:100%;}
   }
 
   .cm-body{display:grid;grid-template-columns:1fr 1fr;gap:7%;align-items:center;margin-bottom:14vh;}
@@ -1451,6 +1556,17 @@
     </div>
   </div>
 
+  <div class="cm-open">
+    <h3 class="cm-open-headline">Built for people who want more from their days.</h3>
+    <p class="cm-open-lead">If you're building a company, managing your own performance, living independently, developing your wellbeing, or simply looking for more structure, clarity and intention in how you live — DAOasis is built for you.</p>
+    <div class="cm-open-nots">
+      <div class="cm-open-not">You don't need to be a wellness expert</div>
+      <div class="cm-open-not">You don't need to understand Web3</div>
+      <div class="cm-open-not">You don't need to be a founder or investor</div>
+    </div>
+    <p class="cm-open-close">You just need to want to show up, build better habits and become part of <em>something that grows with you.</em></p>
+  </div>
+
   <div class="cm-body">
     <div class="cm-body-image par" data-par="0.12" role="img" aria-label="A DAOasis sanctuary terrace at last light">
       <div class="par-layer" style="background-image:url('images/img-01.jpg');background-position:60% 58%;"></div>
@@ -1808,6 +1924,11 @@
 
   function skipIntro(){
     document.body.classList.add('intro-skipped');
+    /* The intro headline is hidden by `body.intro-skipped .intro`, but once
+       flyToHero has lifted it out to <body> that selector no longer reaches
+       it — skipping mid-flight would otherwise strand it on screen. */
+    const introHeadline = document.getElementById('headline');
+    if(introHeadline) introHeadline.style.display = 'none';
     const heroEl = document.querySelector('.hero');
     heroEl.classList.add('reveal');
     const heroH1 = document.getElementById('heroH1');
@@ -1835,33 +1956,64 @@
       { br: true },
       { text: 'DAOasis creates stakeholders.', em: true }
     ];
-    const speed = 45;
+    /* THE TYPEWRITER IS GONE, ON PURPOSE.
 
-    function typeText(onDone){
-      let segIndex = 0, charIndex = 0, currentEmSpan = null;
-      const cursor = document.createElement('span');
-      cursor.className = 'type-cursor';
-      function step(){
-        if(segIndex >= segments.length){ cursor.remove(); onDone && onDone(); return; }
-        const seg = segments[segIndex];
-        if(seg.br){
-          if(cursor.parentNode) cursor.remove();
-          el.appendChild(document.createElement('br'));
-          el.appendChild(cursor);
-          segIndex++; charIndex = 0;
-          setTimeout(step, speed); return;
+       Character-by-character is a terminal metaphor and it reads mechanical
+       no matter how carefully it is eased — this project already reached that
+       conclusion once, on the Principle section, and replaced it with a
+       word-mask reveal. The same reasoning applies with more force here,
+       because this is the first thing anyone sees. Revealing 68 glyphs one at
+       a time also means 68 separate layout-affecting insertions; the line can
+       re-wrap mid-sentence and every glyph is a chance to stutter.
+
+       This reveals whole WORDS instead. Each word rises out of its own
+       baseline with blur resolving to sharp. The full text is in the DOM from
+       the first frame, so the line breaks are settled before anything moves
+       and nothing reflows during the animation — the entire reveal is
+       transform, opacity and filter, which the compositor handles alone.
+
+       Timing note: the reveal is tuned to finish at roughly the same moment
+       the old typewriter did (~2.9s), because the hero's own entrance is on
+       CSS animation-delays of 6.3s–6.9s from page load and the hand-off has
+       to arrive inside that window. */
+    const WORD_STAGGER = 175, WORD_DUR = 1050, TAIL_HOLD = 620;
+
+    function buildWords(){
+      el.innerHTML = '';
+      const masks = [];
+      segments.forEach(seg => {
+        if(seg.br){ el.appendChild(document.createElement('br')); return; }
+        let host = el;
+        if(seg.em){ host = document.createElement('em'); el.appendChild(host); }
+        seg.text.split(' ').forEach((word, i) => {
+          if(i) host.appendChild(document.createTextNode(' '));
+          const mask = document.createElement('span');
+          mask.className = 'tw-w';
+          const inner = document.createElement('i');
+          inner.textContent = word;
+          mask.appendChild(inner);
+          host.appendChild(mask);
+          masks.push(mask);
+        });
+      });
+      return masks;
+    }
+
+    function revealWords(onDone){
+      const masks = buildWords();
+      /* force layout once, so the first .in does not batch with the insert
+         and skip its transition */
+      el.getBoundingClientRect();
+      let i = 0, nextAt = performance.now();
+      function frame(now){
+        while(i < masks.length && now >= nextAt){
+          masks[i++].classList.add('in');
+          nextAt += WORD_STAGGER;   /* accumulate, never re-base on frame time */
         }
-        if(charIndex === 0 && seg.em){ currentEmSpan = document.createElement('em'); el.insertBefore(currentEmSpan, cursor); }
-        const char = seg.text[charIndex];
-        const target = seg.em ? currentEmSpan : el;
-        if(seg.em){ target.appendChild(document.createTextNode(char)); }
-        else { el.insertBefore(document.createTextNode(char), cursor); }
-        charIndex++;
-        if(charIndex >= seg.text.length){ segIndex++; charIndex = 0; }
-        setTimeout(step, speed);
+        if(i < masks.length){ requestAnimationFrame(frame); return; }
+        setTimeout(() => { onDone && onDone(); }, WORD_DUR + TAIL_HOLD);
       }
-      el.appendChild(cursor);
-      step();
+      requestAnimationFrame(frame);
     }
 
     function dockLogo(){
@@ -1883,38 +2035,80 @@
     setTimeout(() => {
       dockLogo();
       el.classList.add('show');
-      typeText(() => { setTimeout(flyToHero, 500); });
+      revealWords(() => { setTimeout(flyToHero, 260); });
     }, 2450);
 
+    /* The hand-off from the intro headline to the hero headline.
+
+       This used to animate left, top, width AND font-size together. All four
+       are layout properties, so every single frame reflowed the headline and
+       re-wrapped its text — the line breaks visibly jumped around mid-flight
+       and the whole move landed with a thump. That reflow-per-frame is what
+       read as clumsy, and no amount of easing-curve tuning could fix it.
+
+       Now the box is frozen once (position/left/top/width set a single time,
+       never animated) and only `transform` moves, which the compositor can
+       run without touching layout at all. The glyphs keep their exact
+       relationship to each other the whole way across. */
     function flyToHero(){
       const introEl = document.querySelector('.intro');
       const heroH1 = document.getElementById('heroH1');
       const heroEl = document.querySelector('.hero');
       heroEl.classList.add('reveal');
       if(window.__heroEntranceExtras) window.__heroEntranceExtras();
+
       const r1 = el.getBoundingClientRect();
       const r2 = heroH1.getBoundingClientRect();
-      const startSize = parseFloat(getComputedStyle(el).fontSize);
-      const scale = r2.width / r1.width;
+      const cs = getComputedStyle(el);
+      const padL = parseFloat(cs.paddingLeft) || 0, padR = parseFloat(cs.paddingRight) || 0;
+
+      /* Scale off the CONTENT box. .headline carries 2rem of side padding
+         that the hero headline does not, so scaling by the border-box widths
+         would land the type consistently short of its target. */
+      const scale = r2.width / Math.max(1, r1.width - padL - padR);
+      /* transform-origin is the element's top-left, so a point sitting at
+         offset p lands at origin + p*scale — hence the padding is scaled too
+         when solving for the x delta. */
+      const dx = r2.left - r1.left - padL * scale;
+      const dy = r2.top - r1.top;
+
+      /* Lift it out of .intro before that backdrop starts fading, otherwise
+         the travelling type fades out with it and the move is lost. */
       el.style.transition = 'none';
       el.style.position = 'fixed';
       el.style.margin = '0';
       el.style.left = r1.left + 'px';
       el.style.top = r1.top + 'px';
       el.style.width = r1.width + 'px';
+      el.style.maxWidth = 'none';
+      el.style.zIndex = '120';
+      el.style.transformOrigin = 'left top';
+      el.style.willChange = 'transform, opacity';
       el.style.filter = 'blur(0px)';
+      document.body.appendChild(el);
       el.getBoundingClientRect();
+
       requestAnimationFrame(() => {
-        el.style.transition = 'left 1.4s cubic-bezier(0.22,1,0.36,1), top 1.4s cubic-bezier(0.22,1,0.36,1), width 1.4s cubic-bezier(0.22,1,0.36,1), font-size 1.4s cubic-bezier(0.22,1,0.36,1), opacity 0.6s ease 0.9s';
-        el.style.left = r2.left + 'px';
-        el.style.top = r2.top + 'px';
-        el.style.width = r2.width + 'px';
-        el.style.fontSize = (startSize * scale) + 'px';
+        el.style.transition = 'transform 1.5s cubic-bezier(0.22,1,0.36,1), opacity 0.55s ease 0.95s';
+        el.style.transform = 'translate(' + dx + 'px,' + dy + 'px) scale(' + scale + ')';
+        /* set in the same frame as the transform — the opacity transition
+           carries its own 0.95s delay, so the type holds at full strength
+           for most of the flight and only releases as it arrives */
+        el.style.opacity = '0';
       });
-      setTimeout(() => { introEl.style.transition = 'opacity 1.4s ease'; introEl.classList.add('fade-out'); }, 50);
-      setTimeout(() => { el.style.opacity = '0'; }, 900);
-      setTimeout(() => { heroH1.classList.add('settled'); }, 1150);
-      setTimeout(() => { introEl.style.visibility = 'hidden'; introEl.style.pointerEvents = 'none'; unlockScroll(); }, 1500);
+
+      /* The two headlines cross over rather than one leaving before the
+         other arrives — #heroH1 fades in over 0.5s, so starting it at 1.0s
+         while the clone fades from 0.95s means there is never a gap and
+         never a doubled image. */
+      setTimeout(() => { introEl.style.transition = 'opacity 1.5s ease'; introEl.classList.add('fade-out'); }, 60);
+      setTimeout(() => { heroH1.classList.add('settled'); }, 1000);
+      setTimeout(() => {
+        introEl.style.visibility = 'hidden';
+        introEl.style.pointerEvents = 'none';
+        el.style.display = 'none';
+        unlockScroll();
+      }, 1650);
     }
   })();
 </script>
@@ -2161,241 +2355,685 @@
 <script>
 (function(){
   const canvas = document.getElementById('canvas');
-  const stage = document.getElementById('stage');
   const pin = document.querySelector('.pin');
+  const stage = document.getElementById('stage');
+  /* Reduced motion is honoured by removing every AUTONOMOUS movement — the
+     idle drift, the slow rotation, the chaos swirl. The resolve itself stays
+     tied to scroll, because it only moves while the reader is actively
+     scrolling and stops the instant they stop: it is their own input played
+     back, not motion the page decides to perform on its own.
+
+     This matters more than it looks. "Show animations in Windows = off"
+     reports prefers-reduced-motion, and a great many people have it set
+     without ever intending to opt out of scroll-linked storytelling — a
+     fully static fallback reads to them as a broken section, not a
+     considerate one. To get the fully static resolved mark instead, flip
+     STATIC_WHEN_REDUCED to true; nothing else needs to change. */
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const STATIC_WHEN_REDUCED = false;
+  const staticMode = reducedMotion && STATIC_WHEN_REDUCED;
+  if(staticMode) pin.classList.add('reduced-static');
+  const mobileNow = window.innerWidth <= 900;
+
+  function hash01(n){ const x = Math.sin(n * 12.9898) * 43758.5453; return x - Math.floor(x); }
+  function clamp01(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }
+  function rampT(t, a, b){ if(b <= a) return t >= b ? 1 : 0; return clamp01((t - a) / (b - a)); }
+  function easeOutCubic(x){ return 1 - Math.pow(1 - x, 3); }
+  function easeInOut(x){ return x < 0.5 ? 4*x*x*x : 1 - Math.pow(-2*x + 2, 3) / 2; }
+  /* Small overshoot then a precise stop — not a loose scatter-to-target
+     radius. f(0)=0, f(1)=1 exactly, with a subtle bump above 1 just before
+     arrival so the settle reads as a snap, not a drift. c1 kept low (stock
+     easeOutBack uses ~1.7) because the fronds sit close to the ring and a
+     bigger overshoot would blur that gap shut mid-transition. */
+  function easeSettle(x){
+    if(x <= 0) return 0; if(x >= 1) return 1;
+    const c1 = 1.12, c3 = c1 + 1, m = x - 1;
+    return 1 + c3 * m * m * m + c1 * m * m;
+  }
+
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(55, window.innerWidth/window.innerHeight, 0.1, 100);
+  const camera = new THREE.PerspectiveCamera(55, 1, 0.1, 100);
   camera.position.z = 24;
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.setSize(window.innerWidth, window.innerHeight);
+  const pixelRatio = Math.min(window.devicePixelRatio, 2);
+  renderer.setPixelRatio(pixelRatio);
 
-  const COUNT = 2600;
+  /* The canvas element's own box (not window size) — CSS insets it clear of
+     the card dock, so sizing the renderer off window dimensions would draw
+     into space the dock occupies and the aspect ratio would be wrong.
+
+     Returns whether the box actually changed. This is measured, never
+     assumed: at parse time the element can still report the 300x150 HTML
+     default (layout not yet settled, webfonts still loading), and a single
+     render baked at that size leaves the mark drawn tiny and off-centre with
+     nothing to correct it. A ResizeObserver below re-measures for real. */
+  let boxW = 0, boxH = 0;
+  function sizeToBox(){
+    const w = Math.max(1, canvas.clientWidth), h = Math.max(1, canvas.clientHeight);
+    if(w === boxW && h === boxH) return false;
+    boxW = w; boxH = h;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+    return true;
+  }
+  sizeToBox();
+
+  /* Normal blending removed the saturation ceiling that used to cap this —
+     with additive, more dots just meant a whiter blob, so the count had to
+     stay low. Now density only ever sharpens the mark, so desktop can afford
+     a much finer grain. Mobile stays modest for fill-rate on mid-range
+     handsets; the mark is physically smaller there so it still reads. */
+  const COUNT = mobileNow ? 3000 : 8200;
   const positions = new Float32Array(COUNT * 3);
   const chaosPositions = new Float32Array(COUNT * 3);
   const orderPositions = new Float32Array(COUNT * 3);
-  const colors = new Float32Array(COUNT * 3);
-  const sizes = new Float32Array(COUNT);
+  const colorsArr = new Float32Array(COUNT * 3);
+  const sizesArr = new Float32Array(COUNT);
+  const opacitiesArr = new Float32Array(COUNT);
+  const phasesArr = new Float32Array(COUNT);
+  const shimmerArr = new Float32Array(COUNT * 2);
   const assemblyStart = new Float32Array(COUNT);
   const assemblyEnd = new Float32Array(COUNT);
-  const colGold = new THREE.Color('#C48A5A');
-  const colGreen = new THREE.Color('#4a9a68');
-  const colWhite = new THREE.Color('#F7F4EE');
+  const colGold = new THREE.Color('#D9A566');
+  const colGreen = new THREE.Color('#3F6E5B');
+  const colCream = new THREE.Color('#F4F1EA');
 
-  function hash01(n){ const x = Math.sin(n * 12.9898) * 43758.5453; return x - Math.floor(x); }
-
-  // ── Refined palm tree shape: tapered trunk, asymmetric pinnate crown ──
-  const NUM_FRONDS = 9;
-  const TRUNK_SHARE = 0.22;
-  const trunkCount = Math.floor(COUNT * TRUNK_SHARE);
-  const frondCount = COUNT - trunkCount;
-  const perFrond = Math.floor(frondCount / NUM_FRONDS);
-  const LEAFLETS_PER_FROND = 18;
-  function logoPoint(i){
-    if(i < trunkCount){
-      const s = i / trunkCount;
-      // gentle one-directional lean (wind-swept) rather than a symmetric S-curve
-      const lean = s * s * 0.55;
-      const cx = lean + Math.sin(s * 6) * 0.025;
-      const cy = -s * 7 + 1.5;
-      const cz = -0.3 - s * 0.12;
-      const baseBulge = s < 0.1 ? (0.1 - s) * 1.6 : 0;
-      const radius = (0.44 * (1 - s * 0.6) + baseBulge) * (1 - s * s * 0.15);
-      const ring = 1 + Math.sin(s * 46) * 0.05;
-      const ang = (i * 2654435761 % 1000) / 1000 * Math.PI * 2;
-      const rr = Math.sqrt((i * 40503 % 1000) / 1000) * radius * ring;
-      const role = s * 0.3;
-      return [cx + Math.cos(ang) * rr, cy, cz + Math.sin(ang) * rr * 0.7, role];
-    }
-    const fIdx = i - trunkCount;
-    const frond = Math.min(NUM_FRONDS - 1, Math.floor(fIdx / perFrond));
-    const s = (fIdx % perFrond) / perFrond;
-
-    // per-frond deterministic asymmetric variance — keeps the crown natural, not radially uniform
-    const fh1 = hash01(frond * 3.1 + 1.7), fh2 = hash01(frond * 7.3 + 4.2), fh3 = hash01(frond * 11.9 + 0.6);
-    const spread = 2.5;
-    const angleJitter = (fh1 - 0.5) * 0.55;
-    const baseAngle = (frond / (NUM_FRONDS - 1) - 0.5) * spread + angleJitter;
-    const lengthVar = 0.82 + fh2 * 0.5;
-    const length = (5.6 - Math.abs(baseAngle) * 0.45) * lengthVar;
-    const dirX = Math.sin(baseAngle), dirY = Math.cos(baseAngle);
-    const topY = 1.5 + (fh3 - 0.5) * 0.3;
-    const arch = 0.28 + fh2 * 0.1, droop = 0.5 + fh1 * 0.35;
-    const centerX = dirX * s * length + arch * Math.sin(s * Math.PI) * dirY * length * 0.25;
-    const centerY = topY + dirY * s * length - droop * Math.pow(s, 1.6) * length;
-    const centerZ = Math.cos(baseAngle * 0.5) * 0.6 - 0.3 + (fh3 - 0.5) * 0.4;
-    const perpX = dirY, perpY = -dirX;
-    const envelope = Math.sin(Math.min(1, s * 1.05) * Math.PI);
-    const leafletPhase = Math.abs(Math.sin(s * LEAFLETS_PER_FROND * Math.PI));
-    const maxWidth = (0.56 + fh2 * 0.12) * (1 - Math.abs(baseAngle) / 2.1);
-    const widthAtS = envelope * maxWidth * (0.3 + 0.7 * leafletPhase);
-    const wOffset = ((fIdx * 2654435761 % 1000) / 1000 - 0.5) * 2 * widthAtS;
-    const sweepBack = 0.32;
-    const x = centerX + perpX * wOffset - dirX * Math.abs(wOffset) * sweepBack;
-    const y = centerY + perpY * wOffset * 0.4 - dirY * Math.abs(wOffset) * sweepBack * 0.3;
-    const z = centerZ + (((fIdx * 40503 % 1000) / 1000) - 0.5) * 0.14;
-    const edgeNorm = Math.max(0, Math.min(1, Math.abs(wOffset) / Math.max(0.0001, widthAtS)));
-    const role = s < 0.35 ? (0.28 + s * 0.25) : (0.38 + s * 0.22 + edgeNorm * 0.4);
-    return [x, y, z, role];
-  }
-
+  /* Spread wide enough to overfill the frustum at any aspect ratio. The
+     noise has to read as filling the entire frame — a cloud sitting politely
+     in the middle is not "a mess of dots". Anything outside the view simply
+     never gets drawn, so overfilling costs nothing. */
   for(let i = 0; i < COUNT; i++){
-    chaosPositions[i*3]   = (Math.random() - 0.5) * 34;
-    chaosPositions[i*3+1] = (Math.random() - 0.5) * 20;
-    chaosPositions[i*3+2] = (Math.random() - 0.5) * 20;
-    const [ox, oy, oz, role] = logoPoint(i);
-    orderPositions[i*3]   = ox + (Math.random()-0.5)*0.22;
-    orderPositions[i*3+1] = oy + (Math.random()-0.5)*0.22;
-    orderPositions[i*3+2] = oz + (Math.random()-0.5)*0.18;
-    positions[i*3]   = chaosPositions[i*3];
-    positions[i*3+1] = chaosPositions[i*3+1];
-    positions[i*3+2] = chaosPositions[i*3+2];
-    const mix = Math.random();
-    const c = mix < 0.5 ? colGold.clone().lerp(colWhite, mix*2) : colGreen.clone().lerp(colGold, (mix-0.5)*2);
-    colors[i*3] = c.r; colors[i*3+1] = c.g; colors[i*3+2] = c.b;
-    sizes[i] = Math.random() * 0.14 + 0.05;
-    // stagger each particle's assembly window so trunk → major fronds → fine leaf detail converge in waves
-    const jitter = (hash01(i * 0.37 + 2.1) - 0.5) * 0.16;
-    const winStart = Math.max(0, Math.min(0.97, role * 0.72 + jitter * 0.5));
-    const winLen = 0.3 + hash01(i * 1.11 + 5.5) * 0.24;
-    assemblyStart[i] = winStart;
-    assemblyEnd[i] = Math.min(1, Math.max(winStart + 0.08, winStart + winLen));
+    chaosPositions[i*3]   = (Math.random() - 0.5) * 58;
+    chaosPositions[i*3+1] = (Math.random() - 0.5) * 34;
+    chaosPositions[i*3+2] = (Math.random() - 0.5) * 16;
+    positions[i*3] = chaosPositions[i*3]; positions[i*3+1] = chaosPositions[i*3+1]; positions[i*3+2] = chaosPositions[i*3+2];
+    orderPositions[i*3] = chaosPositions[i*3]; orderPositions[i*3+1] = chaosPositions[i*3+1]; orderPositions[i*3+2] = chaosPositions[i*3+2];
+    const mix = hash01(i * 7.77 + 1.3);
+    const c = mix < 0.5 ? colGold.clone().lerp(colCream, mix * 2) : colGreen.clone().lerp(colGold, (mix - 0.5) * 2);
+    colorsArr[i*3] = c.r; colorsArr[i*3+1] = c.g; colorsArr[i*3+2] = c.b;
+    /* a MULTIPLIER on the shader's uDotPx, not an absolute size — kept in a
+       tight band so the mark reads as one material rather than as confetti */
+    sizesArr[i] = 0.8 + hash01(i * 3.41 + 8.2) * 0.45;
+    opacitiesArr[i] = 0.62 + hash01(i * 5.19 + 0.4) * 0.38;
+    phasesArr[i] = hash01(i * 9.13 + 4.7);
+    assemblyStart[i] = 0; assemblyEnd[i] = 1;
   }
 
   const geometry = new THREE.BufferGeometry();
   geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-  geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-  geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
-  const material = new THREE.PointsMaterial({ size: 0.16, vertexColors: true, transparent: true, opacity: 0.85, depthWrite: false, blending: THREE.AdditiveBlending });
+  geometry.setAttribute('aColor', new THREE.BufferAttribute(colorsArr, 3));
+  geometry.setAttribute('aSize', new THREE.BufferAttribute(sizesArr, 1));
+  geometry.setAttribute('aOpacity', new THREE.BufferAttribute(opacitiesArr, 1));
+  geometry.setAttribute('aPhase', new THREE.BufferAttribute(phasesArr, 1));
+
+  /* Soft circular sprites, drawn in-shader — the default THREE.PointsMaterial
+     has no sprite texture, so WebGL falls back to hard-edged square points.
+     A per-vertex "size" geometry attribute also does nothing on PointsMaterial
+     (it only reads a single material.size uniform), which is why the old
+     particles all read as one uniform blocky size.
+
+     BLENDING IS NORMAL, NOT ADDITIVE, AND THAT IS THE WHOLE POINT. Additive
+     looks gorgeous while the dots are sparse noise, but the resolved mark
+     packs ~2800 of them into a small area, and additive means every overlap
+     sums toward white. The mark stopped being a logo made of dots and became
+     a solid white silhouette with a glowing fringe — detail gone, negative
+     space between the fronds and the ring filled in. Normal blending keeps
+     every dot a discrete dot no matter how dense the shape gets. */
+  const material = new THREE.ShaderMaterial({
+    uniforms: {
+      uPixelRatio: { value: pixelRatio }, uOpacity: { value: 0.95 },
+      uDotPx: { value: 2.0 }, uTime: { value: 0 }, uResolved: { value: 0 }
+    },
+    vertexShader: `
+      attribute float aSize;
+      attribute float aOpacity;
+      attribute vec3 aColor;
+      attribute float aPhase;
+      varying float vOpacity;
+      varying vec3 vColor;
+      uniform float uPixelRatio;
+      uniform float uDotPx;
+      uniform float uTime;
+      uniform float uResolved;
+      void main(){
+        vColor = aColor;
+        /* A slow twinkle so the field never looks like a frozen bitmap. It
+           stays gentle once resolved: the mark has to read as a mark. */
+        float tw = 0.82 + 0.18 * sin(uTime * 1.7 + aPhase * 6.2831);
+        vOpacity = aOpacity * mix(1.0, tw, 0.55);
+        vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+        /* uDotPx is the target diameter in CSS pixels, set from the mark's
+           actual on-screen size, so density reads the same at every viewport.
+           Dots tighten slightly as the shape resolves, which is what makes
+           the silhouette sharpen rather than just stop moving. */
+        float sizePx = uDotPx * aSize * mix(1.25, 1.0, uResolved);
+        gl_PointSize = sizePx * uPixelRatio;
+        gl_Position = projectionMatrix * mvPosition;
+      }
+    `,
+    fragmentShader: `
+      /* No precision statement here on purpose. three.js prepends its own
+         (highp) to BOTH shaders; redeclaring mediump only in the fragment
+         shader makes the shared varyings mismatch across the two stages,
+         which fails the program link and leaves the renderer setting uniform
+         locations against a stale program - WebGL then logs
+         "uniformMatrix4fv: location is not from the associated program".
+         NOTE: this comment lives inside a JS template literal, so it must
+         never contain a backtick or a dollar-brace. */
+      varying float vOpacity;
+      varying vec3 vColor;
+      uniform float uOpacity;
+      void main(){
+        float d = length(gl_PointCoord - vec2(0.5)) * 2.0;
+        float alpha = smoothstep(1.0, 0.1, d);
+        if(alpha <= 0.003) discard;
+        gl_FragColor = vec4(vColor, alpha * vOpacity * uOpacity);
+      }
+    `,
+    transparent: true, depthWrite: false, depthTest: false,
+    blending: THREE.NormalBlending
+  });
   const points = new THREE.Points(geometry, material);
   scene.add(points);
 
-  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const ASSEMBLY_END = 0.88;
-  function smoother(x){ return x*x*x*(x*(x*6-15)+10); }
+  /* ── Sample the actual logo mark's fill, via the browser's own SVG
+     rasteriser, rather than re-tracing/approximating the shape. Path data
+     copied verbatim from images/daoasis-palm-icon.svg. */
+  const LOGO_PATH_D = `M3254 8899 c-104 -21 -167 -45 -144 -53 86 -31 159 -61 232 -94 l88
+-41 57 19 58 20 -39 -36 c-21 -20 -34 -39 -28 -43 5 -3 44 -33 86 -66 75 -58
+79 -60 149 -65 l72 -5 -48 -22 -49 -23 131 -137 c131 -139 364 -413 357 -421
+-2 -2 -55 37 -118 87 -169 134 -321 213 -506 262 -119 32 -338 37 -463 11
+-326 -67 -613 -290 -758 -586 -24 -48 -41 -90 -38 -92 2 -3 58 15 123 40 66
+24 172 60 236 80 124 39 175 70 250 154 21 23 40 42 43 42 3 0 -11 -31 -30
+-70 -19 -38 -35 -72 -35 -76 0 -4 46 -5 103 -2 73 3 115 10 148 25 55 25 120
+81 151 131 33 54 33 22 -1 -59 -31 -74 -30 -88 9 -89 72 -1 379 -45 475 -69
+131 -32 304 -88 319 -102 6 -5 -41 -6 -115 -3 -516 26 -994 -265 -1145 -698
+-58 -164 -78 -359 -53 -521 17 -114 65 -297 78 -297 4 0 13 17 20 38 40 113
+147 300 256 447 81 109 91 138 83 245 -6 88 10 65 42 -56 l10 -42 100 103
+c110 113 136 158 170 290 11 43 22 81 25 83 3 3 5 -43 5 -101 l0 -107 93 64
+c93 64 240 143 357 190 35 14 65 26 67 26 2 0 -48 -51 -109 -112 -201 -201
+-292 -400 -305 -668 -12 -240 47 -421 194 -605 l48 -60 3 40 c1 22 12 97 23
+166 l22 127 -27 107 c-15 59 -25 109 -23 111 2 3 20 -33 40 -78 21 -49 38 -77
+41 -68 11 31 55 227 65 290 6 36 11 107 11 159 0 52 3 91 6 88 4 -4 14 -39 24
+-78 l16 -71 33 78 c64 155 242 448 249 410 2 -9 -3 -59 -12 -109 -107 -638
+-114 -1588 -16 -2287 29 -202 74 -448 115 -625 19 -82 35 -152 35 -156 0 -4
+-44 -10 -97 -14 -737 -50 -1329 -164 -1917 -369 -172 -60 -373 -143 -382 -158
+-3 -5 26 -62 64 -126 132 -221 289 -431 449 -602 l80 -85 189 63 c612 201
+1144 286 1804 286 599 1 916 -57 1845 -337 270 -82 477 -137 703 -187 l142
+-32 78 70 c235 214 428 444 592 707 l81 130 -73 7 c-40 3 -138 11 -218 17
+-390 30 -633 83 -1220 266 -599 187 -899 260 -1309 319 -96 14 -178 29 -183
+34 -16 16 -146 349 -202 517 -159 483 -246 937 -308 1605 -14 158 -16 874 -2
+995 l9 80 57 -76 c73 -95 147 -220 195 -326 20 -46 40 -83 43 -83 3 0 16 32
+29 70 12 39 23 70 24 70 1 0 2 -62 2 -137 0 -109 4 -150 19 -193 26 -77 68
+-170 76 -170 4 0 19 26 33 58 29 63 32 54 16 -47 -10 -60 -9 -81 11 -172 12
+-57 28 -140 34 -184 l12 -80 40 60 c176 257 206 520 95 824 -58 158 -139 280
+-289 434 -53 53 -92 97 -88 97 34 0 378 -181 424 -223 27 -25 27 -22 -2 88
+-13 50 -23 92 -21 93 4 4 14 -11 81 -127 36 -61 73 -107 138 -167 49 -46 93
+-84 99 -84 6 0 8 30 3 87 -7 95 0 98 28 13 32 -96 74 -162 167 -267 50 -57 95
+-103 100 -103 5 0 9 24 10 53 0 28 4 72 8 97 9 51 8 53 37 -84 10 -52 33 -112
+66 -175 134 -255 177 -343 195 -397 19 -56 20 -58 32 -36 48 91 75 369 52 532
+-30 200 -111 393 -236 558 -148 198 -327 323 -578 407 -154 51 -268 69 -444
+70 -84 0 -153 1 -153 2 0 1 51 18 113 37 195 62 391 103 580 121 41 4 67 11
+67 18 0 7 -11 39 -25 71 -13 33 -23 61 -22 62 1 2 27 -18 57 -43 95 -79 185
+-105 313 -89 l54 7 -33 62 c-19 34 -34 66 -34 71 0 5 30 -20 68 -56 37 -36 76
+-70 88 -76 12 -6 90 -29 175 -51 85 -21 189 -53 232 -70 43 -17 80 -31 83 -31
+11 0 -58 115 -114 190 -149 200 -356 345 -579 407 -87 24 -115 27 -243 27
+-123 -1 -160 -5 -241 -27 -218 -58 -405 -167 -593 -346 -89 -85 -88 -82 22 89
+152 237 369 452 632 625 55 36 100 68 100 69 0 2 -35 12 -77 22 -96 22 -66 30
+54 14 l84 -11 104 41 c57 22 127 46 157 54 l53 13 -35 18 c-160 83 -431 118
+-617 79 -221 -45 -431 -196 -576 -413 -94 -140 -185 -358 -232 -556 l-21 -90
+-19 75 c-97 401 -321 739 -585 883 -87 48 -189 86 -278 103 -105 20 -297 17
+-408 -7z M4580 8450 c-123 -23 -180 -39 -180 -49 0 -5 32 -74 70 -152 39 -79
+70 -151 70 -159 0 -8 18 31 39 86 21 56 61 145 88 198 58 111 65 105 -87 76z
+M5472 8444 c-92 -24 -206 -112 -333 -255 l-62 -70 104 55 c307 162 585 194
+868 100 170 -56 289 -133 427 -276 115 -119 188 -226 258 -380 l35 -76 -103
+43 c-126 53 -310 109 -436 135 -113 22 -458 31 -500 13 -14 -6 -72 -17 -130
+-23 -112 -12 -289 -48 -305 -62 -5 -4 11 -8 35 -8 52 0 220 -40 300 -70 108
+-42 237 -116 357 -205 67 -49 186 -126 263 -170 532 -302 899 -746 1098 -1330
+148 -431 166 -916 52 -1364 -49 -194 -126 -404 -205 -562 -19 -38 -35 -73 -35
+-78 0 -11 283 -66 470 -91 196 -25 460 -42 600 -38 l115 3 48 120 c161 402
+240 827 240 1300 1 268 -15 435 -63 675 -91 455 -311 944 -595 1325 -298 399
+-751 768 -1210 986 -482 229 -1064 365 -1293 303z M3135 7750 c-27 -5 -98 -11
+-157 -15 -127 -8 -141 -16 -286 -151 -471 -440 -833 -1138 -956 -1844 -42
+-239 -51 -350 -50 -625 0 -340 26 -556 104 -851 32 -121 106 -341 145 -428
+l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
+133 -89 259 -125 460 -134 735 -20 644 174 1199 592 1694 42 50 83 105 92 124
+9 19 45 77 80 129 35 52 62 96 61 97 -2 2 -36 -16 -75 -39 -261 -149 -516
+-395 -696 -671 -56 -86 -172 -306 -204 -385 -10 -24 -11 -23 -32 25 -77 168
+-115 338 -115 510 0 305 97 553 302 767 87 91 176 160 283 217 78 42 281 113
+359 126 62 10 82 22 50 29 -87 20 -205 37 -321 46 -74 7 -141 16 -151 21 -19
+10 -22 10 -93 -1z M4545 2473 c-305 -18 -536 -45 -825 -94 -201 -34 -581 -117
+-593 -129 -5 -4 49 -46 120 -93 455 -302 966 -483 1533 -543 193 -21 700 -15
+874 10 419 60 766 166 1101 334 204 102 252 130 235 136 -8 3 -87 23 -175 44
+-88 22 -302 76 -475 120 -664 170 -1045 224 -1540 220 -113 -1 -227 -3 -255
+-5z`;
 
-  let targetProgress = 0, currentProgress = 0;
-  let targetMouseX = 0, targetMouseY = 0, mouseX = 0, mouseY = 0;
-  function computeProgress(){
-    const rect = pin.getBoundingClientRect();
-    const scrollable = pin.offsetHeight - window.innerHeight;
-    return Math.max(0, Math.min(1, -rect.top / scrollable));
+  const RASTER_RES = 900;
+  function rasterizeLogo(count, onReady){
+    const svgNS = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(svgNS, 'svg');
+    svg.setAttribute('xmlns', svgNS);
+    svg.setAttribute('viewBox', '0 0 1024 1024');
+    svg.setAttribute('width', String(RASTER_RES));
+    svg.setAttribute('height', String(RASTER_RES));
+    const g = document.createElementNS(svgNS, 'g');
+    g.setAttribute('transform', 'translate(0,1024) scale(0.1,-0.1)');
+    g.setAttribute('fill', '#ffffff');
+    g.setAttribute('stroke', 'none');
+    const path = document.createElementNS(svgNS, 'path');
+    path.setAttribute('d', LOGO_PATH_D);
+    g.appendChild(path); svg.appendChild(g);
+    const svgStr = new XMLSerializer().serializeToString(svg);
+    const blob = new Blob([svgStr], { type: 'image/svg+xml;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const img = new Image();
+    img.onload = function(){
+      const off = document.createElement('canvas');
+      off.width = RASTER_RES; off.height = RASTER_RES;
+      const octx = off.getContext('2d');
+      octx.drawImage(img, 0, 0, RASTER_RES, RASTER_RES);
+      URL.revokeObjectURL(url);
+      const R = RASTER_RES;
+      const data = octx.getImageData(0, 0, R, R).data;
+      const mask = new Uint8Array(R * R);
+      let filledCount = 0;
+      for(let i = 0; i < R * R; i++){
+        if(data[i * 4 + 3] > 150){ mask[i] = 1; filledCount++; }
+      }
+      if(!filledCount){ onReady(null); return; }
+
+      /* Split the mask into its OUTLINE and its INTERIOR and sample them
+         separately.
+
+         Uniform-random sampling of the filled pixels — which is what this
+         did before — clumps. Random points land three-deep in one spot and
+         leave gaps elsewhere, so the silhouette comes out lumpy and the fine
+         gaps (frond tip to inner ring) close up. Putting a fixed share of the
+         points on the boundary and spreading the rest one-per-grid-cell gives
+         an even interior and, more importantly, a clean edge — which is what
+         the eye actually reads as "that is the logo". */
+      const solid = (x, y) => (x < 0 || y < 0 || x >= R || y >= R) ? 0 : mask[y * R + x];
+      const edge = [], inner = [];
+      for(let y = 0; y < R; y++){
+        for(let x = 0; x < R; x++){
+          if(!mask[y * R + x]) continue;
+          if(!solid(x-1,y) || !solid(x+1,y) || !solid(x,y-1) || !solid(x,y+1)) edge.push(y * R + x);
+          else inner.push(y * R + x);
+        }
+      }
+
+      let cx = 0, cy = 0;
+      for(let i = 0; i < R * R; i++){ if(mask[i]){ cx += i % R; cy += (i / R) | 0; } }
+      cx /= filledCount; cy /= filledCount;
+      let maxR = 1;
+      for(let i = 0; i < edge.length; i++){
+        const dx = (edge[i] % R) - cx, dy = ((edge[i] / R) | 0) - cy;
+        const r = Math.sqrt(dx*dx + dy*dy); if(r > maxR) maxR = r;
+      }
+
+      /* 0.26, down from 0.38. The outline only needs enough points to stay
+         unbroken; every point spent there is one not filling the body, and
+         over-weighting the edge is part of what left the mark looking hollow. */
+      const EDGE_SHARE = 0.26;
+      const nEdge = Math.min(edge.length, Math.round(count * EDGE_SHARE));
+      const nInner = count - nEdge;
+      const picks = [];
+      /* even stride around the outline */
+      for(let i = 0; i < nEdge; i++) picks.push(edge[Math.floor(i * edge.length / nEdge)]);
+      /* one point per grid cell across the interior */
+      if(nInner > 0 && inner.length){
+        const cell = Math.max(1, Math.sqrt(inner.length / nInner));
+        const buckets = new Map();
+        for(let i = 0; i < inner.length; i++){
+          const px = inner[i] % R, py = (inner[i] / R) | 0;
+          const key = (((py / cell) | 0) << 12) | ((px / cell) | 0);
+          let b = buckets.get(key); if(!b){ b = []; buckets.set(key, b); }
+          b.push(inner[i]);
+        }
+        const keys = [...buckets.keys()];
+        /* STRIDE the cell list, do not walk it from the front.
+           `keys[i % keys.length]` looks equivalent but is not: a Map keeps
+           insertion order, the cells are inserted in raster scan order, and
+           when there are fewer points than cells the loop simply stops
+           partway down the mark and never reaches the rest. Measured, the
+           bottom band held 8.4% of the mark's area and received 1.6% of the
+           points — which is the blank space at the base of the logo.
+           Striding covers top to bottom evenly whether points outnumber
+           cells or not. */
+        for(let i = 0; i < nInner; i++){
+          const b = buckets.get(keys[Math.floor(i * keys.length / nInner)]);
+          picks.push(b[(i * 7919) % b.length]);
+        }
+      }
+      while(picks.length < count) picks.push(edge[picks.length % edge.length]);
+
+      /* Kept NORMALISED (-0.5..0.5). The mark's world size and position
+         depend on the viewport, so the scale is applied later in placeLogo()
+         and re-applied on resize. */
+      const out = new Array(count);
+      for(let i = 0; i < count; i++){
+        const idx = picks[i];
+        const px = idx % R, py = (idx / R) | 0;
+        const dx = px - cx, dy = py - cy;
+        out[i] = {
+          nx: (px / R) - 0.5,
+          ny: -((py / R) - 0.5),
+          role: clamp01(Math.sqrt(dx*dx + dy*dy) / maxR)
+        };
+      }
+      onReady(out);
+    };
+    img.onerror = function(){ URL.revokeObjectURL(url); onReady(null); };
+    img.src = url;
   }
-  if(!reducedMotion){
-    window.addEventListener('mousemove', (e) => { targetMouseX = (e.clientX / window.innerWidth - 0.5) * 2; targetMouseY = (e.clientY / window.innerHeight - 0.5) * 2; });
+
+  /* Where the resolved mark sits, in world space.
+
+     The canvas is full-bleed so the noise can fill the frame, which means
+     nothing in the layout stops the mark landing on top of the copy.
+
+     Squeezing the mark into the clear channel BETWEEN the copy and the dock
+     was tried and does not work: at 1280 that channel is only ~259px wide,
+     which renders the mark at ~116px — a logo so small it reads as an
+     afterthought rather than the thing the whole section resolves into.
+
+     So the copy and the mark take turns instead, which is the device this
+     page already uses on mobile: the copy holds the frame while it is being
+     read, then hands it over as the mark resolves. That frees the mark to be
+     large and central. It sits left of centre because the card dock owns the
+     right-hand side and the cards must land on a clean ground. */
+  let logoPts = null, logoReady = false;
+  function placeLogo(){
+    if(!logoPts) return;
+    const w = Math.max(1, canvas.clientWidth), h = Math.max(1, canvas.clientHeight);
+    const visH = 2 * camera.position.z * Math.tan(camera.fov * Math.PI / 360);
+    const perPx = (visH * (w / h)) / w;          // world units per CSS pixel
+    const mobile = window.innerWidth <= 900;
+
+    let centreXpx, sizePx;
+    if(mobile){
+      /* the dock owns the lower half, so the mark sits high and centred */
+      centreXpx = w / 2;
+      sizePx = Math.min(w * 0.74, h * 0.32);
+    } else {
+      centreXpx = w * 0.38;
+      sizePx = Math.min(w * 0.50, h * 0.72);
+    }
+
+    const scale = sizePx * perPx;
+    const offX = (centreXpx - w / 2) * perPx;
+    /* on mobile the mark is raised to sit at ~27% of the stage height, which
+       is the band above the card dock; on desktop it is vertically centred */
+    const offY = mobile ? (h * 0.23) * perPx : 0;
+
+    /* Dot diameter follows the mark's on-screen size so density reads the
+       same everywhere. The mark's own drawn area is ~68% of its bounding box
+       and carries COUNT dots, so mean spacing is about
+       sqrt(0.68 * sizePx^2 / COUNT); a diameter a little under that spacing
+       fills the shape without dots merging into a solid mass. */
+    /* 1.25, so a dot is slightly WIDER than the gap to its neighbour. Under
+       additive blending that would have been suicide; under normal blending
+       overlapping dots just composite, so the solid parts of the mark read as
+       solid instead of as a screen door. At 0.92 the dots sat inside their
+       own spacing and the mark looked under-filled — the trunk and the ring
+       in particular showed through. The outline sampling keeps the edge
+       crisp regardless of how solid the interior gets. */
+    const spacingPx = Math.sqrt((0.68 * sizePx * sizePx) / COUNT);
+    material.uniforms.uDotPx.value = Math.max(1.15, Math.min(3.4, spacingPx * 1.25));
+
+    /* Sub-pixel shimmer: enough to keep the mark alive, far too small to
+       blur an edge. Held under half a pixel deliberately — the fine gap
+       between the frond tips and the inner ring is only a few px wide. */
+    const shimmerWorld = 0.42 * perPx;
+    for(let i = 0; i < COUNT; i++){
+      const p = logoPts[i];
+      /* target jitter is a fraction of a pixel: the resolved state must be
+         the true mark, not an approximation of it */
+      const jx = (hash01(i * 3.3 + 9.0) - 0.5) * perPx * 0.35;
+      const jy = (hash01(i * 4.4 + 2.0) - 0.5) * perPx * 0.35;
+      orderPositions[i*3]   = offX + p.nx * scale + jx;
+      orderPositions[i*3+1] = offY + p.ny * scale + jy;
+      orderPositions[i*3+2] = (hash01(i * 5.7 + 3.0) - 0.5) * 0.30;
+      shimmerArr[i*2]   = shimmerWorld * (0.4 + hash01(i * 6.1 + 1.9) * 0.6);
+      shimmerArr[i*2+1] = shimmerWorld * (0.4 + hash01(i * 8.3 + 5.2) * 0.6);
+    }
   }
+
+  rasterizeLogo(COUNT, function(pts){
+    if(!pts) return;
+    logoPts = pts;
+    for(let i = 0; i < COUNT; i++){
+      // stagger the resolve outward from the badge's own centre, so the
+      // frame/horizon area settles first and frond tips last
+      const jitter = (hash01(i * 0.37 + 2.1) - 0.5) * 0.14;
+      const winStart = clamp01(pts[i].role * 0.72 + jitter * 0.5);
+      const winLen = 0.3 + hash01(i * 1.11 + 5.5) * 0.24;
+      assemblyStart[i] = winStart;
+      assemblyEnd[i] = Math.min(1, Math.max(winStart + 0.08, winStart + winLen));
+    }
+    placeLogo();
+    logoReady = true;
+    if(staticMode) renderStatic();
+  });
 
   const posAttr = geometry.attributes.position;
   const p1 = document.getElementById('p1'), p2 = document.getElementById('p2'), p3 = document.getElementById('p3');
-  const panelEls = [p1, p2, p3];
-  let panelSlots = [];
-  function measurePanelSlots(){
-    panelEls.forEach(el => { el.style.transform = 'none'; });
-    panelSlots = panelEls.map(el => { const r = el.getBoundingClientRect(); return { cx: r.left + r.width / 2, cy: r.top + r.height / 2 }; });
-  }
-  let slotsMeasured = false;
-  window.addEventListener('resize', () => { if(currentProgress > 0.001) measurePanelSlots(); else slotsMeasured = false; });
-  function rampT(t, start, end){ if(end <= start) return t >= end ? 1 : 0; return Math.max(0, Math.min(1, (t - start) / (end - start))); }
-  const PANEL_TIMELINE = {
-    p1: { inStart: 0.09, inEnd: 0.15, holdEnd: 0.31, outEnd: 0.36 },
-    p2: { inStart: 0.41, inEnd: 0.47, holdEnd: 0.63, outEnd: 0.68 },
-    p3: { inStart: 0.73, inEnd: 0.79, holdEnd: 0.91 },
-    stackStart: 0.88, stackEnd: 0.93
-  };
-  const CENTER_SCALE_DESKTOP = 1.22, CENTER_SCALE_MOBILE = 1.08;
 
-  let maxAssemblyT = 0;
-  function animate(){
-    targetProgress = Math.max(targetProgress, computeProgress());
-    currentProgress += (targetProgress - currentProgress) * 0.05;
-    mouseX += (targetMouseX - mouseX) * 0.04;
-    mouseY += (targetMouseY - mouseY) * 0.04;
-    const t = currentProgress;
-    if(!slotsMeasured && t > 0.001){ measurePanelSlots(); slotsMeasured = true; }
-    const time = performance.now() * 0.0002;
-    maxAssemblyT = Math.max(maxAssemblyT, Math.min(1, t / ASSEMBLY_END));
-    const assemblyT = maxAssemblyT;
+  const panelEls = [p1, p2, p3];
+
+  /* THE STAGING.
+
+     The mark resolves slowly across most of the section, and the three cards
+     arrive THROUGHOUT that resolve rather than queueing up after it — the
+     first lands while the dots are still finding their shape, so the section
+     is doing two things at once and never has a dead stretch.
+
+     Cards travel in from the right and settle into their own slot. They do
+     NOT pop to the centre of the frame first: that was tried, and it puts a
+     large opaque card directly over the mark at exactly the moment the mark
+     is the thing worth looking at, three times in a row. Each card instead
+     gets a "featured" beat — held slightly forward with a warmer edge — that
+     showcases it without stealing the frame.
+
+     in→ slides in and fades up    feat→ its featured beat ends */
+  const SHAPE_END = 0.56;
+  const CARD_WINS = [
+    { inStart: 0.22, inEnd: 0.34, featEnd: 0.46 },
+    { inStart: 0.42, inEnd: 0.54, featEnd: 0.66 },
+    { inStart: 0.62, inEnd: 0.74, featEnd: 0.86 }
+  ];
+
+  function setPanel(el, win, t, mobile, isCurrent){
+    const p = easeOutCubic(rampT(t, win.inStart, win.inEnd));
+    /* how "featured" this card is right now: full while it is the newest
+       arrival, easing off once the next one starts coming in */
+    const feat = p * (1 - easeInOut(rampT(t, win.inEnd, win.featEnd)));
+    const slide = (1 - p) * (mobile ? 26 : 54);
+    const sc = 1 + (mobile ? 0.012 : 0.022) * feat;
+    el.style.opacity = p;
+    el.style.transform = 'translateX(' + slide.toFixed(1) + 'px) scale(' + sc.toFixed(4) + ')';
+    el.classList.toggle('panel-active', mobile ? !!isCurrent : feat > 0.45);
+    const desc = el.querySelector('.desc'), source = el.querySelector('.source');
+    /* MOBILE: three fully-expanded cards are ~557px against ~300px of dock,
+       so the stack ran 200px off the bottom of the screen. Only the card
+       that most recently arrived carries its detail; the earlier ones fall
+       back to rule + stat. "Most recent" rather than "currently featured"
+       deliberately — the last card must keep its detail through the closing
+       hold, or the section ends on three headlines and no substance. */
+    if(mobile){
+      if(desc) desc.classList.toggle('compact-hidden', !isCurrent);
+      if(source) source.classList.toggle('compact-hidden', !isCurrent);
+    } else {
+      if(desc) desc.classList.remove('compact-hidden');
+      if(source) source.classList.remove('compact-hidden');
+    }
+  }
+
+  function assembleParticles(assemblyT, time, motion){
     for(let i = 0; i < COUNT; i++){
       const idx = i * 3;
       const ws = assemblyStart[i], we = assemblyEnd[i];
-      const localRaw = we > ws ? Math.max(0, Math.min(1, (assemblyT - ws) / (we - ws))) : (assemblyT >= we ? 1 : 0);
-      const local = smoother(localRaw);
-      const driftAmt = 1.4 * (1 - local);
-      const driftX = driftAmt ? Math.sin(time * 2.2 + i) * driftAmt : 0;
-      const driftY = driftAmt ? Math.cos(time * 2.6 + i * 1.7) * driftAmt : 0;
-      const cx = chaosPositions[idx] + driftX, cy = chaosPositions[idx+1] + driftY, cz = chaosPositions[idx+2];
+      const localRaw = we > ws ? clamp01((assemblyT - ws) / (we - ws)) : (assemblyT >= we ? 1 : 0);
+      const local = easeSettle(localRaw);
+      let cx = chaosPositions[idx], cy = chaosPositions[idx+1], cz = chaosPositions[idx+2];
+      if(motion && local < 1){
+        /* free drift while it is still noise, fading out as it commits */
+        const driftAmt = 1.35 * (1 - local);
+        cx += Math.sin(time * 2.2 + i) * driftAmt;
+        cy += Math.cos(time * 2.6 + i * 1.7) * driftAmt;
+      }
       const ox = orderPositions[idx], oy = orderPositions[idx+1], oz = orderPositions[idx+2];
-      posAttr.array[idx]   = cx + (ox - cx) * local;
-      posAttr.array[idx+1] = cy + (oy - cy) * local;
-      posAttr.array[idx+2] = cz + (oz - cz) * local;
+      let x = cx + (ox - cx) * local;
+      let y = cy + (oy - cy) * local;
+      const z = cz + (oz - cz) * local;
+      if(motion && local > 0){
+        /* Sub-pixel shimmer, scaled IN as the dot arrives. The field is never
+           a still image, but the movement at rest is small enough that the
+           silhouette stays exact — which is the whole balance this section
+           needs: alive, but unmistakably the mark. */
+        const ph = phasesArr[i] * 6.2831;
+        x += Math.sin(time * 1.9 + ph) * shimmerArr[i*2] * local;
+        y += Math.cos(time * 2.3 + ph * 1.3) * shimmerArr[i*2+1] * local;
+      }
+      posAttr.array[idx] = x; posAttr.array[idx+1] = y; posAttr.array[idx+2] = z;
     }
     posAttr.needsUpdate = true;
-    const rotFactor = reducedMotion ? 0 : (1 - assemblyT);
-    points.rotation.y = (reducedMotion ? 0 : time * 0.3 * rotFactor) + mouseX * (0.25 - 0.16 * assemblyT);
-    points.rotation.x = reducedMotion ? 0 : mouseY * 0.12 * (1 - 0.5 * assemblyT);
-    if(!reducedMotion){
-      const breatheAmt = Math.max(0, Math.min(1, (assemblyT - 0.85) / 0.15));
-      points.position.y = Math.sin(time * 0.5) * 0.03 * breatheAmt;
-      points.rotation.z = Math.sin(time * 0.35) * 0.01 * breatheAmt;
-    }
-    camera.position.x = mouseX * 1.2; camera.position.y = 0.5 - mouseY * 0.8; camera.lookAt(0, 0, 0);
+  }
+
+  function renderStatic(){
+    sizeToBox();
+    placeLogo();
+    material.uniforms.uResolved.value = 1;
+    material.uniforms.uTime.value = 0;
+    assembleParticles(1, 0, false);
+    points.rotation.set(0, 0, 0);
+    points.position.set(0, 0, 0);
+    camera.position.set(0, 0, 24);
+    camera.lookAt(0, 0, 0);
+    const mobile = window.innerWidth <= 900;
+    document.getElementById('oKicker').style.opacity = 1;
+    document.getElementById('oHeadline').style.opacity = 1;
+    document.getElementById('oLede').style.opacity = 1;
+    document.getElementById('oBody').style.opacity = 1;
+    canvas.style.opacity = 1;
+    document.getElementById('scrollProgress').style.opacity = 0;
+    /* t = 1: every card fully arrived and settled in its slot */
+    panelEls.forEach((el, i) => setPanel(el, CARD_WINS[i], 1, mobile, i === CARD_WINS.length - 1));
+    renderer.render(scene, camera);
+  }
+
+  if(staticMode){
+    const paint = () => { renderStatic(); };
+    paint();
+    window.addEventListener('resize', paint);
+    window.addEventListener('load', paint);
+    if('ResizeObserver' in window) new ResizeObserver(paint).observe(canvas);
+    return;
+  }
+
+  /* No mouse parallax here — this section isn't hover-based, and once the
+     mark is resolved it should hold a true, still, upright frame like the
+     brand mark it is, not drift. */
+  camera.position.set(0, 0, 24);
+  camera.lookAt(0, 0, 0);
+
+  function render(t){
+    /* two clocks: a slow one for positional drift, a faster one the shader
+       uses for the twinkle */
+    const now = performance.now();
+    const time = reducedMotion ? 0 : now * 0.0002;
+    const assemblyT = logoReady ? clamp01(t / SHAPE_END) : 0;
+    assembleParticles(assemblyT, time, !reducedMotion);
+    material.uniforms.uTime.value = reducedMotion ? 0 : now * 0.001;
+    material.uniforms.uResolved.value = assemblyT;
+    /* the field turns slowly while it is still noise and comes to true
+       upright as it resolves, so the mark is never rendered off-axis */
+    points.rotation.y = reducedMotion ? 0 : time * 0.25 * (1 - assemblyT);
 
     const kicker = document.getElementById('oKicker'), headline = document.getElementById('oHeadline'), lede = document.getElementById('oLede'), body = document.getElementById('oBody'), progressUI = document.getElementById('scrollProgress'), fill = document.getElementById('progressFill');
-    const isMobile = window.innerWidth <= 900;
+    const mobile = window.innerWidth <= 900;
 
-    /* MOBILE — the copy and the palm take turns instead of sharing the frame.
-       On desktop the copy is a narrow left column and the palm sits centre-
-       right, so they coexist. On a handset the copy spans the full width and
-       the palm assembles directly behind it, which made the body text
-       unreadable. So on mobile the dust stays faint while there is copy to
-       read, then the copy hands the frame over and the palm completes at
-       full strength — the chaos-to-order arc is kept, just not underneath
-       the words. Reduced motion holds the copy up and keeps the palm faint,
-       so nothing is ever lost behind it. */
-    const handover = isMobile && !reducedMotion ? rampT(t, 0.24, 0.34) : 0;
-    const copyA = 1 - handover;
-    kicker.style.opacity = copyA;
-    headline.style.opacity = copyA;
-    lede.style.opacity = copyA;
-    body.style.opacity = copyA;
-    canvas.style.opacity = !isMobile ? 1
-      : (reducedMotion ? 0.22 : 0.16 + 0.84 * rampT(t, 0.22, 0.38));
+    /* The copy and the mark take turns — on every breakpoint now, not just
+       mobile. The copy holds the frame at full strength while the dots are
+       still noise and there is something to read, then hands over across
+       t 0.18→0.34 as the mark resolves. Nothing is ever obscured: the copy
+       has left before the mark reaches full strength, and it comes straight
+       back on the way up because render() is a pure function of t. */
+    const copyA = 1 - rampT(t, 0.10, 0.26);
+    kicker.style.opacity = copyA; headline.style.opacity = copyA; lede.style.opacity = copyA; body.style.opacity = copyA;
+    /* the dust stays faint behind live copy so the text keeps its contrast */
+    canvas.style.opacity = 0.34 + 0.66 * rampT(t, 0.08, 0.26);
     progressUI.style.opacity = t > 0.02 ? 1 : 0;
     fill.style.width = (t * 100) + '%';
-    const centerScale = isMobile ? CENTER_SCALE_MOBILE : CENTER_SCALE_DESKTOP;
-    const tl = PANEL_TIMELINE;
-    const stackT = rampT(t, tl.stackStart, tl.stackEnd);
-    function trapezoid(t, win){ const rise = rampT(t, win.inStart, win.inEnd); const fall = 1 - rampT(t, win.holdEnd, win.outEnd); return Math.min(rise, fall); }
-    [{ el: p1, win: tl.p1, slot: panelSlots[0] }, { el: p2, win: tl.p2, slot: panelSlots[1] }]
-      .forEach(({ el, win, slot }) => {
-        const centerP = trapezoid(t, win);
-        const opacity = Math.max(centerP, stackT);
-        applyPanelTransform(el, slot, centerP, opacity, centerScale, centerP > 0.5, isMobile, stackT);
-      });
-    (function(){
-      const win = tl.p3;
-      const inP = rampT(t, win.inStart, win.inEnd);
-      const posP = t < tl.stackStart ? inP : (1 - stackT);
-      const opacity = Math.max(inP, stackT);
-      applyPanelTransform(p3, panelSlots[2], posP, opacity, centerScale, posP > 0.5, isMobile, stackT);
-    })();
-    function applyPanelTransform(el, slot, posP, opacity, scale, isActive, mobile, stackAmt){
-      const rY = mouseX * 6 * (1 - posP), rX = -mouseY * 6 * (1 - posP);
-      let dx = 0, dy = 0;
-      if(slot){ const centerY = mobile ? window.innerHeight * 0.58 : window.innerHeight / 2; dx = (window.innerWidth / 2 - slot.cx) * posP; dy = (centerY - slot.cy) * posP; }
-      const stackedShrink = posP < 0.5 ? (stackAmt || 0) : 0;
-      const s = (1 + (scale - 1) * posP) * (1 - stackedShrink * 0.24);
-      el.style.opacity = opacity; el.style.zIndex = posP > 0.05 ? 20 : 1;
-      el.style.transform = `translate(${dx}px, ${dy}px) scale(${s}) perspective(600px) rotateY(${rY}deg) rotateX(${rX}deg)`;
-      el.classList.toggle('panel-active', isActive);
-      if(mobile){ const desc = el.querySelector('.desc'); const source = el.querySelector('.source'); const showDetail = posP > 0.4; if(desc) desc.classList.toggle('compact-hidden', !showDetail); if(source) source.classList.toggle('compact-hidden', !showDetail); }
-      else { const desc = el.querySelector('.desc'); const source = el.querySelector('.source'); if(desc) desc.classList.remove('compact-hidden'); if(source) source.classList.remove('compact-hidden'); }
-    }
+
+    /* the most recently arrived card — the one that owns the detail slot */
+    let currentIdx = -1;
+    for(let i = 0; i < CARD_WINS.length; i++) if(t >= CARD_WINS[i].inStart) currentIdx = i;
+    panelEls.forEach((el, i) => setPanel(el, CARD_WINS[i], t, mobile, i === currentIdx));
+
     renderer.render(scene, camera);
-    requestAnimationFrame(animate);
   }
-  requestAnimationFrame(animate);
-  window.addEventListener('resize', () => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); });
+
+  /* The paced value. cine settles the track on the true scroll position
+     whenever the section leaves the viewport, so re-entry from either
+     direction always starts from the frame that belongs there — and there is
+     no forward-only latch, so scrolling back up unwinds the shape and cards
+     instead of freezing them for the rest of the pin.
+
+     render() itself is driven by a persistent rAF loop rather than cine's
+     own emit — cine only emits when the paced value actually changes, which
+     would freeze the unresolved dust field's idle drift the moment scrolling
+     stops. The loop just reads whatever t was last emitted. */
+  const track = (window.DAO && DAO.cine)
+    ? DAO.cine.track(pin, { mode: 'guided', pace: 'epic', states: 6 })
+    : null;
+
+  let currentT = 0;
+  if(track){
+    track.on(v => { currentT = v; });
+  } else {
+    const rawT = () => {
+      const rect = pin.getBoundingClientRect();
+      const s = pin.offsetHeight - window.innerHeight;
+      if(s <= 0) return rect.top < 0 ? 1 : 0;
+      return clamp01(-rect.top / s);
+    };
+    currentT = rawT();
+    window.addEventListener('scroll', () => { currentT = rawT(); }, { passive: true });
+    window.addEventListener('resize', () => { currentT = rawT(); }, { passive: true });
+  }
+
+  /* Re-measure on real box changes rather than polling clientWidth in the
+     loop, which would force a layout read every single frame. The mark's
+     world placement and its dot size both depend on the box, so both are
+     re-solved whenever it actually changes. The cards need no measurement —
+     they travel by transform from wherever CSS puts them. */
+  let dirty = true;
+  function remeasure(force){
+    const changed = sizeToBox();
+    if(changed || force === true){ placeLogo(); dirty = true; }
+  }
+  if('ResizeObserver' in window) new ResizeObserver(() => remeasure()).observe(canvas);
+  window.addEventListener('resize', () => remeasure(true));
+  /* webfonts land after parse and reflow the copy column, which moves the
+     channel the mark sits in */
+  window.addEventListener('load', () => remeasure(true));
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(() => remeasure(true));
+
+  let lastT = -1;
+  function loop(){
+    /* Under reduced motion there is no idle drift, so an identical frame is
+       not worth repainting 60x a second — only paint when the scroll value
+       actually moved or the box changed. Full motion always paints, because
+       the unresolved dust drifts on its own clock. */
+    if(!reducedMotion || dirty || currentT !== lastT){
+      lastT = currentT; dirty = false;
+      render(currentT);
+    }
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
 })();
 </script>
 
