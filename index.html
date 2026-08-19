@@ -783,8 +783,8 @@
      to be hidden. */
   .stage4{position:sticky;top:0;height:100vh;overflow:visible;
     background:radial-gradient(ellipse at 50% 45%, #221c16 0%, var(--mineral) 75%);
-    display:grid;grid-template-rows:auto minmax(0,1fr) auto;justify-items:center;
-    padding:clamp(52px,8.5vh,86px) 5% clamp(48px,7.5vh,76px);}
+    display:grid;grid-template-rows:auto auto minmax(0,1fr);justify-items:center;
+    padding:clamp(52px,8.5vh,86px) 5% clamp(40px,6vh,64px);}
 
   .journey-header{text-align:center;position:relative;z-index:10;margin-bottom:0;}
   .j-kicker{font-size:11px;letter-spacing:0.22em;color:var(--gold);text-transform:uppercase;
@@ -857,7 +857,11 @@
      element half its own size off-position. There is nothing left to lose. */
   .j-popcard{grid-row:2;align-self:start;justify-self:center;
     margin-top:clamp(30px,5.4vh,64px);width:min(700px,80vw);
-    transform:scale(0.965);text-align:center;
+    /* Resting state is scale(1). It used to rest at 0.965 with the pop
+       keyframes ending at 1 and fill-mode:none — so every stage change
+       popped the card up to full size and then eased it 3.5% back down
+       again. The entry scale belongs in the keyframes, not the base rule. */
+    transform:none;text-align:center;
     background:linear-gradient(168deg,#FAF8F4,#EFEAE0);
     border:1px solid rgba(43,38,35,0.10);
     border-radius:3px;padding:clamp(32px,3.9vh,46px) clamp(36px,3.4vw,54px) clamp(34px,4.1vh,48px);
@@ -888,13 +892,19 @@
      to a two-line block with three orphaned words. */
   .j-pop-text{font-family:'Cormorant Garamond',serif;font-weight:300;
     font-size:clamp(20px,1.75vw,27px);color:#2B2623;line-height:1.45;letter-spacing:-0.005em;
-    max-width:24ch;margin:0 auto;text-wrap:balance;}
+    max-width:46ch;margin:0 auto;text-wrap:balance;}
   /* the arrow pointed at the node the card used to sit above; a centred card
      has nothing to point at, so it is retired rather than left dangling */
   .j-pop-arrow{display:none;}
 
   .journey-header{transition:opacity 0.55s var(--ease), transform 0.55s var(--ease);}
-  .j-track-wrap{grid-row:3;}
+  /* Centred in whatever the header and card leave, rather than pinned to the
+     bottom edge. Bottom-pinned it left a ~300px dead band under the card at
+     900px of stage — a void bigger than the card itself, which reads as a
+     hole rather than as air. Centring splits that slack either side of the
+     track, so the track floats in the lower half instead of sitting on the
+     floor. */
+  .j-track-wrap{grid-row:3;align-self:center;}
 
   @media (max-width:1100px){.pin4{display:none;}}
   .journey-mobile-section{display:none;}
