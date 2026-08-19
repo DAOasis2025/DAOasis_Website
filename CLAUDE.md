@@ -763,6 +763,249 @@ these files through `Get-Content`/`Set-Content`.
 
 ---
 
+## Cinematic scroll made one-way + auto-release (August 19)
+
+`js/cine.js` only — no page HTML touched, no per-call-site changes needed. Applies
+automatically to all 13 tracked sections sitewide (the table under "Where it is
+applied" above).
+
+**Two behaviors, both now the default for every `Track`:**
+1. **One-way.** Each track keeps `this.peak`, the highest true scroll progress it
+   has ever seen, and all goal/state computation now reads from `peak` instead of
+   the instantaneous scroll value. Scrolling back up no longer replays a section in
+   reverse — it holds exactly at the furthest frame reached. This generalises the
+   pattern the hero route's `maxProgress` latch already used (see "Left alone
+   deliberately" below the Principle section notes) into the engine itself, so
+   every pinned section behaves the same way, not just that one.
+2. **Auto-release.** Once a track's displayed state reaches its last stop and the
+   real scroll has actually caught up (`peak >= 0.999`), `Track.maybeUnpin()` finds
+   the section's `position:sticky` stage (auto-detected by scanning for computed
+   `position:sticky` inside the tracked element — every pin wrapper site-wide
+   follows the same outer-wrapper-holds-one-sticky-stage shape, so no per-page
+   wiring was needed) and switches it to `position:relative`, then trims the outer
+   wrapper's remaining height down to the current scroll position. The section
+   stops holding the viewport the moment its story finishes, and — because it's
+   one-way — it never re-pins on a later pass.
+
+**One real bug worth remembering if this is touched again:** under
+`prefers-reduced-motion: reduce` (or `o.off`), pacing is bypassed and `tick()`
+returns before touching `this.value`/`goalIdx`, so the completion check inside
+`maybeUnpin()` must read `this.get()`/`this.state()` (the authoritative displayed
+value), never the internal pacing fields — those are simply never updated in that
+branch. A first pass that checked `this.value` silently never unpinned anything
+under reduced motion. A second bug in the same pass: `this.rawV` was being
+assigned the *unclamped* instantaneous scroll before the peak latch was applied,
+so `get()` under reduced motion (which reads `rawV` directly, bypassing `value`)
+still reversed on scroll-up despite `peak` itself being correct. Fixed by
+assigning `this.rawV = this.peak` — `rawV` must always be the peak-clamped value,
+never the raw instantaneous one. **Note the Browser pane itself reports
+`prefers-reduced-motion: reduce`**, so this exact bug is invisible unless you
+either test with reduced motion forced off or (as done here) drive `tick()`
+directly via a temporary debug export and inspect `get()`/`peak`/`unpinned` by
+hand — screenshots and rAF are unavailable while the pane is hidden regardless.
+
+**Verified (numerically, via a temporary `DAO.cine._debugTick()` export removed
+after testing):** on index.html's `pin3` (sticky, 4 states) — scrolling to 70%
+then back to 10% holds at state 2 / 0.6997, does not reverse; scrolling to 100%
+reaches state 3, `unpinned:true`, stage computed position `relative`; scrolling
+back up again afterward stays frozen at state 3. `pinContainer` (guided) confirmed
+the same shape. Resize after completion leaves the unpinned/frozen state
+untouched. Zero console errors on all four pages after the change. **Not yet
+judged by eye** — same Browser-pane-hidden limitation as everything else in this
+project; the visual release (does the shrink read as a jump anywhere) has not
+been watched happen.
+
+---
+
+## Investor page: responsive fix + resource-request UX (August 19)
+
+### The clipping bug was the divider overlay, and it was on two pages
+**Root cause.** `.divider` declares `background: transparent`, but every divider
+also carries a `.bg-*` class, and `.bg-ivory`/`.bg-stone`/… sit later in the same
+sheet at the same specificity (0,1,0) — so they win. The divider therefore painted
+an **opaque band** over the tail of the section it overlays via
+`margin-top: calc(-1 * var(--divider-h))`.
+
+The overlap is `(14vh + 26px) − 16vh` = **`26 − 2vh` pixels**, so it is present at
+every viewport and gets *worse as the window gets shorter*: 13px at 640px tall,
+10px at 812px, 8px at 900px, 4px at 1080px. That is why it read as a
+"certain laptop widths" bug.
+
+Measured before the fix on `investors.html` at 375×812: **18 of 18 dividers
+opaque**, and **16 sections had closing text painted over** — mostly the bottom
+few pixels of the last line, but three whole lines were completely invisible
+(a 25px line, a 22px line and a 16px line). The "Status · $DVT" disclosure was one
+of the sliced ones.
+
+**Fix:** add the `.divider.bg-*{background:transparent}` override that
+`index.html` (line ~487), `sanctuary.html` and `web3.html` have carried since
+17 August. `investors.html` and `about.html` were built afterwards and copied the
+overlay geometry **without** it. `app.html` never needed it.
+
+> **If a new page is ever built from one of these templates, this override must
+> come with the `margin-top: calc(-1 * var(--divider-h))`.** They are one
+> mechanism. The geometry without the override is a text-eating bug, and it is
+> invisible to a layout audit — `overflow` is `visible` everywhere, `scrollHeight
+> === clientHeight`, nothing escapes the viewport. Only `elementFromPoint` or an
+> eye pass finds it.
+
+Re-verified after: 0 opaque dividers on both pages, 0 text covered, all 18
+investor dividers still have a correctly contrasting mark against what they now
+sit on, minimum clearance 62px (floor is 49px).
+
+### Two more real clipping defects, both systemic
+1. **`.ln` masked only its descender end — fixed on all five pages that use it.**
+   Cormorant's glyph box is ~1.25em but the display sizes set `line-height` near
+   1.05, so the half-leading is negative and the font box pokes ~0.095em out of the
+   line box at *both* ends. Only `padding-bottom: 0.14em` existed, so every masked
+   headline's **first line** could lose the top of a tall ascender — 4px at 375
+   rising to 10px at 1920, because it scales with font-size. Now symmetric:
+   `padding-top: 0.14em; margin-top: -0.14em` as well. **Keep the two paddings
+   equal.** Applied to `investors.html`, `index.html`, `sanctuary.html`,
+   `web3.html` and `about.html`; **`app.html` does not use `.ln` at all** and was
+   not touched. Verified: **154 line-masks across the five pages, 0 clipped** at
+   both 375 and 1440 (every page had clipping before).
+2. **`<caption>` inherits the table's box.** `.pm` is `min-width: 860px` inside a
+   `.pm-scroll` overflow-x scroller, so below ~1000px the 146-character caption
+   was laid out 860px wide in a 743px window — you had to scroll sideways to
+   finish reading a paragraph. It is now a `<p class="pm-cap">` sibling *before*
+   the scroller, with `aria-describedby` preserving the association.
+
+### Resources — two tiers of CTA
+- **Level 2, per card:** every `file: null` card gets a `Request this resource`
+  button (gold hairline pill). Cards with a `file` become downloads and
+  deliberately get **no** request button, and drop out of the panel's select
+  automatically — both branches render from the one `DOCS` config.
+- **Level 1, per section:** one filled warm-white `Request Investor Information`
+  pill centred beneath the grid. The closing section's contact line and a third
+  entry point in the final `.btn-row` open the same panel.
+- **`#reqPanel`** is the only interactive surface on the page: resource (preselected
+  from the card you clicked), name, email, company, message. Focus trap, Escape,
+  focus restore, body scroll lock, `#request` deep link.
+
+**`INVESTOR_CONTACT` is the single source of truth** — one constant at the top of
+the script, **now set to `info@daoasis.xyz`** (supplied 19 August). The panel, the
+note under the form, the done-state and the closing line all read from it. Set it
+back to `null` and the whole page reverts to composing the request for **Copy
+request** with a `<span class="tbc">` wherever the address would print — no other
+edit needed. **Nothing is ever reported as sent that was not sent**: the done-state
+says the email client "should have opened" and offers the text to copy. There is
+still no form backend anywhere in this project. `.tbc` and `.sr-only` were added to
+investors.html because it does not load `css/trust.css`.
+
+**`contact.html` was brought into line in the same pass.** `info@daoasis.xyz` is
+**the one address for every route** — general, investors, partnerships, privacy,
+contributors and careers all resolve to it. What changed there:
+- All five `tbc` address markers became `mailto:` links; route 06 (careers) gained
+  an address so it is no longer the only route without one.
+- The "No contact addresses are published yet" card became **"One address, not
+  six"** (`chip-live`), explaining that a small team would rather publish one
+  address that is read than six that are not, and asking for the route in the
+  subject line.
+- The "There is no contact form" card became **"Nothing on this website posts to a
+  server"** — because the investor request panel *is* form-shaped, and a page whose
+  whole job is honesty about this must not be read as denying it exists. It now
+  says the panel hands the request to your own email client, which is why it says
+  the client "should have opened" rather than claiming receipt.
+- The closing note and the hero's "Investor materials" row were rewritten; the
+  latter now points at `investors.html#request`.
+
+The only `tbc` left on the page is the **response-time commitment**, which is
+genuinely still unresolved.
+
+Verified: 10 width×height combinations (320×640 → 1920×1080) with **0 horizontal
+scroll, 0 clipped text, 0 escaping elements, 0 sub-10px type, 0 trapped
+paragraphs, 0 opaque dividers**. Panel: card fits on X at every width, shell
+scrolls (never the card), submit reachable at 640px tall. Flow tested end to end —
+per-card open preselects that document, main CTA preselects the pack, validation,
+compose, copy, Escape, scrim, focus trap both directions, focus restore.
+**Judged by eye** at mobile (375) and at the resources grid; see the note below on
+the pane's partial compositing at large viewports.
+
+### The pane composites only part of a large viewport
+New constraint worth knowing: with the Browser pane **displayed**, screenshots at
+375–442px wide paint the full viewport, but at 1024×768 only ~350×260 painted and
+at 1440×900 only ~245×155. Scaling the page into the painted region with a
+`transform` does not help — the compositor clips before the transform. To eye-pass
+a desktop layout, **drive the viewport at ≤440px and accept mobile composition, or
+read geometry numerically.** The `_shot`/iframe-scaling tricks tried here did not
+work.
+
+---
+
+## `css/trust.css` — card and route links were rendering browser-blue (August 19)
+
+The trust layer's body-link rule is `.doc a:not(.btn):not(.xl-i):not(.cx-i)`, and
+**`contact.html` is the only trust page with no element carrying `class="doc"`** —
+its wrapper is `.doc-wrap` / `#doc`. So its links fell through to the UA default and
+rendered as **blue underlined text on an ivory legal page**. Thirteen in total across
+three pages:
+
+- `contact.html` — route 04's "Privacy Policy" and "health data" (`.path-b`), and the
+  five "Where to go instead" card links (`.card-m-v`)
+- `privacy.html` — "Cookie Policy", and `health-data.html` — three cross-references
+  (those pages *do* have `.doc`, but these links sit outside it, in `.card-b`)
+
+Fixed by adding `.path-b a, .card-b a, .card-m-v a { … }` next to `.ct-s-b a`, with
+the same colour the `.doc` rule already gives, so nothing looks different where both
+apply. **One more upload of `css/trust.css`.**
+
+> Watch for this if a new trust page is added: `class="doc"` on the document wrapper
+> is what switches body-link styling on. `contact.html` never had it.
+
+Re-verified after: **1,096 text elements across all seven trust pages — 0 blue
+links, 0 contrast failures** (WCAG AA, alpha-composited backgrounds). Fail-visible
+mode still intact on `contact.html` (**0 invisible elements, 6,218 readable
+characters** with `html.js` dropped), and 0 horizontal scroll / 0 escaping elements /
+0 sub-10px type at 320, 375, 390, 414, 768, 1024, 1440 and 1920.
+
+> **Audit note:** a contrast checker that reads `backgroundColor` without compositing
+> alpha will report false failures here. `.pt` is `rgba(43,38,35,0.035)` over ivory;
+> naively parsed as `rgb(43,38,35)` it makes a passing 4.9:1 link look like 2.68:1.
+> Composite the whole stack down to the first opaque layer.
+
+### The address on the other trust pages
+`info@daoasis.xyz` also replaced the `tbc` contact markers on `privacy.html`
+(privacy enquiries), `accessibility.html` (accessibility reports), `cookies.html`
+and `terms.html` §24 — each with a subject-line hint, since one inbox serves every
+route. `terms.html` now also states that a notice sent to that address is treated as
+received, because it is the only route for formal notice until the legal entity and
+registered address exist.
+
+**Every remaining `tbc` on the site is a genuine legal or business unknown** — legal
+entity, registered address, governing law, jurisdiction, liability cap, minimum age,
+retention schedule, processor list, certification status, hosting locations,
+technical architecture, consent mechanism, the accessibility audit and the response
+time commitment. **No contact address is unresolved any more.**
+
+---
+
+## The compounding-journey thread (August 19)
+
+The core idea, stated once so it does not have to be pasted everywhere:
+
+> Every positive action moves you forward. Steps **and** sleep **and** hydration
+> **and** breathing **and** learning all feed the *same* journey, and together
+> they compound. Nothing you do well is wasted.
+
+Where it stands after the crawl:
+
+| Page | Before | Action |
+|---|---|---|
+| `investors.html` | **Strongest** — "Six inputs → One output → The journey → Participation → DRC" | Left alone; it is the reference |
+| `app.html` | **Strongest** — "Six habits. One connected world.", the habit-boost grid, "your steps are the engine and every other habit makes you faster" | Left alone (also protected by the working-constraints rule) |
+| `index.html` | **Weak** — the metrics were framed as a *dashboard* ("rolled into one ring… feel on top of your day"), never as inputs to one journey | 4 copy edits |
+| `web3.html` | Partial — named the verbs but not that they converge | 1 copy edit (`.part-foot`) |
+| `about.html` | Weak — listed the layers, not the compounding | 1 copy edit |
+| `sanctuary.html` | Missing — no link back to the daily practice | 1 clause, in Transformation |
+
+**Copy only. No layout, structure or CSS was changed for this.** Each page says it
+in its own register rather than repeating one sentence — that was the explicit
+brief. Do not add a seventh restatement; the thread is carried, and more would
+read as a slogan.
+
+---
+
 ## Next planned work
 **`web3.html` is done — built, numerically verified and judged by eye** (August 14).
 Layout audited with zero issues at 1920×1080, 1440×900, 1280×800, 1280×720, 768×1024,

@@ -513,6 +513,16 @@ html.js .rv.show .th-kick::before { width: 28px; }
   font-size: clamp(26px, 3vw, 38px); line-height: 1.14; color: var(--charcoal); }
 .ct-s-b { margin-top: 16px; font-size: 16.5px; line-height: 1.9; color: var(--ink); max-width: 40em; }
 .ct-s-b a { color: #8a5f34; text-decoration: none; border-bottom: 1px solid rgba(196, 138, 90, 0.42); }
+/* The trust layer's body-link rule is `.doc a:not(…)`, and **`contact.html` has no
+   element with `class="doc"`** — every other trust page does. So links in its route
+   bodies, its expectation cards and its card meta rows fell through to the UA
+   default and rendered as blue underlined text on an ivory legal page. Thirteen of
+   them: route 04's "Privacy Policy" and "health data", the five "Where to go
+   instead" card links, plus privacy.html's "Cookie Policy" and health-data.html's
+   three cross-references (those two pages have `.doc` but the links sit outside it).
+   Same treatment as `.doc a`, so nothing looks different where both apply. */
+.path-b a, .card-b a, .card-m-v a { color: #8a5f34; text-decoration: none; border-bottom: 1px solid rgba(196, 138, 90, 0.42); transition: border-color 0.25s, color 0.25s; }
+.path-b a:hover, .card-b a:hover, .card-m-v a:hover, .ct-s-b a:hover, .path-a a:hover { color: var(--charcoal); border-bottom-color: var(--charcoal); }
 .ct-s-b a:hover { color: var(--charcoal); border-bottom-color: var(--charcoal); }
 @media (max-width: 900px) { .ct-s { margin-top: 9vh; } }
 

@@ -95,6 +95,19 @@ DAO.cine = (function(){
     return r.top < 0 ? 1 : 0;
   }
 
+  /* Every pin wrapper on the site follows the same shape: an outer div
+     tall enough to give the animation scroll room, holding one
+     position:sticky stage that actually holds the viewport. Finding it
+     generically means the release-on-completion behaviour below needs
+     no per-page wiring. */
+  function findSticky(el){
+    var kids = el.querySelectorAll('*');
+    for(var i = 0; i < kids.length; i++){
+      if(getComputedStyle(kids[i]).position === 'sticky') return kids[i];
+    }
+    return null;
+  }
+
   function Track(el, o){
     o = o || {};
     this.el      = el;
@@ -128,6 +141,19 @@ DAO.cine = (function(){
     this.subs    = [];
     this.emitted = -1;
     this.near    = true;
+
+    /* One-way: once scroll has carried the story forward, scrolling back
+       up leaves it exactly where it finished rather than replaying it in
+       reverse. peak is the highest true scroll progress seen so far and
+       is the only thing goals are ever computed from. */
+    this.peak     = v;
+    /* Once the story reaches its last state AND the user's real scroll
+       has actually caught up to it, the pin releases: the sticky stage
+       drops back into normal flow and the wrapper's remaining scroll
+       room collapses, so the section does not keep holding the viewport
+       after it is finished. */
+    this.unpinned = false;
+    this.stickyEl = findSticky(el);
 
     var self = this;
     if('IntersectionObserver' in window){
@@ -171,21 +197,53 @@ DAO.cine = (function(){
      nearest state, not between two of them, so .get() and subscribers
      never disagree about where the story currently is. */
   Track.prototype.settle = function(){
-    var v = rawOf(this.el);
+    if(this.unpinned) return;
+    var trueV = rawOf(this.el);
+    if(trueV > this.peak) this.peak = trueV;
+    var v = this.peak;
     this.rawV = v;
     this.goalIdx = this.nearest(v);
     this.goal = this.mode === 'sticky' ? this.stops[this.goalIdx] : v;
     this.value = this.from = this.goal;
     this.emit(this.goal);
+    this.maybeUnpin();
+  };
+
+  /* Drop the sticky stage into normal flow and trim the wrapper's
+     remaining scroll room down to the current scroll position, so the
+     section stops holding the viewport now that its story is finished.
+     Nothing below the fold moves, and since this only ever fires once
+     the story is one-way there is nothing left to re-pin for. */
+  Track.prototype.maybeUnpin = function(){
+    if(this.unpinned || !this.stickyEl) return;
+    /* Read the authoritative displayed value/state rather than the
+       internal pacing fields — under reduced motion (or o.off) those
+       are never touched, since pacing is bypassed entirely. */
+    var last = this.stops.length - 1;
+    var atLastState = this.state() === last;
+    var converged   = Math.abs(this.get() - this.stops[last]) < 0.002;
+    if(!atLastState || !converged || this.peak < 0.999) return;
+    this.unpinned = true;
+    var el = this.el, stage = this.stickyEl;
+    stage.style.position = 'relative';
+    stage.style.top = '';
+    var rect = el.getBoundingClientRect();
+    var extra = rect.bottom - window.innerHeight;
+    if(extra > 1){
+      el.style.height = Math.max(el.offsetHeight - extra, window.innerHeight) + 'px';
+    }
   };
 
   Track.prototype.tick = function(now, dt){
-    if(!this.near) return;
-    var raw = this.rawV = rawOf(this.el);
+    if(!this.near || this.unpinned) return;
+    var trueRaw = rawOf(this.el);
+    if(trueRaw > this.peak) this.peak = trueRaw;
+    var raw = this.rawV = this.peak;
 
     /* Reduced motion, or explicitly opted out: the value is the scroll
-       position. Content still changes state, just without the pacing. */
-    if(reduced || this.o.off){ this.emit(raw); return; }
+       position. Content still changes state, just without the pacing —
+       and still one-way, per the peak clamp above. */
+    if(reduced || this.o.off){ this.emit(raw); this.maybeUnpin(); return; }
 
     var t = this.times();
     var span = 1 / this.N;                    /* one state, in 0..1 */
@@ -194,7 +252,7 @@ DAO.cine = (function(){
     if(this.mode === 'guided'){
       var gap = raw - this.value;
       var ag  = Math.abs(gap);
-      if(ag < 0.0004){ this.value = raw; this.emit(raw); return; }
+      if(ag < 0.0004){ this.value = raw; this.emit(raw); this.maybeUnpin(); return; }
       var cap = (span / (gap > 0 ? t.step : t.back)) * dt;
       /* Relax the cap once the user is far beyond what pacing can
          justify — an anchor jump, a resize, a hard flick. Without this
@@ -204,6 +262,7 @@ DAO.cine = (function(){
       var want = gap * TIMING.follow;         /* damped, so it eases in */
       this.value += Math.max(-cap, Math.min(cap, want));
       this.emit(this.value);
+      this.maybeUnpin();
       return;
     }
 
@@ -244,6 +303,7 @@ DAO.cine = (function(){
       if(k >= 1){ this.value = this.goal; this.arrived = now; }
     }
     this.emit(this.value);
+    this.maybeUnpin();
   };
 
   Track.prototype.emit = function(v){

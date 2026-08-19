@@ -215,7 +215,15 @@ img { max-width: 100%; }
 /* ── LINE-MASK REVEAL — type rises out of its own baseline.
    The padding/negative-margin pair gives descenders (p, g, y)
    room inside the mask without changing the layout. ── */
-.ln { display: block; overflow: hidden; padding-bottom: 0.14em; margin-bottom: -0.14em; }
+/* The mask is inset on BOTH ends. Cormorant's glyph box is ~1.25em but the
+   display sizes set line-height near 1.05, so the half-leading is negative and the
+   font box pokes ~0.095em out of the line box top AND bottom. Only the descender
+   end was compensated, so the first line of every masked headline could lose the
+   top of a tall ascender — measured 4px at 375 rising to 8px at 1440 (it scales
+   with font-size). Keep the two paddings equal. */
+.ln { display: block; overflow: hidden;
+  padding-top: 0.14em; margin-top: -0.14em;
+  padding-bottom: 0.14em; margin-bottom: -0.14em; }
 .ln > i {
   display: block; font-style: inherit; color: inherit;
   transform: translateY(108%);
@@ -1293,7 +1301,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
       <span class="ln"><i>to escape your life.</i></span>
     </h2>
     <div class="transform-italic soft d2">You come here to return to it differently.</div>
-    <p class="transform-copy soft d3">The Sanctuary is not designed to become another place to hide. It is designed to create the space, awareness and habits that can travel home with you.</p>
+    <p class="transform-copy soft d3">The Sanctuary is not designed to become another place to hide. It is designed to create the space, awareness and habits that can travel home with you — where sleep, movement, breath and attention go on compounding, one ordinary day at a time.</p>
   </div>
 </section>
 

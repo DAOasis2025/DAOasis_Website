@@ -41,18 +41,53 @@ anywhere in the project files, so none was written.
 No email address of any kind exists in the project. All five contact routes on
 `contact.html` are placeholders.
 
-| Needed | Appears on |
-|---|---|
-| General enquiries address | `contact.html` route 01 |
-| Investor relations address | `contact.html` route 02 · `investors.html` §23 (pre-existing gap) |
-| Partnerships address | `contact.html` route 03 |
-| Contributor / community address | `contact.html` route 05 |
-| Accessibility reports address | `accessibility.html` §06 |
-| Legal notices address | `terms.html` §24 |
-| Target response time commitment | `contact.html` · `accessibility.html` §06 |
+| Needed | Appears on | Status |
+|---|---|---|
+| ~~General enquiries address~~ | `contact.html` route 01 | **`info@daoasis.xyz`** — 19 Aug |
+| ~~Investor relations address~~ | `contact.html` route 02 · `investors.html` | **`info@daoasis.xyz`** — 19 Aug |
+| ~~Partnerships address~~ | `contact.html` route 03 | **`info@daoasis.xyz`** — 19 Aug |
+| ~~Privacy address~~ | `contact.html` route 04 | **`info@daoasis.xyz`** — 19 Aug |
+| ~~Contributor / community address~~ | `contact.html` route 05 | **`info@daoasis.xyz`** — 19 Aug |
+| ~~Careers route address~~ | `contact.html` route 06 | **`info@daoasis.xyz`** — 19 Aug |
+| ~~Accessibility reports address~~ | `accessibility.html` §06 | **`info@daoasis.xyz`** — 19 Aug |
+| ~~Privacy enquiries address~~ | `privacy.html` §12 · `cookies.html` | **`info@daoasis.xyz`** — 19 Aug |
+| ~~Legal notices address~~ | `terms.html` §24 | **`info@daoasis.xyz`** — 19 Aug. Terms now states a notice sent there is treated as received, since it is the only route for formal notice until the registered address exists |
+| **Target response time commitment** | `contact.html` · `accessibility.html` §06 | **Still `tbc` — the only unresolved marker left on `contact.html`** |
 
-`investors.html` already carries an HTML comment marking the exact insertion point for
-an investor `mailto:`. It has been left as-is.
+### One address for everything (19 August)
+
+**`info@daoasis.xyz` is the single contact address for the whole site.** Every route on
+`contact.html` — general, investors, partnerships, privacy, contributors, careers —
+resolves to it, and so does `investors.html`. This is deliberate: a small team would
+rather publish one address that is read than six that are not, so the routes exist to
+tell a visitor what to put in the subject line, not to send them somewhere different.
+
+Dedicated per-route addresses can be added later; each one is a `mailto:` swap on
+`contact.html` plus, for investors, the `INVESTOR_CONTACT` constant below.
+
+`cookies.html` and `privacy.html` are unaffected — no analytics or cookies were added.
+
+### The investor address (19 August — now set)
+
+`investors.html` has a working request flow — a `Request this resource` button on every
+on-request card, a `Request Investor Information` CTA under the grid, and a request panel
+that collects resource / name / email / company / message.
+
+**All of it reads one constant:**
+
+```js
+const INVESTOR_CONTACT = 'info@daoasis.xyz';
+```
+
+Submitting now opens the visitor's email client with the request pre-composed and
+addressed; the note under the form, the done-state and the closing line all name it.
+To change or remove the address, change that one line — set it back to `null` and the
+panel reverts to composing the request for **Copy request** with a `<span class="tbc">`
+in place of the address, with no other edit needed.
+
+**The panel never claims a request was sent** — it says the email client "should have
+opened" and offers the text to copy if it did not. There is still no form backend
+anywhere in this project, and the page must not imply otherwise.
 
 ---
 

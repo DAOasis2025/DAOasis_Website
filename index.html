@@ -81,7 +81,13 @@
   .on-dark .note-line{color:rgba(196,138,90,0.9);}
 
   /* line-mask reveal — type rises out of its own baseline */
-  .ln{display:block;overflow:hidden;padding-bottom:0.14em;margin-bottom:-0.14em;}
+  /* The mask is inset on BOTH ends. Cormorant's glyph box is ~1.25em but the
+     display sizes set line-height near 1.05, so the half-leading is negative and
+     the font box pokes ~0.095em out of the line box top AND bottom. Only the
+     descender end was compensated, so the first line of every masked headline
+     could lose the top of a tall ascender — measured 6px at 1280 and 9px at 1920
+     (it scales with font-size). Keep the two paddings equal. */
+  .ln{display:block;overflow:hidden;padding-top:0.14em;margin-top:-0.14em;padding-bottom:0.14em;margin-bottom:-0.14em;}
   .ln>i{display:block;font-style:inherit;color:inherit;
     transform:translateY(108%);transition:transform 1.15s var(--ease);}
   .rv.show .ln>i{transform:translateY(0);}
@@ -1504,7 +1510,7 @@
     <div class="track-overlay">
       <div class="track-kicker" id="tKicker">The daily experience</div>
       <div class="track-headline" id="tHeadline">Track what matters. <em>Thrive every day.</em></div>
-      <div class="track-lede" id="tLede">Your daily wellness, at a glance. Every ring, streak, and credit here is doing more than one job — see how, as you scroll.</div>
+      <div class="track-lede" id="tLede">Your daily wellness, at a glance. Every ring, streak and credit here also moves your journey forward — see how, as you scroll.</div>
     </div>
 
     <div class="dash-wrap" id="dashWrap">
@@ -1521,7 +1527,7 @@
         <div class="co-dot"></div><div class="co-line"></div>
         <div class="co-card">
           <div class="co-label">Daily Wellness Metrics</div>
-          <div class="co-text">Steps, hydration, calories and sleep, rolled into one ring — so you can feel on top of your day at a glance, without manually logging any of it.</div>
+          <div class="co-text">Steps, hydration, calories and sleep, read into one ring without you logging a thing — and every one of them moves the same journey forward.</div>
         </div>
       </div>
       <div class="callout co-dir-right co3" id="co3">
@@ -1550,11 +1556,11 @@
 <div class="section track-mobile-section on-dark grain" id="trackMobileSection">
   <div class="eco-kicker">The daily experience</div>
   <div class="eco-headline">Track what matters. <em>Thrive every day.</em></div>
-  <div class="eco-sub">Your daily wellness, at a glance. Build better habits, earn rewards, and grow toward a healthier you.</div>
+  <div class="eco-sub">Your daily wellness, at a glance. Every ring, streak and credit here also moves your journey forward.</div>
   <div class="tm-dash"><img src="images/img-10.jpg" alt="DAOasis Companion App daily dashboard" /></div>
   <div class="tm-list">
     <div class="tm-item"><div class="tm-label">Reward Credits</div><div class="tm-text">Every ritual you complete earns DAOasis Reward Credits — DRC — recognition that compounds with your consistency.</div></div>
-    <div class="tm-item"><div class="tm-label">Daily Wellness Metrics</div><div class="tm-text">Steps, hydration, calories and sleep, rolled into one ring — feel on top of your day without manually logging any of it.</div></div>
+    <div class="tm-item"><div class="tm-label">Daily Wellness Metrics</div><div class="tm-text">Steps, hydration, calories and sleep, read into one ring — and every one of them moves the same journey forward.</div></div>
     <div class="tm-item"><div class="tm-label">Progress</div><div class="tm-text">Earnings, streak, level and quests completed — effort turns into visible status, not just good intentions.</div></div>
     <div class="tm-item"><div class="tm-label">Keep It Up</div><div class="tm-text">The weekly goal keeps you honest and the streak keeps you accountable — small daily wins are the whole design.</div></div>
   </div>
@@ -1591,7 +1597,7 @@
         <div class="j-line-fill" id="jLineFill"></div>
         <div class="j-comet" id="jComet"></div>
         <div class="j-node" id="jNode0" style="left:0%;"><div class="j-dot">01</div><div class="j-title">Download the App</div><div class="j-sub">Your journey starts with a single tap.</div></div>
-        <div class="j-node" id="jNode1" style="left:16.667%;"><div class="j-dot">02</div><div class="j-title">Build Healthy Habits</div><div class="j-sub">Small daily actions, tracked and rewarded.</div></div>
+        <div class="j-node" id="jNode1" style="left:16.667%;"><div class="j-dot">02</div><div class="j-title">Build Healthy Habits</div><div class="j-sub">Steps, sleep, hydration, breathing — every one moves you forward.</div></div>
         <div class="j-node" id="jNode2" style="left:33.333%;"><div class="j-dot">03</div><div class="j-title">Join the Community</div><div class="j-sub">Connect with others building the same habits.</div></div>
         <div class="j-node" id="jNode3" style="left:50%;"><div class="j-dot">04</div><div class="j-title">Earn DRC</div><div class="j-sub">Quests, learning and referrals turn effort into Reward Credits.</div></div>
         <div class="j-node" id="jNode4" style="left:66.667%;"><div class="j-dot">05</div><div class="j-title">Convert to $DVT (Optional)</div><div class="j-sub">Go deeper — convert DRC into the on-chain layer.</div></div>
@@ -1610,7 +1616,7 @@
     <div class="jm-line-base"></div>
     <div class="jm-line-fill" id="jmLineFill"></div>
     <div class="jm-item"><div class="jm-dot"></div><div class="jm-label">01 — Download the App</div><div class="jm-text">Your journey starts with a single tap.</div></div>
-    <div class="jm-item"><div class="jm-dot"></div><div class="jm-label">02 — Build Healthy Habits</div><div class="jm-text">Small daily actions, tracked and rewarded.</div></div>
+    <div class="jm-item"><div class="jm-dot"></div><div class="jm-label">02 — Build Healthy Habits</div><div class="jm-text">Steps, sleep, hydration, breathing — every one moves you forward.</div></div>
     <div class="jm-item"><div class="jm-dot"></div><div class="jm-label">03 — Join the Community</div><div class="jm-text">Connect with others building the same habits.</div></div>
     <div class="jm-item"><div class="jm-dot"></div><div class="jm-label">04 — Earn DRC</div><div class="jm-text">Quests, learning and referrals turn effort into Reward Credits.</div></div>
     <div class="jm-item"><div class="jm-dot"></div><div class="jm-label">05 — Convert to $DVT (Optional)</div><div class="jm-text">Go deeper — convert DRC into the on-chain layer.</div></div>

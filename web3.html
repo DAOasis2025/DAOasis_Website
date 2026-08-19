@@ -187,7 +187,15 @@ img { max-width: 100%; }
 .on-green .note-line { color: rgba(247,244,238,0.58); }
 
 /* ── LINE-MASK REVEAL ── */
-.ln { display: block; overflow: hidden; padding-bottom: 0.14em; margin-bottom: -0.14em; }
+/* The mask is inset on BOTH ends. Cormorant's glyph box is ~1.25em but the
+   display sizes set line-height near 1.05, so the half-leading is negative and the
+   font box pokes ~0.095em out of the line box top AND bottom. Only the descender
+   end was compensated, so the first line of every masked headline could lose the
+   top of a tall ascender — measured 6px at 1280 and 7px at 1440 (it scales with
+   font-size). Keep the two paddings equal. */
+.ln { display: block; overflow: hidden;
+  padding-top: 0.14em; margin-top: -0.14em;
+  padding-bottom: 0.14em; margin-bottom: -0.14em; }
 .ln > i {
   display: block; font-style: inherit; color: inherit;
   transform: translateY(108%);
@@ -866,7 +874,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
       </div>
     </div>
 
-    <p class="part-foot">You show up. You learn. You move. You build. You contribute. DAOasis recognises meaningful participation and gives it somewhere to go — and all of it begins in the <a href="app.html">Companion App</a>.</p>
+    <p class="part-foot">You show up. You learn. You move. You build. You contribute. None of it sits in its own column — every one of these feeds the same journey, and together they compound. DAOasis recognises that participation and gives it somewhere to go, beginning in the <a href="app.html">Companion App</a>.</p>
 
   </div>
 </div>
