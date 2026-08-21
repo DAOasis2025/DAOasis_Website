@@ -6,6 +6,8 @@
   (function(){
     var t = localStorage.getItem('daoasis-theme') || 'dark';
     if(t === 'light') document.documentElement.setAttribute('data-theme','light');
+    /* test hook, see stage3D() — ?shot=1 turns on frame capture */
+    if(location.search.indexOf('shot=1') > -1 || localStorage.getItem('daoasis-shot') === '1') window.__SHOT = true;
   })();
 </script>
 
@@ -33,7 +35,7 @@
    --img-hero-02        Tropical environment      (hero, left plate)
    --img-hero-03        Human experience          (hero, right plate)
    --img-sanctuary-wide Wide establishing shot    (Section 2)
-   --img-day-*          The four lights of a day  (Section 6)
+   --img-day-*          One plate per time slot   (Section 6)
    --img-immersion      Full-bleed cinematic still
    --img-exp-*          The Experience rows
    --img-place          Location / map
@@ -46,10 +48,17 @@
 
   --img-sanctuary-wide: url('images/img-01.jpg');
 
-  --img-day-morning:    url('images/img-01.jpg');
-  --img-day-midday:     url('images/pexels-jayasankar24-9819827.jpg');
-  --img-day-afternoon:  url('images/img-11.jpg');
-  --img-day-evening:    url('images/img-07.jpg');
+  /* One photograph per time slot. 07:00 keeps the original morning plate;
+     the other eight are the matching named assets. */
+  --img-day-wake:       url('images/img-01.jpg');
+  --img-day-move:       url('images/Move.jpg');
+  --img-day-nourish:    url('images/Nourish.jpg');
+  --img-day-learn:      url('images/Learn.jpg');
+  --img-day-reset:      url('images/Reset.jpg');
+  --img-day-explore:    url('images/explore.jpg');
+  --img-day-connect:    url('images/connect.jpg');
+  --img-day-integrate:  url('images/Integrate.jpg');
+  --img-day-rest:       url('images/rest.jpg');
 
   --img-immersion:      url('images/img-11.jpg');
 
@@ -76,6 +85,42 @@
   --sage: #A8B7A2;
   --dark-surface: #211D1A;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* ── TYPE SCALE — ONE ladder for the whole page ──────────────────
+     Before this block the page carried nine unrelated Cormorant sizes.
+     At 1280 a section headline was 69px while the day-verb sitting
+     underneath it was 71.7px, so an item outranked the headline it
+     belonged to; item names elsewhere ran 32 / 43.5 / 46 / 56 for the
+     same editorial role. Every Cormorant size on the page now resolves
+     to one of the five steps below, and nothing else.
+
+     --t-lead and the pinned stages additionally clamp against viewport
+     HEIGHT (the `min(vw, vh)` term). A 100vh pinned stage sized only
+     off width overflows and is clipped by its own overflow:hidden on a
+     720px-tall laptop — which is exactly how the Four Foundations
+     footnote came to be sliced in half. */
+  --t-hero:    clamp(42px, 6.6vw, 96px);                 /* hero + pilot statements */
+  --t-display: clamp(33px, min(4.3vw, 8.2vh), 62px);     /* every section headline */
+  --t-accent:  clamp(27px, min(3.5vw, 6.6vh), 50px);     /* italic line continuing a headline */
+  --t-lead:    clamp(26px, min(2.9vw, 5.6vh), 42px);     /* item names, verbs, day titles */
+  --t-sub:     clamp(21px, 2.1vw, 30px);                 /* list statements */
+
+  --t-body:    16.5px;                                   /* all running copy */
+  --t-body-s:  15px;                                     /* copy inside tight columns */
+  --t-meta:    14px;                                     /* key lists, detail chips */
+  --t-note:    13.5px;                                   /* footnotes and disclaimers */
+  --t-micro:   10.5px;                                   /* eyebrows and labels */
+
+  /* ── DIVIDER GEOMETRY — see the DIVIDERS block below.
+     tail − drop − mark  ==  drop + head, so the palm mark lands
+     optically centred in the gap between two sections instead of
+     glued to the join. Change one of these and the balance moves;
+     they are a set. ── */
+  --dv-mark: 26px;
+  --dv-drop: 6vh;                     /* mark's clearance above the join */
+  --dv-tail: calc(20vh + 26px);       /* bottom padding a section owes its divider */
+  --dv-head: 8vh;                     /* top padding the section below takes back */
+  --dv-bleed-drop: 10vh;              /* drop when the next block is full-bleed */
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -147,14 +192,60 @@ img { max-width: 100%; }
    pulled up over the tail of the section above, so the join shows that
    section's own background rather than a flat band in a third colour.
    The .bg-* classes are still on the markup and are overridden below.
-   Padding is asymmetric so the mark lands ~3vh above the join instead of
-   floating half a divider's height up inside the section. Keep
-   --divider-h equal to the actual height if the padding changes. */
-.divider { --divider-h: calc(14vh + 26px);
-  padding: 11vh 8% 3vh; position: relative; z-index: 5; pointer-events: none;
+
+   The geometry is now driven entirely by the --dv-* tokens at the top of
+   the sheet, and the divider contributes exactly ZERO flow height:
+       height      = mark + drop
+       margin-top  = -(mark + drop)
+   so the mark's box always lands at [join - drop - mark, join - drop],
+   fully inside the tail of the section above.
+
+   WHAT THIS REPLACED, and why it is not a taste change: with a fixed
+   11vh/3vh padding the mark sat 3vh above the join, which put ~13vh of
+   clearance above it and (3vh + the next section's 16vh head) below —
+   68px above versus 137px below at 1280x720, growing to 114 vs 167 at
+   1080 tall. The mark read as belonging to the section it was about to
+   introduce rather than the one it was closing. Worse, the tail it needs
+   to sit in was only ever there by luck: two sections on this page set
+   padding-bottom to 0, and the mark landed 40px INSIDE their last line
+   of type. Both collisions were invisible to a layout audit — overflow
+   is visible everywhere and nothing escapes the viewport.
+
+   THREE VARIANTS, and the rule for picking one:
+     .divider            the next block is a normal padded section.
+     .divider.to-bleed   the next block is a photograph or a canvas and
+                         so supplies no head padding of its own; the drop
+                         grows to keep the mark centred.
+     .divider.solo       the block ABOVE is a pinned 100vh stage. An
+                         overlay divider there draws a rule straight
+                         across the stage's last live frame, so this one
+                         takes real flow height and paints its own band
+                         in the pinned section's ground colour — which is
+                         what the .bg-* classes are for again, here only. */
+.divider { --divider-h: calc(var(--dv-drop) + var(--dv-mark));
+  padding: 0 8% var(--dv-drop); position: relative; z-index: 5; pointer-events: none;
   margin-top: calc(-1 * var(--divider-h)); background: transparent; }
 .divider.bg-ivory, .divider.bg-stone, .divider.bg-green,
 .divider.bg-mineral, .divider.bg-surface { background: transparent; }
+
+.divider.to-bleed { --dv-drop: var(--dv-bleed-drop); }
+
+.divider.solo { margin-top: 0; padding: 13vh 8% 3vh; }
+.divider.solo.bg-green   { background: var(--sanctuary); }
+.divider.solo.bg-mineral { background: var(--mineral); }
+.divider.solo.bg-surface { background: var(--dark-surface); }
+.divider.solo.bg-ivory   { background: var(--warm-white); }
+.divider.solo.bg-stone   { background: var(--warm-stone); }
+
+/* A section that hands off to a divider owes it a tail to sit in; a
+   section that receives one takes a shorter head back, so the two sides
+   of the mark come out equal. :has() is progressive — if it is ever
+   unsupported the divider simply sits tighter, it does not collide. */
+.sect:has(+ .divider), .transform-sect:has(+ .divider), .dv-tail { padding-bottom: var(--dv-tail); }
+.divider:not(.solo) + .sect, .divider:not(.solo) + .transform-sect { padding-top: var(--dv-head); }
+/* solo already spends 13vh of band above the mark, so the section below
+   only owes the remainder — 3vh of band plus 10vh of head. */
+.divider.solo + .sect, .divider.solo + .transform-sect { padding-top: 10vh; }
 .divider-inner { display: flex; align-items: center; gap: 24px; max-width: 1200px; margin: 0 auto; }
 .divider-line { flex: 1; height: 1px; }
 .divider-mark { width: 26px; height: 26px; object-fit: contain; flex-shrink: 0; }
@@ -183,7 +274,7 @@ img { max-width: 100%; }
 .bg-surface { background: var(--dark-surface); }
 
 .eyebrow {
-  font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+  font-size: var(--t-micro); letter-spacing: 0.24em; text-transform: uppercase;
   display: flex; align-items: center; gap: 14px; margin-bottom: 26px;
 }
 .eyebrow::before { content: ''; display: block; width: 0; height: 1px; background: currentColor; opacity: 0.55; transition: width 1.1s var(--ease) 0.15s; }
@@ -195,13 +286,13 @@ img { max-width: 100%; }
 
 .display {
   font-family: 'Cormorant Garamond', serif; font-weight: 300;
-  font-size: clamp(36px,5.4vw,78px); line-height: 1.06; letter-spacing: -0.008em;
+  font-size: var(--t-display); line-height: 1.08; letter-spacing: -0.008em;
 }
 .display em { font-style: italic; color: var(--gold); }
 .on-light .display { color: var(--charcoal); }
 .on-dark .display, .on-green .display { color: var(--warm-white); }
 
-.copy { font-size: 16px; line-height: 1.9; max-width: 620px; }
+.copy { font-size: var(--t-body); line-height: 1.85; max-width: 620px; }
 .copy p + p { margin-top: 20px; }
 .on-light .copy { color: #5c554c; }
 .on-dark  .copy { color: #b0a99b; }
@@ -355,11 +446,11 @@ img { max-width: 100%; }
 }
 .hero-statement {
   font-family: 'Cormorant Garamond', serif; font-weight: 300;
-  font-size: clamp(42px,6.8vw,102px); line-height: 1.04;
+  font-size: var(--t-hero); line-height: 1.04;
   color: var(--warm-white); letter-spacing: -0.012em;
 }
 .hero-statement em { display: block; font-style: italic; color: var(--gold); }
-.hero-bridge-copy { font-size: 15.5px; line-height: 1.9; color: rgba(247,244,238,0.6); max-width: 580px; margin: 40px auto 0; }
+.hero-bridge-copy { font-size: var(--t-body); line-height: 1.9; color: rgba(247,244,238,0.6); max-width: 580px; margin: 40px auto 0; }
 .hero-bridge-note { font-size: 11px; letter-spacing: 0.28em; text-transform: uppercase; color: rgba(196,138,90,0.9); margin-top: 28px; }
 .hero-bridge .btn-row { justify-content: center; margin-top: 46px; }
 
@@ -373,8 +464,23 @@ img { max-width: 100%; }
 /* ══════════════════════════════════════════════
    SECTION 2 — THE SANCTUARY
 ══════════════════════════════════════════════ */
-.intro-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7%; align-items: start; }
-.intro-note { margin-top: 34px; padding-top: 26px; border-top: 1px solid rgba(43,38,35,0.16); }
+/* This is the first thing after a 620vh cinematic hero, so it has to
+   arrive as a spread rather than as a caption. Two equal 557px columns
+   holding one two-line headline and two short paragraphs gave the whole
+   section 218px of content inside 350px of padding — technically correct
+   and visibly squeezed. The column split is now asymmetric, the first
+   sentence is promoted to a Cormorant lede, and the head padding is
+   larger than the standard section because of what it follows. */
+#theSanctuary { padding-top: 21vh; }
+.intro-grid { display: grid; grid-template-columns: 0.92fr 1fr; gap: 9%; align-items: start; }
+.intro-statement .display { max-width: 13ch; }
+.intro-lede {
+  font-family: 'Cormorant Garamond', serif; font-weight: 300;
+  font-size: var(--t-sub); line-height: 1.34; letter-spacing: -0.004em;
+  color: var(--charcoal); max-width: 30ch;
+}
+.intro-body { margin-top: 32px; font-size: var(--t-body); line-height: 1.85; color: #5c554c; max-width: 46ch; }
+.intro-note { margin-top: 46px; padding-top: 26px; border-top: 1px solid rgba(43,38,35,0.16); }
 
 /* full-bleed photo with real scroll parallax */
 .par { position: relative; overflow: hidden; }
@@ -387,7 +493,9 @@ img { max-width: 100%; }
   color: rgba(247,244,238,0.7); text-shadow: 0 2px 24px rgba(0,0,0,0.9);
 }
 @media(max-width:900px){
-  .intro-grid { grid-template-columns: 1fr; gap: 36px; }
+  .intro-grid { grid-template-columns: 1fr; gap: 40px; }
+  .intro-statement .display, .intro-lede, .intro-body { max-width: none; }
+  #theSanctuary { padding-top: 15vh; }
   .wide-photo { height: 58vh; min-height: 320px; }
 }
 
@@ -398,7 +506,7 @@ img { max-width: 100%; }
 .philosophy .display { max-width: 15ch; margin: 0 auto; }
 .philosophy-italic {
   font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300;
-  font-size: clamp(32px,4.6vw,66px); color: var(--gold); margin-top: 14px;
+  font-size: var(--t-accent); color: var(--gold); margin-top: 14px;
 }
 .phil-lines { max-width: 800px; margin: 14vh auto 0; }
 .phil-line {
@@ -406,52 +514,89 @@ img { max-width: 100%; }
   padding: 30px 0; border-top: 1px solid rgba(43,38,35,0.14); text-align: left;
 }
 .phil-line:last-child { border-bottom: 1px solid rgba(43,38,35,0.14); }
-.phil-num { font-size: 10px; letter-spacing: 0.2em; color: var(--gold); }
-.phil-a { font-family: 'Cormorant Garamond', serif; font-size: clamp(22px,2.5vw,34px); color: var(--charcoal); font-weight: 400; }
-.phil-b { font-size: 10.5px; letter-spacing: 0.22em; text-transform: uppercase; color: #8a7f6d; }
-.philosophy-close { max-width: 620px; margin: 8vh auto 0; font-size: 16px; line-height: 1.9; color: #5c554c; }
+.phil-num { font-size: var(--t-micro); letter-spacing: 0.2em; color: var(--gold); }
+.phil-a { font-family: 'Cormorant Garamond', serif; font-size: var(--t-sub); color: var(--charcoal); font-weight: 400; }
+.phil-b { font-size: var(--t-micro); letter-spacing: 0.22em; text-transform: uppercase; color: #8a7f6d; }
+.philosophy-close { max-width: 620px; margin: 8vh auto 0; font-size: var(--t-body); line-height: 1.9; color: #5c554c; }
 @media(max-width:720px){ .phil-line { grid-template-columns: auto 1fr; gap: 16px; } .phil-b { display: none; } }
 
 /* ══════════════════════════════════════════════
    SECTION 4 — FOUR FOUNDATIONS
 ══════════════════════════════════════════════ */
+/* Everything inside this pin is sized against viewport HEIGHT as well as
+   width. A 100vh stage sized only off width needs 920px of room on a
+   1280x720 laptop and quietly clips the difference — which is how the
+   list's last row and the closing note came to be cut in half. The
+   clamp()s below hold the whole stage inside 100vh from 600px tall up. */
 .found-outer { position: relative; height: 360vh; background: var(--sanctuary); }
 .found-sticky {
   position: sticky; top: 0; height: 100vh; overflow: hidden;
-  display: flex; flex-direction: column; justify-content: center; padding: 14vh 8% 9vh;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: clamp(56px, 11vh, 130px) 8% clamp(44px, 8vh, 96px);
 }
-.found-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 32px; margin-bottom: 6vh; }
-.found-index { font-family: 'Cormorant Garamond', serif; font-size: clamp(30px,3.4vw,50px); color: rgba(247,244,238,0.9); font-weight: 300; line-height: 1; white-space: nowrap; }
+.found-head { display: flex; justify-content: space-between; align-items: flex-end;
+  gap: 32px; margin-bottom: clamp(22px, 4.4vh, 58px); }
+.found-index { font-family: 'Cormorant Garamond', serif; font-size: var(--t-sub); color: rgba(247,244,238,0.9); font-weight: 300; line-height: 1; white-space: nowrap; }
 .found-index span.dim { color: rgba(247,244,238,0.26); }
 .found-list { position: relative; border-top: 1px solid rgba(247,244,238,0.16); max-width: 1360px; width: 100%; margin: 0 auto; }
-/* the spine that draws down the left as you progress */
-.found-spine { position: absolute; left: 0; top: 0; width: 1px; background: var(--gold); height: 0; transition: height 0.9s var(--ease); }
+
+/* The spine is the section's clearest signal, so it is now driven by real
+   geometry rather than a timed height transition: the script measures the
+   active row and the spine ends at that row's own bottom edge. */
+.found-spine { position: absolute; left: 0; top: 0; width: 2px; background: var(--gold);
+  height: 0; box-shadow: 0 0 18px rgba(196,138,90,0.55);
+  transition: height 0.85s var(--ease); }
+
 .found-item {
-  display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 6%;
-  align-items: center; padding: 3.6vh 0 3.6vh 34px;
+  display: grid; grid-template-columns: 0.78fr 1.22fr; gap: 6%;
+  align-items: center;
+  padding: clamp(11px, 2.6vh, 30px) 0 clamp(11px, 2.6vh, 30px) 34px;
   border-bottom: 1px solid rgba(247,244,238,0.16);
-  position: relative; opacity: 0.3;
-  transition: opacity 0.8s var(--ease);
+  position: relative;
+  transition: background 0.7s var(--ease);
 }
-.found-item.active { opacity: 1; }
+/* A foundation that is not the live one still has to be READABLE — the
+   whole claim of the section is that the four are one system, and at
+   opacity 0.3 three quarters of that system was barely legible against
+   the green. Weight now carries the state instead of visibility. */
+.found-item .found-name,
+.found-item .found-num { opacity: 0.4; transition: opacity 0.8s var(--ease), color 0.8s var(--ease); }
+.found-item.done .found-name,
+.found-item.done .found-num { opacity: 0.66; }
+.found-item.active .found-name,
+.found-item.active .found-num { opacity: 1; }
+.found-item.done .found-dot { background: rgba(196,138,90,0.55); border-color: rgba(196,138,90,0.7); }
+/* A soft wash so the live row reads as a band, not merely brighter type.
+   The pseudo is absolutely positioned, so the grid children have to be
+   lifted above it — a negative z-index would escape .found-outer (which
+   is position:relative but creates no stacking context) and paint behind
+   the section's own green. */
+.found-item::before {
+  content: ''; position: absolute; inset: 0 -3% 0 -18px; z-index: 0;
+  background: linear-gradient(90deg, rgba(247,244,238,0.075), rgba(247,244,238,0) 72%);
+  opacity: 0; transition: opacity 0.7s var(--ease);
+}
+.found-item.active::before { opacity: 1; }
+.found-name, .found-sub { position: relative; z-index: 1; }
+
 .found-dot {
-  position: absolute; left: -4px; top: 50%; margin-top: -4px;
-  width: 9px; height: 9px; border-radius: 50%;
+  position: absolute; left: -5px; top: 50%; margin-top: -5px;
+  width: 11px; height: 11px; border-radius: 50%;
   background: var(--sanctuary); border: 1px solid rgba(247,244,238,0.35);
-  transition: background 0.6s ease, border-color 0.6s ease, box-shadow 0.6s ease;
+  transition: background 0.6s ease, border-color 0.6s ease, box-shadow 0.6s ease, transform 0.6s var(--ease);
 }
-.found-item.active .found-dot { background: var(--gold); border-color: var(--gold); box-shadow: 0 0 16px rgba(196,138,90,0.8); }
+.found-item.active .found-dot { background: var(--gold); border-color: var(--gold); box-shadow: 0 0 18px rgba(196,138,90,0.85); transform: scale(1.25); }
 .found-name {
   font-family: 'Cormorant Garamond', serif; font-weight: 300;
-  font-size: clamp(30px,4.4vw,66px); line-height: 1; color: var(--warm-white);
+  font-size: var(--t-lead); line-height: 1.02; color: var(--warm-white);
   display: flex; align-items: baseline; gap: 18px;
-  transition: letter-spacing 0.9s var(--ease);
+  transition: letter-spacing 0.9s var(--ease), opacity 0.8s var(--ease);
 }
-.found-item.active .found-name { letter-spacing: 0.008em; }
-.found-num { font-size: 10.5px; letter-spacing: 0.2em; color: rgba(196,138,90,0.95); font-family: 'Frank Ruhl Libre', serif; }
-.found-sub { display: flex; flex-wrap: wrap; gap: 10px 30px; }
+.found-item.active .found-name { letter-spacing: 0.012em; }
+.found-num { font-size: var(--t-micro); letter-spacing: 0.2em; color: rgba(196,138,90,0.95); font-family: 'Frank Ruhl Libre', serif; }
+.found-sub { display: flex; flex-wrap: wrap; gap: 8px 28px; }
 .found-sub span {
-  font-size: 13px; letter-spacing: 0.05em; color: rgba(247,244,238,0.66);
+  font-size: var(--t-meta); letter-spacing: 0.05em; color: rgba(247,244,238,0.72);
   opacity: 0; transform: translateY(10px);
   transition: opacity 0.7s ease, transform 0.7s var(--ease);
 }
@@ -459,16 +604,24 @@ img { max-width: 100%; }
 .found-item.active .found-sub span:nth-child(2) { transition-delay: 0.07s; }
 .found-item.active .found-sub span:nth-child(3) { transition-delay: 0.14s; }
 .found-item.active .found-sub span:nth-child(4) { transition-delay: 0.21s; }
-.found-foot { margin-top: 5vh; font-size: 13.5px; color: rgba(247,244,238,0.52); line-height: 1.85; max-width: 620px; }
+
+/* the closing note, now a beat of its own after the pin releases */
+.found-close { background: var(--sanctuary); position: relative; padding: 9vh 8% 0; }
+.found-foot { font-size: var(--t-note); color: rgba(247,244,238,0.62);
+  line-height: 1.85; max-width: 660px; }
+
 @media(max-width:900px){
   .found-outer { height: auto; }
-  .found-sticky { position: relative; height: auto; padding: 14vh 8%; }
+  .found-sticky { position: relative; height: auto; overflow: visible; padding: 13vh 8% 0; }
   .found-head { flex-direction: column; align-items: flex-start; gap: 16px; }
   .found-index { display: none; }
   .found-spine { height: 100% !important; }
-  .found-item { grid-template-columns: 1fr; gap: 16px; opacity: 1; padding: 4.5vh 0 4.5vh 28px; }
+  .found-item { grid-template-columns: 1fr; gap: 14px; padding: 4vh 0 4vh 26px; }
+  .found-item .found-name, .found-item .found-num { opacity: 1; }
+  .found-item::before { display: none; }
   .found-item .found-sub span { opacity: 1; transform: none; }
   .found-item .found-dot { background: var(--gold); border-color: var(--gold); }
+  .found-close { padding: 7vh 8% 0; }
 }
 
 /* ══════════════════════════════════════════════
@@ -477,10 +630,12 @@ img { max-width: 100%; }
 .seven-outer { position: relative; height: 580vh; background: var(--warm-white); }
 .seven-sticky {
   position: sticky; top: 0; height: 100vh; overflow: hidden;
-  display: flex; flex-direction: column; justify-content: center; padding: 13vh 8% 9vh;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: clamp(54px, 10.5vh, 124px) 8% clamp(44px, 8vh, 96px);
 }
-.seven-head { max-width: 1360px; margin: 0 auto 4vh; width: 100%; }
-.seven-stage { position: relative; max-width: 1360px; margin: 0 auto; width: 100%; height: 32vh; min-height: 210px; }
+.seven-head { max-width: 1360px; margin: 0 auto clamp(18px, 3.4vh, 46px); width: 100%; }
+.seven-stage { position: relative; max-width: 1360px; margin: 0 auto; width: 100%;
+  height: clamp(168px, 30vh, 300px); }
 .seven-day {
   position: absolute; inset: 0;
   display: grid; grid-template-columns: auto 1fr; gap: 6%; align-items: center;
@@ -490,21 +645,21 @@ img { max-width: 100%; }
 .seven-day.active { opacity: 1; }
 .seven-numeral {
   font-family: 'Cormorant Garamond', serif; font-weight: 300;
-  font-size: clamp(90px,14vw,210px); line-height: 0.82;
+  font-size: clamp(64px, min(11vw, 20vh), 168px); line-height: 0.82;
   color: rgba(43,38,35,0.09); letter-spacing: -0.02em;
   transform: translateY(18px); transition: transform 0.9s var(--ease);
 }
 .seven-day.active .seven-numeral { transform: translateY(0); }
 .seven-body { border-left: 1px solid rgba(43,38,35,0.16); padding-left: 6%; }
-.seven-label { font-size: 10.5px; letter-spacing: 0.26em; text-transform: uppercase; color: #8a7f6d; margin-bottom: 16px; }
+.seven-label { font-size: var(--t-micro); letter-spacing: 0.26em; text-transform: uppercase; color: #8a7f6d; margin-bottom: 16px; }
 .seven-verb {
   font-family: 'Cormorant Garamond', serif; font-weight: 400; font-style: italic;
-  font-size: clamp(38px,5.6vw,82px); color: var(--charcoal); line-height: 1; margin-bottom: 26px;
+  font-size: var(--t-lead); color: var(--charcoal); line-height: 1.02; margin-bottom: 22px;
   transform: translateY(16px); transition: transform 0.9s var(--ease) 0.06s;
 }
 .seven-day.active .seven-verb { transform: translateY(0); }
 .seven-keys { display: flex; flex-wrap: wrap; gap: 10px 28px; }
-.seven-keys span { font-size: 14px; color: #6b6459; letter-spacing: 0.04em; }
+.seven-keys span { font-size: var(--t-meta); color: #6b6459; letter-spacing: 0.04em; }
 
 /* the arc — a journey, not a progress bar */
 .seven-arc { max-width: 1360px; margin: 2vh auto 0; width: 100%; }
@@ -516,22 +671,27 @@ img { max-width: 100%; }
 .arc-dot.now { fill: var(--gold); stroke: var(--charcoal); stroke-width: 2; r: 7; }
 .arc-lab { font-size: 9.5px; letter-spacing: 0.16em; fill: rgba(43,38,35,0.32); font-family: 'Frank Ruhl Libre', serif; transition: fill 0.45s ease; }
 .arc-lab.on { fill: var(--charcoal); }
-.seven-rolling { margin: 4vh auto 0; max-width: 1360px; width: 100%; font-size: 12.5px; letter-spacing: 0.04em; color: #8a7f6d; line-height: 1.8; }
+.seven-close .sect-inner { max-width: 860px; }
+.seven-close-lead { max-width: none; font-size: var(--t-body); }
+.seven-rolling { margin-top: 5vh; padding-top: 4vh; border-top: 1px solid rgba(43,38,35,0.14);
+  max-width: none; font-size: var(--t-note); letter-spacing: 0.04em; color: #8a7f6d; line-height: 1.85; }
 @media(max-width:900px){
   .seven-outer { height: auto; }
-  .seven-sticky { position: relative; height: auto; padding: 14vh 8%; }
+  .seven-sticky { position: relative; height: auto; overflow: visible; padding: 13vh 8% 0; }
   .seven-stage { height: auto; min-height: 0; }
   .seven-day { position: relative; inset: auto; opacity: 1; grid-template-columns: auto 1fr; gap: 22px; align-items: start; padding: 4.5vh 0; border-top: 1px solid rgba(43,38,35,0.14); }
   .seven-numeral { font-size: 56px; color: rgba(43,38,35,0.18); transform: none; }
   .seven-body { border-left: none; padding-left: 0; }
-  .seven-verb { font-size: 34px; margin-bottom: 16px; transform: none; }
+  .seven-verb { font-size: var(--t-lead); margin-bottom: 16px; transform: none; }
   .seven-arc { display: none; }
 }
 
 /* ══════════════════════════════════════════════
    SECTION 6 — AN AVERAGE DAY
 ══════════════════════════════════════════════ */
-.day-outer { background: var(--dark-surface); padding: 16vh 0 0; }
+/* head and tail come from the divider tokens: this section is bracketed
+   by a divider on both sides and is not a .sect, so it opts in by hand. */
+.day-outer { background: var(--dark-surface); padding: var(--dv-head) 0 var(--dv-tail); }
 .day-head { padding: 0 8%; max-width: 1360px; margin: 0 auto 9vh; }
 .day-grid { display: grid; grid-template-columns: 1fr 1fr; max-width: 1600px; margin: 0 auto; }
 .day-media { position: sticky; top: 0; height: 100vh; overflow: hidden; background: #0b0908; }
@@ -542,32 +702,61 @@ img { max-width: 100%; }
   transition: opacity 1.4s var(--ease), transform 3s var(--ease);
 }
 .day-media-layer.on { opacity: 1; transform: scale(1); }
-.day-media-layer[data-media="morning"]   { background-image: var(--img-day-morning); }
-.day-media-layer[data-media="midday"]    { background-image: var(--img-day-midday); }
-.day-media-layer[data-media="afternoon"] { background-image: var(--img-day-afternoon); }
-.day-media-layer[data-media="evening"]   { background-image: var(--img-day-evening); }
+/* Every plate is `cover`, so nothing is ever stretched. Eight of the nine
+   sources are portrait (0.56–0.75) landing in a roughly 0.89 desktop frame
+   and a ~1.1 mobile band, so the crop is always vertical — the per-layer
+   background-position below is the focal point of each photograph, chosen
+   by eye, not a default. Change the position, never the size. */
+.day-media-layer[data-media="wake"]      { background-image: var(--img-day-wake);      background-position: center 55%; }
+.day-media-layer[data-media="move"]      { background-image: var(--img-day-move);      background-position: center 18%; }
+.day-media-layer[data-media="nourish"]   { background-image: var(--img-day-nourish);   background-position: center 48%; }
+.day-media-layer[data-media="learn"]     { background-image: var(--img-day-learn);     background-position: center 85%; }
+.day-media-layer[data-media="reset"]     { background-image: var(--img-day-reset);     background-position: center 50%; }
+.day-media-layer[data-media="explore"]   { background-image: var(--img-day-explore);   background-position: center 50%; }
+.day-media-layer[data-media="connect"]   { background-image: var(--img-day-connect);   background-position: center 45%; }
+.day-media-layer[data-media="integrate"] { background-image: var(--img-day-integrate); background-position: center 55%; }
+.day-media-layer[data-media="rest"]      { background-image: var(--img-day-rest);      background-position: center 55%; }
 .day-media-veil { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(11,9,8,0.4) 0%, rgba(11,9,8,0.04) 42%, rgba(11,9,8,0.6) 100%); }
 .day-clock {
   position: absolute; left: 8%; bottom: 8%; z-index: 3;
-  font-family: 'Cormorant Garamond', serif; font-size: clamp(48px,5.4vw,92px);
+  font-family: 'Cormorant Garamond', serif; font-size: var(--t-display);
   color: rgba(247,244,238,0.94); font-weight: 300; line-height: 1;
   text-shadow: 0 4px 44px rgba(0,0,0,0.8);
 }
-.day-list { padding: 0 8% 0 6%; }
-.day-entry { padding: 8vh 0; border-bottom: 1px solid rgba(247,244,238,0.09); opacity: 0.26; transition: opacity 0.9s var(--ease); }
+/* The tail holds the sticky plate in place while the last slot has its
+   moment — without it the photograph unpins while 21:00 is still lit. */
+.day-list { padding: 0 8% 24vh 6%; }
+/* PACING. Each slot owns close to a full viewport of scroll, so
+   the reading line crosses exactly one entry at a time and each photograph
+   holds long enough to be looked at. The entries are contiguous, so there is
+   never a gap where nothing is lit. Shrink this and the timeline flashes. */
+.day-entry {
+  min-height: 88vh; display: flex; flex-direction: column; justify-content: center;
+  padding: 8vh 0; border-bottom: 1px solid rgba(247,244,238,0.09);
+  opacity: 0.26; transition: opacity 0.9s var(--ease);
+}
 .day-entry.on { opacity: 1; }
 .day-entry:first-child { padding-top: 0; }
-.day-time { font-size: 10.5px; letter-spacing: 0.28em; color: var(--gold); margin-bottom: 16px; }
-.day-title { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: clamp(32px,3.6vw,54px); color: var(--warm-white); line-height: 1; margin-bottom: 20px; }
+.day-time { font-size: var(--t-micro); letter-spacing: 0.28em; color: var(--gold); margin-bottom: 16px; }
+.day-title { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: var(--t-lead); color: var(--warm-white); line-height: 1.02; margin-bottom: 20px; }
+.day-desc { font-size: var(--t-body); line-height: 1.85; color: rgba(247,244,238,0.62); max-width: 46ch; margin-bottom: 26px; }
 .day-detail { display: flex; flex-wrap: wrap; gap: 8px 26px; }
-.day-detail span { font-size: 14px; color: #8a8377; }
-.day-foot { padding: 9vh 8% 0; max-width: 1360px; margin: 9vh auto 0; font-size: 13px; color: #7a746a; line-height: 1.85; border-top: 1px solid rgba(247,244,238,0.08); }
+.day-detail span { font-size: var(--t-meta); color: #8a8377; }
+.day-foot { padding: 9vh 8% 0; max-width: 1360px; margin: 9vh auto 0; font-size: var(--t-note); color: #7a746a; line-height: 1.85; border-top: 1px solid rgba(247,244,238,0.08); }
 @media(max-width:900px){
   .day-grid { grid-template-columns: 1fr; }
   .day-media { height: 42vh; top: 58px; }
   .day-clock { font-size: 40px; left: 7%; bottom: 7%; }
-  .day-list { padding: 7vh 8% 0; }
-  .day-entry { padding: 5.5vh 0; opacity: 1; }
+  .day-list { padding: 7vh 8% 26vh; }
+  /* The plate only owns the top 42vh here, so a slot needs less than a full
+     viewport to have its moment — but still far more than its own height. */
+  .day-entry { min-height: 68vh; padding: 5.5vh 0; opacity: 1; }
+  .day-desc { max-width: none; margin-bottom: 22px; }
+  /* The band is landscape (~1.1) where the desktop frame is portrait (~0.88),
+     so two plates need a different focal point to keep their subject whole:
+     Move would lose the head, Integrate the standing figures. */
+  .day-media-layer[data-media="move"]      { background-position: center 36%; }
+  .day-media-layer[data-media="integrate"] { background-position: center 35%; }
   .day-media-veil { background: linear-gradient(180deg, rgba(11,9,8,0.32) 0%, rgba(11,9,8,0.08) 50%, rgba(11,9,8,0.62) 100%); }
 }
 
@@ -581,17 +770,44 @@ img { max-width: 100%; }
   position: absolute; inset: 0; pointer-events: none; z-index: 2;
   background: radial-gradient(ellipse at 50% 50%, transparent 45%, rgba(0,0,0,0.6) 100%);
 }
-.three-copy { position: absolute; left: 8%; top: 12vh; z-index: 4; max-width: 400px; pointer-events: none; }
-.three-copy .display { font-size: clamp(30px,3.6vw,54px); }
-.three-copy .copy { font-size: 14.5px; margin-top: 22px; max-width: 340px; }
+.three-copy { position: absolute; left: 8%; top: 12vh; z-index: 4; max-width: 470px; pointer-events: none; }
+/* was clamp(30px,3.6vw,54px) — the only section headline on the page that
+   was not on the shared ladder, so the 3D sections read as a different
+   document from the rest of the page. */
+.three-copy .display { font-size: var(--t-display); }
+.three-copy .copy { font-size: var(--t-body-s); margin-top: 22px; max-width: 370px; }
+
+/* The pavilion's readability veil. The scene behind it runs from a near
+   black dawn to a bright midday sky, so a single flat scrim would either
+   be invisible at 05:00 or opaque at noon: this one is directional,
+   holding only the left copy column and the bottom readout band. */
+.pav-veil {
+  position: absolute; inset: 0; z-index: 2; pointer-events: none;
+  background:
+    linear-gradient(101deg, rgba(6,11,14,0.80) 0%, rgba(6,11,14,0.62) 20%,
+                            rgba(6,11,14,0.26) 42%, rgba(6,11,14,0) 62%),
+    linear-gradient(0deg,   rgba(6,11,14,0.72) 0%, rgba(6,11,14,0.30) 18%,
+                            rgba(6,11,14,0) 36%);
+}
+@media(max-width:900px){
+  /* Vertical rather than directional, because on a handset the copy is at
+     the top and the readout at the bottom with the scene between them.
+     The stops are held down deliberately: an earlier ramp (0.80 / 0.44 /
+     0.62 / 0.86) protected the type perfectly and turned three in the
+     afternoon into dusk. Only the two type bands are veiled now. */
+  .pav-veil { background:
+    linear-gradient(180deg, rgba(6,11,14,0.74) 0%, rgba(6,11,14,0.52) 20%,
+                            rgba(6,11,14,0.06) 40%, rgba(6,11,14,0.04) 62%,
+                            rgba(6,11,14,0.48) 82%, rgba(6,11,14,0.72) 100%); }
+}
 .three-fallback { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; color: rgba(247,244,238,0.35); font-size: 14px; line-height: 1.9; text-align: center; padding: 0 12%; z-index: 5; }
 .three-outer.no-webgl .three-fallback { display: flex; }
 .three-outer.no-webgl .three-canvas { display: none; }
 
 /* sun-cycle readout */
 .sun-readout { position: absolute; right: 8%; bottom: 10vh; z-index: 4; text-align: right; pointer-events: none; }
-.sun-time { font-family: 'Cormorant Garamond', serif; font-size: clamp(52px,6vw,104px); font-weight: 300; color: var(--warm-white); line-height: 0.9; }
-.sun-phase { font-size: 10.5px; letter-spacing: 0.28em; text-transform: uppercase; color: rgba(196,138,90,0.9); margin-top: 14px; }
+.sun-time { font-family: 'Cormorant Garamond', serif; font-size: var(--t-display); font-weight: 300; color: var(--warm-white); line-height: 0.9; }
+.sun-phase { font-size: var(--t-micro); letter-spacing: 0.28em; text-transform: uppercase; color: rgba(196,138,90,0.9); margin-top: 14px; }
 .sun-scale { position: absolute; left: 8%; bottom: 10vh; z-index: 4; width: 34%; max-width: 380px; pointer-events: none; }
 .sun-scale-track { height: 1px; background: rgba(247,244,238,0.18); position: relative; }
 .sun-scale-fill { position: absolute; left: 0; top: 0; height: 1px; background: var(--gold); width: 0; }
@@ -600,12 +816,12 @@ img { max-width: 100%; }
 
 /* loop readout */
 .loop-readout { position: absolute; left: 50%; transform: translateX(-50%); bottom: 9vh; z-index: 4; text-align: center; pointer-events: none; }
-.loop-day { font-family: 'Cormorant Garamond', serif; font-size: clamp(30px,3.4vw,46px); font-weight: 300; color: var(--warm-white); line-height: 1; }
+.loop-day { font-family: 'Cormorant Garamond', serif; font-size: var(--t-lead); font-weight: 300; color: var(--warm-white); line-height: 1.02; }
 .loop-day em { font-style: italic; color: var(--gold); }
-.loop-sub { font-size: 10px; letter-spacing: 0.26em; text-transform: uppercase; color: rgba(247,244,238,0.45); margin-top: 14px; }
+.loop-sub { font-size: var(--t-micro); letter-spacing: 0.26em; text-transform: uppercase; color: rgba(247,244,238,0.45); margin-top: 14px; }
 .loop-close { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); z-index: 4; text-align: center; opacity: 0; transition: opacity 1.4s ease; pointer-events: none; }
 .loop-close.show { opacity: 1; }
-.loop-close-text { font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300; font-size: clamp(30px,4.4vw,64px); color: var(--warm-white); line-height: 1.15; }
+.loop-close-text { font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300; font-size: var(--t-accent); color: var(--warm-white); line-height: 1.15; }
 
 @media(max-width:900px){
   .three-copy { left: 7%; right: 7%; top: 11vh; max-width: none; }
@@ -627,7 +843,7 @@ img { max-width: 100%; }
 }
 .immersion-inner { position: relative; z-index: 3; padding: 0 8% 15vh; max-width: 1360px; margin: 0 auto; width: 100%; }
 .immersion .display { max-width: 12ch; }
-.immersion-copy { margin-top: 32px; max-width: 500px; font-size: 16px; line-height: 1.9; color: rgba(247,244,238,0.8); }
+.immersion-copy { margin-top: 32px; max-width: 520px; font-size: var(--t-body); line-height: 1.9; color: rgba(247,244,238,0.8); }
 .immersion-triplet { display: flex; flex-wrap: wrap; gap: 14px 44px; margin-top: 38px; }
 .immersion-triplet span { font-size: 11.5px; letter-spacing: 0.24em; text-transform: uppercase; color: rgba(247,244,238,0.62); }
 @media(max-width:900px){ .immersion { min-height: 92vh; } .immersion-inner { padding-bottom: 11vh; } }
@@ -641,10 +857,10 @@ img { max-width: 100%; }
 .exp-text { display: flex; flex-direction: column; justify-content: center; padding: 9vh 8%; }
 .exp-row.flip .exp-photo { order: 2; }
 .exp-row.flip .exp-text { order: 1; }
-.exp-idx { font-size: 10px; letter-spacing: 0.24em; color: var(--gold); margin-bottom: 20px; }
-.exp-name { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: clamp(30px,3.4vw,50px); color: var(--charcoal); line-height: 1.08; margin-bottom: 24px; }
+.exp-idx { font-size: var(--t-micro); letter-spacing: 0.24em; color: var(--gold); margin-bottom: 20px; }
+.exp-name { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: var(--t-lead); color: var(--charcoal); line-height: 1.1; margin-bottom: 24px; }
 .exp-name em { font-style: italic; color: var(--gold); }
-.exp-copy { font-size: 15.5px; line-height: 1.9; color: #5c554c; max-width: 450px; }
+.exp-copy { font-size: var(--t-body); line-height: 1.9; color: #5c554c; max-width: 450px; }
 @media(max-width:900px){
   .exp-row { grid-template-columns: 1fr; }
   .exp-row.flip .exp-photo, .exp-row.flip .exp-text { order: 0; }
@@ -663,7 +879,7 @@ img { max-width: 100%; }
 @media (prefers-reduced-motion: reduce) { .place-pin { animation: none; } }
 .place-pin-label { position: absolute; left: 20px; top: -7px; white-space: nowrap; font-size: 10px; letter-spacing: 0.26em; text-transform: uppercase; color: rgba(247,244,238,0.8); }
 .place-coords { margin-top: 34px; padding-top: 22px; border-top: 1px solid rgba(247,244,238,0.12); display: flex; gap: 46px; flex-wrap: wrap; }
-.place-coord-k { font-size: 9.5px; letter-spacing: 0.22em; text-transform: uppercase; color: #8f887d; margin-bottom: 8px; }
+.place-coord-k { font-size: var(--t-micro); letter-spacing: 0.22em; text-transform: uppercase; color: #8f887d; margin-bottom: 8px; }
 .place-coord-v { font-family: 'Cormorant Garamond', serif; font-size: 22px; color: var(--warm-white); font-weight: 300; }
 @media(max-width:900px){ .place-grid { grid-template-columns: 1fr; gap: 8vh; } .place-map { height: 48vh; min-height: 300px; order: 2; } }
 
@@ -672,8 +888,8 @@ img { max-width: 100%; }
 ══════════════════════════════════════════════ */
 .transform-sect { text-align: center; padding: 22vh 8%; }
 .transform-sect .display { max-width: 18ch; margin: 0 auto; }
-.transform-italic { font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300; font-size: clamp(30px,4.4vw,62px); color: var(--gold); margin-top: 18px; line-height: 1.12; }
-.transform-copy { max-width: 580px; margin: 8vh auto 0; font-size: 16px; line-height: 1.95; color: #5c554c; }
+.transform-italic { font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300; font-size: var(--t-accent); color: var(--gold); margin-top: 18px; line-height: 1.12; }
+.transform-copy { max-width: 580px; margin: 8vh auto 0; font-size: var(--t-body); line-height: 1.95; color: #5c554c; }
 @media(max-width:900px){ .transform-sect { padding: 15vh 8%; } }
 
 /* ══════════════════════════════════════════════
@@ -683,7 +899,7 @@ img { max-width: 100%; }
 .pilot .par-layer { background-image: var(--img-pilot); background-position: center 48%; }
 .pilot-veil { position: absolute; inset: 0; z-index: 1; background: linear-gradient(90deg, rgba(7,5,4,0.94) 0%, rgba(7,5,4,0.76) 40%, rgba(7,5,4,0.34) 76%, rgba(7,5,4,0.18) 100%); }
 .pilot-inner { position: relative; z-index: 3; padding: 15vh 8%; max-width: 1360px; margin: 0 auto; width: 100%; }
-.pilot-title { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: clamp(40px,5.8vw,90px); line-height: 1.02; color: var(--warm-white); }
+.pilot-title { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: var(--t-display); line-height: 1.08; color: var(--warm-white); }
 .pilot-title em { display: block; font-style: italic; color: var(--gold); }
 .pilot .copy { margin-top: 32px; color: rgba(247,244,238,0.72); }
 .pilot .btn-row { margin-top: 48px; }
@@ -703,7 +919,7 @@ img { max-width: 100%; }
 .ea-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 44px; }
 .ea-field { margin-bottom: 36px; }
 .ea-field.full { grid-column: 1 / -1; }
-.ea-label { display: block; font-size: 10px; letter-spacing: 0.24em; text-transform: uppercase; color: #8a7f6d; margin-bottom: 13px; }
+.ea-label { display: block; font-size: var(--t-micro); letter-spacing: 0.24em; text-transform: uppercase; color: #8a7f6d; margin-bottom: 13px; }
 .ea-input, .ea-select, .ea-textarea {
   width: 100%; background: transparent; border: none;
   border-bottom: 1px solid rgba(43,38,35,0.24);
@@ -727,18 +943,18 @@ img { max-width: 100%; }
   font-size: 12.5px; letter-spacing: 0.16em; text-transform: uppercase; transition: opacity 0.3s ease;
 }
 .ea-button:hover { opacity: 0.86; }
-.ea-disclaimer { margin-top: 22px; font-size: 12.5px; color: #8a7f6d; line-height: 1.8; max-width: 540px; }
-.ea-response { margin-top: 26px; padding: 22px 26px; border-left: 2px solid var(--gold); background: rgba(255,255,255,0.55); font-size: 14px; line-height: 1.8; color: #5c554c; display: none; }
+.ea-disclaimer { margin-top: 22px; font-size: var(--t-note); color: #8a7f6d; line-height: 1.8; max-width: 540px; }
+.ea-response { margin-top: 26px; padding: 22px 26px; border-left: 2px solid var(--gold); background: rgba(255,255,255,0.55); font-size: var(--t-meta); line-height: 1.8; color: #5c554c; display: none; }
 .ea-response.show { display: block; }
 @media(max-width:720px){ .ea-grid { grid-template-columns: 1fr; gap: 0; } }
 
 /* ══════════════════════════════════════════════
    FINAL
 ══════════════════════════════════════════════ */
-.final { text-align: center; padding: 22vh 8%; background: radial-gradient(ellipse at 50% 40%, #221c16 0%, var(--mineral) 68%); position: relative; }
+.final { text-align: center; padding: var(--dv-head) 8% 22vh; background: radial-gradient(ellipse at 50% 40%, #221c16 0%, var(--mineral) 68%); position: relative; }
 .final .display { max-width: 16ch; margin: 0 auto; }
 .final-verbs { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px 38px; margin: 7vh 0 5vh; }
-.final-verbs span { font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300; font-size: clamp(20px,2.4vw,34px); color: rgba(247,244,238,0.55); }
+.final-verbs span { font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300; font-size: var(--t-sub); color: rgba(247,244,238,0.55); }
 .final .copy { margin: 0 auto 48px; text-align: center; }
 .final .btn-row { justify-content: center; }
 @media(max-width:900px){ .final { padding: 15vh 8%; } }
@@ -866,28 +1082,26 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
 <!-- ══════════════════════════════════════════════
      SECTION 2 — THE SANCTUARY
 ══════════════════════════════════════════════ -->
-<section class="sect bg-ivory on-light" id="theSanctuary" style="padding-bottom:0;">
+<section class="sect bg-ivory on-light" id="theSanctuary">
   <div class="sect-inner">
     <div class="intro-grid">
-      <div class="rv">
+      <div class="rv intro-statement">
         <div class="eyebrow">The Sanctuary</div>
         <h2 class="display">
           <span class="ln"><i>A place to step</i></span>
           <span class="ln"><i>outside the noise.</i></span>
         </h2>
       </div>
-      <div class="rv">
-        <div class="copy soft">
-          <p>The DAOasis Sanctuary is where the digital journey becomes physical.</p>
-          <p>A place designed around recovery, learning, accountability and community, with the space and structure to help people change how they live rather than simply how they feel for a few days.</p>
-        </div>
+      <div class="rv intro-read">
+        <p class="intro-lede soft">The DAOasis Sanctuary is where the digital journey becomes physical.</p>
+        <p class="intro-body soft d1">A place designed around recovery, learning, accountability and community, with the space and structure to help people change how they live rather than simply how they feel for a few days.</p>
         <div class="intro-note note-line soft d2">The first pilot is planned for Phuket in 2027</div>
       </div>
     </div>
   </div>
 </section>
 
-<div class="divider light bg-ivory" style="padding-top:12vh;">
+<div class="divider light bg-ivory to-bleed">
   <div class="divider-inner">
     <div class="divider-line"></div>
     <img src="images/img-09.png" alt="" class="divider-mark" />
@@ -973,12 +1187,20 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
       </div>
     </div>
 
-    <p class="found-foot">None of the four work alone. Recovery makes learning possible. Learning gives accountability something to hold. Community is what carries all of it past the last day.</p>
-
   </div>
 </div>
 
-<div class="divider green bg-green">
+<!-- The closing note lives OUTSIDE the pin on purpose. Inside the 100vh
+     stage it was the element that pushed the content 200px past the stage
+     height, so overflow:hidden sliced its second line in half and the
+     divider's rule was drawn straight across what was left. It is a
+     summary of the four, not a fifth item — it earns its own beat once
+     the stage has scrolled away. -->
+<div class="found-close on-green grain">
+  <p class="found-foot">None of the four work alone. Recovery makes learning possible. Learning gives accountability something to hold. Community is what carries all of it past the last day.</p>
+</div>
+
+<div class="divider green bg-green solo">
   <div class="divider-inner">
     <div class="divider-line"></div>
     <img src="images/img-09-white.png" alt="" class="divider-mark" />
@@ -1016,14 +1238,17 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
       </svg>
     </div>
 
-    <p class="seven-rolling">A rolling programme — there is no fixed cohort start date. New members arrive every day, entering a community already in motion rather than starting from zero. You arrive. You join the rhythm. You begin where the programme currently is.</p>
-
   </div>
 </div>
 
-<section class="sect bg-ivory on-light" style="padding-top:14vh;padding-bottom:14vh;">
-  <div class="sect-inner" style="max-width:860px;">
-    <div class="rv"><p class="copy soft" style="max-width:none;font-size:17px;">Each day builds on the last. Recovery creates the space for learning. Learning deepens accountability. Accountability strengthens community. By day seven, you are not simply leaving a retreat — you are leaving with a different relationship to your own behaviour.</p></div>
+<!-- The rolling-programme note moved out of the pin for the same reason
+     the foundations' closing note did: it is three lines of running copy
+     that left the 100vh stage with 5px of slack at 1280x720 and none at
+     all below that. It belongs with the section's other closing thought. -->
+<section class="sect bg-ivory on-light seven-close">
+  <div class="sect-inner">
+    <div class="rv"><p class="copy soft seven-close-lead">Each day builds on the last. Recovery creates the space for learning. Learning deepens accountability. Accountability strengthens community. By day seven, you are not simply leaving a retreat — you are leaving with a different relationship to your own behaviour.</p></div>
+    <div class="rv"><p class="seven-rolling soft d2">A rolling programme — there is no fixed cohort start date. New members arrive every day, entering a community already in motion rather than starting from zero. You arrive. You join the rhythm. You begin where the programme currently is.</p></div>
   </div>
 </section>
 
@@ -1053,32 +1278,37 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
   <div class="day-grid">
     <div>
       <div class="day-media">
-        <div class="day-media-layer on" data-media="morning"></div>
-        <div class="day-media-layer" data-media="midday"></div>
-        <div class="day-media-layer" data-media="afternoon"></div>
-        <div class="day-media-layer" data-media="evening"></div>
+        <div class="day-media-layer on" data-media="wake"></div>
+        <div class="day-media-layer" data-media="move"></div>
+        <div class="day-media-layer" data-media="nourish"></div>
+        <div class="day-media-layer" data-media="learn"></div>
+        <div class="day-media-layer" data-media="reset"></div>
+        <div class="day-media-layer" data-media="explore"></div>
+        <div class="day-media-layer" data-media="connect"></div>
+        <div class="day-media-layer" data-media="integrate"></div>
+        <div class="day-media-layer" data-media="rest"></div>
         <div class="day-media-veil"></div>
         <div class="day-clock" id="dayClock">07:00</div>
       </div>
     </div>
 
     <div class="day-list" id="dayList">
-      <div class="day-entry on" data-time="07:00" data-media="morning"><div class="day-time">07:00</div><div class="day-title">Wake</div><div class="day-detail"><span>Slow start</span><span>Hydration</span><span>Quiet</span></div></div>
-      <div class="day-entry" data-time="08:00" data-media="morning"><div class="day-time">08:00</div><div class="day-title">Move</div><div class="day-detail"><span>Movement session</span><span>Walk</span><span>Mobility</span><span>Breath</span></div></div>
-      <div class="day-entry" data-time="09:00" data-media="morning"><div class="day-time">09:00</div><div class="day-title">Nourish</div><div class="day-detail"><span>Breakfast</span><span>Nutrition</span><span>Conversation</span></div></div>
-      <div class="day-entry" data-time="10:30" data-media="midday"><div class="day-time">10:30</div><div class="day-title">Learn</div><div class="day-detail"><span>Workshop</span><span>Practical framework</span><span>Applied learning</span></div></div>
-      <div class="day-entry" data-time="13:00" data-media="midday"><div class="day-time">13:00</div><div class="day-title">Reset</div><div class="day-detail"><span>Lunch</span><span>Rest</span><span>Space</span></div></div>
-      <div class="day-entry" data-time="15:00" data-media="afternoon"><div class="day-time">15:00</div><div class="day-title">Explore</div><div class="day-detail"><span>Reflection</span><span>Nature</span><span>Personal practice</span></div></div>
-      <div class="day-entry" data-time="17:00" data-media="afternoon"><div class="day-time">17:00</div><div class="day-title">Connect</div><div class="day-detail"><span>Community</span><span>Conversation</span><span>Shared experience</span></div></div>
-      <div class="day-entry" data-time="19:00" data-media="evening"><div class="day-time">19:00</div><div class="day-title">Integrate</div><div class="day-detail"><span>Dinner</span><span>Reflection</span><span>Plan tomorrow</span></div></div>
-      <div class="day-entry" data-time="21:00" data-media="evening"><div class="day-time">21:00</div><div class="day-title">Rest</div><div class="day-detail"><span>Digital distance</span><span>Quiet</span><span>Sleep</span></div></div>
+      <div class="day-entry on" data-time="07:00" data-media="wake"><div class="day-time">07:00</div><div class="day-title">Wake</div><p class="day-desc">The day opens without an alarm. Water, daylight and a little silence before anything is asked of you.</p><div class="day-detail"><span>Slow start</span><span>Hydration</span><span>Quiet</span></div></div>
+      <div class="day-entry" data-time="08:00" data-media="move"><div class="day-time">08:00</div><div class="day-title">Move</div><p class="day-desc">A guided session to open the body — mobility, breath and an unhurried walk. Effort, never strain.</p><div class="day-detail"><span>Movement session</span><span>Walk</span><span>Mobility</span><span>Breath</span></div></div>
+      <div class="day-entry" data-time="09:00" data-media="nourish"><div class="day-time">09:00</div><div class="day-title">Nourish</div><p class="day-desc">Breakfast at a long table. Simple food, cooked well, eaten slowly and in company.</p><div class="day-detail"><span>Breakfast</span><span>Nutrition</span><span>Conversation</span></div></div>
+      <div class="day-entry" data-time="10:30" data-media="learn"><div class="day-time">10:30</div><div class="day-title">Learn</div><p class="day-desc">One practical idea, taught in a short workshop and applied the same day rather than filed away.</p><div class="day-detail"><span>Workshop</span><span>Practical framework</span><span>Applied learning</span></div></div>
+      <div class="day-entry" data-time="13:00" data-media="reset"><div class="day-time">13:00</div><div class="day-title">Reset</div><p class="day-desc">Lunch, then genuine space. Swim, sleep or sit with a book. Recovery is part of the programme, not a gap in it.</p><div class="day-detail"><span>Lunch</span><span>Rest</span><span>Space</span></div></div>
+      <div class="day-entry" data-time="15:00" data-media="explore"><div class="day-time">15:00</div><div class="day-title">Explore</div><p class="day-desc">Time alone in the landscape. Walk, write, or simply notice. The afternoon is deliberately unscheduled.</p><div class="day-detail"><span>Reflection</span><span>Nature</span><span>Personal practice</span></div></div>
+      <div class="day-entry" data-time="17:00" data-media="connect"><div class="day-time">17:00</div><div class="day-title">Connect</div><p class="day-desc">The group comes back together. Conversation without small talk, among people doing the same work.</p><div class="day-detail"><span>Community</span><span>Conversation</span><span>Shared experience</span></div></div>
+      <div class="day-entry" data-time="19:00" data-media="integrate"><div class="day-time">19:00</div><div class="day-title">Integrate</div><p class="day-desc">Dinner, then reflection — what moved today, and the one thing worth carrying into tomorrow.</p><div class="day-detail"><span>Dinner</span><span>Reflection</span><span>Plan tomorrow</span></div></div>
+      <div class="day-entry" data-time="21:00" data-media="rest"><div class="day-time">21:00</div><div class="day-title">Rest</div><p class="day-desc">Screens go down and the light comes low. The day closes gently, so sleep can do its work.</p><div class="day-detail"><span>Digital distance</span><span>Quiet</span><span>Sleep</span></div></div>
     </div>
   </div>
 
   <p class="day-foot">An illustrative average day, shown to convey the rhythm of the programme. It is not a published timetable and the final operating schedule has not been set.</p>
 </div>
 
-<div class="divider dark bg-surface" style="padding-top:12vh;">
+<div class="divider dark bg-surface to-bleed">
   <div class="divider-inner">
     <div class="divider-line"></div>
     <img src="images/img-09-white.png" alt="" class="divider-mark" />
@@ -1088,15 +1318,20 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
 
 
 <!-- ══════════════════════════════════════════════
-     3D ONE — THE PAVILION UNDER A TRAVELLING SUN
-     Real geometry, real light, real shadows. The sun
-     crosses the sky from first light to night as you
-     scroll, and the building sits still while everything
-     around it changes.
+     3D ONE — A SALA ON STILL WATER, DAWN TO NIGHT
+     Real geometry, real light, real shadows, and a real
+     sky. The sun crosses from first light to night as you
+     scroll; the sala sits still while everything around
+     it — light, water, colour, temperature — changes.
 ══════════════════════════════════════════════ -->
-<div class="three-outer" id="pavilionOuter" style="height:420vh;">
+<div class="three-outer pavilion-outer" id="pavilionOuter" style="height:420vh;">
   <div class="three-sticky grain">
     <canvas class="three-canvas" id="pavilionCanvas"></canvas>
+    <!-- Measured, not decorative: at midday the sky in this scene is a
+         bright tropical blue and every word of overlay copy is white.
+         The veil darkens only the left column and the bottom readout
+         band, leaving the centre and upper right of the frame open. -->
+    <div class="pav-veil"></div>
     <div class="three-vignette"></div>
 
     <div class="three-copy on-dark">
@@ -1122,7 +1357,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
   </div>
 </div>
 
-<div class="divider dark bg-mineral">
+<div class="divider dark bg-mineral solo">
   <div class="divider-inner">
     <div class="divider-line"></div>
     <img src="images/img-09-white.png" alt="" class="divider-mark" />
@@ -1159,7 +1394,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
   </div>
 </section>
 
-<div class="bg-ivory">
+<div class="bg-ivory dv-tail">
   <div class="exp-row">
     <div class="exp-photo par" data-par="0.14"><div class="par-layer" style="background-image:var(--img-exp-movement);"></div></div>
     <div class="exp-text on-light rv">
@@ -1206,7 +1441,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
   </div>
 </div>
 
-<div class="divider light bg-ivory" style="padding:10vh 8%;">
+<div class="divider light bg-ivory">
   <div class="divider-inner">
     <div class="divider-line"></div>
     <img src="images/img-09.png" alt="" class="divider-mark" />
@@ -1241,7 +1476,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
   </div>
 </section>
 
-<div class="divider dark bg-mineral">
+<div class="divider dark bg-mineral to-bleed">
   <div class="divider-inner">
     <div class="divider-line"></div>
     <img src="images/img-09-white.png" alt="" class="divider-mark" />
@@ -1281,7 +1516,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
   </div>
 </div>
 
-<div class="divider dark" style="background:#05080b;">
+<div class="divider dark solo" style="background:#05080b;">
   <div class="divider-inner">
     <div class="divider-line"></div>
     <img src="images/img-09-white.png" alt="" class="divider-mark" />
@@ -1687,9 +1922,18 @@ function cine(el, o){
     .on((p) => {
       if(window.innerWidth <= 900){ items.forEach(el => el.classList.add('active')); return; }
       const i = Math.min(items.length - 1, Math.floor(p * items.length * 0.999));
-      items.forEach((el, n) => el.classList.toggle('active', n === i));
+      items.forEach((el, n) => {
+        el.classList.toggle('active', n === i);
+        /* .done keeps the rows already read visibly ahead of the ones not
+           reached yet, so the list reads as progress rather than as one
+           lit row floating in three identical dim ones. */
+        el.classList.toggle('done', n < i);
+      });
       if(num) num.textContent = String(i + 1).padStart(2, '0');
       if(spine){
+        /* measured off the live row itself — the spine ends exactly on the
+           active row's bottom edge at every viewport height, instead of
+           on a height computed from an assumed row size. */
         const last = items[i];
         spine.style.height = (last.offsetTop + last.offsetHeight) + 'px';
       }
@@ -1763,7 +2007,7 @@ function cine(el, o){
   const layers = [...document.querySelectorAll('.day-media-layer')];
   const clock = document.getElementById('dayClock');
   if(!entries.length) return;
-  let current = 'morning';
+  let current = 'wake';
   const obs = new IntersectionObserver(list => {
     list.forEach(e => {
       e.target.classList.toggle('on', e.isIntersecting);
@@ -1791,20 +2035,35 @@ function stage3D(canvasId, outerId, build){
   if(typeof THREE === 'undefined'){ outer.classList.add('no-webgl'); return null; }
 
   let renderer;
-  try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false }); }
+  try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false,
+        preserveDrawingBuffer: !!window.__SHOT }); }
   catch(err){ outer.classList.add('no-webgl'); return null; }
 
   const isMobile = window.innerWidth <= 900;
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1.6 : 2));
 
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(48, 1, 0.1, 400);
+  /* far plane is 1600, not 400. The pavilion's sky dome sits at radius 600
+     and its horizon islands at ~210: at the old far:400 the dome was
+     CLIPPED BY THE FAR PLANE, which drew a crisp circular arc across the
+     sky where the sphere ran out. It looked like a deliberate vignette and
+     was not — it was the frustum. Any scene added here must keep its
+     furthest geometry inside this number. */
+  const camera = new THREE.PerspectiveCamera(48, 1, 0.1, 1600);
 
   function resize(){
     const w = canvas.clientWidth || window.innerWidth;
     const h = canvas.clientHeight || window.innerHeight;
     if(!w || !h) return;
     camera.aspect = w / h;
+    /* A portrait viewport is a NARROWER frame, not a smaller one: three.js
+       fov is vertical, so at aspect 0.46 the horizontal field is less than
+       a third of the desktop one and both scenes crop hard — the sala ran
+       to 77% of the screen width and the loop's lanterns fell off the
+       right edge. Widening the vertical fov as the frame narrows gives
+       back most of it. Holding the horizontal field exactly constant would
+       need a 114 degree fov, which distorts, so this only goes part way. */
+    camera.fov = camera.aspect >= 1 ? 48 : 48 * (1 + (1 - camera.aspect) * 0.55);
     camera.updateProjectionMatrix();
     renderer.setSize(w, h, false);
   }
@@ -1822,6 +2081,16 @@ function stage3D(canvasId, outerId, build){
 
   const api = { scene, camera, renderer, canvas, outer, isMobile };
   const frame = build(api);
+  /* Test hook only: set window.__SHOT before the page scripts run and each
+     stage exposes a way to render one exact scroll value and read the pixels
+     back. It is how these scenes are judged by eye, because the Browser pane
+     composites only a fraction of a large viewport. Off by default, and it
+     costs nothing when off. */
+  if(window.__SHOT){
+    const shot = function(p){ frame(p, performance.now() * 0.001, 0, 0); renderer.render(scene, camera); return canvas.toDataURL('image/png'); };
+    shot.api = api;
+    (window.__STAGES = window.__STAGES || {})[canvasId] = shot;
+  }
 
   resize();
   window.addEventListener('resize', resize, { passive: true });
@@ -1844,7 +2113,377 @@ function stage3D(canvasId, outerId, build){
 }
 
 
-/* ══ 3D ONE — THE PAVILION UNDER A TRAVELLING SUN ══ */
+/* ══════════════════════════════════════════════════════════════
+   TROPIC — the shared vocabulary of the two 3D scenes
+   ──────────────────────────────────────────────────────────────
+   Both scenes are the same place: the sala, the water, the palms,
+   the limestone horizon. One tells a day, the other tells a week.
+   They are built from these pieces so they cannot drift apart —
+   before this existed the page's two WebGL sections had nothing
+   in common but a canvas element, which is precisely how a page
+   ends up looking like two different documents.
+
+   Nothing here is a particle system. That language belongs to the
+   homepage palm assembly and neither scene on this page borrows it.
+══════════════════════════════════════════════════════════════ */
+const TROPIC = (function(){
+
+  /* ── a tiling ripple normal map ──
+     Summed sines whose wave numbers are integers, so every term
+     completes a whole number of cycles across the tile and wraps.
+
+     THE DIRECTIONS MATTER. A first pass summed three waves that all
+     ran roughly the same way and the sea came out as corduroy. The
+     set below spans six angles including near-perpendicular pairs.
+     TILE COUNT MATTERS TOO: at 26 tiles the sun broke into white
+     amoebas, at 64 it aliased into a visible grid; 300 with mipmaps
+     and full anisotropy gives fine, stable sparkle at every depth. */
+  function rippleNormals(renderer, size, repeat){
+    const cv = document.createElement('canvas'); cv.width = cv.height = size;
+    const ctx = cv.getContext('2d');
+    const img = ctx.createImageData(size, size);
+    const TAU = Math.PI * 2;
+    const W = [[1, 2, 0.52], [2, -1, 0.42], [3, 3, 0.24],
+               [5, -2, 0.15], [2, 6, 0.12], [7, 4, 0.07]];
+    function H(x, y){
+      let h = 0;
+      for(let i = 0; i < W.length; i++){
+        h += Math.sin((x * W[i][0] + y * W[i][1]) / size * TAU + i * 1.7) * W[i][2];
+      }
+      return h;
+    }
+    for(let y = 0; y < size; y++){
+      for(let x = 0; x < size; x++){
+        const dx = H(x + 1, y) - H(x - 1, y);
+        const dy = H(x, y + 1) - H(x, y - 1);
+        const nx = -dx * 14, ny = -dy * 14, nz = 1;
+        const l = Math.sqrt(nx * nx + ny * ny + nz * nz);
+        const i = (y * size + x) * 4;
+        img.data[i]     = ((nx / l) * 0.5 + 0.5) * 255;
+        img.data[i + 1] = ((ny / l) * 0.5 + 0.5) * 255;
+        img.data[i + 2] = ((nz / l) * 0.5 + 0.5) * 255;
+        img.data[i + 3] = 255;
+      }
+    }
+    ctx.putImageData(img, 0, 0);
+    const t = new THREE.CanvasTexture(cv);
+    t.wrapS = t.wrapT = THREE.RepeatWrapping;
+    t.repeat.set(repeat, repeat);
+    t.minFilter = THREE.LinearMipmapLinearFilter;
+    t.magFilter = THREE.LinearFilter;
+    t.generateMipmaps = true;
+    t.anisotropy = renderer.capabilities.getMaxAnisotropy();
+    return t;
+  }
+
+  /* ── still water ──
+     Returns { mesh, material, map }. The caller drives colour and
+     specular per frame; the map's offset is the only animation. */
+  function water(renderer, extent, repeat){
+    const map = rippleNormals(renderer, 256, repeat);
+    const material = new THREE.MeshPhongMaterial({
+      color: 0x0f2b31, shininess: 140, specular: 0x9db4bd,
+      normalMap: map, normalScale: new THREE.Vector2(0.10, 0.10),
+      transparent: true, opacity: 0.92, depthWrite: false
+    });
+    const mesh = new THREE.Mesh(new THREE.PlaneGeometry(extent, extent), material);
+    mesh.rotation.x = -Math.PI / 2;
+    mesh.renderOrder = 4;
+    return { mesh: mesh, material: material, map: map };
+  }
+
+  /* ── the sky ──
+     A back-side sphere with a two-stop vertical gradient, a horizon
+     band and a sun disc. Every colour comes from the caller's palette,
+     so the same dome carries a midday blue and a blue-hour violet.
+
+     RADIUS vs THE CAMERA'S FAR PLANE: this dome is large, and if the
+     camera's far plane is shorter than its radius the sphere is
+     clipped and draws a crisp circular arc across the sky. It looks
+     like a deliberate vignette and is not. stage3D()'s camera is set
+     to 1600 for exactly this reason. */
+  function skyDome(radius){
+    const uni = {
+      cZen:   { value: new THREE.Color(0x1d3350) },
+      cHor:   { value: new THREE.Color(0xd98a63) },
+      cSun:   { value: new THREE.Color(0xff9552) },
+      sunDir: { value: new THREE.Vector3(1, 0.2, 0) },
+      glow:   { value: 0.6 }
+    };
+    const mesh = new THREE.Mesh(
+      new THREE.SphereGeometry(radius, 40, 24),
+      new THREE.ShaderMaterial({
+        uniforms: uni, side: THREE.BackSide, depthWrite: false, fog: false,
+        vertexShader: [
+          'varying vec3 vDir;',
+          'void main(){',
+          '  vDir = normalize(position);',
+          '  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);',
+          '}'
+        ].join('\n'),
+        fragmentShader: [
+          'uniform vec3 cZen;',
+          'uniform vec3 cHor;',
+          'uniform vec3 cSun;',
+          'uniform vec3 sunDir;',
+          'uniform float glow;',
+          'varying vec3 vDir;',
+          'void main(){',
+          '  vec3 d = normalize(vDir);',
+          '  float t = smoothstep(-0.04, 0.62, d.y);',
+          '  vec3 col = mix(cHor, cZen, t);',
+          '  float band = pow(1.0 - clamp(abs(d.y) * 3.4, 0.0, 1.0), 2.0);',
+          '  col = mix(col, cHor, band * 0.55);',
+          '  float s = max(0.0, dot(d, normalize(sunDir)));',
+          /* the halo was pow(s, 8.0) once: at midday it spread a soft
+             disc over most of the dome and read as a hard-edged bubble
+             rather than as light */
+          '  col += cSun * pow(s, 40.0)  * glow * 0.30;',
+          '  col += cSun * pow(s, 600.0) * glow * 1.9;',
+          '  gl_FragColor = vec4(col, 1.0);',
+          '}'
+        ].join('\n')
+      })
+    );
+    mesh.renderOrder = -10;
+    return { mesh: mesh, uni: uni };
+  }
+
+  /* ── a palm frond ──
+     A V-folded strip: three vertices per segment with the spine lifted
+     above the two edges, tapering and drooping along its length. A flat
+     ribbon reads as a feather. */
+  function frondGeometry(len, wide, droop, segs){
+    const pos = [], idx = [];
+    for(let i = 0; i <= segs; i++){
+      const t = i / segs;
+      const x = len * t;
+      const y = -droop * t * t;
+      const w = wide * Math.sin(Math.PI * Math.min(1, 0.18 + t * 0.9)) * (1 - t * 0.5);
+      pos.push(x, y + w * 0.20, -w,
+               x, y + w * 0.46,  0,
+               x, y + w * 0.20,  w);
+    }
+    for(let i = 0; i < segs; i++){
+      const a = i * 3, b = a + 3;
+      idx.push(a, b, a + 1,          a + 1, b, b + 1);
+      idx.push(a + 1, b + 1, a + 2,  a + 2, b + 1, b + 2);
+    }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+    g.setIndex(idx);
+    g.computeVertexNormals();
+    return g;
+  }
+
+  /* ── a palm ── trunk swept along a bezier, nine fronds in a crown.
+     The crown is exposed on userData so the caller can breathe it. */
+  function palm(frond, mTrunk, mFrond, h, lean, spin, shadows){
+    const g = new THREE.Group();
+    const tip = new THREE.Vector3(Math.sin(lean) * h * 0.30, h, Math.cos(lean) * h * 0.12);
+    const curve = new THREE.QuadraticBezierCurve3(
+      new THREE.Vector3(0, 0, 0),
+      new THREE.Vector3(tip.x * 0.22, h * 0.56, tip.z * 0.22),
+      tip
+    );
+    const trunk = new THREE.Mesh(new THREE.TubeGeometry(curve, 14, 0.17, 7, false), mTrunk);
+    trunk.castShadow = shadows;
+    g.add(trunk);
+    const crown = new THREE.Group();
+    crown.position.copy(tip);
+    for(let i = 0; i < 9; i++){
+      const f = new THREE.Mesh(frond, mFrond);
+      f.rotation.y = (i / 9) * Math.PI * 2 + spin;
+      f.rotation.z = -0.30 - (i % 3) * 0.16;
+      f.scale.setScalar(0.86 + (i % 4) * 0.10);
+      f.castShadow = shadows;
+      crown.add(f);
+    }
+    g.add(crown);
+    g.userData.crown = crown;
+    return g;
+  }
+
+  /* ── an island ──
+     A BEACH, not a plinth. The vertical wall of a straight cylinder
+     catches the sun broadside and reads as a slice of cake sitting on
+     the sea, so the top ring is inset and the edge shelves. */
+  function islandGeometry(rx, rz, h, wob){
+    const g = new THREE.CylinderGeometry(1, 1, 1, 40, 1);
+    const p = g.attributes.position;
+    for(let i = 0; i < p.count; i++){
+      const x = p.getX(i), y = p.getY(i), z = p.getZ(i);
+      const a = Math.atan2(z, x);
+      const n = 1 + wob * (Math.sin(a * 3.1) * 0.6 + Math.sin(a * 5.7 + 1.2) * 0.4);
+      const taper = y > 0 ? 0.80 : 1.0;
+      p.setXYZ(i, x * rx * n * taper, y * h, z * rz * n * taper);
+    }
+    p.needsUpdate = true;
+    g.computeVertexNormals();
+    return g;
+  }
+
+  /* ── a limestone stack ── the Andaman coast in silhouette */
+  function karstGeometry(w, h, d){
+    const g = new THREE.IcosahedronGeometry(1, 1);
+    const p = g.attributes.position;
+    for(let i = 0; i < p.count; i++){
+      const x = p.getX(i), y = p.getY(i), z = p.getZ(i);
+      const n = 1 + 0.24 * Math.sin(x * 3.1 + y * 2.3) + 0.15 * Math.cos(z * 4.2 - y * 1.7);
+      p.setXYZ(i, x * n * w, Math.max(-0.05, y) * n * h, z * n * d);
+    }
+    p.needsUpdate = true;
+    g.computeVertexNormals();
+    return g;
+  }
+
+  /* ── the timber palette, one set per scene ──
+     Materials are built per scene rather than shared, because each
+     scene owns its own WebGLRenderer. */
+  function materials(){
+    return {
+      teak:   new THREE.MeshLambertMaterial({ color: 0x6b4a30 }),
+      teakLt: new THREE.MeshLambertMaterial({ color: 0x8a6440 }),
+      thatch: new THREE.MeshLambertMaterial({ color: 0x3e2f21 }),
+      deck:   new THREE.MeshLambertMaterial({ color: 0x7a5b3d }),
+      post:   new THREE.MeshLambertMaterial({ color: 0x5a4130 }),
+      trunk:  new THREE.MeshLambertMaterial({ color: 0x4c3f30 }),
+      frond:  new THREE.MeshLambertMaterial({ color: 0x2a4231, side: THREE.DoubleSide }),
+      sand:   new THREE.MeshLambertMaterial({ color: 0x4f4839 }),
+      /* the karsts and islets are near-black on purpose: they are
+         backlit most of the day and the haze lifts them toward the sky
+         by itself. At a mid grey they read as pale chalk at dawn. */
+      karst:  new THREE.MeshLambertMaterial({ color: 0x16262d }),
+      bank:   new THREE.MeshLambertMaterial({ color: 0x1a2620 })
+    };
+  }
+
+  /* ── the sala ──
+     Raised deck on posts standing in the water, six columns, and a
+     two-tier pitched roof.
+
+     PITCH IS THE POINT. A first pass used 2.3 of rise on 9.6 of eave —
+     about 13 degrees — and the two tiers read as a pair of patio
+     umbrellas. These are around 40 degrees, and the eave is pulled in
+     so the roof no longer overhangs the deck by half its width again. */
+  function sala(M, shadows){
+    const g = new THREE.Group();
+    function box(w, h, d, x, y, z, mat, cast){
+      const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
+      m.position.set(x, y, z);
+      m.castShadow = !!cast && shadows;
+      m.receiveShadow = shadows;
+      g.add(m); return m;
+    }
+    const postGeo = new THREE.CylinderGeometry(0.17, 0.20, 3.4, 9);
+    for(let ix = -1; ix <= 1; ix++){
+      for(let iz = -1; iz <= 1; iz++){
+        if(ix === 0 && iz === 0) continue;
+        const p = new THREE.Mesh(postGeo, M.post);
+        p.position.set(ix * 5.6, 0.55, iz * 3.9);
+        p.castShadow = shadows;
+        g.add(p);
+      }
+    }
+    box(13.4, 0.34, 9.6, 0, 2.32, 0, M.deck, true);
+    box(14.2, 0.16, 10.4, 0, 2.12, 0, M.teak, true);
+    box(13.4, 0.10, 0.14, 0, 3.02, -4.7, M.teakLt);
+    box(13.4, 0.10, 0.14, 0, 3.02,  4.7, M.teakLt);
+    box(0.14, 0.10, 9.60, -6.6, 3.02, 0, M.teakLt);
+    box(0.14, 0.10, 9.60,  6.6, 3.02, 0, M.teakLt);
+    const colGeo = new THREE.CylinderGeometry(0.15, 0.18, 3.5, 9);
+    [[-5.7, -4.2], [-5.7, 4.2], [0, -4.2], [0, 4.2], [5.7, -4.2], [5.7, 4.2]].forEach(function(xz){
+      const c = new THREE.Mesh(colGeo, M.teakLt);
+      c.position.set(xz[0], 4.24, xz[1]);
+      c.castShadow = shadows;
+      g.add(c);
+    });
+    const lower = new THREE.Mesh(new THREE.ConeGeometry(8.4, 4.5, 4), M.thatch);
+    lower.rotation.y = Math.PI / 4; lower.position.set(0, 7.30, 0);
+    lower.castShadow = shadows; g.add(lower);
+    const bandR = new THREE.Mesh(new THREE.CylinderGeometry(3.9, 4.1, 0.45, 4), M.teak);
+    bandR.rotation.y = Math.PI / 4; bandR.position.set(0, 9.40, 0); g.add(bandR);
+    const upper = new THREE.Mesh(new THREE.ConeGeometry(4.6, 3.6, 4), M.thatch);
+    upper.rotation.y = Math.PI / 4; upper.position.set(0, 11.10, 0);
+    upper.castShadow = shadows; g.add(upper);
+    const fin = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.10, 1.8, 6), M.teakLt);
+    fin.position.set(0, 13.5, 0); g.add(fin);
+    return g;
+  }
+
+  /* ── a reflection in still water ──
+     Mirrors a group through y = 0 and dims it.
+
+     ITS NORMALS HAVE TO BE FIXED BY HAND. scale.y = -1 mirrors the
+     geometry, and three.js derives the normal matrix from the model-view
+     matrix, so a roof normal of (0,1,0) comes out as (0,-1,0) and the sun
+     lands on what used to be the undersides. At golden hour that made the
+     real roof a dark silhouette while its reflection was brighter than the
+     sky: exactly backwards. Pre-negating the y component of the geometry's
+     own normals cancels it, because the mirror is exactly diag(1,-1,1).
+     The flip also reverses triangle winding, hence DoubleSide.
+
+     (The obvious-looking alternative — giving the reflection its own layer
+     and its own mirrored sun — does NOT work in r128: a light's layers are
+     tested against the CAMERA, not against each mesh, so the second sun
+     simply lights the whole scene twice.) */
+  function reflect(group, opacity){
+    group.scale.y = -1;
+    group.position.y = 0.02;
+    group.renderOrder = 2;
+    group.traverse(function(o){
+      if(!o.isMesh) return;
+      o.castShadow = false; o.receiveShadow = false;
+      o.geometry = o.geometry.clone();
+      const n = o.geometry.attributes.normal;
+      if(n){ for(let i = 0; i < n.count; i++) n.setY(i, -n.getY(i)); n.needsUpdate = true; }
+      o.material = o.material.clone();
+      o.material.side = THREE.DoubleSide;
+      o.material.transparent = true;
+      o.material.opacity = opacity;
+      o.material.depthWrite = false;
+    });
+    return group;
+  }
+
+  /* ── colour-key sampling shared by both palettes ── */
+  function sampler(KEYS, fields){
+    const cur = {}, tA = new THREE.Color(), tB = new THREE.Color();
+    fields.colors.forEach(function(k){ cur[k] = new THREE.Color(); });
+    return function(p){
+      let i = 0;
+      while(i < KEYS.length - 2 && p > KEYS[i + 1].t) i++;
+      const a = KEYS[i], b = KEYS[i + 1];
+      const k = clamp01((p - a.t) / (b.t - a.t));
+      fields.colors.forEach(function(f){ cur[f].copy(tA.setHex(a[f])).lerp(tB.setHex(b[f]), k); });
+      fields.nums.forEach(function(f){ cur[f] = lerp(a[f], b[f], k); });
+      (fields.texts || []).forEach(function(f){ cur[f] = k < 0.5 ? a[f] : b[f]; });
+      return cur;
+    };
+  }
+
+  return { rippleNormals: rippleNormals, water: water, skyDome: skyDome,
+           frondGeometry: frondGeometry, palm: palm,
+           islandGeometry: islandGeometry, karstGeometry: karstGeometry,
+           materials: materials, sala: sala, reflect: reflect, sampler: sampler };
+})();
+
+/* ══ 3D ONE — THE SALA ON STILL WATER, DAWN TO NIGHT ══
+   Rebuilt. What stood here before was a grey massing model: a plinth, a
+   deck, two blank walls, a flat slab roof and six cylinders sitting on a
+   featureless dark ground with no sky at all. It read as an architectural
+   study of a building that could have been anywhere — which is the one
+   note this section must not hit, because "One Place, All Day" is the
+   page's claim about a tropical place.
+
+   The sun IS the section. It travels a real arc, and everything else —
+   the sky's two gradient stops, the hemisphere bounce, the haze, the
+   water's colour, its specular and its glitter path, the shadows and
+   finally the lanterns — is driven from its position and the KEYS table.
+
+   The left third and the bottom band of the frame are veiled in CSS
+   (.pav-veil), because at midday a tropical sky is bright and this
+   section's copy is white. */
 stage3D('pavilionCanvas', 'pavilionOuter', function(api){
   const S = api.scene, C = api.camera;
   const sunTimeEl = document.getElementById('sunTime');
@@ -1856,139 +2495,162 @@ stage3D('pavilionCanvas', 'pavilionOuter', function(api){
   api.renderer.shadowMap.enabled = shadows;
   if(shadows) api.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-  S.fog = new THREE.Fog(0x0d1418, 34, 110);
+  /* Haze is doing real work here: it separates the sala from the shore
+     from the karsts, and it is what keeps a low-poly scene from reading
+     as a low-poly scene. Near and far are tight enough that the horizon
+     islands sit at roughly 80% hazed. */
+  S.fog = new THREE.Fog(0x9fb6c4, 55, 330);
 
-  /* ── materials ── */
-  const mStone  = new THREE.MeshLambertMaterial({ color: 0x8d8477 });
-  const mDeck   = new THREE.MeshLambertMaterial({ color: 0x6f6558 });
-  const mRoof   = new THREE.MeshLambertMaterial({ color: 0x4b453d });
-  const mCol    = new THREE.MeshLambertMaterial({ color: 0x9b9184 });
-  const mGround = new THREE.MeshLambertMaterial({ color: 0x2c2a24 });
-  const mWater  = new THREE.MeshPhongMaterial({ color: 0x0d1a1f, shininess: 120, specular: 0x9fd8e6 });
+  const M = TROPIC.materials();
 
-  function box(w,h,d,x,y,z,mat,cast,receive){
-    const m = new THREE.Mesh(new THREE.BoxGeometry(w,h,d), mat);
-    m.position.set(x,y,z);
-    m.castShadow = !!cast && shadows;
-    m.receiveShadow = !!receive && shadows;
-    S.add(m); return m;
-  }
-
-  /* ground */
-  const ground = new THREE.Mesh(new THREE.PlaneGeometry(220, 220), mGround);
-  ground.rotation.x = -Math.PI / 2;
-  ground.position.y = -0.02;
-  ground.receiveShadow = shadows;
-  S.add(ground);
-
-  /* the pavilion */
-  box(19, 0.55, 12.5, 0, 0.28, 0, mStone, false, true);          // plinth
-  box(16.4, 0.30, 10.2, 0, 0.70, 0, mDeck, false, true);          // deck
-  box(15.2, 4.2, 0.45, 0, 2.9, -5.4, mStone, true, true);         // back wall
-  box(0.45, 4.2, 6.0, -7.6, 2.9, -2.4, mStone, true, true);       // side wall
-  box(17.6, 0.42, 11.4, 0, 7.0, 0, mRoof, true, false);           // roof
-  box(17.6, 0.10, 11.4, 0, 6.72, 0, mRoof, false, false);         // roof underside shadow line
-
-  const colGeo = new THREE.CylinderGeometry(0.20, 0.24, 6.1, 14);
-  [[-7.3,-4.4],[-7.3,4.4],[0,4.4],[7.3,-4.4],[7.3,4.4],[0,-4.4]].forEach(([x,z]) => {
-    const c = new THREE.Mesh(colGeo, mCol);
-    c.position.set(x, 3.75, z);
-    c.castShadow = shadows;
-    S.add(c);
+  /* ─── palette across the day ───
+     Seven keys. The sky carries a zenith and a horizon colour separately,
+     which is what gives dawn and dusk a band rather than a flat wash. */
+  const KEYS = [
+    { t:0.00, sun:0xff9552, int:0.55, zen:0x1d3350, hor:0xd98a63, hemiS:0x4a6982, hemiG:0x1d2a2c, hemi:0.55, glow:0.60, fog:0x2c3f52, time:'05:00', phase:'First light' },
+    { t:0.17, sun:0xffcf94, int:1.05, zen:0x3f7fb8, hor:0xf0c79a, hemiS:0x8fb6d4, hemiG:0x2c3c38, hemi:0.70, glow:0.62, fog:0x86a8c0, time:'08:00', phase:'Morning' },
+    { t:0.40, sun:0xfff6e4, int:1.55, zen:0x2f79c4, hor:0xbcd8ea, hemiS:0xa8cbe4, hemiG:0x3a4a40, hemi:0.90, glow:0.40, fog:0xa9c6da, time:'12:00', phase:'Midday' },
+    { t:0.60, sun:0xffdca6, int:1.30, zen:0x3d7fb6, hor:0xd7dbd0, hemiS:0x9dbdd2, hemiG:0x3d4738, hemi:0.78, glow:0.48, fog:0xa2bccb, time:'15:00', phase:'Afternoon' },
+    { t:0.79, sun:0xff8b41, int:0.92, zen:0x2f4d75, hor:0xf2955a, hemiS:0x7d7f96, hemiG:0x362a20, hemi:0.56, glow:0.95, fog:0x8a6a63, time:'18:00', phase:'Golden hour' },
+    { t:0.91, sun:0x9a6fae, int:0.34, zen:0x1b2a4c, hor:0x7a5a86, hemiS:0x44506f, hemiG:0x221c1c, hemi:0.42, glow:0.62, fog:0x40395a, time:'20:00', phase:'Dusk' },
+    { t:1.00, sun:0x4a5f92, int:0.16, zen:0x080e1c, hor:0x1d2942, hemiS:0x212c46, hemiG:0x14120f, hemi:0.30, glow:0.28, fog:0x121a2a, time:'21:00', phase:'Night' }
+  ];
+  const sample = TROPIC.sampler(KEYS, {
+    colors: ['sun', 'zen', 'hor', 'hemiS', 'hemiG', 'fog'],
+    nums:   ['int', 'hemi', 'glow'],
+    texts:  ['time', 'phase']
   });
 
-  /* the pool — catches the sun as a moving specular streak */
-  const pool = new THREE.Mesh(new THREE.PlaneGeometry(22, 9), mWater);
-  pool.rotation.x = -Math.PI / 2;
-  pool.position.set(2, 0.02, 11.5);
-  S.add(pool);
+  const sky = TROPIC.skyDome(600);
+  S.add(sky.mesh);
 
-  /* a low line of planting to break the silhouette */
-  const mPlant = new THREE.MeshLambertMaterial({ color: 0x2f3d2c });
-  for(let i = 0; i < 14; i++){
-    const h = 1.1 + Math.random() * 1.9;
-    const p = new THREE.Mesh(new THREE.ConeGeometry(0.5 + Math.random() * 0.4, h, 6), mPlant);
-    const side = i % 2 === 0 ? -1 : 1;
-    p.position.set(side * (10.5 + Math.random() * 9), h / 2, -9 + Math.random() * 18);
-    p.castShadow = shadows;
-    S.add(p);
-  }
+  const W = TROPIC.water(api.renderer, 1200, 300);
+  S.add(W.mesh);
 
-  /* ── light ── */
+  const sala = TROPIC.sala(M, shadows);
+  sala.renderOrder = 6;
+  S.add(sala);
+  S.add(TROPIC.reflect(TROPIC.sala(M, false), 0.34));
+
+  /* ─── the shore ───
+     Every palm stands on LAND. An earlier pass had six of them rooted in
+     open water in front of a full-width sandbar — palms growing out of
+     the sea, and a bar that met the sky in one hard line right across the
+     frame and read as a hedge. The near spit also frames the left of the
+     shot and gives the water a near edge to read depth against. */
+  const FROND = TROPIC.frondGeometry(4.6, 0.62, 3.0, 9);
+  const palms = [];
+
+  const spitNear = new THREE.Mesh(TROPIC.islandGeometry(21, 12, 1.0, 0.22), M.sand);
+  spitNear.position.set(-40, -0.10, -4);
+  spitNear.receiveShadow = shadows;
+  S.add(spitNear);
+
+  [[6, -118, 15, 8], [58, -132, 19, 9], [-72, -150, 13, 7]].forEach(function(d){
+    const m = new THREE.Mesh(TROPIC.islandGeometry(d[2], d[3], 1.2, 0.24), M.bank);
+    m.position.set(d[0], 0.02, d[1]);
+    S.add(m);
+  });
+
+  /* x, z, height, lean, ground height */
+  [[-44, -2, 9.6, 0.34, 0.34], [-32, -10, 8.0, -0.24, 0.34], [-50, 6, 7.2, 0.16, 0.34],
+   [4, -118, 9.4, -0.30, 0.55], [62, -132, 8.2, 0.26, 0.55], [-70, -150, 7.6, -0.12, 0.55]]
+  .forEach(function(d, i){
+    const p = TROPIC.palm(FROND, M.trunk, M.frond, d[2], d[3], i * 1.9, shadows);
+    p.position.set(d[0], d[4], d[1]);
+    palms.push(p); S.add(p);
+  });
+
+  /* Grouped rather than evenly spaced, and far enough back that the haze
+     does most of the work. Evenly spaced stacks of similar size read as
+     scenery props; a cluster with gaps reads as a coastline. */
+  [[-150, -196, 20, 34, 17], [-108, -212, 13, 22, 12], [-186, -236, 15, 26, 13],
+   [96, -204, 22, 38, 18], [138, -230, 14, 24, 12], [174, -258, 11, 18, 10],
+   [10, -290, 12, 20, 10]]
+  .forEach(function(d){
+    const k = new THREE.Mesh(TROPIC.karstGeometry(d[2], d[3], d[4]), M.karst);
+    k.position.set(d[0], 0, d[1]);
+    S.add(k);
+  });
+
+  /* ─── light ─── */
   const sun = new THREE.DirectionalLight(0xffffff, 1.0);
   sun.castShadow = shadows;
   if(shadows){
     sun.shadow.mapSize.set(1024, 1024);
     const c = sun.shadow.camera;
-    c.left = -26; c.right = 26; c.top = 26; c.bottom = -26; c.near = 1; c.far = 90;
-    /* LightShadow.updateMatrices() never rebuilds the projection matrix,
-       so widening the frustum only takes effect once we do it ourselves. */
+    c.left = -30; c.right = 30; c.top = 30; c.bottom = -30; c.near = 1; c.far = 140;
+    /* r128's LightShadow.updateMatrices() never rebuilds the projection
+       matrix, so widening the frustum only takes effect once we do this
+       ourselves. Without it the frustum stays at the ±5 default and the
+       shadows silently vanish. Do not remove. */
     c.updateProjectionMatrix();
-    sun.shadow.bias = -0.0012;
+    sun.shadow.bias = -0.0013;
   }
   S.add(sun);
-  const hemi = new THREE.HemisphereLight(0x8ea9bd, 0x2a241d, 0.45);
+  const hemi = new THREE.HemisphereLight(0x8fb6d4, 0x2c3c38, 0.6);
   S.add(hemi);
-  const fillLight = new THREE.AmbientLight(0xffffff, 0.16);
-  S.add(fillLight);
+  S.add(new THREE.AmbientLight(0xffffff, 0.14));
 
-  /* As the sun goes down the building lights from within and becomes a
-     lantern. Without this the scene simply ends on an empty black frame. */
-  const interior = new THREE.PointLight(0xffb46e, 0, 30, 1.7);
-  interior.position.set(0, 3.2, 0);
-  S.add(interior);
-  const interiorAft = new THREE.PointLight(0xffa960, 0, 24, 1.8);
-  interiorAft.position.set(-4.6, 2.6, 2.4);
-  S.add(interiorAft);
+  /* The sala lights from within as the sun goes down and becomes the one
+     warm thing in the frame — without it the section ends on black. */
+  const lamp = new THREE.PointLight(0xffb672, 0, 34, 1.7);
+  lamp.position.set(0, 3.6, 0);
+  S.add(lamp);
+  const lampAft = new THREE.PointLight(0xffa25a, 0, 26, 1.8);
+  lampAft.position.set(-3.8, 3.0, 2.6);
+  S.add(lampAft);
 
-  /* palette across the day: dawn → morning → noon → gold → dusk → night */
-  const KEYS = [
-    { t:0.00, sun:0xff9d63, int:0.50, sky:0x2c3b48, gnd:0x322a22, hemi:0.50, bg:0x16232b, time:'05:00', phase:'First light' },
-    { t:0.18, sun:0xffc48c, int:0.95, sky:0x87a8c4, gnd:0x3a3126, hemi:0.55, bg:0x2a3946, time:'08:00', phase:'Morning' },
-    { t:0.42, sun:0xfff6e6, int:1.45, sky:0xa8c6dc, gnd:0x453c2e, hemi:0.68, bg:0x486173, time:'12:00', phase:'Midday' },
-    { t:0.62, sun:0xffcf94, int:1.15, sky:0x9db4c4, gnd:0x453a2c, hemi:0.58, bg:0x50606b, time:'15:00', phase:'Afternoon' },
-    { t:0.80, sun:0xff8f4d, int:0.80, sky:0x6d5f62, gnd:0x38291f, hemi:0.42, bg:0x3d2f31, time:'18:00', phase:'Golden hour' },
-    { t:0.92, sun:0x8a6fa8, int:0.30, sky:0x353a52, gnd:0x221d1a, hemi:0.36, bg:0x1e2130, time:'20:00', phase:'Dusk' },
-    { t:1.00, sun:0x4a5b86, int:0.16, sky:0x232b40, gnd:0x191614, hemi:0.30, bg:0x11151f, time:'21:00', phase:'Night' }
-  ];
-
-  const cSun = new THREE.Color(), cSky = new THREE.Color(), cGnd = new THREE.Color(), cBg = new THREE.Color();
-  const tmpA = new THREE.Color(), tmpB = new THREE.Color();
-
-  function sample(p){
-    let i = 0;
-    while(i < KEYS.length - 2 && p > KEYS[i+1].t) i++;
-    const a = KEYS[i], b = KEYS[i+1];
-    const k = clamp01((p - a.t) / (b.t - a.t));
-    cSun.copy(tmpA.setHex(a.sun)).lerp(tmpB.setHex(b.sun), k);
-    cSky.copy(tmpA.setHex(a.sky)).lerp(tmpB.setHex(b.sky), k);
-    cGnd.copy(tmpA.setHex(a.gnd)).lerp(tmpB.setHex(b.gnd), k);
-    cBg.copy(tmpA.setHex(a.bg)).lerp(tmpB.setHex(b.bg), k);
-    return { int: lerp(a.int, b.int, k), hemi: lerp(a.hemi, b.hemi, k),
-             time: k < 0.5 ? a.time : b.time, phase: k < 0.5 ? a.phase : b.phase };
-  }
-
+  const sunPos = new THREE.Vector3();
   let lastPhase = '';
 
   return function frame(p, time, mx, my){
     const s = sample(p);
 
-    /* the sun crosses the sky on an arc */
-    const ang = Math.PI * (0.06 + p * 0.88);
-    sun.position.set(Math.cos(ang) * 42, Math.max(1.2, Math.sin(ang) * 34), 16 + Math.cos(ang) * 12);
-    sun.color.copy(cSun);
+    /* the sun crosses from one horizon to the other, set behind the sala
+       so it rakes across the water toward the camera */
+    const ang = Math.PI * (0.035 + p * 0.93);
+    sunPos.set(Math.cos(ang) * 150, Math.sin(ang) * 96 - 6, -46 + Math.cos(ang) * 26);
+    sun.position.copy(sunPos);
+    sun.color.copy(s.sun);
     sun.intensity = s.int;
-    hemi.color.copy(cSky);
-    hemi.groundColor.copy(cGnd);
-    hemi.intensity = s.hemi;
-    S.fog.color.copy(cBg);
-    api.renderer.setClearColor(cBg, 1);
-    mWater.specular.copy(cSun);
 
-    /* the lantern comes up as the sun goes down */
-    const lantern = smooth(clamp01((p - 0.60) / 0.34));
-    interior.intensity = lantern * 3.2;
-    interiorAft.intensity = lantern * 1.9;
+    sky.uni.cZen.value.copy(s.zen);
+    sky.uni.cHor.value.copy(s.hor);
+    sky.uni.cSun.value.copy(s.sun);
+    sky.uni.sunDir.value.copy(sunPos).normalize();
+    sky.uni.glow.value = s.glow;
+
+    hemi.color.copy(s.hemiS);
+    hemi.groundColor.copy(s.hemiG);
+    hemi.intensity = s.hemi;
+
+    S.fog.color.copy(s.fog);
+    api.renderer.setClearColor(s.fog, 1);
+    /* the glitter path is the sun's colour, held back so midday does not
+       blow the whole lower half of the frame to white */
+    W.material.specular.copy(s.sun).multiplyScalar(0.62);
+    /* The water darkens toward night so the lantern has something to be
+       the brightest thing against. The coefficients are deliberately low
+       and green-weighted: a brighter, bluer mix turned midday into a stock
+       travel render — bright cyan sea, near-white sand — a long way from
+       this site's register. */
+    const wd = 0.30 + s.hemi * 0.72;
+    W.material.color.setRGB(0.052 * wd, 0.150 * wd, 0.170 * wd);
+    W.map.offset.x = time * 0.0075;
+    W.map.offset.y = time * 0.0042;
+
+    const lantern = smooth(clamp01((p - 0.62) / 0.32));
+    lamp.intensity = lantern * 3.4;
+    lampAft.intensity = lantern * 2.0;
+
+    /* the fronds breathe — the only motion in the scene that is not the
+       sun, and deliberately almost imperceptible */
+    for(let i = 0; i < palms.length; i++){
+      const c = palms[i].userData.crown;
+      c.rotation.z = Math.sin(time * 0.29 + i * 1.4) * 0.030;
+      c.rotation.x = Math.cos(time * 0.23 + i * 0.9) * 0.022;
+    }
 
     if(s.phase !== lastPhase){
       lastPhase = s.phase;
@@ -1998,17 +2660,49 @@ stage3D('pavilionCanvas', 'pavilionOuter', function(api){
     if(sunFill) sunFill.style.width = (p * 100) + '%';
     if(sunKnob) sunKnob.style.left = (p * 100) + '%';
 
-    /* a long, slow dolly — the camera never cuts */
-    const orbit = -0.42 + p * 0.66 + mx * 0.08;
-    const dist = lerp(api.isMobile ? 44 : 34, api.isMobile ? 34 : 26, smooth(clamp01(p * 1.1)));
-    const hgt = lerp(9.5, 4.6, smooth(clamp01(p * 1.1))) + my * 1.2;
+    /* One long, low dolly across the water. The camera stays near the
+       surface so the reflection carries the bottom of the frame, and it
+       looks at a point LEFT of the sala so the building sits in the
+       right-hand two thirds, clear of the copy column. */
+    const k = smooth(clamp01(p * 1.05));
+    const orbit = -0.50 + p * 0.62 + mx * 0.05;
+    /* Mobile is a narrower frame, not a smaller one: at aspect ~0.49 the
+       horizontal field is half the desktop one, so the same distance puts
+       the roof across 77% of the screen. */
+    const dist = lerp(api.isMobile ? 84 : 50, api.isMobile ? 63 : 37, k);
+    const hgt  = lerp(9.2, 4.4, k) + my * 0.9;
     C.position.set(Math.sin(orbit) * dist, hgt, Math.cos(orbit) * dist);
-    C.lookAt(0, 3.2, 0);
+    C.lookAt(api.isMobile ? 0 : -7.5, 4.6, 0);
   };
 });
 
 
-/* ══ 3D TWO — RIDE THE SEVEN DAY LOOP ══ */
+/* ══ 3D TWO — THE LANTERN WALK AROUND THE LAGOON ══
+   Rebuilt. The idea was right and is kept: you travel the seven days in
+   first person, and at the end the camera lifts and the route turns out
+   to have been a closed loop all along.
+
+   What was wrong was the LANGUAGE. The old scene was a glowing gold tube
+   through a black starfield, with torus gates you flew through and a lamp
+   that travelled with the camera — a racing line in deep space. It was
+   the most legible thing on the page and it was saying "video game" on a
+   page about a tropical sanctuary.
+
+   Same beat, rebuilt as somewhere you could actually stand:
+     · a TIMBER BOARDWALK on posts, a hand's breadth above still water,
+       walked at eye height rather than flown down.
+     · SEVEN LANTERNS on posts, one per day. They are the waypoints the
+       torus gates used to be, and they light as you reach them, so the
+       route behind you is a line of warm reflections on the water and the
+       route ahead is dark. Progress you can see over your shoulder.
+     · BLUE HOUR, held. The pavilion tells a whole day; this one sits in a
+       single evening so the two scenes cannot be confused, and so the
+       lanterns have something to be warm against.
+     · THE SALA AT THE CENTRE — the same building from 3D one, on its own
+       island. It is why the reveal lands: you were not on a track, you
+       were circling the Sanctuary the entire time. Riding, the haze keeps
+       it hidden; it appears only as the camera lifts.
+   Still no particle system, and no stars. */
 stage3D('loopCanvas', 'loopOuter', function(api){
   const S = api.scene, C = api.camera;
   const dayEl = document.getElementById('loopDay');
@@ -2026,150 +2720,472 @@ stage3D('loopCanvas', 'loopOuter', function(api){
     ['Integrate', 'Reflect · Commit · Carry it forward']
   ];
 
-  api.renderer.setClearColor(0x05080b, 1);
-  S.fog = new THREE.FogExp2(0x05080b, 0.026);
+  const M = TROPIC.materials();
+  const HAZE = new THREE.Color(0x1b2740);
+  /* LINEAR fog, not exponential, and the reason is the whole section.
+     The ride has to show ~35 units of boardwalk clearly while hiding the
+     far side of the ring 100 units away, or you can see it is a loop
+     before the reveal says so — which is the one thing that must not
+     happen here. Exponential fog cannot separate those two distances: any
+     density thick enough to bury the far side takes most of the near path
+     with it. Linear fog with an explicit far plane does exactly that, and
+     the far plane is what the lift then opens up. */
+  S.fog = new THREE.Fog(0x1b2740, 8, 88);
+  api.renderer.setClearColor(HAZE, 1);
 
-  /* a closed, undulating loop through space */
-  const R = 26, ctrl = [];
+  /* blue hour, fixed — see the note above on why this scene does not
+     cycle the way the pavilion does */
+  const sky = TROPIC.skyDome(600);
+  sky.uni.cZen.value.setHex(0x0d1730);
+  sky.uni.cHor.value.setHex(0x40406b);
+  sky.uni.cSun.value.setHex(0xd98a5a);
+  sky.uni.sunDir.value.set(-0.62, -0.02, -0.78).normalize();
+  sky.uni.glow.value = 0.85;
+  S.add(sky.mesh);
+
+  const W = TROPIC.water(api.renderer, 900, 130);
+  W.material.color.setRGB(0.030, 0.052, 0.078);
+  W.material.specular.setHex(0x333a52);
+  W.material.shininess = 62;
+  W.material.normalScale.set(0.075, 0.075);
+  S.add(W.mesh);
+
+  /* ─── the route ───
+     A closed ring, held FLAT. The old route undulated through ±3.6 of
+     height, which on a first-person ride is a rollercoaster; a boardwalk
+     that stays level is what makes this feel like a place rather than a
+     track. The radius still varies a little so the ring is never read as
+     a perfect circle before the reveal. */
+  /* R was 30. On a 430px portrait frame a ring that tight curves out of
+     shot within about fifteen units, so the walk never recedes and the
+     ride shows a brown wedge with no lantern in it. At 50 the boardwalk
+     reads as a long path that happens to bend, and the reveal still
+     closes as unmistakably as before. */
+  const DECK_Y = 0.62, R = 50;
+  const ctrl = [];
   for(let i = 0; i < 7; i++){
     const a = (i / 7) * Math.PI * 2;
-    const rr = R * (0.86 + 0.20 * Math.sin(i * 2.3));
-    ctrl.push(new THREE.Vector3(Math.cos(a) * rr, Math.sin(i * 1.7) * 3.6, Math.sin(a) * rr));
+    const rr = R * (0.96 + 0.055 * Math.sin(i * 2.3));
+    ctrl.push(new THREE.Vector3(Math.cos(a) * rr, DECK_Y, Math.sin(a) * rr));
   }
   const curve = new THREE.CatmullRomCurve3(ctrl, true, 'catmullrom', 0.5);
 
-  /* the route itself */
-  const tube = new THREE.Mesh(
-    new THREE.TubeGeometry(curve, 420, 0.30, 10, true),
-    new THREE.MeshStandardMaterial({ color: 0xC48A5A, roughness: 0.42, metalness: 0.12,
-                                     emissive: 0x2a1a0e, emissiveIntensity: 0.7 })
-  );
-  S.add(tube);
+  /* the boardwalk itself: a ribbon swept along the curve, with a raised
+     kerb down each edge so the deck has a silhouette in low light */
+  /* NORMALS AND SIDEDNESS ARE SET BY HAND HERE, and they have to be.
+     A swept ribbon's triangle winding depends on which way the curve
+     happens to run, and computeVertexNormals() on a closed loop of quads
+     duly produced a deck whose top face pointed DOWN — so the walkway was
+     back-face culled from a camera standing on it, and the first-person
+     ride showed nothing underfoot but the posts and open water. Explicit
+     +Y on the top ring and DoubleSide on the material make it independent
+     of the sweep direction. */
+  function ribbon(halfW, y, thickness, mat, segs){
+    const pos = [], nor = [], col = [], idx = [];
+    for(let i = 0; i <= segs; i++){
+      const t = (i % segs) / segs;
+      const pt = curve.getPointAt(t);
+      const tan = curve.getTangentAt(t);
+      const side = new THREE.Vector3(-tan.z, 0, tan.x).normalize();
+      pos.push(pt.x - side.x * halfW, y, pt.z - side.z * halfW,
+               pt.x + side.x * halfW, y, pt.z + side.z * halfW,
+               pt.x - side.x * halfW, y - thickness, pt.z - side.z * halfW,
+               pt.x + side.x * halfW, y - thickness, pt.z + side.z * halfW);
+      /* two up-facing deck vertices, two out-facing skirt vertices */
+      const o = new THREE.Vector3(-side.x, 0.45, -side.z).normalize();
+      const q = new THREE.Vector3( side.x, 0.45,  side.z).normalize();
+      nor.push(0, 1, 0,  0, 1, 0,  o.x, o.y, o.z,  q.x, q.y, q.z);
 
-  /* a wider, dimmer skirt gives the route a road-like presence */
-  const skirt = new THREE.Mesh(
-    new THREE.TubeGeometry(curve, 300, 1.5, 8, true),
-    new THREE.MeshBasicMaterial({ color: 0x14212a, transparent: true, opacity: 0.5, side: THREE.BackSide })
-  );
-  S.add(skirt);
 
-  /* seven waypoints — a gate you pass through */
-  const gates = [];
-  const gateGeo = new THREE.TorusGeometry(2.5, 0.07, 8, 44);
+
+      /* BOARD JOINTS AS VERTEX COLOUR, not as a texture. A tiling map is
+         the obvious tool and it was tried twice: the joints are ~0.4 units
+         apart on a surface that runs to a vanishing point, so the mip
+         chain averaged them out and the deck rendered as one flat brown
+         field (measured flat to within 1/255 across the whole near deck).
+         Darkening one segment ring in every four puts the joint in the
+         geometry, where nothing can filter it away. */
+      const j = (i % 4 === 0) ? 0.58 : 1.0;
+      col.push(j, j, j,  j, j, j,  j * 0.9, j * 0.9, j * 0.9,  j * 0.9, j * 0.9, j * 0.9);
+    }
+    for(let i = 0; i < segs; i++){
+      const a = i * 4, b = a + 4;
+      idx.push(a, b, a + 1,          a + 1, b, b + 1);           /* deck  */
+      idx.push(a + 2, a, b + 2,      b + 2, a, b);               /* outer */
+      idx.push(a + 1, a + 3, b + 1,  b + 1, a + 3, b + 3);       /* inner */
+    }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+    g.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3));
+
+    g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
+    g.setIndex(idx);
+    const m = new THREE.Mesh(g, mat);
+    m.receiveShadow = false;
+    return m;
+  }
+
+  const SEG = 820;                       /* ~0.4 units a segment, so a joint
+                                            every fourth ring is a 1.6 unit bay */
+  /* Clones, so DoubleSide and the emissive below do not leak into the
+     sala's timber.
+
+     THE EMISSIVE IS NOT A CHEAT, it is the lighting design. Seven lanterns
+     around a ring of ~327 units sit 47 units apart,
+     so with any believable falloff the walker spends most of the journey
+     in pitch darkness — measured, the deck came out at rgb(13,11,10),
+     which is black. A boardwalk at blue hour genuinely does hold a little
+     warmth of its own; this puts a floor under it so the timber always
+     reads as timber, and leaves the lanterns to do the actual pooling. */
+
+  /* PHONG, NOT LAMBERT, and this is the reason: r128's MeshLambertMaterial
+     ignores emissiveMap. Since the boardwalk's visible tone at blue hour is
+     almost entirely its emissive floor (measured: 43 of 47 red), the board
+     joints simply never appeared — the deck read as one flat brown field
+     no matter how strong the texture was made. Phong honours emissiveMap,
+     so the boards modulate the part of the surface that is actually
+     bright. Shininess is kept low; this is matt timber, not varnish. */
+  const mWalk = new THREE.MeshPhongMaterial({
+    color: 0x7a5b3d, shininess: 6, specular: 0x141210,
+    emissive: new THREE.Color(0x241811), vertexColors: true,
+    side: THREE.DoubleSide
+  });
+  const mKerb = new THREE.MeshPhongMaterial({
+    color: 0x6b4a30, shininess: 8, specular: 0x1a1512,
+    emissive: new THREE.Color(0x3a2716), vertexColors: true,
+    side: THREE.DoubleSide
+  });
+  const walkway = ribbon(1.55, DECK_Y, 0.30, mWalk, SEG);
+  walkway.renderOrder = 6;
+  S.add(walkway);
+  const kerbL = ribbon(1.62, DECK_Y + 0.11, 0.10, mKerb, SEG);
+  const kerbR = ribbon(1.30, DECK_Y + 0.11, 0.10, mKerb, SEG);
+  kerbL.renderOrder = kerbR.renderOrder = 6;
+  S.add(kerbL); S.add(kerbR);
+
+  /* posts into the water, every few metres */
+  const mPostW = M.post.clone(); mPostW.emissive = new THREE.Color(0x0d0805);
+  const postGeo = new THREE.CylinderGeometry(0.10, 0.12, 2.0, 7);
+  for(let i = 0; i < 104; i++){
+    const t = i / 104;
+    const pt = curve.getPointAt(t);
+    const tan = curve.getTangentAt(t);
+    const side = new THREE.Vector3(-tan.z, 0, tan.x).normalize();
+    [-1.3, 1.3].forEach(function(o){
+      const m = new THREE.Mesh(postGeo, mPostW);
+      m.position.set(pt.x + side.x * o, DECK_Y - 1.15, pt.z + side.z * o);
+      S.add(m);
+    });
+  }
+
+  /* ─── the seven lanterns ───
+     One per day, on the outer edge: a glowing shade on a post plus its own
+     point light.
+
+     THE ONES AHEAD ARE LIT TOO, just cool and low. A first pass had them
+     fully dark until reached, which is a tidy idea and a bad picture — the
+     only lantern ever in shot was the next one, unlit, so the walk read as
+     a dark path with a dead lamp on it and the "route behind you is lit"
+     payoff was behind you where nobody could see it. Reaching a day now
+     WARMS its lantern instead of switching it on, so the path always reads
+     as a lit path and the change still registers as you pass. */
+  /* An unreached day lantern is DIM WARM, not cool blue: in a line of warm
+     globe lamps a blue box reads as a broken light rather than as a
+     milestone you have not got to yet. */
+  const LANTERN_ON = 0xffcf9a, LANTERN_OFF = 0x6a4a33;
+  const lanterns = [];
+  /* The lanterns stand IN THE WATER on their own pilings, well clear of
+     the walking line. Mounted at 1.45 on the deck edge they passed within
+     half a metre of the camera and a 4m post filled the middle of the
+     frame every time you reached a day. On a piling at 3.4 they read as
+     lamps over the lagoon, which is also simply what a boardwalk lamp is. */
+  const lampGeo = new THREE.BoxGeometry(0.62, 0.86, 0.62);
+  const stemGeo = new THREE.CylinderGeometry(0.09, 0.12, 5.5, 8);
   for(let i = 0; i < 7; i++){
     const t = i / 7;
-    const pos = curve.getPointAt(t);
+    const pt = curve.getPointAt(t);
     const tan = curve.getTangentAt(t);
-    const m = new THREE.Mesh(gateGeo, new THREE.MeshBasicMaterial({ color: 0x3a4d5a }));
-    m.position.copy(pos);
-    m.lookAt(pos.clone().add(tan));
+    const side = new THREE.Vector3(-tan.z, 0, tan.x).normalize();
+    /* clear of the walking line: at 1.45 the post passed within half a
+       metre of the camera and filled the frame as you went by */
+    const x = pt.x + side.x * 3.40, z = pt.z + side.z * 3.40;
+
+    const stem = new THREE.Mesh(stemGeo, M.post);
+    stem.position.set(x, DECK_Y + 1.13, z);
+    S.add(stem);
+
+    const shade = new THREE.Mesh(lampGeo, new THREE.MeshBasicMaterial({ color: LANTERN_OFF }));
+    shade.position.set(x, DECK_Y + 3.20, z);
+    S.add(shade);
+
+    const light = new THREE.PointLight(0x6f86c4, 0.7, 78, 1.35);
+    light.position.set(x, DECK_Y + 3.20, z);
+    S.add(light);
+
+    /* a small cap so the lantern is not a bare glowing cube */
+    const cap = new THREE.Mesh(new THREE.ConeGeometry(0.60, 0.42, 4), M.teak);
+    cap.rotation.y = Math.PI / 4;
+    cap.position.set(x, DECK_Y + 3.82, z);
+    S.add(cap);
+
+    lanterns.push({ shade: shade, light: light, at: new THREE.Vector3(x, DECK_Y + 3.2, z) });
+  }
+
+  /* ─── the small lamps between them ───
+     Seven lanterns around a 327-unit ring sit 47 units apart, which on the
+     ride leaves long stretches with no light in the frame at all: the deck
+     read as a featureless dark wedge and the next lantern was usually
+     off-screen. Three low marker lamps between each pair give the walk the
+     receding line of lights that makes a lit path legible.
+
+     They carry NO PointLight — twenty-one more real lights would blow the
+     uniform budget for nothing. They are emissive shades, which is all the
+     picture needs; the seven day lanterns still do every bit of the actual
+     lighting, so reaching one is still the thing that changes the scene. */
+  const markGeo = new THREE.SphereGeometry(0.135, 10, 8);
+  const markStem = new THREE.CylinderGeometry(0.06, 0.08, 4.0, 6);
+  const mMarkOn = new THREE.MeshBasicMaterial({ color: 0xc98d55 });
+  const marks = [];
+  for(let i = 0; i < 28; i++){
+    if(i % 4 === 0) continue;                       /* a day lantern is there */
+    const t = i / 28;
+    const pt = curve.getPointAt(t);
+    const tan = curve.getTangentAt(t);
+    const side = new THREE.Vector3(-tan.z, 0, tan.x).normalize();
+    const x = pt.x + side.x * 3.15, z = pt.z + side.z * 3.15;
+    const st = new THREE.Mesh(markStem, mPostW);
+    st.position.set(x, DECK_Y + 0.19, z);
+    S.add(st);
+    const bulb = new THREE.Mesh(markGeo, mMarkOn);
+    bulb.position.set(x, DECK_Y + 2.20, z);
+    S.add(bulb);
+    marks.push({ bulb: bulb, t: t });
+  }
+
+  /* ─── the island at the centre ───
+     The same sala as 3D one, which is the whole point of the reveal. */
+  const mIsle = M.sand.clone(); mIsle.color.setHex(0x3a342a);
+  const isle = new THREE.Mesh(TROPIC.islandGeometry(22, 20, 1.8, 0.20), mIsle);
+  isle.position.set(0, -0.15, 0);
+  S.add(isle);
+
+  const centreSala = TROPIC.sala(M, false);
+  centreSala.scale.setScalar(0.95);
+  centreSala.position.y = 0.45;
+  centreSala.renderOrder = 6;
+  S.add(centreSala);
+
+  const centreRef = TROPIC.sala(M, false);
+  centreRef.scale.setScalar(0.95);
+  TROPIC.reflect(centreRef, 0.26);
+  centreRef.position.y = -0.40;
+  S.add(centreRef);
+
+  /* the sala's own lanterns, always lit — it is the fixed point */
+  const isleLamp = new THREE.PointLight(0xffb672, 2.6, 40, 1.35);
+  /* high enough to light the sala rather than wash the sand around it */
+  isleLamp.position.set(0, 3.1, 0);
+  S.add(isleLamp);
+
+  /* ─── planting ───
+     Palms on the centre island and on small islets outside the ring, so
+     the walk has something passing on both sides. */
+  const FROND = TROPIC.frondGeometry(4.6, 0.62, 3.0, 9);
+  const palms = [];
+  function addPalm(x, z, y, h, lean, i){
+    const p = TROPIC.palm(FROND, M.trunk, M.frond, h, lean, i * 1.9, false);
+    p.position.set(x, y, z);
+    palms.push(p); S.add(p);
+  }
+  [[-14.5, 9.0, 9.0, 0.30], [12.5, -10.0, 7.6, -0.24], [15.0, 10.5, 6.8, 0.14]]
+    .forEach(function(d, i){ addPalm(d[0], d[1], 0.55, d[2], d[3], i); });
+
+  /* Six, not nine, and at wildly different distances. Nine islets evenly
+     spaced on one radius ringed the lagoon like counters on a board and
+     were the first thing the eye found at the reveal — which is supposed
+     to be the boardwalk. They are also darker here than in the pavilion:
+     this scene is a night, and anything outside the lantern light has no
+     business being the brightest green in the frame. */
+  const mLeaf = M.frond.clone(); mLeaf.color.setHex(0x1d3024);
+  const RING = [[0.40, 74], [1.35, 112], [2.30, 82], [3.20, 146], [4.35, 95], [5.45, 128]];
+  RING.forEach(function(d, i){
+    const x = Math.cos(d[0]) * d[1], z = Math.sin(d[0]) * d[1];
+    const m = new THREE.Mesh(TROPIC.islandGeometry(6 + (i % 3) * 4, 5 + (i % 2) * 3, 1.2, 0.26), M.bank);
+    m.position.set(x, 0.02, z);
     S.add(m);
-    gates.push(m);
-  }
+    const p = TROPIC.palm(FROND, M.trunk, mLeaf, 7.0 + (i % 3) * 1.4, (i % 2 ? 0.24 : -0.2), (i + 3) * 1.9, false);
+    p.position.set(x, 0.5, z);
+    palms.push(p); S.add(p);
+  });
 
-  /* stars give the void a scale without being a particle "effect" */
-  const starGeo = new THREE.BufferGeometry();
-  const starN = api.isMobile ? 400 : 900;
-  const sp = new Float32Array(starN * 3);
-  for(let i = 0; i < starN; i++){
-    const a = Math.random() * Math.PI * 2, b = Math.acos(2 * Math.random() - 1), rr = 120 + Math.random() * 90;
-    sp[i*3] = Math.sin(b) * Math.cos(a) * rr;
-    sp[i*3+1] = Math.cos(b) * rr * 0.5;
-    sp[i*3+2] = Math.sin(b) * Math.sin(a) * rr;
-  }
-  starGeo.setAttribute('position', new THREE.BufferAttribute(sp, 3));
-  S.add(new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0x8fa6b8, size: 0.5, sizeAttenuation: true, transparent: true, opacity: 0.55 })));
+  /* the far horizon, so the lagoon sits in a coast rather than in a void */
+  [[-150, -186, 20, 32, 17], [-96, -212, 13, 22, 12], [104, -196, 22, 36, 18],
+   [168, -238, 14, 24, 12], [20, -268, 12, 20, 10], [-210, -150, 16, 26, 13]]
+  .forEach(function(d){
+    const k = new THREE.Mesh(TROPIC.karstGeometry(d[2], d[3], d[4]), M.karst);
+    k.position.set(d[0], 0, d[1]);
+    S.add(k);
+  });
 
-  /* the traveller's own light — the route lights up around you */
-  const lamp = new THREE.PointLight(0xffd9ac, 3.4, 46, 1.6);
-  S.add(lamp);
-  const amb = new THREE.AmbientLight(0x3a4a5a, 0.5);
+  /* ─── light ───
+     Evening: a low, cool key from the afterglow plus a warm hemisphere
+     bounce off the water. The walker carries NO lamp — the old scene's
+     travelling light was what made it feel like a vehicle. The lanterns
+     do the lighting, which is why reaching one matters. */
+  const key = new THREE.DirectionalLight(0x6f7ba8, 0.34);
+  key.position.set(-90, 26, -120);
+  S.add(key);
+  const hemi = new THREE.HemisphereLight(0x3a4570, 0x141c2a, 0.42);
+  S.add(hemi);
+  const amb = new THREE.AmbientLight(0x8fa0c8, 0.16);
   S.add(amb);
 
-  const RIDE_END = 0.82;                 /* after this the camera pulls back */
+  const RIDE_END = 0.82;
   const camPos = new THREE.Vector3(), camLook = new THREE.Vector3();
-  const origin = new THREE.Vector3(0, 0, 0);
-  const lampHigh = new THREE.Vector3(0, 26, 0);
-  const camLift = new THREE.Vector3(), lampAt = new THREE.Vector3();
+  const here = new THREE.Vector3(), ahead = new THREE.Vector3();
+  const AHEAD_T = 30 / curve.getLength();   /* 30 units of arc, whatever R is */
   const radial = new THREE.Vector3(), vantage = new THREE.Vector3();
-  const LOOP_EXTENT = 42;                /* ring radius plus framing margin */
+  const centre = new THREE.Vector3(0, 3.4, 0);
+  const LOOP_EXTENT = 63;
   let lastDay = -1;
 
-  /* The vantage point is derived from where you currently are on the loop and
-     from how much of the frame the camera can actually see, so the pull-back
-     rises outward from your own position instead of cutting across the middle
-     of the ring — which framed nothing but empty space. */
-  function vantageFor(here){
-    radial.set(here.x, 0, here.z);
+  /* The vantage point is derived from where you currently are on the ring
+     and from how much the camera can actually see, so the lift rises
+     outward from your own position instead of cutting across the middle of
+     the lagoon — which framed nothing but empty water. */
+  function vantageFor(from){
+    radial.set(from.x, 0, from.z);
     if(radial.lengthSq() < 1e-4) radial.set(1, 0, 0);
     radial.normalize();
     const vHalf = (C.fov * Math.PI / 180) / 2;
     const limit = Math.atan(Math.tan(vHalf) * Math.min(1, C.aspect));
     const need = Math.min(150, LOOP_EXTENT / Math.max(0.15, Math.tan(limit)));
-    vantage.copy(radial).multiplyScalar(need * 0.72);
-    vantage.y = need * 0.62;
+    /* ~40 degrees above the water. Lower than this and the ring reads as a
+       lopsided egg rather than a loop, which is the one thing the reveal
+       has to say; much higher and it stops being a place and becomes a
+       map. */
+    vantage.copy(radial).multiplyScalar(need * 0.78);
+    vantage.y = need * 0.66;
     return vantage;
   }
 
   return function frame(p, time, mx, my){
     const ride = clamp01(p / RIDE_END);
     const t = (ride * 0.995) % 1;
-
-    const here = curve.getPointAt(t);
-    const ahead = curve.getPointAt((t + 0.035) % 1);
-
-    /* first person along the route, then a long pull back to reveal the loop */
     const out = clamp01((p - RIDE_END) / (1 - RIDE_END));
     const k = smooth(out);
 
-    /* Riding, the fog is thick and the lamp is the only light — you can only
-       see the stretch you are on. Pulling back, the fog thins and the whole
-       loop lights, otherwise the reveal would be fogged into nothing. */
-    /* the fog has to clear ahead of the camera, otherwise the far side of the
-       loop is still erased by the time it should be the whole point */
-    const kFog = smooth(clamp01(out * 1.7));
-    S.fog.density = lerp(0.026, 0.0032, kFog);
-    amb.intensity = lerp(0.5, 1.5, kFog);
-    lamp.distance = lerp(46, 150, k);
-    lamp.intensity = lerp(3.4, 2.4, k);
-    /* the route is a thin tube — at the reveal it has to carry the frame
-       on its own, so let it glow rather than rely on the lamp */
-    tube.material.emissiveIntensity = lerp(0.7, 2.6, kFog);
-    lampAt.copy(here); lampAt.y += 1.6;
-    lamp.position.copy(lampAt).lerp(lampHigh, k);
+    here.copy(curve.getPointAt(t));
+    /* AIM AT A FIXED ARC DISTANCE ALONG THE PATH, not at a fixed fraction
+       of it and not down the tangent. Both alternatives were tried:
+         · a fixed fraction (t + 0.042) is 8 units on a small ring and 14 on
+           a large one, so the camera's turn rate changed whenever the ring
+           was resized, and at 8 units it swung with every bend.
+         · the pure tangent never turns at all, so the walk simply left the
+           frame on one side and the ride became a dark wedge.
+       Thirty-four units of arc keeps the boardwalk running to a vanishing
+       point in front of the walker at any ring size. */
+    ahead.copy(curve.getPointAt((t + AHEAD_T) % 1));
 
-    camLift.copy(here); camLift.y += 2.3 + my * 0.8;
-    camPos.copy(camLift).lerp(vantageFor(here), k);
-    camLook.copy(ahead).lerp(origin, k);
+    /* Riding, the haze is thick enough that the centre island is hidden
+       and you only ever see your own stretch of boardwalk. It clears
+       AHEAD of the lift, otherwise the far side of the ring is still
+       erased at the moment it is supposed to be the whole point. */
+    const kFog = smooth(clamp01(out * 1.7));
+    S.fog.near = lerp(8, 40, kFog);
+    S.fog.far = lerp(88, 620, kFog);
+    /* The lift clears the HAZE; it does not turn the lights on. An earlier
+       pass tripled the ambient here so the whole lagoon could be seen, and
+       the outer islands came up as bright green lily pads with the ring
+       lost among them. It stays night: the lit things are the boardwalk,
+       its seven lanterns and the sala, and everything else is the dark
+       they are lit against. */
+    amb.intensity = lerp(0.16, 0.26, kFog);
+    hemi.intensity = lerp(0.42, 0.50, kFog);
+    key.intensity = lerp(0.34, 0.44, kFog);
+    isleLamp.intensity = lerp(2.6, 3.6, kFog);
+    /* the lantern pools were clipping to hard white discs on the water at
+       the reveal; the surface goes matt as the camera lifts */
+    W.material.shininess = lerp(62, 22, kFog);
+    /* ripple detail is meaningless from the vantage point and turns into a
+       visible diagonal moire across the whole lagoon, so it fades out as
+       the camera lifts */
+    W.material.normalScale.setScalar(lerp(0.075, 0.018, kFog));
+
+    W.map.offset.x = time * 0.0060;
+    W.map.offset.y = time * 0.0034;
+
+    /* which day are we on, and light every lantern up to it */
+    const day = Math.min(6, Math.floor(ride * 7 * 0.999));
+    if(day !== lastDay){
+      lastDay = day;
+      for(let i = 0; i < lanterns.length; i++){
+        const lit = i <= day;
+        lanterns[i].shade.material.color.setHex(lit ? LANTERN_ON : LANTERN_OFF);
+        lanterns[i].light.color.setHex(lit ? LANTERN_ON : 0x6f86c4);
+        lanterns[i].light.intensity = lit ? 2.2 : 0.7;
+      }
+      /* The marker lamps are ALWAYS lit. They were briefly made to warm up
+         along with the stretch they belong to, and it was wrong twice over:
+         you walk forwards, so everything already reached is behind you, and
+         the ride showed nothing but a receding line of dead lamps. They are
+         path lighting, not milestones. The seven day lanterns are the
+         milestones, and leaving them as the only thing that changes is what
+         makes reaching one register at all. */
+      if(dayEl) dayEl.innerHTML = 'Day ' + String(day + 1).padStart(2, '0') + ' — <em>' + DAYS[day][0] + '</em>';
+      if(subEl) subEl.textContent = DAYS[day][1];
+    }
+    /* at the reveal every lantern is lit: seven days, one continuous ring */
+    if(out > 0.42){
+      for(let i = 0; i < lanterns.length; i++){
+        lanterns[i].shade.material.color.setHex(LANTERN_ON);
+        lanterns[i].light.color.setHex(LANTERN_ON);
+        /* no boost at the reveal: the lantern pools were clipping to white
+           blobs on the water instead of reading as warm reflections */
+        lanterns[i].light.intensity = 2.2;
+      }
+      lastDay = -1;
+    }
+
+    /* Walking: eye height above the deck, with a slow, shallow sway. The
+       sway is a walk, not a camera shake — 1.6cm of rise and less than a
+       degree of roll. */
+    const bobY = Math.sin(time * 1.15) * 0.016;
+    const bobR = Math.sin(time * 0.57) * 0.008;
+    camPos.copy(here);
+    /* MOBILE IS A DIFFERENT COMPOSITION, not the desktop one shrunk. At eye
+       height in a portrait frame the deck immediately underfoot fills the
+       bottom third, the horizon sits at 55% and the rest is empty sky —
+       there is simply not enough width for a first-person walk to show
+       anything. The handset view lifts to just above head height and looks
+       down the walk, so the boardwalk, its lanterns and the water on both
+       sides all fit. Same journey, framed for the screen it is on. */
+    const portrait = C.aspect < 1;
+    camPos.y = DECK_Y + (portrait ? 2.55 : 1.78) + bobY + my * 0.5;
+    camLook.copy(ahead);
+    /* looking slightly UP on a landscape frame: level or below put the deck
+       across the bottom half and pushed the horizon almost out of shot, and
+       a walker looks at where they are going, not at their feet */
+    camLook.y = DECK_Y + (portrait ? 1.35 : 1.95);
+
+    camPos.lerp(vantageFor(here), k);
+    camLook.lerp(centre, k);
 
     C.position.copy(camPos);
     C.up.set(0, 1, 0);
     C.lookAt(camLook);
-    C.rotation.z += mx * 0.03 * (1 - k);
+    C.rotation.z += (bobR + mx * 0.02) * (1 - k);
 
-    /* waypoints light as they are reached, all lit once the loop closes */
-    const day = Math.min(6, Math.floor(ride * 7 * 0.999));
-    /* gates open up as the camera retreats so the loop keeps its presence */
-    const gateScale = lerp(1, 1.5, k);
-    gates.forEach((g, i) => g.scale.setScalar(gateScale * (i === day && k < 0.5 ? 1.12 : 1)));
-    if(day !== lastDay){
-      lastDay = day;
-      gates.forEach((g, i) => {
-        const lit = i <= day || out > 0.5;
-        g.material.color.setHex(lit ? 0xC48A5A : 0x3a4d5a);
-      });
-      if(dayEl) dayEl.innerHTML = 'Day ' + String(day + 1).padStart(2, '0') + ' — <em>' + DAYS[day][0] + '</em>';
-      if(subEl) subEl.textContent = DAYS[day][1];
+    for(let i = 0; i < palms.length; i++){
+      const c = palms[i].userData.crown;
+      c.rotation.z = Math.sin(time * 0.29 + i * 1.4) * 0.030;
+      c.rotation.x = Math.cos(time * 0.23 + i * 0.9) * 0.022;
     }
 
     if(closeEl) closeEl.classList.toggle('show', out > 0.55);
     if(copyEl) copyEl.style.opacity = String(1 - clamp01(out * 2.2));
-
-    tube.rotation.y = 0;
-    skirt.rotation.y = 0;
   };
 });
-
 
 /* ── EARLY ACCESS FORM — front end only, and it says so ── */
 (function(){

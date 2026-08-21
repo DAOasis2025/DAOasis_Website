@@ -673,6 +673,171 @@ text collisions, and no text below the site's own 10px footer-label convention.
 
 ---
 
+## Journey section (index.html, `pin4`) redesigned — August 20
+
+Visual only. **The scroll logic was not touched**: the script still just
+toggles `.done/.active/.tease` on `.j-node`, writes `.j-line-fill`'s width
+and `.j-comet`'s left/opacity. All seven titles and descriptions are
+verbatim, the seven-stage sequence, the pop card and the hover-to-preview
+all behave exactly as before.
+
+- **Seven numbered discs → seven engraved medallions.** `.j-dot` keeps its
+  class name deliberately — every state rule the script drives still
+  matches — but now holds an icon, with the stage number lifted out into a
+  `.j-num` serif folio above the ring. Icons are the site's existing
+  24-unit line set (stage 02 reuses app.html's Steps path).
+- **Weight now goes UP with state.** The old design filled a disc with
+  solid gold the moment a stage was *reached*, so six completed stages were
+  louder than the one being read. Progression is now quiet ring → warm ring
+  → lit ring, and only `.active` is scaled (1.10).
+- **`--medal` and `--numh` on `.j-track-wrap` drive all the geometry.** The
+  rule, the fill and the comet are positioned from the *same* expression as
+  the ring's centre — `calc(var(--numh) + var(--medal) / 2)`. If those fall
+  out of step the path stops running through the rings. Verified aligned to
+  within 1.5px at 1110, 1280 and 1440.
+- **Column separators are one repeating gradient on `.j-track::before`**,
+  not seven elements. The pseudo is shifted left by half a column
+  (`calc(-100% / 12)`) precisely so the gradient's periodic lines land on
+  the midpoints between stages instead of on the medallions themselves.
+- **Titles are Cormorant, not 12px tracked sans.** Under a 64px Cormorant
+  headline the old labels read as UI chrome; that was most of why the row
+  looked like a widget rather than part of the page.
+- The stage card is dark glass (matching `.panel` in the palm section), not
+  the previous flat ivory box.
+
+Verified at 1110×700, 1280×720 and 1440×900: 0 horizontal overflow, labels
+clear the stage floor by 105–170px, all seven stages reachable in order
+01→07 with the fill and comet tracking, hover preview reverts to the
+scroll-driven stage on mouseleave.
+
+**`.pin4` is `display:none` below 1100px** — none of the above affects the
+mobile fallback, which is untouched.
+
+### The Journey photograph (August 20)
+
+`images/Journey image.png` (1774x887, desktop) and
+`images/Journey image mobile.png` (1254x1254, mobile). Applied as CSS
+`background-image` per the working constraints — never an `<img>` with a
+filter.
+
+**Desktop and mobile use different `background-size`, and that is the whole
+point.** Desktop is `cover` on `.stage4`. Mobile is **`100% auto`** — a band,
+not a cover — because a 1:1 image cover-ed into a 390x1169 column renders
+1169x1169 and shows only its centre 390px, which is a sliver of the stone
+slab; and that slice is bright enough that the quiet `.jm-label` needed alpha
+0.935 to clear AA, by which point the photograph was a black smudge carrying
+no image at all. `100% auto` shows the full square uncropped in the top 100vw
+and then hands over to solid ground.
+
+**The mobile veil colour is `--mineral` (23,20,18), not the desktop veil's
+darker (16,13,11).** Below the band the mobile gradient sits at alpha 1, so
+the veil colour *is* the section's ground for the lower two thirds — at
+16,13,11 that would paint #100D0B against neighbouring sections' #171412, a
+visible seam.
+
+**The scrim stops are measured, not eyeballed.** They sit on the bands the
+content actually occupies, so the veil opens where nothing is set and closes
+over every band that carries type:
+
+| | desktop (1440x900) | mobile (390x844, section 1169px) |
+|---|---|---|
+| kicker | 8.5 – 10.2% | 12.7 – 14.0% |
+| headline | 13.3 – 20.8% | 15.4 – 21.9% |
+| card | 26.2 – 46.0% | — |
+| medallions | 60.1 – 68.2% | — |
+| labels / list | to 81.2% | 28.4 – 88.4% |
+
+**Verified by decoding the actual PNGs and compositing the exact scrim over
+them** (`scratchpad/scrim-solve.js`, `scrim-mobile.js` — plain zlib, no image
+library). Every band carrying live text clears WCAG AA against the *brightest*
+pixel it covers: desktop kicker 4.84, headline 9.05, active/done titles
+13.7/14.3, active/done subs 7.86; mobile kicker 4.73, headline 12.85, labels
+5.96/4.68, text 6.53.
+
+> `.j-sub` in its **upcoming** state (#5F5A52) sits at 2.45 and cannot reach
+> AA at any alpha. It measured **2.64 on the old flat background**, so this is
+> the pre-existing "recedes by design" state, not a regression the photo
+> introduced. Do not fix it by lightening the colour — the whole point of that
+> state is that unreached stages are quiet.
+
+`background-color: var(--mineral)` is set on both as the fallback: if a file
+is ever missing, the section paints its original ground and reads exactly as
+it did before.
+
+**Two open risks, both flagged to the user and neither yet acted on:**
+1. **The filenames contain spaces.** CSS references them `%20`-encoded, which
+   is correct, but hyphenated names would be more robust across hosts.
+2. **They are 2.38MB and 2.15MB PNGs** — very heavy for a background. These
+   are photographs and belong in JPEG or WebP. No image tooling is available
+   in this environment (the `convert` on PATH is the Windows disk utility, not
+   ImageMagick), so the conversion has to happen elsewhere.
+
+> **Tip for eye-checking this without a browser:** the Browser pane serves
+> local files as `data:` URLs, so it never loads the background image at all.
+> `scratchpad/render-composite.js` decodes the PNG, applies the exact haze and
+> veil, and writes the composite out as a PNG that can simply be read — which
+> is how the mobile "black smudge" problem was caught.
+
+---
+
+## Quest map section rebuilt + Ecosystem cycle sped up (August 20)
+
+`app.html` only. **All quest copy is verbatim** — the six names, status
+labels, route labels, descriptions and distances are untouched, and so is
+the header ("One journey ends. / Another begins.").
+
+### The section this refers to
+It is **Section 5, `<section id="quests">`** — the six next-quest cards.
+Not `.quest-map-outer`, the scroll-driven SVG route above it, which was not
+changed. Both are called "the quest map"; the cards are the one with the
+photograph.
+
+- **`images/Quest map.png`** (1716x917) as a `background-image` on
+  `.quest-map-section`. The photograph already carries the glowing waypoint
+  route, so nothing in CSS or SVG draws one.
+- **`--qm-bg` is a custom property, and that is load-bearing.**
+  `html[data-theme="light"] .s-dark` sets the `background` **shorthand**,
+  which resets `background-image` to none — so in light theme the photo
+  would vanish. Custom properties are not touched by the shorthand, so the
+  light-theme override restores the whole stack with `background-image:
+  var(--qm-bg)` instead of duplicating it. The section stays dark in light
+  theme, the same way the Living Ecosystem does.
+- **The veil stops are measured against the real photo**, by decoding the
+  PNG and compositing (`scratchpad/quest-check.js`). The body copy's ink
+  runs to x 51.6% of the section, and an earlier ramp (0.20 by 54%) left it
+  at **4.46:1** — a hair under AA — because the sunlit ridge sits right
+  there. Holding the horizontal veil to 0.68 at 34% and 0.22 at 60% takes it
+  to **5.71** while leaving the right-hand half open for the route to read
+  through. Final: kicker 6.44, headline 16.28, gold headline em 6.07, body
+  5.71 — all pass.
+- **Cards are dark glass on a two-column grid**: a gutter holding the icon
+  medallion on row 1 only, and the content column for everything else.
+  `grid-template-rows: auto auto auto 1fr auto` puts the `1fr` on the
+  description — **that is what pushes the distance to the card's floor** so
+  all six distances align across a row however unevenly the descriptions
+  wrap. Verified aligned in both rows at 1440.
+- **Each card gained a `.qc-icon`** — temple, mountains, cliffs, cathedral,
+  torii, acacia — in the site's existing 24-unit line style.
+- **The hover animation is unchanged**: `.quest-card::before` still scales
+  its gold rule in from the left, and the active card still holds it open.
+  Verified: non-active bar at `scaleX(0)`, active at `scaleX(1)`, hover rule
+  intact. The `#questsGrid` stagger observer still finds all six cards.
+- Below 600px the icon moves **above** the content rather than beside it —
+  the 70px medallion gutter is too much of a 320px card.
+
+### Living Ecosystem auto-cycle is 30% faster
+`CYCLE_MS` 4000 → **2800**. The progress bar reads from the same constant,
+so bar and advance stay in step automatically. Verified live: the bar's
+inline transition is `width 2800ms linear`.
+
+### Not caused by this work
+`app.html`'s ~11px horizontal overflow at 430–495px is **pre-existing** and
+documented above. Re-confirmed after this change: **zero** overflowing
+elements come from `#quests`; the offenders are the nav and an SVG
+elsewhere on the page.
+
+---
+
 ## Sanctuary content rules — these are firm
 The Sanctuary is **planned, not operational**. Never imply otherwise.
 - Never use: "Book now", "Now open", "Open for bookings", "Available now", "Reserve your room", "Live in Phuket".
@@ -763,7 +928,61 @@ these files through `Get-Content`/`Set-Content`.
 
 ---
 
-## Cinematic scroll made one-way + auto-release (August 19)
+## One-way + auto-release REVERTED (August 20) — they broke every animation
+
+**Symptom reported:** "all animations complete instantly", "the palm logo
+animation completes instantly", "the transition between sections with
+animations is still broken".
+
+**Cause: auto-release collapsed the document under the reader.**
+`maybeUnpin()` trimmed a finished pin's wrapper to one viewport height. On
+`index.html` at a 900px viewport that is:
+
+| pin | before | after release | page shrinks by |
+|---|---|---|---|
+| `pinContainer` (hero) | 3600px | 900px | **2700px** |
+| `.pin` (palm logo) | 4644px | 900px | **3744px** |
+
+Scroll position does **not** move when the document shortens. So the instant
+the hero finished, the reader was silently teleported 2700px further down —
+landing ~72% of the way into the palm-logo pin, which therefore appeared to
+"complete instantly". That section then finished, collapsed by another
+3744px, and threw the reader through the next one. **It cascaded through
+every pinned section on the page**, which is why *all* animations appeared
+to complete at once rather than just one.
+
+The one-way `peak` latch then made it unrecoverable: any section skipped by
+a collapse latched at progress 1 and could never play again on that load.
+
+**Both were removed outright on 20 August.** `js/cine.js` no longer contains
+`maybeUnpin`, `peak`, `unpinned`, `stickyEl` or `findSticky`. Tracks are
+bidirectional again and never touch their element's height. The
+`release:false` opt-out added to `app.html`'s hero the same week is gone too
+— removing auto-release fixed that section's stuck-frame bug globally, since
+that bug was the *same* mechanism (a two-sticky-stage pin whose first stage
+was the one being unpinned).
+
+> **Do not reintroduce either behaviour.** If a pin genuinely needs to stop
+> holding the viewport, give it less height in CSS — never mutate its height
+> at runtime while the reader is inside it.
+
+**Verified** with a node harness driving the real `js/cine.js` against the
+real 4644px pin geometry, with `reduced` patched to false so pacing actually
+runs (`scratchpad/cine-harness.js`): height values ever written = *none*;
+progress reaches 0.96 at the bottom and returns to 0.04 on scroll-up
+(bidirectional); a full-aggression flick from 0 to 1 is **0.025 after one
+frame** and takes **3.6s** to converge, so it cannot flash through.
+
+> **Testing note:** the Browser pane renders local files as `data:` URLs, so
+> **`js/cine.js` never loads there** (`window.DAO` is undefined) and every
+> page silently falls back to direct scroll mapping. Pane testing therefore
+> cannot exercise cine.js at all. Drive it in node instead. The pane also
+> reports `prefers-reduced-motion: reduce`, which bypasses pacing even when
+> the file does load.
+
+---
+
+## Cinematic scroll made one-way + auto-release (August 19) — SUPERSEDED, see above
 
 `js/cine.js` only — no page HTML touched, no per-call-site changes needed. Applies
 automatically to all 13 tracked sections sitewide (the table under "Where it is
@@ -1006,16 +1225,233 @@ read as a slogan.
 
 ---
 
+## Sanctuary rebuilt section by section — August 21
+
+`sanctuary.html` only. Nothing on index / app / web3 / investors / about or
+the trust layer was touched. **Judged by eye this time**, at 1920x1080,
+1440x900, 1280x800, 1366x625, 1024x768, 768x1024, 430x932 and 375x667 —
+see "How the 3D was finally seen" below for how that became possible.
+
+### 1. One type ladder for the whole page
+The page carried nine unrelated Cormorant sizes. At 1280 a section headline
+was 69px while the day-verb beneath it was **71.7px** — an item outranking
+the headline it belonged to — and the same editorial role ran 32 / 43.5 /
+46 / 56 in four different sections. Every Cormorant size now resolves to one
+of five `--t-*` steps declared at the top of the sheet, and every running
+size to one of five more.
+
+| token | role | 1440 | 375 |
+|---|---|---|---|
+| `--t-hero` | hero + bridge statements | 95 | 42 |
+| `--t-display` | **every** section headline | 61.9 | 33 |
+| `--t-accent` | the italic line continuing a headline | 50 | 27 |
+| `--t-lead` | item names, verbs, day titles | 41.8 | 26 |
+| `--t-sub` | list statements, index | 30 | 21 |
+| body / meta / note / micro | 16.5 / 14 / 13.5 / 10.5 at every width |
+
+- `--t-display`, `--t-accent` and `--t-lead` clamp against **viewport height
+  as well as width** (`min(4.3vw, 8.2vh)`). Pinned stages sized only off
+  width overflow their own `overflow:hidden` on a short laptop, which is
+  literally how the Four Foundations footnote came to be sliced in half.
+- `.three-copy .display` was the last headline off the ladder (its own
+  `clamp(30px,3.6vw,54px)`), which is most of why the two 3D sections read
+  as a different document from the rest of the page.
+- The mobile block had its own `.seven-verb { font-size: 34px }`, which
+  reproduced the outranking bug on handsets. Gone.
+
+### 2. Divider system v2 — the spacing was never balanced
+Driven entirely by `--dv-*` tokens now. The identity that matters:
+
+> `tail − drop − mark  ==  drop + head`
+
+so the palm mark lands optically centred in the gap. Measured at 1440x900:
+**126px above / 126px below** on every standard divider (was 68 above and
+137 below at 1280x720, drifting to 114/167 at 1080 tall — the mark read as
+belonging to the section it was about to introduce, not the one it closed).
+
+**Two hard collisions existed and were invisible to a layout audit.**
+`#theSanctuary` and `.day-outer` both set `padding-bottom: 0`, so the mark
+landed **40px inside their last line of type**. Nothing overflows, nothing
+escapes the viewport, `scrollHeight === clientHeight`; only measuring the
+mark against the last text box finds it.
+
+Three variants, and the rule for choosing:
+- `.divider` — next block is a normal padded section.
+- `.divider.to-bleed` — next block is a photograph or a canvas and supplies
+  no head padding, so the drop grows to keep the mark centred (90/90).
+- `.divider.solo` — the block **above** is a pinned 100vh stage. An overlay
+  divider there draws a rule straight across the stage's last live frame,
+  which is exactly what the reported screenshot showed. Solo takes real flow
+  height and paints its own band in the pin's ground colour — this is the
+  one case where the `.bg-*` classes are live again.
+
+`.sect:has(+ .divider)` grants the tail and `.divider:not(.solo) + .sect`
+takes the head back, so new sections inherit the geometry automatically. If
+`:has()` were ever unsupported the divider sits tighter — it does not
+collide. **Every ad-hoc inline `padding` on a divider is gone**; they were
+what made the spacing look arbitrary.
+
+### 3. Pinned sections no longer clip themselves
+`.found-sticky` needed **920px inside a 720px stage** at 1280x720 and lost
+the difference to `overflow:hidden`. Fixed three ways together:
+- every padding, gap and row inside a pin is `clamp()`ed on `vh`;
+- `.found-foot` moved **out** of the pin into its own `.found-close` beat,
+  and `.seven-rolling` joined the closing ivory section. Both are summaries,
+  not items — they earn a beat after the stage scrolls away;
+- verified with all four rows expanded (the worst case): **153px of slack at
+  1440x900, 86px at 1280x720, 50px at 1366x625**.
+
+### 4. Section 2 was genuinely squeezed
+Two equal 557px columns holding one two-line headline and two short
+paragraphs gave the section **218px of content inside 350px of padding** —
+the first thing after a 620vh hero. Now an asymmetric spread (0.92fr / 1fr),
+the opening sentence promoted to a Cormorant lede at `--t-sub`, and a larger
+head because of what it follows.
+
+### 5. Four Foundations — clearer, not just fixed
+The reader could previously see one lit row and three at `opacity: 0.3`,
+which is barely legible green-on-green — three quarters of a section whose
+whole claim is that the four are **one system**. Weight now carries state
+(0.4 → `.done` 0.66 → `.active` 1.0), the live row gets a soft wash and a
+scaled gold dot, and the spine is measured off the active row's own bottom
+edge rather than a computed height. Verified stepping 01→02→03→04 with the
+spine at 90/180/271/361px.
+
+---
+
+## The two 3D scenes rebuilt — August 21
+
+Both now share `TROPIC`, a small vocabulary of sky dome, still water, sala,
+palm, island, karst, timber palette and planar reflection. Before it existed
+the page's two WebGL sections had nothing in common but a canvas element,
+which is how a page ends up looking like two documents.
+
+### 3D one: "One Place, All Day" — a sala on still water
+What was there was a grey massing model — plinth, deck, two blank walls, a
+flat slab roof, six cylinders, **no sky at all** — floating in the clear
+colour. Replaced with a timber sala on posts over water, palms on real
+shorelines, limestone karsts on the horizon and a gradient sky dome, with
+the sun crossing dawn → night driving every colour in the frame.
+
+### 3D two: "The seven day journey" — the lantern walk
+The concept was kept: you travel the week in first person and the route
+turns out to have been closed. The **language** was the problem — a glowing
+gold tube through a black starfield with torus gates you flew through was a
+racing line in deep space. It is now a timber boardwalk a hand's breadth
+above still water at blue hour, walked at eye height, with seven lanterns on
+pilings (one per day) and marker lamps between them, circling **the same
+sala from 3D one on its island** — which is what makes the reveal land: you
+were never on a track, you were circling the Sanctuary the whole time.
+
+### Nine things that were only findable by looking — do not reintroduce
+1. **The sky was clipped by the camera's far plane.** The dome sits at
+   radius 600 and `stage3D`'s camera was `far: 400`, so a crisp circular arc
+   was drawn across the sky. It looked like a deliberate vignette and was
+   the frustum. Far is now **1600**; any geometry added here must stay
+   inside it.
+2. **Ripple direction matters more than ripple strength.** Three sines all
+   running roughly the same way made the sea read as **corduroy**. The wave
+   set now spans six angles including near-perpendicular pairs.
+3. **Tile count is the difference between glitter and blotches.** At 26
+   tiles the sun broke into white amoebas; at 64 it aliased into a visible
+   grid. 300 with mipmaps and full anisotropy is stable at every depth.
+4. **A mirrored reflection needs its normals negated by hand.**
+   `scale.y = -1` flips the normal matrix, so the sun lands on what were the
+   undersides: at golden hour the real roof was a dark silhouette while its
+   reflection was **brighter than the sky**. Pre-negate `normal.y` on the
+   mirrored geometry and use `DoubleSide`.
+   > The obvious alternative — own layer, own mirrored sun — **does not work
+   > in r128**: a light's `layers` are tested against the CAMERA, not against
+   > each mesh, so the second sun simply lit the whole scene twice.
+5. **`MeshLambertMaterial` ignores `emissiveMap` in r128.** The boardwalk's
+   visible tone at blue hour is almost entirely its emissive floor
+   (measured: 43 of 47 red), so board joints never appeared. Phong honours
+   it — but the joints are now vertex colour anyway, see next.
+6. **A 32×1 stripe texture renders as a flat field.** Its mip chain reduces
+   to 1×1 within five levels, so every sample past the first mip returns the
+   average of the whole strip. Measured flat to within 1/255 across the
+   entire near deck. Board joints are now **vertex colour** — in the
+   geometry, where nothing can filter them away.
+7. **A swept ribbon's winding depends on which way the curve runs.**
+   `computeVertexNormals()` gave the boardwalk a top face pointing DOWN, so
+   it was back-face culled from a camera standing on it and the ride showed
+   nothing underfoot. Normals are set explicitly (+Y on the deck ring).
+8. **Aim the walking camera at a fixed ARC DISTANCE along the path** (30
+   units), not a fixed fraction of it and not down the tangent. A fraction
+   changes meaning when the ring is resized; the pure tangent never turns,
+   so the walk left frame and the ride became a dark wedge.
+9. **Linear fog, not exponential, on the loop.** The ride must show ~30
+   units of boardwalk while hiding the far side of the ring 100 units away —
+   or you see it is a loop before the reveal says so. No exponential density
+   separates those two distances. The far plane is also what the lift opens.
+
+### Other decisions worth keeping
+- **Palms stand on land.** An early pass had six rooted in open water in
+  front of a full-width sandbar — palms growing out of the sea, and a bar
+  that met the sky in one hard line across the frame and read as a hedge.
+- **Islands shelve.** A straight cylinder's wall catches the sun broadside
+  and reads as a slice of cake sitting on the sea; the top ring is inset.
+- **Marker lamps on the walk are ALWAYS lit.** Making them light as you
+  reach them was wrong twice: you walk forwards, so everything reached is
+  behind you, and the ride showed a receding line of dead lamps. They are
+  path lighting; the seven day lanterns are the milestones, and leaving them
+  as the only thing that changes is what makes reaching one register.
+- **An unreached day lantern is dim WARM, not cool blue** — in a line of
+  warm lamps a blue box reads as a broken light.
+- **Lanterns stand in the water on pilings, clear of the walking line.** On
+  the deck edge a 4m post filled the middle of the frame every time.
+- **The lift clears the HAZE; it does not turn the lights on.** Tripling the
+  ambient at the reveal brought the outer islands up as bright green lily
+  pads and lost the ring among them.
+- **Mobile is a different composition, not the desktop one shrunk.**
+  `stage3D` widens the vertical fov as the frame narrows (a portrait
+  viewport is a narrower frame, not a smaller one — at aspect 0.46 the
+  horizontal field is otherwise less than a third of desktop), the pavilion
+  camera pulls back, and the walk lifts to just above head height.
+- **`.pav-veil` is measured, not decorative.** The pavilion runs from a near
+  black dawn to a bright midday sky under white copy, so a flat scrim is
+  either invisible at 05:00 or opaque at noon. It is directional on desktop
+  (left column + bottom readout only) and vertical on mobile. An earlier
+  mobile ramp protected the type perfectly and turned three in the afternoon
+  into dusk.
+
+### How the 3D was finally seen — keep this
+The Browser pane composites only a fraction of a large viewport (~490×310 of
+1440×900), so a desktop 3D scene cannot be screenshotted. `stage3D` now
+carries a **test hook, off by default**: set `localStorage['daoasis-shot']`
+to `'1'` (or load with `?shot=1`) and each stage exposes
+`window.__STAGES[canvasId](p)`, which renders one exact scroll value and
+returns a PNG data URL. `preserveDrawingBuffer` is only enabled when the
+flag is set, so it costs nothing in production. Posting those to a throwaway
+local node receiver writes real PNGs that can simply be opened and looked
+at. **This is how all nine problems above were found.** Every one of them
+passed the numeric audit.
+
+> Also worth remembering: `window.scrollTo` in a synchronous loop reads
+> **stale** section state, because the `cine` callbacks run on rAF. Wait
+> ~40 frames between the scroll and the assertion or the section will look
+> frozen on its first state when it is fine.
+
+### Verified
+Zero console errors on a 156-position sweep of the full 33,931px document
+and back. At 1920x1080, 1440x900, 1024x768, 768x1024, 430x932 and 375x667:
+**0 clipped text, 0 horizontal overflow, 0 divider collisions**, and the
+type ladder identical across every section at each width. Foundations steps
+01→04 with the spine tracking each row; mobile keeps all four open.
+
+---
 ## Next planned work
 **`web3.html` is done — built, numerically verified and judged by eye** (August 14).
 Layout audited with zero issues at 1920×1080, 1440×900, 1280×800, 1280×720, 768×1024,
 430×932, 390×844 and 375×667; every scene screenshotted and tuned. A fresh load logs
 exactly one console error, the site-wide missing favicon.
 
-**`sanctuary.html` still has not been judged by eye.** Its 3D scenes, hero sequence and
-scroll behaviour were verified numerically only. Expect the pavilion camera and the hero
-plate-pass timing to want tuning — and note that the web3 pass found four real problems
-that the numbers had passed clean, so budget for the same there.
+**`sanctuary.html` has now been judged by eye** (August 21) — dividers, type,
+both 3D scenes, desktop and mobile. See the two August 21 sections above. As
+predicted, the numbers had passed nine real problems clean.
+
+**The hero plate-pass timing is the one part still not tuned by eye.** The
+rest of the page has been; the hero sequence was left alone in that pass.
 
 **Verifying animation needs the Browser pane displayed.** When it is hidden the page
 reports `visibilityState: "hidden"`, which freezes `requestAnimationFrame` and
@@ -1030,3 +1466,70 @@ Then upload `index.html`, `app.html`, `sanctuary.html`, `web3.html`, `vercel.jso
 **and `js/cine.js`** to GitHub to deploy. `js/cine.js` is new — if it is missed, every
 page falls back to direct scroll mapping (today's pre-pacing behaviour) rather than
 breaking, but the cinematic pacing simply will not be there.
+
+---
+
+## "A Day at the Sanctuary" — nine plates, and the pacing fixed (August 21)
+
+`sanctuary.html` only, Section 6 (`#dayOuter`). Design, copy, typography and the
+sticky concept are untouched — this is the same interaction given room to breathe.
+
+### One photograph per time slot
+Was four `--img-day-*` plates (morning/midday/afternoon/evening) shared across nine
+entries; now nine, keyed by slot name (`wake` … `rest`). 07:00 keeps `img-01.jpg`.
+The four old vars are gone; `data-media` on both the layers and the entries carries
+the new keys, and `current` in the observer initialises to `wake`.
+
+**Every plate is `background-size: cover` — nothing is stretched.** Eight of the nine
+sources are portrait (0.56–0.75) and the frames are not: the desktop column is ~0.88
+and the mobile band ~1.10 at 390x844 but **1.34 at 375x667**. So the crop is always
+vertical, and `background-position` is the focal point, measured per photograph
+against the frame the slot actually gets:
+
+- **The mobile band is a different composition, not the desktop frame shrunk.**
+  `move` and `integrate` need their own position inside the `max-width:900px` block —
+  at the desktop value the mobile band cuts the head off one and the standing figures
+  off the other. The rest hold at one value.
+- `move` is 18% on desktop because the raised hands start at **6.7% of the source**
+  (measured by scanning the decoded pixels, not guessed); at 30% they clipped.
+- `learn` is 85% — the laptop lives in the bottom third of a 4000x6000 frame.
+- Crops were judged by eye by drawing each one to a canvas at the real frame size and
+  posting the PNG to a throwaway local receiver, the same trick the Journey photograph
+  used. The Browser pane will not composite, so this is the only way to see them.
+
+### Pacing — the section was flashing through nine stages in ~2400px
+Each entry was ~264px tall (8vh padding + content), so a stage lasted about a third
+of a viewport. `.day-entry` is now `min-height: 88vh` (68vh mobile) with its content
+centred in the box, which gives **0.98 viewport of scroll per stage** — 882px at
+1440x900, 706px at 1280x720. The entries are contiguous, so the handover is a 0.1vh
+overlap (the observer band itself) and there is never a frame with nothing lit.
+
+- **Content is centred in the box on purpose.** Top-aligned, the text would rise out
+  of the frame while the box — and therefore the photograph — was still lit.
+- `.day-list` gained a **24vh tail** (26vh mobile). Without it the sticky plate
+  unpins while 21:00 is still the live stage. With it the plate releases 178–210px
+  *after* the last title crosses the reading line, so the day finishes before the
+  page moves on. The trailing gap now matches the gap between entries (458 vs 470px
+  at 1280).
+- The observer is unchanged: same `-45%/-45%` band, same class toggles. Nothing was
+  converted to `cine`; this section has never been tracked and still is not.
+
+### Descriptions
+A `<p class="day-desc">` sits between `.day-title` and `.day-detail` on all nine —
+under the subheading, above the tag row. `--t-body` at `rgba(247,244,238,0.62)` on
+`--dark-surface` = **6.4:1**. Two lines at every desktop width, 2–3 on a handset.
+No existing time, heading, tag, size or spacing value was changed.
+
+### Verified
+Nine layers resolve 200, nine `.day-desc`, exactly one entry in the observer band at
+every stage midpoint with the right image and the right clock (replayed
+deterministically — the pane was hidden, so the real observer is frozen). 0 horizontal
+overflow sweeping the whole document at 1440x900; 0 at 1280x800, 1024x768, 390x844 and
+375x667. 0 console errors. Divider below the section still clears the footnote by 80px.
+**The live scroll has not been watched happen** — the pane would not display.
+
+### Open risk
+The eight new photographs total **15.1 MB** and all nine layers are painted into one
+sticky container, so the browser fetches every one on approach. They want resizing to
+about 1600px on the long edge and re-encoding (WebP or quality-80 JPEG) before this
+ships; there is no image tooling in this environment to do it here.

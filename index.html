@@ -293,7 +293,12 @@
      transform:translateY(0), and animation-fill-mode:forwards keeps that
      final keyframe applied, which replaced the -50% shift and left the
      hint sitting half its own width right of centre. */
-  .scroll-hint{position:absolute;bottom:5.5vh;left:0;right:0;z-index:10;
+  /* bottom is tied to the divider's own geometry (--divider-h's 3vh tail +
+     26px mark), not a flat vh guess: at 5.5vh flat this sat only ~(2.5vh -
+     26px) above the divider mark, which is NEGATIVE at ordinary laptop
+     heights — the hint and the mark touched. This clears the mark by a fixed
+     34px at every viewport height instead of drifting with it. */
+  .scroll-hint{position:absolute;bottom:calc(3vh + 26px + 34px);left:0;right:0;z-index:10;
     text-align:center;color:rgba(247,244,238,0.45);font-size:10px;letter-spacing:0.28em;text-transform:uppercase;
     opacity:0;animation:fadeUp 1.3s ease-out forwards;animation-delay:6.9s;}
 
@@ -379,7 +384,7 @@
     .journey-mobile .stop{padding:0 0 1.7vh 22px;}
     .journey-mobile .stop-title{font-size:10px;letter-spacing:0.16em;}
     .journey-mobile .stop-sub{font-size:11px;line-height:1.4;margin-top:3px;}
-    .scroll-hint{bottom:3.4vh;font-size:9px;letter-spacing:0.24em;}
+    .scroll-hint{bottom:calc(3vh + 26px + 20px);font-size:9px;letter-spacing:0.24em;}
   }
 
   .section{background:var(--warm-white);padding:16vh 8%;max-width:none;margin:0;}
@@ -544,19 +549,25 @@
 
   .overlay{position:relative;z-index:10;height:100%;display:flex;flex-direction:column;justify-content:center;
     padding:0 8%;pointer-events:none;}
+  /* Now that the copy stays visible for the whole section (it used to fade
+     out of the mark's way), it needs its own contrast guard against the dust
+     resolving underneath it. Confined to the left ~55% so it never dulls the
+     mark itself or the card dock. */
+  .overlay::before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;
+    background:linear-gradient(90deg, rgba(3,6,9,0.55) 0%, rgba(3,6,9,0.30) 38%, transparent 58%);}
 
   .why-kicker{font-size:11px;letter-spacing:0.22em;color:var(--gold);text-transform:uppercase;
     display:flex;align-items:center;gap:14px;padding-left:0.22em;
-    opacity:0;transition:opacity 0.5s ease;}
+    opacity:1;transition:opacity 0.5s ease;}
   .why-kicker::before{content:'';display:block;width:28px;height:1px;background:currentColor;opacity:0.55;}
   .why-headline{font-family:'Cormorant Garamond',serif;font-weight:300;color:var(--warm-white);
     font-size:clamp(36px,5.4vw,74px);line-height:1.06;letter-spacing:-0.008em;margin-top:28px;max-width:13ch;
-    opacity:0;transition:opacity 0.5s ease;}
+    opacity:1;transition:opacity 0.5s ease;}
   .why-headline em{font-style:italic;color:var(--gold);}
   .lede{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;color:rgba(247,244,238,0.74);
     font-size:clamp(19px,2.1vw,26px);line-height:1.45;margin-top:30px;max-width:22ch;
-    opacity:0;transition:opacity 0.5s ease;}
-  .body-copy{margin-top:34px;max-width:460px;opacity:0;transition:opacity 0.5s ease;
+    opacity:1;transition:opacity 0.5s ease;}
+  .body-copy{margin-top:34px;max-width:460px;opacity:1;transition:opacity 0.5s ease;
     padding-top:28px;border-top:1px solid rgba(247,244,238,0.12);}
   .body-copy p{font-size:15px;color:#b0a99b;line-height:1.9;margin-bottom:16px;}
   .body-copy p:last-child{margin-bottom:0;}
@@ -787,8 +798,47 @@
      half-erased headline behind a floating plate is exactly what read as
      unfinished. With a real row per element nothing overlaps, so nothing has
      to be hidden. */
+  /* The photograph, hazed to the section's own copy.
+
+     The scrim stops below are NOT eyeballed — they are the measured bands
+     the content actually occupies inside the 100vh stage (1440x900):
+
+       kicker      8.5 - 10.2%      card        26.2 - 46.0%
+       headline   13.3 - 20.8%      medallions  60.1 - 68.2%
+                                    labels end       81.2%
+
+     So the veil opens where nothing is set (21-27%, 46-57%) and closes
+     over every band that carries type. It is heaviest across the bottom
+     third, which is where the seven 11.5px descriptions sit over the
+     busiest part of the frame — the pool, the stone and the foliage.
+
+     Two layers, in paint order: a vertical veil on top, then a warm haze
+     beneath it. The haze matters — a flat dark veil alone reads as the
+     photo being switched off, whereas warming the middle first keeps the
+     sun's atmosphere and lets the veil read as fog over a real place.
+     Both are warm (#100D0B, not black) so the section still sits in the
+     site's palette.
+
+     background-color is the fallback: if the file is ever missing the
+     section paints --mineral and reads exactly as it did before. */
   .stage4{position:sticky;top:0;height:100vh;overflow:visible;
-    background:radial-gradient(ellipse at 50% 45%, #221c16 0%, var(--mineral) 75%);
+    background-color:var(--mineral);
+    background-image:
+      linear-gradient(180deg,
+        rgba(16,13,11,0.88) 0%,
+        rgba(16,13,11,0.87) 11%,
+        rgba(16,13,11,0.72) 21%,
+        rgba(16,13,11,0.50) 27%,
+        rgba(16,13,11,0.50) 46%,
+        rgba(16,13,11,0.70) 57%,
+        rgba(16,13,11,0.86) 62%,
+        rgba(16,13,11,0.92) 74%,
+        rgba(16,13,11,0.95) 84%,
+        rgba(16,13,11,0.97) 100%),
+      radial-gradient(ellipse 130% 62% at 50% 44%,
+        rgba(78,60,44,0.42) 0%, rgba(46,36,28,0.20) 46%, rgba(23,20,18,0) 76%),
+      url('images/Journey%20image.png');
+    background-size:cover;background-position:center;background-repeat:no-repeat;
     display:grid;grid-template-rows:auto auto minmax(0,1fr);justify-items:center;
     padding:clamp(52px,8.5vh,86px) 5% clamp(40px,6vh,64px);}
 
@@ -800,42 +850,139 @@
     font-size:clamp(32px,4.6vw,64px);line-height:1.06;letter-spacing:-0.008em;margin-top:28px;}
   .j-headline em{font-style:italic;color:var(--gold);}
 
-  .j-track-wrap{position:relative;width:min(1360px,84vw);perspective:1400px;z-index:10;}
-  .j-track{position:relative;height:120px;transform-style:preserve-3d;transition:transform 0.15s ease-out;}
+  /* ── THE TRACK ──────────────────────────────────────────────────────
+     Redesigned 20 Aug. It was seven 52px numbered discs on a flat rule —
+     correct information, but it read as a progress widget rather than a
+     journey. It is now a row of engraved medallions: a large ring holding
+     the stage's own icon, its number set above as a small serif index, a
+     lit gold path running through them and hairline separators marking
+     each stage's column, so the seven read as one continuous route with
+     seven places on it.
 
-  .j-line-base{position:absolute;left:0;right:0;top:34px;height:1px;background:rgba(247,244,238,0.14);}
-  .j-line-fill{position:absolute;left:0;top:34px;height:1px;width:0%;
-    background:linear-gradient(90deg, var(--gold), #e0b083);
-    box-shadow:0 0 12px rgba(196,138,90,0.6);}
-  .j-comet{position:absolute;top:34px;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;
-    background:radial-gradient(circle, #ffe4c2 0%, var(--gold) 55%, transparent 75%);
+     Every geometry value below hangs off --medal and --numh so the whole
+     row rescales from two numbers. The rule and the comet are positioned
+     from the SAME expression as the medallion's centre — if --medal or
+     --numh changes and those three fall out of step, the path stops
+     running through the rings and floats above or below them.
+
+     Nothing here touches the scroll logic. The script still only toggles
+     .done/.active/.tease on .j-node, writes .j-line-fill's width, and
+     writes .j-comet's left/opacity — all of which still mean exactly what
+     they meant before. */
+  .j-track-wrap{position:relative;width:min(1360px,84vw);perspective:1400px;z-index:10;
+    --medal:clamp(58px,7.4vh,86px);   /* ring diameter          */
+    --numh:22px;}                     /* headroom for the index */
+  .j-track{position:relative;height:clamp(198px,24vh,252px);
+    transform-style:preserve-3d;transition:transform 0.15s ease-out;}
+
+  /* Column separators, at the midpoints between adjacent stages.
+     Drawn as one repeating gradient rather than seven elements: the
+     pseudo is shifted left by half a column (100%/12) so the gradient's
+     own periodic lines — which would otherwise land at 16.667%, 33.3% …,
+     i.e. directly ON each medallion — land at 8.33%, 25%, 41.67% … which
+     are exactly the midpoints. Starts below the rings so it separates the
+     labels without cutting the path. */
+  .j-track::before{content:'';position:absolute;pointer-events:none;
+    left:calc(-100% / 12);width:100%;
+    top:calc(var(--numh) + var(--medal) + 18px);bottom:0;
+    background:repeating-linear-gradient(90deg,
+      transparent 0, transparent calc(100% / 6 - 1px),
+      rgba(247,244,238,0.07) calc(100% / 6 - 1px), rgba(247,244,238,0.07) calc(100% / 6));}
+
+  .j-line-base{position:absolute;left:0;right:0;top:calc(var(--numh) + var(--medal) / 2);height:1px;
+    background:linear-gradient(90deg, rgba(247,244,238,0.03), rgba(247,244,238,0.15) 10%,
+      rgba(247,244,238,0.15) 90%, rgba(247,244,238,0.03));}
+  .j-line-fill{position:absolute;left:0;top:calc(var(--numh) + var(--medal) / 2);height:1px;width:0%;
+    background:linear-gradient(90deg, rgba(196,138,90,0.45), var(--gold) 40%, #e8c39c);
+    box-shadow:0 0 10px rgba(196,138,90,0.55), 0 0 28px rgba(196,138,90,0.26);}
+  .j-comet{position:absolute;top:calc(var(--numh) + var(--medal) / 2);width:12px;height:12px;
+    margin:-6px 0 0 -6px;border-radius:50%;
+    background:radial-gradient(circle, #fff1de 0%, #ffe4c2 30%, var(--gold) 58%, transparent 76%);
     filter:blur(0.5px);pointer-events:none;}
 
-  .j-node{position:absolute;top:0;transform:translateX(-50%);text-align:center;width:150px;}
-  .j-dot{width:52px;height:52px;border-radius:50%;margin:0 auto;display:flex;align-items:center;justify-content:center;
-    border:1.5px solid rgba(247,244,238,0.28);color:#8a8377;font-family:'Cormorant Garamond',serif;font-size:14px;
-    letter-spacing:0.03em;position:relative;background:rgba(30,26,22,0.4);
-    transition:all 0.55s cubic-bezier(0.34,1.56,0.64,1);}
-  .j-dot::after{content:'';position:absolute;inset:-10px;border-radius:50%;border:1px solid rgba(196,138,90,0.5);
+  .j-node{position:absolute;top:0;padding-top:var(--numh);
+    transform:translateX(-50%);text-align:center;width:min(15.2%,196px);cursor:pointer;}
+  /* hover preview affordance — extra to the scroll-driven .active/.done
+     states, never replacing them; skipped on touch, which has no hover */
+  @media (hover:hover){
+    .j-node:not(.active):hover .j-dot{border-color:rgba(196,138,90,0.60);transform:scale(1.06);}
+    .j-node:not(.active):hover .j-ico{stroke:rgba(247,244,238,0.78);}
+    .j-node:not(.active):hover .j-title{color:var(--warm-white);}
+  }
+
+  /* The medallion. Resting state is an engraved ring, not a filled disc —
+     the old one filled with solid gold the moment it was reached, which
+     made six "done" stages louder than the one being read. Weight now
+     goes UP with state (quiet ring -> warm ring -> lit ring) instead of
+     every reached stage shouting at once. */
+  .j-dot{width:var(--medal);height:var(--medal);border-radius:50%;margin:0 auto;position:relative;
+    display:flex;align-items:center;justify-content:center;
+    border:1px solid rgba(247,244,238,0.30);
+    background:radial-gradient(circle at 38% 30%, rgba(64,55,46,0.92), rgba(22,19,16,0.94));
+    box-shadow:0 12px 30px -14px rgba(0,0,0,0.85), inset 0 1px 0 rgba(247,244,238,0.07);
+    transition:transform 0.55s cubic-bezier(0.34,1.56,0.64,1),
+               border-color 0.5s ease, box-shadow 0.5s ease, background 0.5s ease;}
+  .j-dot::after{content:'';position:absolute;inset:-9px;border-radius:50%;border:1px solid rgba(196,138,90,0.5);
     opacity:0;transform:scale(0.7);}
-  .j-node.done .j-dot{border-color:transparent;color:var(--mineral);font-weight:600;
-    background:radial-gradient(circle at 35% 30%, #e0b083, #a8703f);
-    box-shadow:0 6px 18px rgba(196,138,90,0.4);}
-  .j-node.active .j-dot{border-color:transparent;color:var(--mineral);font-weight:600;
-    background:radial-gradient(circle at 35% 30%, #f0c39a, #c48a5a);
-    box-shadow:0 10px 30px rgba(196,138,90,0.55);transform:scale(1.22);}
+
+  .j-ico{width:calc(var(--medal) * 0.42);height:calc(var(--medal) * 0.42);display:block;
+    fill:none;stroke:rgba(247,244,238,0.52);stroke-width:1.4;
+    stroke-linecap:round;stroke-linejoin:round;
+    transition:stroke 0.5s ease;}
+  /* The stage index, set above the ring as an editorial folio rather than
+     inside it — the ring belongs to the icon. --numh reserves its room, so
+     it never overlaps the ring however --medal is tuned. */
+  .j-num{position:absolute;top:0;left:50%;transform:translateX(-50%);
+    font-family:'Cormorant Garamond',serif;font-size:clamp(11px,1.05vw,13px);
+    letter-spacing:0.20em;line-height:1;color:#8a8177;
+    transition:color 0.5s ease;}
+
+  .j-node.done .j-dot{border-color:rgba(196,138,90,0.58);
+    background:radial-gradient(circle at 38% 30%, rgba(76,58,42,0.94), rgba(26,21,17,0.94));
+    box-shadow:0 12px 30px -14px rgba(0,0,0,0.85), 0 0 0 1px rgba(196,138,90,0.12),
+               inset 0 1px 0 rgba(247,244,238,0.07);}
+  .j-node.done .j-ico{stroke:rgba(216,164,116,0.92);}
+  .j-node.done .j-num{color:rgba(196,138,90,0.85);}
+
+  /* The live stage. It has to win against six lit neighbours, so it moves
+     on four axes at once — ring luminosity, a warmer fill, an ambient
+     gold halo and a 10% scale — none of which alone was enough to make it
+     unmistakable at a glance. */
+  .j-node.active .j-dot{border-color:rgba(242,203,164,0.95);transform:scale(1.10);
+    background:radial-gradient(circle at 38% 28%, rgba(112,84,56,0.97), rgba(38,29,22,0.96));
+    box-shadow:0 20px 46px -16px rgba(0,0,0,0.9), 0 0 0 1px rgba(242,203,164,0.30),
+               0 0 54px -10px rgba(196,138,90,0.75),
+               inset 0 1px 0 rgba(247,244,238,0.14);}
+  .j-node.active .j-ico{stroke:#ffdcb4;stroke-width:1.55;}
+  .j-node.active .j-num{color:#f2cba4;}
   .j-node.active .j-dot::after{opacity:1;animation:jPulse 1.7s ease-out infinite;}
   @keyframes jPulse{0%{transform:scale(0.75);opacity:0.8;}100%{transform:scale(1.7);opacity:0;}}
 
   .j-node{transition:opacity 0.7s ease;}
-  .j-node.tease .j-dot{border-color:rgba(196,138,90,0.55);color:#cbb9a0;background:rgba(60,48,36,0.55);
-    box-shadow:0 4px 14px rgba(196,138,90,0.18);}
+  .j-node.tease .j-dot{border-color:rgba(196,138,90,0.38);
+    background:radial-gradient(circle at 38% 32%, rgba(58,46,35,0.82), rgba(22,18,15,0.90));
+    box-shadow:0 12px 30px -14px rgba(0,0,0,0.85), inset 0 1px 0 rgba(247,244,238,0.05);}
+  .j-node.tease .j-ico{stroke:rgba(203,185,160,0.62);}
+  .j-node.tease .j-num{color:#8c8378;}
   .j-node.tease .j-title{color:#b3ac9f;}
 
-  .j-title{font-size:12px;letter-spacing:0.1em;color:#8a8377;margin-top:20px;transition:color 0.5s ease;}
-  .j-sub{font-size:11.5px;color:#5f5a52;line-height:1.65;margin-top:8px;transition:color 0.5s ease, opacity 0.5s ease;opacity:0.7;}
+  /* Serif titles, to match the section headline and the stage card. At
+     12px sans with 0.1em tracking these read as UI labels under a 64px
+     Cormorant headline — the one thing that most made the row look like a
+     component rather than part of the page. */
+  .j-title{font-family:'Cormorant Garamond',serif;font-weight:300;
+    font-size:clamp(15px,1.32vw,20px);letter-spacing:0.005em;line-height:1.18;
+    color:#8a8377;margin-top:clamp(14px,1.9vh,21px);transition:color 0.5s ease;}
+  /* A rule that grows as the stage is reached — the accent is earned by
+     progress rather than painted on every card at once. */
+  .j-title::after{content:'';display:block;height:1px;width:0;margin:10px auto 0;
+    background:var(--gold);opacity:0;
+    transition:width 0.6s var(--ease), opacity 0.6s ease;}
+  .j-node.done .j-title::after{width:14px;opacity:0.35;}
+  .j-node.active .j-title::after{width:28px;opacity:0.85;}
+  .j-sub{font-size:11.5px;color:#5f5a52;line-height:1.65;margin-top:9px;transition:color 0.5s ease, opacity 0.5s ease;opacity:0.7;}
   .j-node.done .j-title,.j-node.active .j-title{color:var(--warm-white);}
-  .j-node.active .j-title{font-weight:500;}
+  .j-node.active .j-title{color:#f6efe4;}
   .j-node.done .j-sub,.j-node.active .j-sub{color:#b8b1a4;opacity:1;}
 
   @media (prefers-reduced-motion: reduce){
@@ -868,13 +1015,22 @@
        popped the card up to full size and then eased it 3.5% back down
        again. The entry scale belongs in the keyframes, not the base rule. */
     transform:none;text-align:center;
-    background:linear-gradient(168deg,#FAF8F4,#EFEAE0);
-    border:1px solid rgba(43,38,35,0.10);
-    border-radius:3px;padding:clamp(32px,3.9vh,46px) clamp(36px,3.4vw,54px) clamp(34px,4.1vh,48px);
+    /* Was a flat ivory card (#FAF8F4->#EFEAE0) — read as a generic white UI
+       tooltip dropped onto the scene rather than part of it. This is the
+       same dark-glass treatment the "why DAOasis matters" stat panels
+       already use (.panel, further up this sheet): a translucent warm-dark
+       fill over the stage's own backdrop, blurred rather than opaque, so
+       the card reads as glass suspended in the scene instead of a card
+       pasted on top of it. */
+    background:linear-gradient(158deg, rgba(37,32,28,0.82), rgba(19,16,14,0.74));
+    backdrop-filter:blur(22px) saturate(150%); -webkit-backdrop-filter:blur(22px) saturate(150%);
+    border:1px solid rgba(196,138,90,0.20);
+    border-radius:4px;padding:clamp(32px,3.9vh,46px) clamp(36px,3.4vw,54px) clamp(34px,4.1vh,48px);
     z-index:60;opacity:0;
-    box-shadow:0 48px 100px rgba(0,0,0,0.55), 0 8px 24px rgba(0,0,0,0.3),
-               inset 0 1px 0 rgba(255,255,255,0.8);
-    transition:opacity 0.42s ease, transform 0.6s cubic-bezier(0.22,1,0.36,1);
+    box-shadow:0 30px 80px rgba(0,0,0,0.5), 0 8px 24px rgba(0,0,0,0.35),
+               0 0 70px -28px rgba(196,138,90,0.30),
+               inset 0 1px 0 rgba(247,244,238,0.07);
+    transition:opacity 0.42s ease, transform 0.6s cubic-bezier(0.22,1,0.36,1), box-shadow 0.5s ease, border-color 0.5s ease;
     pointer-events:none;}
   /* One gold accent, straddling the top edge. The previous version boxed the
      whole card in an inset gold hairline, which is the visual grammar of a
@@ -889,15 +1045,16 @@
     0%{transform:scale(0.955);opacity:0;}
     55%{transform:scale(1.008);}
     100%{transform:scale(1);opacity:1;}}
-  /* #8A5A2B not --gold: the gold is tuned for dark grounds and drops to
-     ~2.4:1 on ivory. This is the same hue carried to AA on a light card. */
-  .j-pop-eyebrow{font-size:10px;letter-spacing:0.3em;color:#8A5A2B;text-transform:uppercase;
+  /* #8A5A2B was the AA-safe carry of --gold for the old ivory card — the
+     card is dark now, so the ordinary --gold (already tuned for dark
+     grounds everywhere else on the site) applies directly. */
+  .j-pop-eyebrow{font-size:10px;letter-spacing:0.3em;color:var(--gold);text-transform:uppercase;
     padding-left:0.3em;margin-bottom:clamp(16px,2vh,22px);}
   /* max-width in ch, and balanced: the seven texts run 62–118 characters, so
      an unconstrained centred paragraph produced everything from one long line
      to a two-line block with three orphaned words. */
   .j-pop-text{font-family:'Cormorant Garamond',serif;font-weight:300;
-    font-size:clamp(20px,1.75vw,27px);color:#2B2623;line-height:1.45;letter-spacing:-0.005em;
+    font-size:clamp(20px,1.75vw,27px);color:rgba(247,244,238,0.92);line-height:1.45;letter-spacing:-0.005em;
     max-width:46ch;margin:0 auto;text-wrap:balance;}
   /* the arrow pointed at the node the card used to sit above; a centred card
      has nothing to point at, so it is retired rather than left dangling */
@@ -915,7 +1072,49 @@
   @media (max-width:1100px){.pin4{display:none;}}
   .journey-mobile-section{display:none;}
   @media (max-width:1100px){
-    .journey-mobile-section{display:block;background:var(--mineral);}
+    /* Mobile shows the photograph as a BAND AT THE TOP, not as a
+       full-section background — and `background-size` is the whole reason.
+
+       `cover` was tried first and is wrong here: a 1:1 image cover-ed into
+       a 390x1169 column renders 1169x1169 and shows only its centre 390px,
+       which in this frame is a sliver of the stone slab. Worse, that slice
+       is bright, so the 10px `.jm-label` in its quiet state needed alpha
+       0.935 to clear AA — at which point the photograph was a black smudge
+       carrying no image at all.
+
+       `100% auto` instead renders it 390x390: the FULL square composition,
+       uncropped, filling the top 100vw. The veil then reads it through the
+       section's own 16vh top padding and behind the kicker and headline,
+       and closes to fully opaque at 33.4% — where the image band ends.
+
+       The veil colour is --mineral (23,20,18), NOT the desktop veil's
+       darker 16,13,11. That is load-bearing: below the band the gradient
+       is at alpha 1, so the veil colour IS the section's ground for the
+       whole lower two thirds. At 16,13,11 that lower region would paint
+       #100D0B against neighbouring sections' #171412 — a visible seam.
+
+       Measured bands at 390x844 (section 1169px, band 390px):
+         kicker 12.7-14.0   headline 15.4-21.9   list starts 28.4
+
+       `background-attachment:scroll` is the default and is stated so
+       nobody "fixes" it to `fixed` later — fixed backgrounds are
+       unreliable on iOS Safari. */
+    .journey-mobile-section{display:block;
+      background-color:var(--mineral);
+      background-image:
+        linear-gradient(180deg,
+          rgba(23,20,18,0.55) 0%,
+          rgba(23,20,18,0.89) 11%,
+          rgba(23,20,18,0.90) 23%,
+          rgba(23,20,18,0.97) 28%,
+          rgba(23,20,18,1) 33.4%,
+          rgba(23,20,18,1) 100%),
+        radial-gradient(ellipse 140% 45% at 50% 18%,
+          rgba(78,60,44,0.40) 0%, rgba(23,20,18,0) 72%),
+        url('images/Journey%20image%20mobile.png');
+      background-size:100% 100%, 100% 100%, 100% auto;
+      background-position:center top;
+      background-repeat:no-repeat;background-attachment:scroll;}
     .journey-mobile-section .eco-kicker{color:var(--gold);}
     .journey-mobile-section .eco-headline{color:var(--warm-white);}
     .journey-mobile-section .eco-sub{color:#a49d90;}
@@ -1596,13 +1795,20 @@
         <div class="j-line-base"></div>
         <div class="j-line-fill" id="jLineFill"></div>
         <div class="j-comet" id="jComet"></div>
-        <div class="j-node" id="jNode0" style="left:0%;"><div class="j-dot">01</div><div class="j-title">Download the App</div><div class="j-sub">Your journey starts with a single tap.</div></div>
-        <div class="j-node" id="jNode1" style="left:16.667%;"><div class="j-dot">02</div><div class="j-title">Build Healthy Habits</div><div class="j-sub">Steps, sleep, hydration, breathing — every one moves you forward.</div></div>
-        <div class="j-node" id="jNode2" style="left:33.333%;"><div class="j-dot">03</div><div class="j-title">Join the Community</div><div class="j-sub">Connect with others building the same habits.</div></div>
-        <div class="j-node" id="jNode3" style="left:50%;"><div class="j-dot">04</div><div class="j-title">Earn DRC</div><div class="j-sub">Quests, learning and referrals turn effort into Reward Credits.</div></div>
-        <div class="j-node" id="jNode4" style="left:66.667%;"><div class="j-dot">05</div><div class="j-title">Convert to $DVT (Optional)</div><div class="j-sub">Go deeper — convert DRC into the on-chain layer.</div></div>
-        <div class="j-node" id="jNode5" style="left:83.333%;"><div class="j-dot">06</div><div class="j-title">Help Shape DAOasis</div><div class="j-sub">Propose and steer where DAOasis goes, as governance develops.</div></div>
-        <div class="j-node" id="jNode6" style="left:100%;"><div class="j-dot">07</div><div class="j-title">Visit the Sanctuary</div><div class="j-sub">For the few who go all the way: a real-world retreat, earned.</div></div>
+        <!-- The number moved out of .j-dot into its own .j-num folio so the
+             ring could carry an icon. .j-dot is deliberately still the ring's
+             class name: every state rule the script drives
+             (.j-node.done/.active/.tease .j-dot) keeps working untouched.
+             Icons are the site's existing 24-unit line set — the walking
+             figure on stage 02 is the same path app.html uses for Steps.
+             All seven titles and descriptions are verbatim. -->
+        <div class="j-node" id="jNode0" style="left:0%;"><div class="j-num">01</div><div class="j-dot"><svg class="j-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v11m0 0l-4-4m4 4l4-4"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg></div><div class="j-title">Download the App</div><div class="j-sub">Your journey starts with a single tap.</div></div>
+        <div class="j-node" id="jNode1" style="left:16.667%;"><div class="j-num">02</div><div class="j-dot"><svg class="j-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2z"/><path d="M8 8.5L6.5 15l3 1L11 20h2l1.5-4 2.5 1L18 9l-4-1-.5-1.5H10L8 8.5z"/></svg></div><div class="j-title">Build Healthy Habits</div><div class="j-sub">Steps, sleep, hydration, breathing — every one moves you forward.</div></div>
+        <div class="j-node" id="jNode2" style="left:33.333%;"><div class="j-num">03</div><div class="j-dot"><svg class="j-ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9.5" cy="8" r="3"/><path d="M15.5 5.3a3 3 0 0 1 0 5.4"/><path d="M15.5 19v-1.4a3 3 0 0 0-3-3h-6a3 3 0 0 0-3 3V19"/><path d="M21 19v-1.4a3 3 0 0 0-2.2-2.9"/></svg></div><div class="j-title">Join the Community</div><div class="j-sub">Connect with others building the same habits.</div></div>
+        <div class="j-node" id="jNode3" style="left:50%;"><div class="j-num">04</div><div class="j-dot"><svg class="j-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10h16v9a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-9z"/><path d="M3 7h18v3H3z"/><path d="M12 7v13"/><path d="M12 7S10.6 3 8.3 3a2.1 2.1 0 0 0 0 4"/><path d="M12 7s1.4-4 3.7-4a2.1 2.1 0 0 1 0 4"/></svg></div><div class="j-title">Earn DRC</div><div class="j-sub">Quests, learning and referrals turn effort into Reward Credits.</div></div>
+        <div class="j-node" id="jNode4" style="left:66.667%;"><div class="j-num">05</div><div class="j-dot"><svg class="j-ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="6.4" cy="12" r="3.1"/><circle cx="17.6" cy="12" r="3.1"/><path d="M10.3 12h3.4"/><path d="M12.5 10.7l1.3 1.3-1.3 1.3"/></svg></div><div class="j-title">Convert to $DVT (Optional)</div><div class="j-sub">Go deeper — convert DRC into the on-chain layer.</div></div>
+        <div class="j-node" id="jNode5" style="left:83.333%;"><div class="j-num">06</div><div class="j-dot"><svg class="j-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 4H4l8-4z"/><path d="M4 9h16"/><path d="M6.6 9v8M10.2 9v8M13.8 9v8M17.4 9v8"/><path d="M4 20h16"/></svg></div><div class="j-title">Help Shape DAOasis</div><div class="j-sub">Propose and steer where DAOasis goes, as governance develops.</div></div>
+        <div class="j-node" id="jNode6" style="left:100%;"><div class="j-num">07</div><div class="j-dot"><svg class="j-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21v-9.5"/><path d="M12 11.5c-2.9-1.5-5.4-.6-6.4.9"/><path d="M12 11.5c2.9-1.5 5.4-.6 6.4.9"/><path d="M12 11.5c-.9-2.6-2.9-4.1-4.9-4.1"/><path d="M12 11.5c.9-2.6 2.9-4.1 4.9-4.1"/><path d="M4.5 21h15"/></svg></div><div class="j-title">Visit the Sanctuary</div><div class="j-sub">For the few who go all the way: a real-world retreat, earned.</div></div>
       </div>
     </div>
   </div>
@@ -2921,8 +3127,13 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
       centreXpx = w / 2;
       sizePx = Math.min(w * 0.74, h * 0.32);
     } else {
-      centreXpx = w * 0.38;
-      sizePx = Math.min(w * 0.50, h * 0.72);
+      /* Nudged from 0.38 toward centre. Kept short of true 0.5 because the
+         card dock still owns the right-hand ~30vw and the mark must not run
+         under it; sizePx is capped a little tighter than before (0.50→0.44)
+         to buy back the clearance the extra centring spends, now that the
+         copy column stays visible instead of fading out of the way. */
+      centreXpx = w * 0.43;
+      sizePx = Math.min(w * 0.44, h * 0.68);
     }
 
     const scale = sizePx * perPx;
@@ -3118,16 +3329,20 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
     const kicker = document.getElementById('oKicker'), headline = document.getElementById('oHeadline'), lede = document.getElementById('oLede'), body = document.getElementById('oBody'), progressUI = document.getElementById('scrollProgress'), fill = document.getElementById('progressFill');
     const mobile = window.innerWidth <= 900;
 
-    /* The copy and the mark take turns — on every breakpoint now, not just
-       mobile. The copy holds the frame at full strength while the dots are
-       still noise and there is something to read, then hands over across
-       t 0.18→0.34 as the mark resolves. Nothing is ever obscured: the copy
-       has left before the mark reaches full strength, and it comes straight
-       back on the way up because render() is a pure function of t. */
-    const copyA = 1 - rampT(t, 0.10, 0.26);
+    /* Desktop only: the copy used to fully hand over to the mark
+       (opacity -> 0) across t 0.18->0.34. Per feedback the wording must stay
+       in view on the left throughout on desktop, so it now only recedes to a
+       still-legible floor instead of vanishing. Mobile keeps the original
+       full hand-over — the mark there is centred over the same column the
+       copy occupies (see placeLogo's mobile branch), so a stationary column
+       of text WOULD sit under the resolving mark; on desktop the mark sits
+       off to the right of the copy's own reading column, so there's nothing
+       to sit under. */
+    const copyA = mobile ? (1 - rampT(t, 0.10, 0.26)) : (1 - 0.32 * rampT(t, 0.10, 0.26));
     kicker.style.opacity = copyA; headline.style.opacity = copyA; lede.style.opacity = copyA; body.style.opacity = copyA;
-    /* the dust stays faint behind live copy so the text keeps its contrast */
-    canvas.style.opacity = 0.34 + 0.66 * rampT(t, 0.08, 0.26);
+    /* the dust stays faint behind live copy so the text keeps its contrast;
+       capped below full strength on desktop now that the copy never leaves */
+    canvas.style.opacity = mobile ? (0.34 + 0.66 * rampT(t, 0.08, 0.26)) : (0.34 + 0.51 * rampT(t, 0.08, 0.26));
     progressUI.style.opacity = t > 0.02 ? 1 : 0;
     fill.style.width = (t * 100) + '%';
 
@@ -3185,6 +3400,17 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
   window.addEventListener('load', () => remeasure(true));
   if(document.fonts && document.fonts.ready) document.fonts.ready.then(() => remeasure(true));
 
+  /* Paint once synchronously, right here, rather than waiting for the first
+     requestAnimationFrame tick. rAF is throttled or fully paused for a tab
+     that hasn't been composited yet (backgrounded on open, restored by the
+     browser, still prerendering) — on a page where this section's copy,
+     panels and canvas all start at opacity:0 in CSS and are only ever
+     revealed inline by this script, waiting on rAF for the very first paint
+     means the whole 516vh section can sit permanently blank if that first
+     tick is delayed. This call guarantees a correct frame exists the
+     instant the script finishes running, independent of compositing. */
+  render(currentT);
+
   let lastT = -1;
   function loop(){
     /* Under reduced motion there is no idle drift, so an identical frame is
@@ -3239,7 +3465,12 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
     callouts.forEach((el, i) => { if(!el) return; const win = CO_TIMELINE[i]; const risen = cur >= (win.inStart + win.inEnd) / 2; el.classList.toggle('show', risen); if(dots[i]) dots[i].classList.toggle('active', risen); });
     requestAnimationFrame(tick);
   }
-  requestAnimationFrame(tick);
+  /* Called directly rather than only queued via rAF, so the kicker/headline/
+     lede get their first real opacity value the instant this script runs —
+     see the matching note on the "why" section's render() above. rAF is
+     throttled or paused on a tab that hasn't been composited yet, and this
+     section's copy has no visible CSS fallback while it waits. */
+  tick();
   window.addEventListener('resize', () => { target = computeT(); });
 })();
 
@@ -3353,13 +3584,13 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
       el.classList.toggle('tease', i === teaseIndex);
       el.style.opacity = isDone ? String(Math.max(0.42, 1 - (activeIndex - i) * 0.16)) : '';
     });
+    currentActiveIndex = activeIndex;
     if(activeIndex !== lastActive){
       lastActive = activeIndex;
-      popEyebrow.textContent = 'Stage 0' + (activeIndex + 1);
-      popText.textContent = DETAILS[activeIndex];
-      /* no `left` any more — the card is fixed to the centre of the viewport
-         and the active node on the track below is what marks the position */
-      popcard.classList.remove('pop'); void popcard.offsetWidth; popcard.classList.add('pop');
+      /* only follow the scroll-driven stage into the card while nothing is
+         being hovered — a hover has already put its own stage on screen and
+         scrolling underneath it shouldn't yank the card away mid-look */
+      if(hoverIndex === -1) renderCard(activeIndex);
     }
     /* no `card-up` any more: the card has its own grid row, so the headline
        never needs to recede out of its way */
@@ -3367,7 +3598,28 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
     jTrack.style.transform = j4ReducedMotion ? 'none' : `rotateX(${mouseY * -3}deg) rotateY(${mouseX * 3}deg)`;
     requestAnimationFrame(tick);
   }
-  requestAnimationFrame(tick);
+
+  /* Hover-to-preview, additive to the scroll-driven reveal above: resting a
+     pointer on any numbered node shows that stage's card without touching
+     scroll position, and leaving the node hands the card back to whatever
+     stage scroll actually has active. */
+  let hoverIndex = -1, currentActiveIndex = 0;
+  function renderCard(i){
+    popEyebrow.textContent = 'Stage 0' + (i + 1);
+    popText.textContent = DETAILS[i];
+    /* no `left` any more — the card is fixed to the centre of the viewport
+       and the active node on the track below is what marks the position */
+    popcard.classList.remove('pop'); void popcard.offsetWidth; popcard.classList.add('pop');
+  }
+  nodes.forEach((el, i) => {
+    el.addEventListener('mouseenter', () => { hoverIndex = i; renderCard(i); });
+    el.addEventListener('mouseleave', () => { hoverIndex = -1; renderCard(currentActiveIndex); });
+  });
+  /* Called directly for the same reason as the "why" section and the quest
+     map above: rAF can be delayed on a tab that hasn't been composited yet,
+     and this section's route/nodes/popcard have no visible state until this
+     runs at least once. */
+  tick();
 })();
 
 (function(){

@@ -278,7 +278,15 @@ body { overflow-x: clip; }
 .hero-bridge {
   position: sticky; top: 0; height: 100vh;
   display: flex; align-items: center; justify-content: center;
-  background: var(--mineral);
+  /* A solid var(--mineral) fill here made the crossfade pointless — it
+     fully hid the phones the instant it reached any real opacity, so the
+     "final" resting frame (this is the frame scrolling back up now holds
+     on, see the hero script's `release:false`) was just the message on a
+     flat colour, never the two together. Translucent + blurred so the
+     phones read as a soft backdrop behind the text instead of vanishing
+     under it — a real composite, not a hard cut. */
+  background: rgba(23,20,18,0.82);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
   opacity: 0; pointer-events: none; z-index: 10;
 }
 .hero-bridge-inner { text-align: center; }
@@ -469,15 +477,27 @@ body { overflow-x: clip; }
 .eco-tile::after {
   content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
   background: var(--tile-color, var(--gold)); transform: scaleX(0);
-  transform-origin: left; transition: transform 0.35s ease;
+  transform-origin: left; transition: transform 0.35s ease, height 0.25s ease;
 }
-.eco-tile.active::after { transform: scaleX(1); }
-.eco-tile.active { background: rgba(247,244,238,0.05); border-color: rgba(247,244,238,0.12); }
+.eco-tile.active::after { transform: scaleX(1); height: 3px; }
+/* Previously a near-invisible 0.02 -> 0.05 background bump — the only real
+   "active" signal was a 2px underline, easy to miss at a glance. The active
+   tile now carries its own habit colour as a genuine tint + glow + coloured
+   border, not a flat neutral state shared by every habit. color-mix() with
+   var(--tile-color) means each of the six tiles pops in its own colour
+   automatically; unsupported browsers just drop this declaration and keep
+   the plain hover/resting look below rather than breaking. */
+.eco-tile.active {
+  background: color-mix(in srgb, var(--tile-color, var(--gold)) 16%, rgba(247,244,238,0.03));
+  border-color: color-mix(in srgb, var(--tile-color, var(--gold)) 55%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tile-color, var(--gold)) 25%, transparent),
+              0 10px 24px -8px color-mix(in srgb, var(--tile-color, var(--gold)) 45%, transparent);
+}
 .eco-tile:hover { background: rgba(247,244,238,0.04); }
-.eco-tile-icon { width: 20px; height: 20px; flex-shrink: 0; transition: opacity 0.25s; opacity: 0.5; }
-.eco-tile.active .eco-tile-icon { opacity: 1; }
+.eco-tile-icon { width: 20px; height: 20px; flex-shrink: 0; transition: opacity 0.25s, transform 0.25s ease; opacity: 0.5; }
+.eco-tile.active .eco-tile-icon { opacity: 1; transform: scale(1.08); }
 .eco-tile-name { font-size: 13px; color: #8a8377; letter-spacing: 0.04em; transition: color 0.25s; }
-.eco-tile.active .eco-tile-name { color: var(--warm-white); }
+.eco-tile.active .eco-tile-name { color: var(--tile-color, var(--warm-white)); font-weight: 600; }
 
 /* Detail panel */
 .eco-detail {
@@ -673,43 +693,122 @@ body { overflow-x: clip; }
 /* ══════════════════════════════════════════════
    SECTION 5 — MORE QUESTS
 ══════════════════════════════════════════════ */
+/* ── The quest map: the aerial route, with the quests laid over it ──
+   The photograph already carries the glowing waypoint route, so nothing
+   here draws one. The section's job is to hold the header legible over
+   the dark left flank and let the route read through the open right side.
+
+   --qm-bg is a custom property rather than an inline background-image on
+   purpose: `html[data-theme="light"] .s-dark` sets the `background`
+   SHORTHAND, which resets background-image to none. Custom properties are
+   not touched by the shorthand, so the light-theme override further down
+   restores the whole stack by referencing this one variable instead of
+   duplicating it.
+
+   The horizontal stops are measured, not judged: the body copy's ink runs
+   to x 51.6% of the section, and at the earlier 0.20-by-54% ramp the
+   sunlit ridge underneath put it at 4.46:1 — a hair under AA. Holding the
+   veil out to 0.68 at 34% and 0.22 at 60% takes it to 5.71 while still
+   leaving the right-hand half open for the route to read through. */
+.quest-map-section{
+  position:relative;
+  --qm-bg:
+    linear-gradient(180deg, rgba(12,10,9,0.42) 0%, rgba(12,10,9,0.34) 26%,
+                            rgba(12,10,9,0.46) 62%, rgba(12,10,9,0.55) 100%),
+    linear-gradient(90deg,  rgba(12,10,9,0.84) 0%, rgba(12,10,9,0.68) 34%,
+                            rgba(12,10,9,0.22) 60%, rgba(12,10,9,0.08) 100%),
+    url('images/Quest%20map.png');
+  background-color:var(--mineral);
+  background-image:var(--qm-bg);
+  background-size:cover;background-position:center;background-repeat:no-repeat;
+}
+.quest-map-section > *{position:relative;z-index:2;}
+
 .quests-grid {
-  display: grid; grid-template-columns: repeat(3,1fr); gap: 2px;
+  display: grid; grid-template-columns: repeat(3,1fr); gap: 14px;
   max-width: 1300px; margin: 6vh auto 0;
 }
+/* Two columns: a gutter holding the medallion on row 1 only, and the
+   content column everything else sits in. The explicit row track list is
+   what makes `1fr` land on the description — that is what pushes the
+   distance to the card's floor so the six distances align across a row
+   however unevenly the descriptions wrap. */
 .quest-card {
-  padding: 40px 32px; border: 1px solid rgba(247,244,238,0.07);
-  background: rgba(247,244,238,0.02);
+  display: grid; grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto auto 1fr auto;
+  column-gap: 16px;
+  padding: 24px 26px 26px; border-radius: 8px;
+  border: 1px solid rgba(247,244,238,0.09);
+  background: linear-gradient(158deg, rgba(28,23,20,0.80), rgba(16,13,11,0.74));
+  backdrop-filter: blur(18px) saturate(140%); -webkit-backdrop-filter: blur(18px) saturate(140%);
+  box-shadow: 0 24px 60px -26px rgba(0,0,0,0.9);
   position: relative; overflow: hidden;
   opacity: 0; transform: translateY(20px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
+  transition: opacity 0.6s ease, transform 0.6s ease, border-color 0.4s ease, box-shadow 0.4s ease;
 }
 .quest-card.show { opacity: 1; transform: translateY(0); }
+/* the existing hover animation — unchanged */
 .quest-card::before {
   content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
   background: var(--gold); transform: scaleX(0); transform-origin: left;
-  transition: transform 0.4s ease;
+  transition: transform 0.4s ease; z-index: 3;
 }
 .quest-card:hover::before { transform: scaleX(1); }
-.quest-card.active-quest { border-color: rgba(196,138,90,0.25); background: rgba(196,138,90,0.04); }
+.quest-card:hover { border-color: rgba(247,244,238,0.18); }
+.quest-card.active-quest {
+  border-color: rgba(232,195,156,0.50);
+  background: linear-gradient(158deg, rgba(64,46,30,0.82), rgba(26,20,15,0.78));
+  box-shadow: 0 0 0 1px rgba(232,195,156,0.18),
+              0 0 50px -14px rgba(196,138,90,0.60),
+              0 24px 60px -26px rgba(0,0,0,0.9);
+}
 .quest-card.active-quest::before { transform: scaleX(1); }
+
+.qc-icon{ grid-column:1; grid-row:1;
+  width:54px; height:54px; border-radius:50%; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  border:1px solid rgba(196,138,90,0.26);
+  background:radial-gradient(circle at 38% 30%, rgba(62,52,42,0.85), rgba(20,17,14,0.92));
+  transition:border-color 0.4s ease; }
+.qc-icon svg{ width:26px; height:26px; display:block; fill:none;
+  stroke:rgba(216,164,116,0.82); stroke-width:1.3;
+  stroke-linecap:round; stroke-linejoin:round; transition:stroke 0.4s ease; }
+.quest-card.active-quest .qc-icon{ border-color:rgba(232,195,156,0.55); }
+.quest-card.active-quest .qc-icon svg{ stroke:#f2cba4; }
+
 .quest-status {
-  display: inline-block; padding: 4px 12px; border-radius: 20px;
-  font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 18px;
+  grid-column:2; grid-row:1; align-self:center; justify-self:start;
+  display: inline-block; padding: 5px 13px; border-radius: 20px;
+  font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase;
 }
-.status-active { background: rgba(196,138,90,0.15); color: var(--gold); border: 1px solid rgba(196,138,90,0.3); }
-.status-coming { background: rgba(247,244,238,0.05); color: #5f5a52; border: 1px solid rgba(247,244,238,0.1); }
-.quest-name { font-family: 'Cormorant Garamond', serif; font-size: 26px; color: var(--warm-white); margin-bottom: 6px; font-weight: 400; }
-.quest-route-label { font-size: 12px; color: var(--gold); letter-spacing: 0.06em; margin-bottom: 16px; }
-.quest-desc { font-size: 14px; color: #7a746a; line-height: 1.7; }
+.status-active { background: rgba(196,138,90,0.18); color: #E5AE7C; border: 1px solid rgba(196,138,90,0.42); }
+.status-coming { background: rgba(247,244,238,0.06); color: #8a8377; border: 1px solid rgba(247,244,238,0.12); }
+.quest-name { grid-column:2; grid-row:2;
+  font-family: 'Cormorant Garamond', serif; font-size: clamp(21px,1.55vw,27px);
+  color: var(--warm-white); font-weight: 400; line-height: 1.12; margin: 16px 0 6px; }
+.quest-route-label { grid-column:2; grid-row:3;
+  font-size: 11.5px; color: #E5AE7C; letter-spacing: 0.06em; margin-bottom: 14px; }
+.quest-desc { grid-column:2; grid-row:4; font-size: 13px; color: #948d81; line-height: 1.7; }
 .quest-distance {
-  margin-top: 24px; font-family: 'Cormorant Garamond', serif;
-  font-size: 32px; color: rgba(196,138,90,0.5); letter-spacing: -0.01em;
+  grid-column:2; grid-row:5; margin-top: 22px;
+  font-family: 'Cormorant Garamond', serif; line-height: 1;
+  font-size: 34px; color: rgba(232,195,156,0.78); letter-spacing: -0.01em;
 }
-.quest-distance span { font-size: 13px; color: #5f5a52; letter-spacing: 0.06em; vertical-align: middle; }
+.quest-distance span { font-size: 12px; color: #8a8377; letter-spacing: 0.06em; vertical-align: middle; margin-left: 4px; }
 
 @media(max-width:900px) { .quests-grid { grid-template-columns: 1fr 1fr; } }
-@media(max-width:600px) { .quests-grid { grid-template-columns: 1fr; } }
+@media(max-width:600px) {
+  .quests-grid { grid-template-columns: 1fr; }
+  /* the medallion gutter costs 70px of a 320px card — the icon moves above
+     the content rather than beside it once there is no room for both */
+  .quest-card{ grid-template-columns:1fr; grid-template-rows:auto auto auto auto 1fr auto; }
+  .qc-icon{ grid-column:1; grid-row:1; margin-bottom:14px; }
+  .quest-status{ grid-column:1; grid-row:2; justify-self:start; }
+  .quest-name{ grid-column:1; grid-row:3; }
+  .quest-route-label{ grid-column:1; grid-row:4; }
+  .quest-desc{ grid-column:1; grid-row:5; }
+  .quest-distance{ grid-column:1; grid-row:6; }
+}
 
 /* ══════════════════════════════════════════════
    SECTION 6 — LEARN & EARN
@@ -1101,6 +1200,20 @@ body { overflow-x: clip; }
   html[data-theme="light"] .s-dark .s-body strong {
     color: #C48A5A;
   }
+
+  /* The quest map stays dark in light theme, the same way the Living
+     Ecosystem does — it is a photographic section carrying dark glass
+     cards and light type, and there is no light-theme equivalent of it.
+     Restoring background-image from --qm-bg is required because the
+     `background` shorthand in the `.s-dark` rule above resets it. */
+  html[data-theme="light"] .quest-map-section {
+    background-color: var(--mineral);
+    background-image: var(--qm-bg);
+    background-size: cover; background-position: center; background-repeat: no-repeat;
+  }
+  html[data-theme="light"] .quest-map-section .s-kicker  { color: var(--gold); }
+  html[data-theme="light"] .quest-map-section .s-headline{ color: var(--warm-white); }
+  html[data-theme="light"] .quest-map-section .s-body    { color: #b8b1a4; }
 
   html[data-theme="light"] .s-mid {
     background: #E8E1D6;
@@ -1607,13 +1720,17 @@ body { overflow-x: clip; }
 <!-- ══════════════════════════════
      SECTION 5 — MORE QUESTS
 ══════════════════════════════ -->
-<section class="s-dark" id="quests">
+<section class="s-dark quest-map-section" id="quests">
   <div class="s-kicker reveal">The Quest Map</div>
   <h2 class="s-headline reveal reveal-delay-1">One journey ends.<br><em>Another begins.</em></h2>
   <p class="s-body reveal reveal-delay-2">Complete Bangkok to Phuket and the world opens up. Every new quest brings a new route, new boosters, and new Reward Credits to earn. The system keeps going because you keep going.</p>
 
   <div class="quests-grid" id="questsGrid">
+    <!-- Each card gains a .qc-icon medallion. Nothing else changed: the
+         status/name/route/description/distance copy is verbatim, and the
+         stagger observer still finds #questsGrid and .quest-card. -->
     <div class="quest-card active-quest">
+      <div class="qc-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l1.4 2.8h-2.8L12 2.5z"/><path d="M12 5.3v2.6"/><path d="M8.8 11.4L12 7.9l3.2 3.5"/><path d="M6.6 15.8L12 10.3l5.4 5.5"/><path d="M7.6 21v-3.8h8.8V21"/><path d="M4.8 21h14.4"/></svg></div>
       <div class="quest-status status-active">Active Now</div>
       <div class="quest-name">Bangkok → Phuket</div>
       <div class="quest-route-label">Thailand · Southeast Asia</div>
@@ -1621,6 +1738,7 @@ body { overflow-x: clip; }
       <div class="quest-distance">900 <span>km</span></div>
     </div>
     <div class="quest-card">
+      <div class="qc-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 19l6.3-11 3.4 5.7 2.3-3.8L21.5 19H2.5z"/><path d="M6.9 12.2l2 1.4 1.6-1.1"/></svg></div>
       <div class="quest-status status-coming">Coming Soon</div>
       <div class="quest-name">Everest Base Camp</div>
       <div class="quest-route-label">Nepal · High Altitude</div>
@@ -1628,6 +1746,7 @@ body { overflow-x: clip; }
       <div class="quest-distance">130 <span>km</span></div>
     </div>
     <div class="quest-card">
+      <div class="qc-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 14.6l4.6-6.1 3.5 4.6 2.5-2.1 5.4 3.6"/><path d="M2.5 18h19"/><path d="M2.5 21h19"/></svg></div>
       <div class="quest-status status-coming">Coming Soon</div>
       <div class="quest-name">John O'Groats → Land's End</div>
       <div class="quest-route-label">Scotland to Cornwall · UK</div>
@@ -1635,6 +1754,7 @@ body { overflow-x: clip; }
       <div class="quest-distance">1,407 <span>km</span></div>
     </div>
     <div class="quest-card">
+      <div class="qc-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2v3.4"/><path d="M10.4 3.4h3.2"/><path d="M9 21V9.6L12 6l3 3.6V21"/><path d="M5 21v-7.6l4-3"/><path d="M19 21v-7.6l-4-3"/><path d="M3.5 21h17"/></svg></div>
       <div class="quest-status status-coming">Coming Soon</div>
       <div class="quest-name">Camino de Santiago</div>
       <div class="quest-route-label">France to Spain · Pilgrimage</div>
@@ -1642,6 +1762,7 @@ body { overflow-x: clip; }
       <div class="quest-distance">800 <span>km</span></div>
     </div>
     <div class="quest-card">
+      <div class="qc-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6.4c2-1.1 16-1.1 18 0"/><path d="M5.4 9.5h13.2"/><path d="M8 9.5V21"/><path d="M16 9.5V21"/><path d="M8 13h8"/></svg></div>
       <div class="quest-status status-coming">Coming Soon</div>
       <div class="quest-name">The Nakasendo</div>
       <div class="quest-route-label">Tokyo to Kyoto · Japan</div>
@@ -1649,6 +1770,7 @@ body { overflow-x: clip; }
       <div class="quest-distance">534 <span>km</span></div>
     </div>
     <div class="quest-card">
+      <div class="qc-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21V11.2"/><path d="M4.6 10.2c2-3.1 12.8-3.1 14.8 0"/><path d="M7.2 12.7c1.6-1.5 8-1.5 9.6 0"/><path d="M4 21h16"/></svg></div>
       <div class="quest-status status-coming">Coming Soon</div>
       <div class="quest-name">Kilimanjaro Circuit</div>
       <div class="quest-route-label">Tanzania · Africa</div>
@@ -2230,15 +2352,29 @@ function cine(el, o){
       bridge.style.opacity       = bp;
       bridge.style.transform     = 'none';
       bridge.style.pointerEvents = bp>0.05?'auto':'none';
-      phoneCenter.style.opacity  = appearT * (1 - bp*0.85);
-      phoneLeft.style.opacity    = appearT*sideEase * (1 - bp*0.85);
-      phoneRight.style.opacity   = appearT*sideEase * (1 - bp*0.85);
+      /* Retained at 45%, not faded to 15% — now that the bridge panel is
+         translucent+blurred rather than a solid fill, the phones staying
+         genuinely visible behind the text is what makes the final frame
+         (also the one the one-way track holds on scroll-up) read as the
+         two coming together, not one replacing the other. */
+      phoneCenter.style.opacity  = appearT * (1 - bp*0.55);
+      phoneLeft.style.opacity    = appearT*sideEase * (1 - bp*0.55);
+      phoneRight.style.opacity   = appearT*sideEase * (1 - bp*0.55);
     }
   }
 
   /* GUIDED — the phone fan-out is one continuous move, speed-capped so a
      hard flick can no longer snap it open. Replaces the fixed-alpha lerp,
      which closed large gaps in proportion to their size. */
+  /* GUIDED — the phone fan-out is one continuous move, speed-capped so a
+     hard flick can no longer snap it open.
+
+     Note this pin holds TWO sequential sticky stages (`.hero` then
+     `.hero-bridge`). That shape used to be broken by cine.js's
+     auto-release, which could only ever find the first sticky child and
+     crushed the wrapper to its height. Auto-release was removed outright
+     on 20 Aug (see the note at the top of js/cine.js), so no per-section
+     opt-out is needed any more. */
   const track = cine(outer, { mode: 'guided', pace: 'epic', states: 3 });
 
   function tick(){
@@ -2309,7 +2445,9 @@ function cine(el, o){
   const cycleBar = document.getElementById('ecoCycleBar');
   if (!tiles.length) return;
 
-  const CYCLE_MS = 4000;
+  /* 30% faster (was 4000ms). The progress bar reads from this same
+     constant, so the bar and the advance stay in step automatically. */
+  const CYCLE_MS = 2800;
   let current = 0, timer = null, barAnim = null;
 
   function show(idx, resetCycle) {
