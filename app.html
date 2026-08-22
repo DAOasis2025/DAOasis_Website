@@ -744,7 +744,7 @@ body { overflow-x: clip; }
                             rgba(12,10,9,0.46) 62%, rgba(12,10,9,0.55) 100%),
     linear-gradient(90deg,  rgba(12,10,9,0.84) 0%, rgba(12,10,9,0.68) 34%,
                             rgba(12,10,9,0.22) 60%, rgba(12,10,9,0.08) 100%),
-    url('images/Quest%20map.png');
+    url('images/quest-map.jpg');
   background-color:var(--mineral);
   background-image:var(--qm-bg);
   background-size:cover;background-position:center;background-repeat:no-repeat;
@@ -2633,6 +2633,24 @@ function cine(el, o){
     updateWp(activeWp, false);
   }
 
+  /* NOT window.onload. `load` waits for every image on the page, and this
+     page carries several multi-megabyte PNGs (journey-image.jpg alone is
+     2.38MB) — so on a phone the route's length was unknown, its dasharray
+     unset and questScroll() never called for many seconds after the section
+     was scrollable. The reader arrived at a sticky section that was simply
+     not drawing, kept scrolling, and it then initialised at whatever
+     position they had already reached.
+
+     getTotalLength() reads the path's own user units; it needs the element
+     parsed, not the images decoded. DOMContentLoaded is therefore the
+     correct gate. The `load` pass is kept as a harmless re-measure for
+     webfont/layout shifts — initPath is idempotent because questScroll()
+     immediately repaints at the paced value. */
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', initPath, { once: true });
+  } else {
+    initPath();
+  }
   window.addEventListener('load', initPath);
 
   /* The waypoints are unevenly spaced along the route, so the track is

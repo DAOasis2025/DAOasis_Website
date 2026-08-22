@@ -1587,3 +1587,277 @@ no instrument or valuation for either raise, and neither entity incorporated.
 
 **Annex A7 is a website defect, not a document one:** `index.html`'s waitlist form is
 still wired to nothing while every nav, drawer and footer CTA points at it.
+
+---
+
+## Scroll smoothness, mobile hero, Sanctuary rework — August 22
+
+Changes across `index.html`, `app.html` and `sanctuary.html`, plus the mobile nav
+on all 13 pages. Verified in the browser at 360/375/414/768/1440; **zero console
+errors on a full scroll sweep of every page touched**.
+
+### 1. The real cause of "it loads, you keep scrolling, then it rushes past"
+
+Reported against the mobile "Why DAOasis matters now" section. It was not a pacing
+bug in `cine.js` — it was **three separate places where a scroll-driven section
+could not draw until something slow had finished, while the section was already
+scrollable.** The reader met a pinned section that appeared dead, scrolled on, and
+it then initialised at whatever position they had already reached.
+
+**a. `three.js` was a render-blocking `<script>` in `<head>`** on `index.html` and
+`sanctuary.html` — ~600KB from a CDN before anything on the page could paint.
+Now `defer`red on both. Everything that uses THREE waits for it:
+- `index.html` — the palm IIFE is now `initPalm`, which re-arms itself on
+  `DOMContentLoaded` if `THREE` is undefined. If three.js fails outright it
+  returns and the section keeps its CSS resting state, where all the copy is
+  `opacity:1` — it degrades to readable type, never to a blank 516vh pin.
+- `sanctuary.html` — a `whenTHREE()` gate wraps the `stage3D('loopCanvas', ...)`
+  call. **This gate is mandatory:** `stage3D()` treats a missing `THREE` as
+  "no WebGL" and swaps in the static text fallback permanently, so deferring
+  without it would have given every visitor the fallback.
+- `app.html` and `web3.html` do not load three.js at all. Nothing to do.
+
+**b. The palm section started its story before it could tell it.** Only
+`assemblyT` was gated on `logoReady`; the copy fade, the three stat cards and the
+progress rail all ran off `t` regardless. So the section visibly "started" while
+the palm could not appear, and when `rasterizeLogo()` finally landed (it waits on
+an Image decode, then reads back 810,000 pixels) `assemblyT` jumped straight to
+`clamp01(t/SHAPE_END)` — often already 1. The palm popped fully formed.
+Now the **section's** clock waits for readiness, and on arrival eases from 0 up to
+the reader's true position (`CATCH_MAX_MS` 1300, re-based on the live scroll value
+each frame so it tracks a reader who is still moving). Common case is invisible;
+worst case is a controlled catch-up that *shows* the assembly instead of cutting
+to the end of it. The initial synchronous paint is now `render(0)`, not
+`render(currentT)` — 0 is the only frame the section can honestly show yet.
+
+**c. Two sticky sections were gated on `window.onload`, which waits for every
+image on the page.**
+- `app.html` quest route — `initPath()` (2.38MB `Journey image.png` et al).
+- `sanctuary.html` Seven Days arc — `build()` (~15MB of day photography).
+
+Both now run on `DOMContentLoaded`, with the `load` pass kept as a harmless
+re-measure. `getTotalLength()`/`getPointAtLength()` read the path's own **user
+units** — they need the element parsed, not the images decoded, so `load` was
+never the correct gate. `web3.html` already called `build()` immediately; correct
+as-is.
+
+> **The pattern to watch for:** any pinned/sticky section whose visual state is
+> produced by JS that waits on an async asset. The section reserves its scroll
+> height from first layout, so it is scrollable long before it is drawable. Gate
+> the *whole* section's timeline on readiness, and ease into the true position —
+> never let a late init snap to it.
+
+### 2. Mobile home hero — journey animation removed, and the rest given room
+- `#journeyMobileHero` (five stops + filling spine) is **gone**, with its CSS, its
+  `jmStops`/`jhFill`/`jmHero` JS and its entries in the `intro-skipped` /
+  `return-visit` / `<noscript>` selector lists. It only ever displayed below
+  800px, so removing it on mobile removed it entirely. The desktop SVG route
+  (`.journey-wrap`) is untouched.
+- **`.journey-mobile-section` further down the page is a DIFFERENT element and was
+  deliberately left in place** — the full journey still has its own mobile telling
+  (7 stops). Do not confuse the two.
+- The freed ~200px went into the headline and the space around it:
+  `clamp(25px,6.9vw,36px)` -> `clamp(38px,11vw,60px)`. The old stack bottomed the
+  headline out at 25px, so the one element that should carry the page arrived as
+  the smallest thing on screen.
+- **The kicker is measured, not guessed.** At 9.5px/0.26em plus two 20px rules and
+  two 14px gaps it needs ~320px inside a 322px column at 375 — so it wrapped to
+  two lines while the rules stayed on the first, which read as a broken element.
+  Now 9px/0.22em with 14px rules (~275px) plus `white-space:nowrap`.
+- Drama comes from contrast, not more elements: the mobile vignette is pulled in
+  and deepened and the warm bloom lifted, so the type sits in a pool of light.
+- Measured at 375x812 the stack is ~470px of 663px available — it still compresses
+  rather than clips on a short screen.
+
+### 3. Mobile nav — waitlist CTA removed, logo enlarged
+`@media(max-width:768px){.nav>.nav-cta{display:none;}}` on all 13 pages (six
+marketing pages inline, seven trust pages via `css/trust.css`). The child
+combinator matters: the drawer's own copy of `.nav-cta` must survive.
+With the pill gone the mark is the only branding up there, so `.nav-brand img`
+goes 24px -> **34px** (<=768) -> 30px (<=420) -> 27px (<=360). The old rule
+*shrank* it to 19px at 360, which was backwards.
+
+### 4. "One Place, All Day" (3D one, the pavilion) — removed completely
+Markup, `.pav-veil`, the whole `.sun-*` readout block, its mobile overrides and
+the ~210-line `stage3D('pavilionCanvas', ...)` scene are all gone.
+**Its trailing `.divider.solo` went with it.** `solo` exists only to stop a divider
+drawing a rule across a pinned stage's last live frame; with no pinned stage there,
+the divider above (`dark bg-surface to-bleed`) already bridges the Day section into
+the Immersion photograph, and two dividers back to back would have read as a
+double rule. `TROPIC` stays — 3D two still uses the sala, water, palms and karsts.
+
+### 5. Sanctuary Life — photography now matches the content, plus a sixth row
+`img-01.jpg` was running as **both** Learning and Community, and Recovery was a
+sunrise-journal shot with no sleep in it.
+
+| row | was | now |
+|---|---|---|
+| 01 Movement | img-11.jpg | img-11.jpg (kept) |
+| 02 Recovery | img-07.jpg | **rest.jpg** — the bedroom |
+| 03 Learning | img-01.jpg | **Learn.jpg** |
+| 04 Nature & Reflection | pexels beach | **clarity.png** |
+| 05 Community | img-01.jpg *(dupe)* | **connect.jpg** — actual people |
+| 06 Nourishment | — | **Nourish.jpg** *(new row)* |
+
+Focal points are the ones already measured for these same files in the Day section.
+The new row's copy is drawn from what the page already establishes (long table,
+simple food, eaten together) — no facility was invented.
+`--img-sanctuary-wide` also moved img-01 -> **Sunrise.png**.
+
+### 6. Phuket 2027 plate, and the seven-day loop made less "gamy"
+- `--img-place` -> **`images/PHUKET.jpg`** (the map poster). **The gold pin and its
+  "Phuket" label were removed**: the plate labels itself, and dropping a pin on a
+  specific spot would claim a located site while that same section says the
+  location is still in development. `.place-pin*` CSS deleted with it.
+- **The camera was what read as a video game, not the geometry.** It travelled the
+  ring perfectly smoothly and its only movement was a 1.6cm rise on a *wall-clock*
+  sine — so it drifted while standing still and did not change when moving. That
+  is a drone on a spline. The gait is now driven by **distance walked**:
+  `gaitPhase += |dT| * CURVE_LEN / STEP_LEN * PI`, with a seam guard because `t` is
+  modulo 1 and the wrap would otherwise spin the phase through a whole lap in one
+  frame. Vertical uses `|sin|` (two falls per stride, at each heel strike); sway
+  and roll run at half that and a quarter-cycle out. Standing still is genuinely
+  still; step rate falls out of scroll speed. Sway is applied along the deck's own
+  side vector, and the whole gait is multiplied by `(1-k)` so footfalls do not
+  carry into the lifted reveal frame.
+- **Gaze lag** — the look target trails its ideal by ~110ms, framerate-independent
+  (`1 - exp(-dt/0.11)`), so bends are entered and left a fraction late the way a
+  walker's head does. `dtSec` is clamped to 50ms so a backgrounded tab does not
+  snap the gaze on its first frame back.
+- **The three near palms were built with `M.frond` — the DAYLIGHT frond colour** —
+  while the distant ring was already night-graded to `0x1d3024`. Three bright
+  mid-green cut-outs in a blue-hour scene, and the eye reads "wrong green" as
+  "rendered" instantly. Now `mLeafNear` `0x2a4133` with trunks at 0.58x; lighter
+  than the far ring because they sit in the lantern light, but foliage in the dark.
+- Water `shininess` during the ride 62 -> **38**: at 62 each lantern landed as a
+  short stack of hard white dashes.
+- Local variables in the loop's frame closure are named `fwdV`/`sideV`, not
+  `fwd`/`side` — the build code above declares its own block-scoped `side` in four
+  places and shadowing it there reads as the same variable.
+
+> Judged by eye using the existing `?shot=1` / `localStorage['daoasis-shot']`
+> capture hook, posting PNGs to a throwaway local receiver — the Browser pane will
+> not composite a large viewport. The flag was cleared afterwards.
+
+### 7. Founder quote + portrait slot wired (about.html)
+
+- Jamie's `.pf-q` now reads: *"DAOasis is about helping people reset, reconnect
+  and reimagine their future — and rewarding them for every step they take."*
+- The portrait is in: `images/team-jamie.png` (1023x1537, RGB PNG, 2.17MB).
+  Supplied as `ME 3.png` and **renamed** — the space in the filename is the
+  portability risk already flagged for the Journey photographs, and nothing
+  referenced the old name. Three things guard the slot:
+  - the `<img>` carries `onerror="this.remove();"`, so a missing or renamed file
+    falls back to the standard monogram plate rather than a broken-image icon on
+    the founder's own portrait;
+  - `.pt:has(img) .pt-tag { display: none; }` hides "Portrait to follow" only when
+    a portrait actually loaded — `.pt-tag` is z-index 4 and the image is 2, so
+    without this the caption printed across the bottom of every real photograph;
+  - `#founder .pt img { object-position: center 30%; }` — the supplied portrait is
+    a tall frame (~0.66) in a 4:5 plate, so a centred `cover` crops ~8.9% off the
+    top and the top of the head sits at about 8% of the source. 30% takes that to
+    ~5.4% and spends the difference on the jacket. **Re-check this if the
+    photograph is replaced.**
+- The monogram and caption are deliberately left in the markup underneath the
+  image, not deleted — they are the fallback, not dead code.
+
+> Verified rendering at 456x571 on desktop and 315x394 on mobile — ratio 0.800 in
+> both, i.e. the plate exactly. about.html now 404s only on the pre-existing
+> `about-hero-mobile.jpg` plus the site-wide missing favicon.
+>
+> **It is a 2.17MB PNG of an opaque photograph** (colorType 2, no alpha), so it
+> belongs in JPEG — roughly a tenth the size for the same result. Same open issue
+> as the Journey and Sanctuary plates, same blocker: no image tooling here.
+
+### Still open (not addressed here)
+- **The heavy images remain the biggest smoothness risk left.** `Journey image.png`
+  2.38MB, `Journey image mobile.png` 2.15MB, and ~15MB across the nine Sanctuary
+  day plates. The `load`-gating fixes above mean a slow decode no longer *breaks* a
+  section's initialisation, but the plates still all fetch on approach. They want
+  resizing to ~1600px on the long edge and re-encoding to WebP/q80. There is still
+  no image tooling in this environment (`convert` on PATH is the Windows disk
+  utility).
+- The loop's reveal frame still shows fairly hard white lantern pools on the water,
+  and the centre island is a flat tan mass. Improved, not finished.
+- The hero plate-pass timing on sanctuary.html is still the one part never tuned
+  by eye (carried over from the August 21 note).
+
+---
+
+## Images compressed site-wide — August 22
+
+**`images/` went 48.4MB -> 7.1MB (86% smaller, 42MB saved).** Every page's total
+image payload, measured live by scrolling the whole document:
+
+| page | images fetched | payload |
+|---|---|---|
+| index | 11 | **0.91 MB** |
+| sanctuary | 16 | **2.63 MB** |
+| app | 12 | **1.69 MB** |
+| web3 | 8 | **0.73 MB** |
+| about | 6 | **0.42 MB** |
+| investors | 5 | **0.16 MB** |
+
+Zero 404s and zero broken `<img>` tags on all six.
+
+### There IS image tooling here after all — this was wrong before
+Earlier notes said no image tooling exists. `convert` on PATH really is the
+Windows disk utility and `python` is a Microsoft Store stub, but **npm works**,
+so `npm install sharp` gives a full libvips build (JPEG, PNG, WebP, AVIF).
+Install it into the scratchpad, never the project folder.
+
+> **`ln -s` does not make a symlink here.** Linking scratchpad `node_modules`
+> into the project produced a real 20MB copy. Either run the script from the
+> scratchpad with a path argument, or copy the script in and delete
+> `node_modules` afterwards. A stray `node_modules/` in this folder would go
+> straight to GitHub.
+
+The script is `scratchpad/optimise.js` — `report` measures and writes nothing,
+`apply` writes to `images-optimised/` and never touches `images/`.
+
+### The rules it applies
+- **Photographs -> JPEG** q82, progressive, mozjpeg, 4:2:0.
+- **Real transparency stays PNG.** `hasAlpha` is not the test — plenty of these
+  PNGs carry a fully opaque alpha channel and are simply heavy. The script reads
+  the alpha channel's actual minimum and only keeps PNG when it is genuinely
+  transparent. That is what let `clarity.png`, `Sunrise.png`, the two Journey
+  plates, `Quest map.png` and `team-jamie.png` become JPEGs.
+- **Long edge capped by role**, at 2x the largest CSS box the asset ever occupies:
+  hero 2400 · plate 1800 · mockup 1800 · logo 1400 · portrait 1200 · icon 512.
+- Never writes a "saving" larger than the original (PHUKET.jpg was already
+  optimal and was left byte-identical).
+
+**Two caps are load-bearing and were both wrong on the first pass:**
+1. **`img-02.png` is not an icon.** It is the intro lockup, rendered at
+   `width:min(52vw,680px)` — so it needs ~1360px, not the 512 icon cap. It has
+   its own `logo` role at 1400.
+2. **Mockups are 1800, not 1400.** The phone occupies only ~80% of those
+   2250x2250 canvases (see the `.dev` crop note), and `.part-grid .dev` is a
+   580px-tall box — 1400 gave just 1.93x on retina. 1800 gives 2.5x.
+
+### Seven files changed extension
+`clarity` · `Journey image` · `Journey image mobile` · `Quest map` · `Sunrise` ·
+`team-jamie` · `Web3` all went `.png` -> `.jpg`. **16 references were rewritten**
+across `about/app/index/investors/sanctuary.html` (both raw and `%20`-encoded
+forms). Verified afterwards: 182 image references parsed, **only
+`about-hero-mobile.jpg` unresolved — the pre-existing gap**, not a regression.
+The `team-*.jpg` and `06.png` "misses" a naive scan reports are inside HTML
+comments.
+
+### The backup
+**`images-original/` holds all 42 original files (49MB). It is a local safety
+copy and must NOT be uploaded to GitHub** — it would quadruple the repo for no
+benefit. Delete it once the compressed set has been seen live.
+
+`about.html`'s portrait `width`/`height` were updated 1023x1537 -> **799x1200** to
+match the resized file; the ratio is unchanged (0.666) so the reserved box and
+the `object-position: center 30%` crop still hold.
+
+### Filenames de-spaced (same pass)
+`Journey image.jpg` -> `journey-image.jpg`, `Journey image mobile.jpg` ->
+`journey-image-mobile.jpg`, `Quest map.jpg` -> `quest-map.jpg`. **No filename in
+`images/` contains a space any more**, so nothing depends on %20 encoding and
+there is nothing to fumble when drag-dropping into the GitHub UI. Four
+references updated across index.html and app.html, verified 200.
+This closes PRE_DEPLOY items 1 and 2, both of which are now marked DONE there;
+PRE_DEPLOY section 0 is the concrete upload list for this batch.

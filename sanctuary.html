@@ -21,7 +21,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Frank+Ruhl+Libre:wght@300;400;500&display=swap" rel="stylesheet" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<!-- DEFERRED — same reasoning as index.html. This is ~600KB from a CDN and as
+     a blocking <head> script nothing on the page could paint until it landed,
+     which on a phone is seconds of blank screen while the reader scrolls on.
+     stage3D() already degrades to .no-webgl when THREE is missing, so the
+     call site MUST wait for the deferred script rather than run early and
+     silently fall back to the static text — see the whenTHREE gate below. -->
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
 <style>
 /* ══════════════════════════════════════════════════════════════
@@ -46,7 +52,7 @@
   --img-hero-02:        url('images/img-11.jpg');
   --img-hero-03:        url('images/img-01.jpg');
 
-  --img-sanctuary-wide: url('images/img-01.jpg');
+  --img-sanctuary-wide: url('images/Sunrise.jpg');
 
   /* One photograph per time slot. 07:00 keeps the original morning plate;
      the other eight are the matching named assets. */
@@ -62,13 +68,21 @@
 
   --img-immersion:      url('images/img-11.jpg');
 
+  /* Sanctuary Life. Every row now carries the photograph that actually
+     shows its subject — recovery is the bedroom, learning is the desk,
+     community is a group of people. Before this, img-01 (a man alone on
+     a terrace) ran as BOTH learning and community, and recovery was a
+     sunrise journal shot with no sleep in it at all.
+     Focal points below are the ones already measured for these same
+     files in the Day section — see .day-media-layer. */
   --img-exp-movement:   url('images/img-11.jpg');
-  --img-exp-recovery:   url('images/img-07.jpg');
-  --img-exp-learning:   url('images/img-01.jpg');
-  --img-exp-nature:     url('images/pexels-jayasankar24-9819827.jpg');
-  --img-exp-community:  url('images/img-01.jpg');
+  --img-exp-recovery:   url('images/rest.jpg');
+  --img-exp-learning:   url('images/Learn.jpg');
+  --img-exp-nature:     url('images/clarity.jpg');
+  --img-exp-community:  url('images/connect.jpg');
+  --img-exp-nourish:    url('images/Nourish.jpg');
 
-  --img-place:          url('images/img-map.jpg');
+  --img-place:          url('images/PHUKET.jpg');
   --img-pilot:          url('images/img-07.jpg');
 }
 
@@ -806,42 +820,9 @@ img { max-width: 100%; }
 .three-copy .display { font-size: var(--t-display); }
 .three-copy .copy { font-size: var(--t-body-s); margin-top: 22px; max-width: 370px; }
 
-/* The pavilion's readability veil. The scene behind it runs from a near
-   black dawn to a bright midday sky, so a single flat scrim would either
-   be invisible at 05:00 or opaque at noon: this one is directional,
-   holding only the left copy column and the bottom readout band. */
-.pav-veil {
-  position: absolute; inset: 0; z-index: 2; pointer-events: none;
-  background:
-    linear-gradient(101deg, rgba(6,11,14,0.80) 0%, rgba(6,11,14,0.62) 20%,
-                            rgba(6,11,14,0.26) 42%, rgba(6,11,14,0) 62%),
-    linear-gradient(0deg,   rgba(6,11,14,0.72) 0%, rgba(6,11,14,0.30) 18%,
-                            rgba(6,11,14,0) 36%);
-}
-@media(max-width:900px){
-  /* Vertical rather than directional, because on a handset the copy is at
-     the top and the readout at the bottom with the scene between them.
-     The stops are held down deliberately: an earlier ramp (0.80 / 0.44 /
-     0.62 / 0.86) protected the type perfectly and turned three in the
-     afternoon into dusk. Only the two type bands are veiled now. */
-  .pav-veil { background:
-    linear-gradient(180deg, rgba(6,11,14,0.74) 0%, rgba(6,11,14,0.52) 20%,
-                            rgba(6,11,14,0.06) 40%, rgba(6,11,14,0.04) 62%,
-                            rgba(6,11,14,0.48) 82%, rgba(6,11,14,0.72) 100%); }
-}
 .three-fallback { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; color: rgba(247,244,238,0.35); font-size: 14px; line-height: 1.9; text-align: center; padding: 0 12%; z-index: 5; }
 .three-outer.no-webgl .three-fallback { display: flex; }
 .three-outer.no-webgl .three-canvas { display: none; }
-
-/* sun-cycle readout */
-.sun-readout { position: absolute; right: 8%; bottom: 10vh; z-index: 4; text-align: right; pointer-events: none; }
-.sun-time { font-family: 'Cormorant Garamond', serif; font-size: var(--t-display); font-weight: 300; color: var(--warm-white); line-height: 0.9; }
-.sun-phase { font-size: var(--t-micro); letter-spacing: 0.28em; text-transform: uppercase; color: rgba(196,138,90,0.9); margin-top: 14px; }
-.sun-scale { position: absolute; left: 8%; bottom: 10vh; z-index: 4; width: 34%; max-width: 380px; pointer-events: none; }
-.sun-scale-track { height: 1px; background: rgba(247,244,238,0.18); position: relative; }
-.sun-scale-fill { position: absolute; left: 0; top: 0; height: 1px; background: var(--gold); width: 0; }
-.sun-scale-knob { position: absolute; top: -3px; width: 7px; height: 7px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 14px var(--gold); margin-left: -3px; }
-.sun-scale-ends { display: flex; justify-content: space-between; margin-top: 12px; font-size: 9.5px; letter-spacing: 0.2em; color: rgba(247,244,238,0.4); }
 
 /* loop readout */
 .loop-readout { position: absolute; left: 50%; transform: translateX(-50%); bottom: 9vh; z-index: 4; text-align: center; pointer-events: none; }
@@ -855,9 +836,6 @@ img { max-width: 100%; }
 @media(max-width:900px){
   .three-copy { left: 7%; right: 7%; top: 11vh; max-width: none; }
   .three-copy .copy { max-width: none; font-size: 13.5px; }
-  .sun-readout { right: 7%; bottom: 20vh; }
-  .sun-time { font-size: 48px; }
-  .sun-scale { left: 7%; right: 7%; width: auto; max-width: none; bottom: 7vh; }
   .loop-readout { bottom: 7vh; }
 }
 
@@ -902,11 +880,6 @@ img { max-width: 100%; }
 ══════════════════════════════════════════════ */
 .place-grid { display: grid; grid-template-columns: 1fr 0.9fr; gap: 8%; align-items: center; max-width: 1360px; margin: 0 auto; }
 .place-map { position: relative; height: 82vh; min-height: 440px; background-image: var(--img-place); background-size: contain; background-position: center; background-repeat: no-repeat; }
-.place-pin { position: absolute; left: 30.5%; top: 79%; width: 9px; height: 9px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 0 6px rgba(196,138,90,0.16), 0 0 24px rgba(196,138,90,0.95); }
-@keyframes pinPulse { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.4); opacity: 0.65; } }
-.place-pin { animation: pinPulse 3.6s ease-in-out infinite; }
-@media (prefers-reduced-motion: reduce) { .place-pin { animation: none; } }
-.place-pin-label { position: absolute; left: 20px; top: -7px; white-space: nowrap; font-size: 10px; letter-spacing: 0.26em; text-transform: uppercase; color: rgba(247,244,238,0.8); }
 .place-coords { margin-top: 34px; padding-top: 22px; border-top: 1px solid rgba(247,244,238,0.12); display: flex; gap: 46px; flex-wrap: wrap; }
 .place-coord-k { font-size: var(--t-micro); letter-spacing: 0.22em; text-transform: uppercase; color: #8f887d; margin-bottom: 8px; }
 .place-coord-v { font-family: 'Cormorant Garamond', serif; font-size: 22px; color: var(--warm-white); font-weight: 300; }
@@ -1352,53 +1325,12 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
 </div>
 
 
-<!-- ══════════════════════════════════════════════
-     3D ONE — A SALA ON STILL WATER, DAWN TO NIGHT
-     Real geometry, real light, real shadows, and a real
-     sky. The sun crosses from first light to night as you
-     scroll; the sala sits still while everything around
-     it — light, water, colour, temperature — changes.
-══════════════════════════════════════════════ -->
-<div class="three-outer pavilion-outer" id="pavilionOuter" style="height:420vh;">
-  <div class="three-sticky grain">
-    <canvas class="three-canvas" id="pavilionCanvas"></canvas>
-    <!-- Measured, not decorative: at midday the sky in this scene is a
-         bright tropical blue and every word of overlay copy is white.
-         The veil darkens only the left column and the bottom readout
-         band, leaving the centre and upper right of the frame open. -->
-    <div class="pav-veil"></div>
-    <div class="three-vignette"></div>
-
-    <div class="three-copy on-dark">
-      <div class="eyebrow show">One Place, All Day</div>
-      <h2 class="display">The building<br><em>stays still.</em></h2>
-      <p class="copy">Everything else moves around it. Light, temperature, pace, attention. The Sanctuary is designed so the day does the work.</p>
-    </div>
-
-    <div class="sun-readout">
-      <div class="sun-time" id="sunTime">05:00</div>
-      <div class="sun-phase" id="sunPhase">First light</div>
-    </div>
-
-    <div class="sun-scale">
-      <div class="sun-scale-track">
-        <div class="sun-scale-fill" id="sunFill"></div>
-        <div class="sun-scale-knob" id="sunKnob"></div>
-      </div>
-      <div class="sun-scale-ends"><span>DAWN</span><span>NIGHT</span></div>
-    </div>
-
-    <div class="three-fallback">A single open pavilion — platform, columns, roof and water — sitting still while the light moves across it from first light to night.</div>
-  </div>
-</div>
-
-<div class="divider dark bg-mineral solo">
-  <div class="divider-inner">
-    <div class="divider-line"></div>
-    <img src="images/img-09-white.png" alt="" class="divider-mark" />
-    <div class="divider-line"></div>
-  </div>
-</div>
+<!-- The "One Place, All Day" pavilion (3D one) was removed on 22 August.
+     Its trailing `.divider.solo` went with it: `solo` exists only to stop a
+     divider drawing a rule across a pinned stage's last live frame, and with
+     no pinned stage here the divider above (dark · bg-surface · to-bleed)
+     already bridges the Day section into the Immersion photograph. Two
+     dividers back to back would have read as a double rule. -->
 
 
 <!-- ══════════════════════════════════════════════
@@ -1440,7 +1372,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
   </div>
 
   <div class="exp-row flip">
-    <div class="exp-photo par" data-par="0.14"><div class="par-layer" style="background-image:var(--img-exp-recovery);background-position:center 42%;"></div></div>
+    <div class="exp-photo par" data-par="0.14"><div class="par-layer" style="background-image:var(--img-exp-recovery);background-position:center 55%;"></div></div>
     <div class="exp-text on-light rv">
       <div class="exp-idx">02 — Recovery</div>
       <h3 class="exp-name"><span class="ln"><i>Sleep treated as the foundation,</i></span><span class="ln"><i><em>not the afterthought.</em></i></span></h3>
@@ -1449,7 +1381,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
   </div>
 
   <div class="exp-row">
-    <div class="exp-photo par" data-par="0.14"><div class="par-layer" style="background-image:var(--img-exp-learning);background-position:70% 60%;"></div></div>
+    <div class="exp-photo par" data-par="0.14"><div class="par-layer" style="background-image:var(--img-exp-learning);background-position:center 85%;"></div></div>
     <div class="exp-text on-light rv">
       <div class="exp-idx">03 — Learning</div>
       <h3 class="exp-name"><span class="ln"><i>Frameworks you can</i></span><span class="ln"><i><em>use on Monday.</em></i></span></h3>
@@ -1467,11 +1399,20 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
   </div>
 
   <div class="exp-row">
-    <div class="exp-photo par" data-par="0.14"><div class="par-layer" style="background-image:var(--img-exp-community);background-position:22% 60%;"></div></div>
+    <div class="exp-photo par" data-par="0.14"><div class="par-layer" style="background-image:var(--img-exp-community);background-position:center 45%;"></div></div>
     <div class="exp-text on-light rv">
       <div class="exp-idx">05 — Community</div>
       <h3 class="exp-name"><span class="ln"><i>You arrive alone.</i></span><span class="ln"><i><em>You do not stay that way.</em></i></span></h3>
       <p class="exp-copy soft d2">Shared meals, shared practice and honest conversation with people doing the same work. Accountability becomes far easier when it is not a private project.</p>
+    </div>
+  </div>
+
+  <div class="exp-row flip">
+    <div class="exp-photo par" data-par="0.14"><div class="par-layer" style="background-image:var(--img-exp-nourish);background-position:center 48%;"></div></div>
+    <div class="exp-text on-light rv">
+      <div class="exp-idx">06 — Nourishment</div>
+      <h3 class="exp-name"><span class="ln"><i>Simple food, cooked well,</i></span><span class="ln"><i><em>eaten slowly.</em></i></span></h3>
+      <p class="exp-copy soft d2">Meals are taken together at a long table rather than alone on a schedule. Eating well is treated as part of the practice, and the hour around it is where most of the conversation happens.</p>
     </div>
   </div>
 </div>
@@ -1507,7 +1448,11 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
       </div>
       <div class="note-line soft d3" style="margin-top:30px;">Location and programme in development</div>
     </div>
-    <div class="place-map rv"><div class="place-pin"><span class="place-pin-label">Phuket</span></div></div>
+    <!-- The pin is gone with the switch to the PHUKET poster: the plate
+         labels itself, and a pin dropped on a specific spot would claim a
+         located site while this very section says the location is still in
+         development. -->
+    <div class="place-map rv"></div>
   </div>
 </section>
 
@@ -2038,7 +1983,20 @@ function cine(el, o){
   cine(outer, { mode: 'sticky', pace: 'epic', states: days.length })
     .on((v) => { paced = v; update(); });
   window.addEventListener('resize', build, { passive: true });
-  if(document.readyState === 'complete') build(); else window.addEventListener('load', build);
+  /* NOT gated on `load`. That waits for every image, and this page carries
+     roughly 15MB of day photography — so the arc had no length, no dots and
+     no labels until all of it had decoded. The reader met a sticky section
+     that was not drawing, scrolled on, and it initialised at whatever state
+     they had already reached.
+     getTotalLength()/getPointAtLength() read the path's own user units and
+     need the element parsed, not the images decoded. The `load` pass stays
+     as a re-measure; build() is idempotent and ends by calling update(). */
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', build, { once: true });
+  } else {
+    build();
+  }
+  window.addEventListener('load', build);
 })();
 
 
@@ -2062,6 +2020,25 @@ function cine(el, o){
   entries.forEach(el => obs.observe(el));
 })();
 
+
+/* three.js is deferred in <head> so it cannot block first paint, which means
+   it has NOT executed when this inline script runs. Deferred scripts finish
+   before DOMContentLoaded, so re-arming there is sufficient. When the file is
+   warm in cache THREE is already defined and the callback runs synchronously,
+   exactly as it did when the tag was blocking.
+
+   This gate matters more here than on the home page: stage3D() treats a
+   missing THREE as "this device has no WebGL" and swaps in the static text
+   fallback permanently. Without the gate, deferring three.js would have made
+   every visitor get the fallback. */
+function whenTHREE(fn){
+  if(typeof THREE !== 'undefined') return fn();
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', function(){ fn(); }, { once: true });
+  } else {
+    fn();   /* genuinely unavailable — let stage3D() show its fallback */
+  }
+}
 
 /* ════════════════════════════════════════════
    3D — shared shell
@@ -2509,215 +2486,6 @@ const TROPIC = (function(){
            materials: materials, sala: sala, reflect: reflect, sampler: sampler };
 })();
 
-/* ══ 3D ONE — THE SALA ON STILL WATER, DAWN TO NIGHT ══
-   Rebuilt. What stood here before was a grey massing model: a plinth, a
-   deck, two blank walls, a flat slab roof and six cylinders sitting on a
-   featureless dark ground with no sky at all. It read as an architectural
-   study of a building that could have been anywhere — which is the one
-   note this section must not hit, because "One Place, All Day" is the
-   page's claim about a tropical place.
-
-   The sun IS the section. It travels a real arc, and everything else —
-   the sky's two gradient stops, the hemisphere bounce, the haze, the
-   water's colour, its specular and its glitter path, the shadows and
-   finally the lanterns — is driven from its position and the KEYS table.
-
-   The left third and the bottom band of the frame are veiled in CSS
-   (.pav-veil), because at midday a tropical sky is bright and this
-   section's copy is white. */
-stage3D('pavilionCanvas', 'pavilionOuter', function(api){
-  const S = api.scene, C = api.camera;
-  const sunTimeEl = document.getElementById('sunTime');
-  const sunPhaseEl = document.getElementById('sunPhase');
-  const sunFill = document.getElementById('sunFill');
-  const sunKnob = document.getElementById('sunKnob');
-
-  const shadows = !api.isMobile;
-  api.renderer.shadowMap.enabled = shadows;
-  if(shadows) api.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-
-  /* Haze is doing real work here: it separates the sala from the shore
-     from the karsts, and it is what keeps a low-poly scene from reading
-     as a low-poly scene. Near and far are tight enough that the horizon
-     islands sit at roughly 80% hazed. */
-  S.fog = new THREE.Fog(0x9fb6c4, 55, 330);
-
-  const M = TROPIC.materials();
-
-  /* ─── palette across the day ───
-     Seven keys. The sky carries a zenith and a horizon colour separately,
-     which is what gives dawn and dusk a band rather than a flat wash. */
-  const KEYS = [
-    { t:0.00, sun:0xff9552, int:0.55, zen:0x1d3350, hor:0xd98a63, hemiS:0x4a6982, hemiG:0x1d2a2c, hemi:0.55, glow:0.60, fog:0x2c3f52, time:'05:00', phase:'First light' },
-    { t:0.17, sun:0xffcf94, int:1.05, zen:0x3f7fb8, hor:0xf0c79a, hemiS:0x8fb6d4, hemiG:0x2c3c38, hemi:0.70, glow:0.62, fog:0x86a8c0, time:'08:00', phase:'Morning' },
-    { t:0.40, sun:0xfff6e4, int:1.55, zen:0x2f79c4, hor:0xbcd8ea, hemiS:0xa8cbe4, hemiG:0x3a4a40, hemi:0.90, glow:0.40, fog:0xa9c6da, time:'12:00', phase:'Midday' },
-    { t:0.60, sun:0xffdca6, int:1.30, zen:0x3d7fb6, hor:0xd7dbd0, hemiS:0x9dbdd2, hemiG:0x3d4738, hemi:0.78, glow:0.48, fog:0xa2bccb, time:'15:00', phase:'Afternoon' },
-    { t:0.79, sun:0xff8b41, int:0.92, zen:0x2f4d75, hor:0xf2955a, hemiS:0x7d7f96, hemiG:0x362a20, hemi:0.56, glow:0.95, fog:0x8a6a63, time:'18:00', phase:'Golden hour' },
-    { t:0.91, sun:0x9a6fae, int:0.34, zen:0x1b2a4c, hor:0x7a5a86, hemiS:0x44506f, hemiG:0x221c1c, hemi:0.42, glow:0.62, fog:0x40395a, time:'20:00', phase:'Dusk' },
-    { t:1.00, sun:0x4a5f92, int:0.16, zen:0x080e1c, hor:0x1d2942, hemiS:0x212c46, hemiG:0x14120f, hemi:0.30, glow:0.28, fog:0x121a2a, time:'21:00', phase:'Night' }
-  ];
-  const sample = TROPIC.sampler(KEYS, {
-    colors: ['sun', 'zen', 'hor', 'hemiS', 'hemiG', 'fog'],
-    nums:   ['int', 'hemi', 'glow'],
-    texts:  ['time', 'phase']
-  });
-
-  const sky = TROPIC.skyDome(600);
-  S.add(sky.mesh);
-
-  const W = TROPIC.water(api.renderer, 1200, 300);
-  S.add(W.mesh);
-
-  const sala = TROPIC.sala(M, shadows);
-  sala.renderOrder = 6;
-  S.add(sala);
-  S.add(TROPIC.reflect(TROPIC.sala(M, false), 0.34));
-
-  /* ─── the shore ───
-     Every palm stands on LAND. An earlier pass had six of them rooted in
-     open water in front of a full-width sandbar — palms growing out of
-     the sea, and a bar that met the sky in one hard line right across the
-     frame and read as a hedge. The near spit also frames the left of the
-     shot and gives the water a near edge to read depth against. */
-  const FROND = TROPIC.frondGeometry(4.6, 0.62, 3.0, 9);
-  const palms = [];
-
-  const spitNear = new THREE.Mesh(TROPIC.islandGeometry(21, 12, 1.0, 0.22), M.sand);
-  spitNear.position.set(-40, -0.10, -4);
-  spitNear.receiveShadow = shadows;
-  S.add(spitNear);
-
-  [[6, -118, 15, 8], [58, -132, 19, 9], [-72, -150, 13, 7]].forEach(function(d){
-    const m = new THREE.Mesh(TROPIC.islandGeometry(d[2], d[3], 1.2, 0.24), M.bank);
-    m.position.set(d[0], 0.02, d[1]);
-    S.add(m);
-  });
-
-  /* x, z, height, lean, ground height */
-  [[-44, -2, 9.6, 0.34, 0.34], [-32, -10, 8.0, -0.24, 0.34], [-50, 6, 7.2, 0.16, 0.34],
-   [4, -118, 9.4, -0.30, 0.55], [62, -132, 8.2, 0.26, 0.55], [-70, -150, 7.6, -0.12, 0.55]]
-  .forEach(function(d, i){
-    const p = TROPIC.palm(FROND, M.trunk, M.frond, d[2], d[3], i * 1.9, shadows);
-    p.position.set(d[0], d[4], d[1]);
-    palms.push(p); S.add(p);
-  });
-
-  /* Grouped rather than evenly spaced, and far enough back that the haze
-     does most of the work. Evenly spaced stacks of similar size read as
-     scenery props; a cluster with gaps reads as a coastline. */
-  [[-150, -196, 20, 34, 17], [-108, -212, 13, 22, 12], [-186, -236, 15, 26, 13],
-   [96, -204, 22, 38, 18], [138, -230, 14, 24, 12], [174, -258, 11, 18, 10],
-   [10, -290, 12, 20, 10]]
-  .forEach(function(d){
-    const k = new THREE.Mesh(TROPIC.karstGeometry(d[2], d[3], d[4]), M.karst);
-    k.position.set(d[0], 0, d[1]);
-    S.add(k);
-  });
-
-  /* ─── light ─── */
-  const sun = new THREE.DirectionalLight(0xffffff, 1.0);
-  sun.castShadow = shadows;
-  if(shadows){
-    sun.shadow.mapSize.set(1024, 1024);
-    const c = sun.shadow.camera;
-    c.left = -30; c.right = 30; c.top = 30; c.bottom = -30; c.near = 1; c.far = 140;
-    /* r128's LightShadow.updateMatrices() never rebuilds the projection
-       matrix, so widening the frustum only takes effect once we do this
-       ourselves. Without it the frustum stays at the ±5 default and the
-       shadows silently vanish. Do not remove. */
-    c.updateProjectionMatrix();
-    sun.shadow.bias = -0.0013;
-  }
-  S.add(sun);
-  const hemi = new THREE.HemisphereLight(0x8fb6d4, 0x2c3c38, 0.6);
-  S.add(hemi);
-  S.add(new THREE.AmbientLight(0xffffff, 0.14));
-
-  /* The sala lights from within as the sun goes down and becomes the one
-     warm thing in the frame — without it the section ends on black. */
-  const lamp = new THREE.PointLight(0xffb672, 0, 34, 1.7);
-  lamp.position.set(0, 3.6, 0);
-  S.add(lamp);
-  const lampAft = new THREE.PointLight(0xffa25a, 0, 26, 1.8);
-  lampAft.position.set(-3.8, 3.0, 2.6);
-  S.add(lampAft);
-
-  const sunPos = new THREE.Vector3();
-  let lastPhase = '';
-
-  return function frame(p, time, mx, my){
-    const s = sample(p);
-
-    /* the sun crosses from one horizon to the other, set behind the sala
-       so it rakes across the water toward the camera */
-    const ang = Math.PI * (0.035 + p * 0.93);
-    sunPos.set(Math.cos(ang) * 150, Math.sin(ang) * 96 - 6, -46 + Math.cos(ang) * 26);
-    sun.position.copy(sunPos);
-    sun.color.copy(s.sun);
-    sun.intensity = s.int;
-
-    sky.uni.cZen.value.copy(s.zen);
-    sky.uni.cHor.value.copy(s.hor);
-    sky.uni.cSun.value.copy(s.sun);
-    sky.uni.sunDir.value.copy(sunPos).normalize();
-    sky.uni.glow.value = s.glow;
-
-    hemi.color.copy(s.hemiS);
-    hemi.groundColor.copy(s.hemiG);
-    hemi.intensity = s.hemi;
-
-    S.fog.color.copy(s.fog);
-    api.renderer.setClearColor(s.fog, 1);
-    /* the glitter path is the sun's colour, held back so midday does not
-       blow the whole lower half of the frame to white */
-    W.material.specular.copy(s.sun).multiplyScalar(0.62);
-    /* The water darkens toward night so the lantern has something to be
-       the brightest thing against. The coefficients are deliberately low
-       and green-weighted: a brighter, bluer mix turned midday into a stock
-       travel render — bright cyan sea, near-white sand — a long way from
-       this site's register. */
-    const wd = 0.30 + s.hemi * 0.72;
-    W.material.color.setRGB(0.052 * wd, 0.150 * wd, 0.170 * wd);
-    W.map.offset.x = time * 0.0075;
-    W.map.offset.y = time * 0.0042;
-
-    const lantern = smooth(clamp01((p - 0.62) / 0.32));
-    lamp.intensity = lantern * 3.4;
-    lampAft.intensity = lantern * 2.0;
-
-    /* the fronds breathe — the only motion in the scene that is not the
-       sun, and deliberately almost imperceptible */
-    for(let i = 0; i < palms.length; i++){
-      const c = palms[i].userData.crown;
-      c.rotation.z = Math.sin(time * 0.29 + i * 1.4) * 0.030;
-      c.rotation.x = Math.cos(time * 0.23 + i * 0.9) * 0.022;
-    }
-
-    if(s.phase !== lastPhase){
-      lastPhase = s.phase;
-      if(sunTimeEl) sunTimeEl.textContent = s.time;
-      if(sunPhaseEl) sunPhaseEl.textContent = s.phase;
-    }
-    if(sunFill) sunFill.style.width = (p * 100) + '%';
-    if(sunKnob) sunKnob.style.left = (p * 100) + '%';
-
-    /* One long, low dolly across the water. The camera stays near the
-       surface so the reflection carries the bottom of the frame, and it
-       looks at a point LEFT of the sala so the building sits in the
-       right-hand two thirds, clear of the copy column. */
-    const k = smooth(clamp01(p * 1.05));
-    const orbit = -0.50 + p * 0.62 + mx * 0.05;
-    /* Mobile is a narrower frame, not a smaller one: at aspect ~0.49 the
-       horizontal field is half the desktop one, so the same distance puts
-       the roof across 77% of the screen. */
-    const dist = lerp(api.isMobile ? 84 : 50, api.isMobile ? 63 : 37, k);
-    const hgt  = lerp(9.2, 4.4, k) + my * 0.9;
-    C.position.set(Math.sin(orbit) * dist, hgt, Math.cos(orbit) * dist);
-    C.lookAt(api.isMobile ? 0 : -7.5, 4.6, 0);
-  };
-});
-
-
 /* ══ 3D TWO — THE LANTERN WALK AROUND THE LAGOON ══
    Rebuilt. The idea was right and is kept: you travel the seven days in
    first person, and at the end the camera lifts and the route turns out
@@ -2744,7 +2512,7 @@ stage3D('pavilionCanvas', 'pavilionOuter', function(api){
        were circling the Sanctuary the entire time. Riding, the haze keeps
        it hidden; it appears only as the camera lifts.
    Still no particle system, and no stars. */
-stage3D('loopCanvas', 'loopOuter', function(api){
+whenTHREE(function(){ stage3D('loopCanvas', 'loopOuter', function(api){
   const S = api.scene, C = api.camera;
   const dayEl = document.getElementById('loopDay');
   const subEl = document.getElementById('loopSub');
@@ -3032,9 +2800,21 @@ stage3D('loopCanvas', 'loopOuter', function(api){
      Palms on the centre island and on small islets outside the ring, so
      the walk has something passing on both sides. */
   const FROND = TROPIC.frondGeometry(4.6, 0.62, 3.0, 9);
+  /* NIGHT-GRADED, and this was the single loudest reason the frame read as a
+     game asset rather than a photograph. The three near palms were built with
+     M.frond — the DAYLIGHT frond colour — so they stood in a blue-hour scene
+     as bright mid-green cut-outs while the distant ring below was already
+     graded to 0x1d3024. Nothing at dusk is that saturated, and the eye reads
+     "wrong green" as "rendered" instantly.
+     They are lighter than the far ring because they sit inside the lantern
+     light, but they are foliage in the dark now, not foliage at noon. The
+     trunks come down with them; a lit trunk under an unlit crown was the
+     same mistake one layer along. */
+  const mLeafNear  = M.frond.clone(); mLeafNear.color.setHex(0x2a4133);
+  const mTrunkNear = M.trunk.clone(); mTrunkNear.color.multiplyScalar(0.58);
   const palms = [];
   function addPalm(x, z, y, h, lean, i){
-    const p = TROPIC.palm(FROND, M.trunk, M.frond, h, lean, i * 1.9, false);
+    const p = TROPIC.palm(FROND, mTrunkNear, mLeafNear, h, lean, i * 1.9, false);
     p.position.set(x, y, z);
     palms.push(p); S.add(p);
   }
@@ -3090,6 +2870,39 @@ stage3D('loopCanvas', 'loopOuter', function(api){
   const LOOP_EXTENT = 63;
   let lastDay = -1;
 
+  /* ── THE GAIT ──────────────────────────────────────────────────────────
+     What made this scene read as a video game was not the geometry, it was
+     the CAMERA. It travelled the ring perfectly smoothly and its only
+     movement was a 1.6cm rise on a wall-clock sine — so it drifted up and
+     down while standing still, and did not change at all when you moved.
+     That is a drone on a spline, and the eye knows it instantly.
+
+     The gait below is driven by DISTANCE WALKED, not by time. The phase
+     advances pi per step, so:
+       · standing still is genuinely still — no float, no drift;
+       · scrolling slowly is a slow walk and scrolling fast is a brisk one,
+         because step rate falls out of speed rather than being imposed;
+       · every rise, sway and roll is the same footfall, so they stay in
+         phase with each other the way a real body does.
+     Vertical uses |sin| (two falls per stride, at each heel strike) while
+     sway and roll use half that frequency (one per stride) and sit a
+     quarter-cycle out, which is what stops it reading as a bobblehead. */
+  const STEP_LEN   = 1.55;    /* metres of boardwalk per step */
+  const BOB_AMP    = 0.055;   /* vertical travel at the hips */
+  const SWAY_AMP   = 0.075;   /* lateral, across the deck */
+  const ROLL_AMP   = 0.011;   /* radians — under a degree */
+  const CURVE_LEN  = curve.getLength();
+  let gaitPhase = 0, lastT = -1;
+  /* sideV, not side: the build code above declares its own block-scoped
+     `side` in four places and shadowing it here reads as the same variable */
+  const fwdV = new THREE.Vector3(), sideV = new THREE.Vector3(), UP = new THREE.Vector3(0,1,0);
+  /* Gaze lag. Aiming dead at the point 30 units ahead makes the camera turn
+     with the path to the millimetre, which is the other half of the drone
+     feel. The look target trails its ideal by ~110ms so bends are entered a
+     fraction late and left a fraction late, the way a walker's head does. */
+  const lookAt = new THREE.Vector3();
+  let lookInit = false, lastTime = -1;
+
   /* The vantage point is derived from where you currently are on the ring
      and from how much the camera can actually see, so the lift rises
      outward from your own position instead of cutting across the middle of
@@ -3111,6 +2924,11 @@ stage3D('loopCanvas', 'loopOuter', function(api){
   }
 
   return function frame(p, time, mx, my){
+    /* `time` arrives in seconds. Clamped because a backgrounded tab returns
+       with a multi-second gap, and an unclamped dt would snap the gaze
+       straight onto its target on the first frame back. */
+    const dtSec = lastTime < 0 ? 0.016 : Math.min(0.05, Math.max(0.001, time - lastTime));
+    lastTime = time;
     const ride = clamp01(p / RIDE_END);
     const t = (ride * 0.995) % 1;
     const out = clamp01((p - RIDE_END) / (1 - RIDE_END));
@@ -3147,7 +2965,11 @@ stage3D('loopCanvas', 'loopOuter', function(api){
     isleLamp.intensity = lerp(2.6, 3.6, kFog);
     /* the lantern pools were clipping to hard white discs on the water at
        the reveal; the surface goes matt as the camera lifts */
-    W.material.shininess = lerp(62, 22, kFog);
+    /* 62 gave a very tight specular lobe, so each lantern landed on the water
+       as a short stack of hard white dashes — the most synthetic thing in the
+       frame. 38 spreads the same energy into a longer, softer column that
+       reads as a reflection on moving water. */
+    W.material.shininess = lerp(38, 22, kFog);
     /* ripple detail is meaningless from the vantage point and turns into a
        visible diagonal moire across the whole lagoon, so it fades out as
        the camera lifts */
@@ -3188,12 +3010,31 @@ stage3D('loopCanvas', 'loopOuter', function(api){
       lastDay = -1;
     }
 
-    /* Walking: eye height above the deck, with a slow, shallow sway. The
-       sway is a walk, not a camera shake — 1.6cm of rise and less than a
-       degree of roll. */
-    const bobY = Math.sin(time * 1.15) * 0.016;
-    const bobR = Math.sin(time * 0.57) * 0.008;
+    /* Advance the gait by the distance actually covered since the last
+       frame. The wrap guard matters: t is modulo 1, so the step across the
+       seam reads as a full lap travelled backwards and would spin the phase
+       through hundreds of steps in one frame. */
+    let dT = t - lastT;
+    if(lastT < 0) dT = 0;
+    if(dT >  0.5) dT -= 1;
+    if(dT < -0.5) dT += 1;
+    lastT = t;
+    gaitPhase += (Math.abs(dT) * CURVE_LEN / STEP_LEN) * Math.PI;
+
+    /* The gait fades out as the camera lifts away at the reveal — you stop
+       walking before you rise, so carrying footfalls into the vantage shot
+       would read as a hand-held drone rather than a held final frame. */
+    const walk = 1 - k;
+    const bobY  = -Math.abs(Math.sin(gaitPhase)) * BOB_AMP * walk;
+    const swayX = Math.sin(gaitPhase * 0.5) * SWAY_AMP * walk;
+    const bobR  = Math.sin(gaitPhase * 0.5 - Math.PI / 2) * ROLL_AMP * walk;
+
     camPos.copy(here);
+    /* sway moves the walker ACROSS the boardwalk, so it has to be applied
+       along the deck's own side vector rather than a world axis */
+    fwdV.copy(ahead).sub(here).setY(0).normalize();
+    sideV.crossVectors(fwdV, UP).normalize();
+    camPos.addScaledVector(sideV, swayX);
     /* MOBILE IS A DIFFERENT COMPOSITION, not the desktop one shrunk. At eye
        height in a portrait frame the deck immediately underfoot fills the
        bottom third, the horizon sits at 55% and the rest is empty sky —
@@ -3203,7 +3044,18 @@ stage3D('loopCanvas', 'loopOuter', function(api){
        sides all fit. Same journey, framed for the screen it is on. */
     const portrait = C.aspect < 1;
     camPos.y = DECK_Y + (portrait ? 2.55 : 1.78) + bobY + my * 0.5;
-    camLook.copy(ahead);
+
+    /* Gaze trails the ideal aim point. Framerate-independent smoothing, so
+       the ~110ms lag is the same on a 60Hz phone and a 120Hz tablet; without
+       the exponential form a fixed per-frame lerp would double the lag at
+       half the framerate. Seeded on the first frame so the camera does not
+       swing in from the origin. */
+    if(!lookInit){ lookAt.copy(ahead); lookInit = true; }
+    else {
+      const lag = 1 - Math.exp(-dtSec / 0.11);
+      lookAt.lerp(ahead, clamp01(lag));
+    }
+    camLook.copy(lookAt);
     /* looking slightly UP on a landscape frame: level or below put the deck
        across the bottom half and pushed the horizon almost out of shot, and
        a walker looks at where they are going, not at their feet */
@@ -3226,7 +3078,7 @@ stage3D('loopCanvas', 'loopOuter', function(api){
     if(closeEl) closeEl.classList.toggle('show', out > 0.55);
     if(copyEl) copyEl.style.opacity = String(1 - clamp01(out * 2.2));
   };
-});
+}); });
 
 /* ── EARLY ACCESS FORM — front end only, and it says so ── */
 (function(){

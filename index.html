@@ -6,6 +6,10 @@
   (function(){
     var t = localStorage.getItem('daoasis-theme') || 'dark';
     if(t === 'light') document.documentElement.setAttribute('data-theme','light');
+    /* a returning visitor has already watched the intro once — this class
+       hides it before first paint so there is no flash of the animation
+       ahead of the body script reaching the same decision */
+    if(localStorage.getItem('daoasis-visited') === '1') document.documentElement.classList.add('return-visit');
   })();
 </script>
 
@@ -19,7 +23,18 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Frank+Ruhl+Libre:wght@300;400;500&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<!-- DEFERRED, and that is load-bearing. This is ~600KB from a CDN and it was
+     a render-blocking script in <head>: nothing on the page — not the hero,
+     not the copy — could paint until it had downloaded and parsed. On a phone
+     that is seconds of blank screen, during which the reader keeps scrolling;
+     the pinned sections then became ready somewhere in the middle of their own
+     scroll range and snapped to that frame, which is why they appeared to
+     "rush past". Deferring it lets the whole page paint and scroll normally
+     while three.js arrives in the background.
+     Everything that uses THREE now waits for it — search initPalm / whenTHREE.
+     If this is ever changed back to a blocking tag those guards become
+     no-ops rather than breaking, but the stall returns. -->
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
   :root{
     --warm-white:#F7F4EE; --charcoal:#2B2623; --mineral:#171412;
@@ -202,9 +217,20 @@
 
   body.intro-skipped .intro{display:none !important;}
   body.intro-skipped .kicker, body.intro-skipped .h1, body.intro-skipped .sub,
-  body.intro-skipped .ctas, body.intro-skipped .journey-wrap, body.intro-skipped .journey-mobile,
+  body.intro-skipped .ctas, body.intro-skipped .journey-wrap,
   body.intro-skipped .scroll-hint{animation:none !important;opacity:1 !important;transform:none !important;}
   body.intro-skipped #heroH1{opacity:1 !important;}
+
+  /* returning visitor — set on <html> in the head before first paint, so
+     the intro never has a chance to flash on screen at all. Mirrors the
+     body.intro-skipped rules above; both are needed because this one fires
+     before <body> exists and the other is what the manual "Skip intro"
+     path (and the JS handoff) relies on. */
+  html.return-visit .intro{display:none !important;}
+  html.return-visit .kicker, html.return-visit .h1, html.return-visit .sub,
+  html.return-visit .ctas, html.return-visit .journey-wrap,
+  html.return-visit .scroll-hint{animation:none !important;opacity:1 !important;transform:none !important;}
+  html.return-visit #heroH1{opacity:1 !important;}
 
   /* The vignette and centre bloom now carry the edge falloff, so the flat
      scrim over the photograph can ease off and let the image read. */
@@ -234,8 +260,14 @@
      once one side's content is wider than its proportional share. */
   .nav-brand{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;align-items:center;gap:10px;text-decoration:none;}
   /* the homepage brand is the full DAOasis lockup, not the mark + wordmark pair */
-  .nav-brand img{height:24px;width:auto;display:block;opacity:0.92;}
+  .nav-brand img{height:24px;width:auto;display:block;opacity:0.92;transition:height 0.2s ease;}
   html[data-theme="light"] .nav-brand img{filter:invert(1) brightness(0.22);}
+  /* on mobile the CTA pill is hidden (see .nav>.nav-cta below) and the
+     burger loses its label, so the mark is the only branding on screen —
+     it earns more presence than the 24px desktop mark, which reads as an
+     afterthought once it is the sole thing up there. */
+  @media(max-width:768px){.nav-brand img{height:34px;}}
+  @media(max-width:420px){.nav-brand img{height:30px;}}
   .nav-cta{background:var(--warm-white);color:var(--charcoal);font-size:13px;
     padding:10px 24px;border-radius:24px;text-decoration:none;letter-spacing:0.03em;
     transition:opacity 0.2s;white-space:nowrap;}
@@ -255,7 +287,7 @@
     .nav-cta{padding:9px 16px;font-size:12px;}
   }
   @media(max-width:360px){
-    .nav-brand img{height:19px;}
+    .nav-brand img{height:27px;}
     .nav-cta{padding:8px 13px;font-size:11px;}
   }
   .nav-drawer-backdrop{position:fixed;inset:0;z-index:88;background:rgba(9,8,7,0.55);
@@ -360,56 +392,53 @@
     #heroContent{transition:none !important;}
   }
 
-  /* The mobile stand-in for the route drawing. It used to be a static list
-     while the desktop SVG was the hero's signature scroll animation, so it
-     now runs off the same progress value: the spine fills, stops light in
-     sequence, and the current one is marked — the same language the Journey
-     section's own mobile fallback (.jm-list) already uses. */
-  .journey-mobile{position:relative;display:none;flex-direction:column;gap:0;width:100%;max-width:330px;margin:5vh auto 0;text-align:left;
-    opacity:0;animation:fadeUp 1.6s ease-out forwards;animation-delay:6.9s;}
-  .jh-line-base{position:absolute;left:0;top:6px;bottom:12px;width:1px;background:rgba(247,244,238,0.14);}
-  .jh-line-fill{position:absolute;left:0;top:6px;width:1px;height:0;
-    background:linear-gradient(180deg, var(--gold), #e0b083);box-shadow:0 0 10px rgba(196,138,90,0.5);
-    transition:height 0.5s ease-out;}
-  .journey-mobile .stop{position:relative;padding:0 0 20px 24px;opacity:0.4;transition:opacity 0.5s ease;}
-  .journey-mobile .stop:last-child{padding-bottom:0;}
-  .journey-mobile .stop.done,.journey-mobile .stop.active{opacity:1;}
-  .journey-mobile .dot{position:absolute;left:-3.5px;top:5px;width:7px;height:7px;border-radius:50%;
-    background:rgba(247,244,238,0.22);transition:background 0.5s ease, box-shadow 0.5s ease, transform 0.5s cubic-bezier(0.34,1.56,0.64,1);}
-  .journey-mobile .stop.done .dot{background:var(--gold);}
-  .journey-mobile .stop.active .dot{background:radial-gradient(circle at 35% 30%, #f0c39a, #c48a5a);
-    box-shadow:0 0 0 4px rgba(196,138,90,0.18);transform:scale(1.2);}
-  .journey-mobile .dot.end{background:none;border:1px solid rgba(247,244,238,0.35);width:9px;height:9px;left:-4.5px;}
-  .journey-mobile .stop.done .dot.end,.journey-mobile .stop.active .dot.end{border-color:var(--warm-white);background:var(--warm-white);}
-  .journey-mobile .stop-title{font-family:'Frank Ruhl Libre',serif;font-size:11px;color:var(--warm-white);letter-spacing:0.18em;text-transform:uppercase;}
-  .journey-mobile .stop-sub{font-family:'Frank Ruhl Libre',serif;font-size:11.5px;color:rgba(247,244,238,0.5);margin-top:5px;letter-spacing:0.02em;}
-  @media (prefers-reduced-motion: reduce){
-    .jh-line-fill{transition:none;}
-    .journey-mobile .dot{transition:background 0.2s ease;}
-  }
   @media (max-width:800px){
     .journey-wrap{display:none;}
-    .journey-mobile{display:flex;}
   }
 
-  /* Mobile hero: the pin is locked to 100vh and still has to carry the
-     headline, sub, both CTAs and the five journey stops. Spacing is in vh
-     so the whole stack compresses on short screens instead of clipping. */
+  /* ── MOBILE HERO ──────────────────────────────────────────────────────
+     Rebuilt 22 August. This stack used to carry a kicker, a headline, a
+     sub, two CTAs, a five-stop journey list AND a scroll hint inside a
+     locked 100vh pin. Everything was shrunk to make it fit — the headline
+     bottomed out at 25px against a 36px ceiling — so the one element that
+     should have carried the page arrived as the smallest thing on screen
+     and the frame read as a list of components rather than a statement.
+
+     The journey list is gone (see the markup note in the hero). That frees
+     roughly 200px, and ALL of it is spent on the headline and on the space
+     around it: the type is the drama, and space is what makes it read as
+     deliberate rather than merely large. Measured at 375x812 the stack now
+     occupies ~470px of 663px available, so it still compresses rather than
+     clips on a short screen. */
   @media (max-width:800px){
+    .content{padding:calc(var(--nav-h) + 2vh) 7% 9vh;justify-content:center;}
     /* the 13ch desktop measure is far too narrow once the type shrinks —
        it forces the headline into five or six lines on a phone */
-    .h1{font-size:clamp(25px,6.9vw,36px);line-height:1.1;max-width:none;margin-top:2.6vh;}
-    .kicker{font-size:10px;letter-spacing:0.2em;}
-    .kicker::before,.kicker::after{width:16px;}
-    .sub{font-size:13.5px;line-height:1.75;max-width:44ch;margin-top:2.2vh;}
-    .ctas{margin-top:2.8vh;gap:9px;}
-    .ctas .btn{padding:13px 24px;font-size:11px;letter-spacing:0.13em;}
-    .content{padding:calc(var(--nav-h) + 2vh) 8% 9vh;justify-content:center;}
-    .journey-mobile{margin-top:2.6vh;max-width:310px;}
-    .journey-mobile .stop{padding:0 0 1.7vh 22px;}
-    .journey-mobile .stop-title{font-size:10px;letter-spacing:0.16em;}
-    .journey-mobile .stop-sub{font-size:11px;line-height:1.4;margin-top:3px;}
+    .h1{font-size:clamp(38px,11vw,60px);line-height:1.04;letter-spacing:-0.018em;
+      max-width:none;margin-top:3.4vh;}
+    /* the italic second line is the payoff — let it sit apart from the setup
+       rather than butting straight against it */
+    .h1 em{margin-top:0.24em;}
+    /* Measured, not guessed: at 9.5px/0.26em plus two 20px rules and two
+       14px gaps the label needs ~320px inside a 322px column at 375, so it
+       wrapped to two lines while the rules stayed on the first — which read
+       as a broken element. At 9px/0.22em with 14px rules it needs ~275px and
+       holds one line down to 360. nowrap makes that a guarantee. */
+    .kicker{font-size:9px;letter-spacing:0.22em;gap:10px;white-space:nowrap;}
+    .kicker::before,.kicker::after{width:14px;}
+    .sub{font-size:14px;line-height:1.7;max-width:32ch;margin-top:3.2vh;}
+    .ctas{margin-top:4vh;gap:10px;}
+    .ctas .btn{padding:14px 26px;font-size:11px;letter-spacing:0.13em;}
     .scroll-hint{bottom:calc(3vh + 26px + 20px);font-size:9px;letter-spacing:0.24em;}
+    /* Drama comes from contrast, not from more elements. On a handset the
+       frame is narrow enough that the desktop vignette barely reads, so the
+       falloff is pulled in and deepened and the warm bloom is lifted — the
+       type sits in a pool of light with the photograph going dark at the
+       edges, which is what makes a small frame feel cinematic. */
+    .hero::before{background:radial-gradient(ellipse at 50% 44%, rgba(196,138,90,0.16) 0%, transparent 58%);}
+    .hero::after{background:
+      radial-gradient(ellipse at 50% 46%, transparent 30%, rgba(0,0,0,0.72) 100%),
+      linear-gradient(180deg, rgba(0,0,0,0.42) 0%, rgba(0,0,0,0) 26%);}
   }
 
   .section{background:var(--warm-white);padding:16vh 8%;max-width:none;margin:0;}
@@ -862,7 +891,7 @@
         rgba(16,13,11,0.97) 100%),
       radial-gradient(ellipse 130% 62% at 50% 44%,
         rgba(78,60,44,0.42) 0%, rgba(46,36,28,0.20) 46%, rgba(23,20,18,0) 76%),
-      url('images/Journey%20image.png');
+      url('images/journey-image.jpg');
     background-size:cover;background-position:center;background-repeat:no-repeat;
     display:grid;grid-template-rows:auto auto minmax(0,1fr);justify-items:center;
     padding:clamp(52px,8.5vh,86px) 5% clamp(40px,6vh,64px);}
@@ -1136,7 +1165,7 @@
           rgba(23,20,18,1) 100%),
         radial-gradient(ellipse 140% 45% at 50% 18%,
           rgba(78,60,44,0.40) 0%, rgba(23,20,18,0) 72%),
-        url('images/Journey%20image%20mobile.png');
+        url('images/journey-image-mobile.jpg');
       background-size:100% 100%, 100% 100%, 100% auto;
       background-position:center top;
       background-repeat:no-repeat;background-attachment:scroll;}
@@ -1372,7 +1401,7 @@
   /* CLOSING — full-bleed photograph with real scroll parallax */
   .closing-section{position:relative;min-height:106vh;display:flex;align-items:center;overflow:hidden;background:var(--mineral);}
   .closing-bg{position:absolute;inset:-12% 0;z-index:0;
-    background-image:url('images/Sunrise.png');
+    background-image:url('images/Sunrise.jpg');
     background-size:cover;background-position:center left;will-change:transform;}
   .closing-veil{position:absolute;inset:0;z-index:1;pointer-events:none;
     background:linear-gradient(to right,
@@ -1532,9 +1561,7 @@
   .pr-spine { transform: scaleY(1) !important; }
   .intro { display: none !important; }
   .hero { opacity: 1 !important; }
-  #heroH1, .kicker, .h1, .sub, .ctas, .journey-wrap, .journey-mobile, .scroll-hint { opacity: 1 !important; animation: none !important; }
-  .journey-mobile .stop { opacity: 1 !important; }
-  .journey-mobile .dot { background: var(--gold) !important; }
+  #heroH1, .kicker, .h1, .sub, .ctas, .journey-wrap, .scroll-hint { opacity: 1 !important; animation: none !important; }
   .nav.nav-waiting { opacity: 1 !important; pointer-events: auto !important; }
 </style></noscript>
 </head>
@@ -1599,15 +1626,12 @@
               stroke="#C48A5A" stroke-width="2.5" stroke-dasharray="5 7" opacity="0.65" fill="none" mask="url(#routeMask)"/>
           </svg>
         </div>
-        <div class="journey-mobile" id="journeyMobileHero">
-          <div class="jh-line-base"></div>
-          <div class="jh-line-fill" id="jhLineFill"></div>
-          <div class="stop"><span class="dot"></span><div class="stop-title">Bangkok</div><div class="stop-sub">Day 1 · Begins the journey</div></div>
-          <div class="stop"><span class="dot"></span><div class="stop-title">Hua Hin</div><div class="stop-sub">Day 6 · First 3-day streak</div></div>
-          <div class="stop"><span class="dot"></span><div class="stop-title">Krabi</div><div class="stop-sub">Day 14 · Learn module complete</div></div>
-          <div class="stop"><span class="dot"></span><div class="stop-title">Phang Nga</div><div class="stop-sub">Day 22 · Community quest unlocked</div></div>
-          <div class="stop"><span class="dot end"></span><div class="stop-title">Phuket</div><div class="stop-sub">Day 30 · Arrives at the Sanctuary</div></div>
-        </div>
+        <!-- The mobile journey stand-in (#journeyMobileHero — five stops with
+             a filling spine) was removed on 22 August. It existed ONLY below
+             800px, so removing it on mobile removes it entirely; the desktop
+             route (.journey-wrap) is untouched. The full journey still has its
+             own mobile telling further down the page in .journey-mobile-section
+             — a different element, deliberately left in place. -->
         <div class="scroll-hint">Scroll to continue ↓</div>
       </div>
     </div>
@@ -1975,7 +1999,7 @@
 
     <!-- RIGHT: large image — always visible on entry -->
     <div class="pr-image-col" id="prImageCol">
-      <img class="pr-clarity-image" id="prClarityImage" src="images/clarity.png" alt="Clarity" />
+      <img class="pr-clarity-image" id="prClarityImage" src="images/clarity.jpg" alt="Clarity" />
     </div>
   </div>
 </div>
@@ -2195,9 +2219,6 @@
     const heroContentEl = document.getElementById('heroContent');
     const maskPath = document.getElementById('routeMaskPath');
     const routeLen = document.getElementById('route').getTotalLength();
-    const jmHero = document.getElementById('journeyMobileHero');
-    const jhFill = document.getElementById('jhLineFill');
-    const jmStops = jmHero ? [...jmHero.querySelectorAll('.stop')] : [];
     let entranceStarted = false;
     let maxProgress = 0;
 
@@ -2235,22 +2256,6 @@
         g.classList.remove('wp-active','wp-passed','wp-upcoming','wp-anticipate');
         g.classList.add('wp-' + cls);
       });
-
-      /* the mobile stand-in runs off the same progress value as the route */
-      if(jmStops.length && jmHero.offsetParent !== null){
-        let activeIdx = 0;
-        waypoints.forEach((wp, i) => { if(progress >= wp.frac - 0.02) activeIdx = i; });
-        jmStops.forEach((el, i) => {
-          el.classList.toggle('done', i < activeIdx);
-          el.classList.toggle('active', i === activeIdx);
-        });
-        if(jhFill){
-          const contTop = jmHero.getBoundingClientRect().top;
-          const dot = jmStops[activeIdx].querySelector('.dot');
-          const dr = dot.getBoundingClientRect();
-          jhFill.style.height = Math.max(0, (dr.top + dr.height / 2) - contTop - 6) + 'px';
-        }
-      }
 
       if(!reducedMotion){
         bgEl.style.setProperty('--py', (progress * -16) + 'px');
@@ -2345,6 +2350,18 @@
     unlockScroll();
   }
   window.skipIntro = skipIntro;
+
+  /* A visitor who has already sat through the intro once does not see it
+     again — every future load (a fresh visit, or the logo/nav link from
+     any other page) drops straight onto the finished hero. The flag is
+     read again here (rather than trusted from the head script's early
+     class) so this is the single place that also WRITES it, right after
+     the read, and the flag is what future page loads check. */
+  const VISITED_KEY = 'daoasis-visited';
+  const returningVisitor = localStorage.getItem(VISITED_KEY) === '1';
+  localStorage.setItem(VISITED_KEY, '1');
+  if(returningVisitor) skipIntro();
+
   const skipBtn = document.getElementById('skipIntroBtn');
   if(skipBtn) skipBtn.addEventListener('click', skipIntro);
   const navBrand = document.getElementById('navBrand');
@@ -2439,11 +2456,17 @@
       });
     }
 
-    setTimeout(() => {
-      dockLogo();
-      el.classList.add('show');
-      revealWords(() => { setTimeout(flyToHero, 260); });
-    }, 2450);
+    /* a returning visitor has already had skipIntro() called on them above,
+       which adds body.intro-skipped — the auto-play timeline must not also
+       run in that case, or the docked logo and headline would fly across
+       a hero that is already sitting there finished. */
+    if(!document.body.classList.contains('intro-skipped')){
+      setTimeout(() => {
+        dockLogo();
+        el.classList.add('show');
+        revealWords(() => { setTimeout(flyToHero, 260); });
+      }, 2450);
+    }
 
     /* The hand-off from the intro headline to the hero headline.
 
@@ -2760,7 +2783,20 @@
 </script>
 
 <script>
-(function(){
+(function initPalm(){
+  /* three.js is deferred in <head>, so it has NOT executed yet when this
+     inline script runs. Deferred scripts finish before DOMContentLoaded, so
+     re-arming there is enough — and when three.js is warm in cache THREE is
+     already defined and this runs straight through, exactly as before.
+     If three.js fails outright, this returns and the section keeps its CSS
+     resting state, where all the copy is opacity:1. It degrades to readable
+     type, never to a blank 516vh pin. */
+  if(typeof THREE === 'undefined'){
+    if(document.readyState === 'loading'){
+      document.addEventListener('DOMContentLoaded', initPalm, { once: true });
+    }
+    return;
+  }
   const canvas = document.getElementById('canvas');
   const pin = document.querySelector('.pin');
   const stage = document.getElementById('stage');
@@ -3445,18 +3481,67 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
      revealed inline by this script, waiting on rAF for the very first paint
      means the whole 516vh section can sit permanently blank if that first
      tick is delayed. This call guarantees a correct frame exists the
-     instant the script finishes running, independent of compositing. */
-  render(currentT);
+     instant the script finishes running, independent of compositing.
+
+     Painted at 0, not at currentT: the raster is always still in flight at
+     this point (it waits on an Image decode), so 0 is the only frame this
+     section can honestly show yet — copy up, cards out, rail empty. The
+     catch-up in the loop below takes it from here to the reader's real
+     position once the palm can actually be drawn. */
+  render(0);
+
+  /* ── THE READINESS CATCH-UP ───────────────────────────────────────────
+     rasterizeLogo() is asynchronous: it serialises an SVG, waits on an
+     Image decode, then reads back 810,000 pixels. Until it finishes,
+     logoReady is false and the palm CANNOT assemble.
+
+     What used to happen: only assemblyT was gated on logoReady, so the rest
+     of the section ran anyway — the copy faded out, the cards flew in, the
+     progress rail filled. The reader was told the section had started while
+     the one thing it is about could not appear, so they kept scrolling. Then
+     logoReady flipped and assemblyT jumped straight to clamp01(t/SHAPE_END),
+     which by then was often already 1: the palm popped fully formed and the
+     whole story had been skipped. That is the reported "it rushes past".
+
+     Now the SECTION's clock, not just the palm's, waits for readiness, and
+     when it starts it eases from 0 up to the reader's true position instead
+     of snapping. The duration scales with how far behind it is but is capped,
+     so the common case (ready in well under a second, gap ~0) is invisible,
+     and the worst case is a controlled ~1.3s catch-up that actually SHOWS the
+     assembly rather than cutting to the end of it. */
+  const CATCH_MAX_MS = 1300;
+  let catchFrom = 0, catchStart = 0, catchDur = 0, catching = false, started = false;
+  function effectiveT(){
+    if(!logoReady) return 0;
+    if(!started){
+      /* first frame after the raster landed — begin from a standing start
+         and travel to wherever the reader actually is */
+      started = true;
+      const gap = clamp01(currentT);
+      if(gap > 0.012){
+        catching = true; catchFrom = 0; catchStart = performance.now();
+        catchDur = Math.min(CATCH_MAX_MS, 380 + gap * 1400);
+      }
+    }
+    if(!catching) return currentT;
+    const k = clamp01((performance.now() - catchStart) / catchDur);
+    if(k >= 1){ catching = false; return currentT; }
+    /* ease-out: answers immediately, arrives softly. Re-based on the LIVE
+       currentT each frame, so if the reader is still scrolling during the
+       catch-up the target moves with them rather than landing stale. */
+    return catchFrom + (currentT - catchFrom) * easeOutCubic(k);
+  }
 
   let lastT = -1;
   function loop(){
+    const t = effectiveT();
     /* Under reduced motion there is no idle drift, so an identical frame is
        not worth repainting 60x a second — only paint when the scroll value
        actually moved or the box changed. Full motion always paints, because
        the unresolved dust drifts on its own clock. */
-    if(!reducedMotion || dirty || currentT !== lastT){
-      lastT = currentT; dirty = false;
-      render(currentT);
+    if(!reducedMotion || dirty || catching || t !== lastT){
+      lastT = t; dirty = false;
+      render(t);
     }
     requestAnimationFrame(loop);
   }

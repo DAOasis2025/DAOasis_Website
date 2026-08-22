@@ -118,6 +118,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--gold); outline-
   letter-spacing: 0.03em; transition: opacity 0.2s; white-space: nowrap;
 }
 .nav-cta:hover { opacity: 0.88; }
+@media(max-width:768px){.nav>.nav-cta{display:none;}}
 .nav-burger { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 4px; background: none; border: none; }
 .nav-burger-bars { display: flex; flex-direction: column; gap: 5px; }
 .nav-burger-bars i { display: block; width: 20px; height: 1.5px; background: var(--warm-white); transition: all 0.3s; font-style: normal; }
@@ -386,6 +387,20 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--gold); outline-
   line-height: 1; color: rgba(43,38,35,0.17); user-select: none; }
 .pt-tag { position: absolute; z-index: 4; left: 0; right: 0; bottom: 18px; text-align: center;
   font-size: 10.5px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(43,38,35,0.4); }
+/* A slot that HAS a portrait is not "to follow". .pt-tag sits at z-index 4,
+   above the image at 2, so without this the caption prints across the bottom
+   of every real photograph. Paired with the onerror on the <img>: if the file
+   fails to load the img is removed, :has() stops matching, and the caption
+   comes back on its own. */
+.pt:has(img) .pt-tag { display: none; }
+/* The founder portrait is a tall frame (~0.66) dropped into a 4:5 plate (0.8),
+   so `cover` fills the width and crops ~8.9% off the top and bottom at the
+   default centre position — and the top of the head sits at about 8% of the
+   source, i.e. right on the cut. Biasing to 30% takes the top crop down to
+   ~5.4% and spends the difference on the jacket, which has nothing in it.
+   If the photograph is ever replaced, re-check this number against the new
+   frame rather than assuming it still holds. */
+#founder .pt img { object-position: center 30%; }
 .on-dark .pt, .on-green .pt { background: #2a2521; }
 .on-dark .pt::after, .on-green .pt::after { border-color: rgba(247,244,238,0.10); }
 .on-dark .pt-mono, .on-green .pt-mono { color: rgba(247,244,238,0.14); }
@@ -769,10 +784,17 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
     <div class="founder rv">
       <div>
         <div class="eyebrow soft">Founder</div>
-        <!-- PORTRAIT SLOT — replace the monogram with:
-             <img src="images/team-jamie.jpg" alt="Jamie, Founder and CEO of DAOasis" /> -->
+        <!-- The monogram and caption are kept UNDERNEATH the portrait, not
+             deleted. `.pt img` is z-index 2 and covers them completely once the
+             file loads, so they are invisible in the normal case — but if
+             images/team-jamie.jpg is ever missing or renamed, onerror strips
+             the <img> and the slot falls back to exactly the plate every other
+             profile shows, rather than to a broken-image icon on the founder's
+             own portrait. -->
         <figure class="pt soft d1">
           <span class="pt-mono" aria-hidden="true">J</span>
+          <img src="images/team-jamie.jpg" alt="Jamie, Founder and CEO of DAOasis"
+               width="799" height="1200" onerror="this.remove();" />
           <figcaption class="pt-tag">Portrait to follow</figcaption>
         </figure>
       </div>
@@ -785,8 +807,8 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
         startup ecosystems. He leads on vision, investor relations, experience design and
         team culture.</p>
         <blockquote class="pf-q soft d3">
-          "DAOasis is about giving people the tools to reset, reconnect and reimagine
-          their future — and then rewarding them for it."
+          "DAOasis is about helping people reset, reconnect and reimagine their
+          future — and rewarding them for every step they take."
         </blockquote>
       </div>
     </div>
