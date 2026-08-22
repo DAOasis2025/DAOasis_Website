@@ -63,6 +63,7 @@ body { overflow-x: clip; }
   letter-spacing: 0.03em; transition: opacity 0.2s; white-space: nowrap;
 }
 .nav-cta:hover { opacity: 0.88; }
+@media(max-width:768px){.nav>.nav-cta{display:none;}}
 .nav-burger { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 4px; background: none; border: none; }
 .nav-burger-bars { display: flex; flex-direction: column; gap: 5px; }
 .nav-burger-bars i { display: block; width: 20px; height: 1.5px; background: var(--warm-white); transition: all 0.3s; font-style: normal; }
