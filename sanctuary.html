@@ -156,34 +156,62 @@ img { max-width: 100%; }
   transition: transform 0.35s ease;
 }
 .nav.nav-hidden { transform: translateY(-100%); }
-.nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0; }
+/* absolutely centred, not a grid 1fr split — a grid track stops being
+   equal once one side's content is wider than its proportional share. */
+.nav-brand { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); display: flex; align-items: center; gap: 10px; text-decoration: none; }
 .nav-brand img { width: 26px; opacity: 0.9; }
 .nav-brand span { font-family: 'Cormorant Garamond', serif; font-size: 18px; color: var(--warm-white); }
-.nav-links { display: flex; gap: 28px; }
-.nav-links a, .nav-links span { font-size: 13px; color: #8a8377; text-decoration: none; letter-spacing: 0.04em; transition: color 0.2s; }
-.nav-links a:hover, .nav-links a.active { color: var(--warm-white); }
 .nav-cta {
   background: var(--warm-white); color: var(--charcoal); font-size: 13px;
   padding: 10px 24px; border-radius: 24px; text-decoration: none;
-  letter-spacing: 0.03em; transition: opacity 0.2s; flex-shrink: 0;
+  letter-spacing: 0.03em; transition: opacity 0.2s; white-space: nowrap;
 }
 .nav-cta:hover { opacity: 0.88; }
-.nav-burger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; background: none; border: none; }
-.nav-burger span { display: block; width: 22px; height: 1.5px; background: var(--warm-white); transition: all 0.3s; }
-.nav-burger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
-.nav-burger.open span:nth-child(2) { opacity: 0; }
-.nav-burger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
-.nav-drawer {
-  position: fixed; inset: 0; z-index: 89;
-  background: rgba(23,20,18,0.97); backdrop-filter: blur(16px);
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 32px;
-  opacity: 0; pointer-events: none; transition: opacity 0.35s;
+.nav-burger { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 4px; background: none; border: none; }
+.nav-burger-bars { display: flex; flex-direction: column; gap: 5px; }
+.nav-burger-bars i { display: block; width: 20px; height: 1.5px; background: var(--warm-white); transition: all 0.3s; font-style: normal; }
+.nav-burger.open .nav-burger-bars i:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+.nav-burger.open .nav-burger-bars i:nth-child(2) { opacity: 0; }
+.nav-burger.open .nav-burger-bars i:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+.nav-burger-label { font-family: 'Frank Ruhl Libre', serif; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--warm-white); }
+/* on a narrow phone the full-text CTA is wide enough to collide with the
+   centred logo — icon-only burger plus a tighter CTA buys back the room. */
+@media(max-width:420px) {
+  .nav-burger-label { display: none; }
+  .nav-cta { padding: 9px 16px; font-size: 12px; }
 }
-.nav-drawer.open { opacity: 1; pointer-events: auto; }
-.nav-drawer a, .nav-drawer span.drawer-dead { font-family: 'Cormorant Garamond', serif; font-size: 28px; color: #8a8377; text-decoration: none; transition: color 0.2s; }
+@media(max-width:360px) {
+  .nav-brand span { display: none; }
+  .nav-cta { padding: 8px 13px; font-size: 11px; }
+}
+.nav-drawer-backdrop {
+  position: fixed; inset: 0; z-index: 88; background: rgba(9,8,7,0.55);
+  opacity: 0; pointer-events: none; transition: opacity 0.4s;
+}
+.nav-drawer-backdrop.open { opacity: 1; pointer-events: auto; }
+.nav-drawer {
+  position: fixed; top: 0; left: 0; bottom: 0; z-index: 89; width: min(420px,88vw);
+  background: rgba(23,20,18,0.98); backdrop-filter: blur(16px);
+  display: flex; flex-direction: column;
+  transform: translateX(-100%); transition: transform 0.4s cubic-bezier(.4,0,.2,1);
+  border-right: 1px solid rgba(247,244,238,0.08); overflow-y: auto;
+}
+.nav-drawer.open { transform: translateX(0); }
+.nav-drawer-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 22px 28px; border-bottom: 1px solid rgba(247,244,238,0.08); flex-shrink: 0;
+}
+.nav-drawer-head img { height: 22px; width: auto; opacity: 0.92; }
+.nav-drawer-close { background: none; border: none; color: #8a8377; font-size: 28px; line-height: 1; cursor: pointer; padding: 2px 6px; transition: color 0.2s; }
+.nav-drawer-close:hover { color: var(--warm-white); }
+.nav-drawer-list { display: flex; flex-direction: column; padding: 6px 28px 28px; }
+.nav-drawer a, .nav-drawer span.drawer-dead {
+  font-family: 'Cormorant Garamond', serif; font-size: 22px; color: #8a8377; text-decoration: none; transition: color 0.2s;
+  padding: 16px 0; border-bottom: 1px solid rgba(247,244,238,0.08);
+}
 .nav-drawer a:hover, .nav-drawer a.active { color: var(--warm-white); }
-.nav-drawer .nav-cta { font-family: 'Frank Ruhl Libre', serif; font-size: 15px; margin-top: 16px; padding: 14px 40px; }
-@media(max-width:900px) { .nav-links, .nav > .nav-cta { display: none; } .nav-burger { display: flex; } }
+.nav-drawer .nav-cta { font-family: 'Frank Ruhl Libre', serif; font-size: 14px; margin: 24px 0 0; padding: 14px 32px; border-bottom: none; text-align: center; align-self: flex-start; }
+@media(max-width:520px) { .nav-drawer { width: 100vw; } }
 
 /* ══════════════════════════════════════════════
    DIVIDERS  (homepage system)
@@ -991,12 +1019,15 @@ html[data-theme="light"], html[data-theme="light"] body { background: #F7F4EE; c
 html[data-theme="light"] .nav { background: rgba(247,244,238,0.94); border-bottom-color: rgba(43,38,35,0.1); }
 html[data-theme="light"] .nav-brand span { color: #171412; }
 html[data-theme="light"] .nav-brand img { filter: invert(1) brightness(0.3); }
-html[data-theme="light"] .nav-links a, html[data-theme="light"] .nav-links span { color: #6b6459; }
-html[data-theme="light"] .nav-links a:hover, html[data-theme="light"] .nav-links a.active { color: #171412; }
 html[data-theme="light"] .nav-cta { background: #171412; color: #F7F4EE; }
-html[data-theme="light"] .nav-burger span { background: #2B2623; }
-html[data-theme="light"] .nav-drawer { background: rgba(247,244,238,0.98); }
-html[data-theme="light"] .nav-drawer a, html[data-theme="light"] .nav-drawer span.drawer-dead { color: #6b6459; }
+html[data-theme="light"] .nav-burger-bars i { background: #2B2623; }
+html[data-theme="light"] .nav-burger-label { color: #2B2623; }
+html[data-theme="light"] .nav-drawer { background: rgba(247,244,238,0.98); border-right-color: rgba(43,38,35,0.1); }
+html[data-theme="light"] .nav-drawer-head { border-bottom-color: rgba(43,38,35,0.1); }
+html[data-theme="light"] .nav-drawer-head img { filter: invert(1) brightness(0.3); }
+html[data-theme="light"] .nav-drawer-close { color: #6b6459; }
+html[data-theme="light"] .nav-drawer-close:hover { color: #171412; }
+html[data-theme="light"] .nav-drawer a, html[data-theme="light"] .nav-drawer span.drawer-dead { color: #6b6459; border-bottom-color: rgba(43,38,35,0.1); }
 html[data-theme="light"] .nav-drawer a:hover, html[data-theme="light"] .nav-drawer a.active { color: #171412; }
 html[data-theme="light"] .nav-drawer .nav-cta { background: #171412; color: #F7F4EE; }
 html[data-theme="light"] .footer-toggle button#ftLight { background: rgba(247,244,238,0.18); color: var(--warm-white); }
@@ -1019,28 +1050,31 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
 
 <!-- ══ NAV ══ -->
 <nav class="nav">
+  <button class="nav-burger" id="navBurger" aria-label="Menu" aria-expanded="false" aria-controls="navDrawer">
+    <span class="nav-burger-bars"><i></i><i></i><i></i></span>
+    <span class="nav-burger-label">Menu</span>
+  </button>
   <a class="nav-brand" href="index.html">
     <img src="images/img-09-white.png" alt="DAOasis" />
     <span>DAOasis</span>
   </a>
-  <div class="nav-links">
+  <a class="nav-cta" href="#earlyAccess">Join the waitlist</a>
+</nav>
+
+<div class="nav-drawer-backdrop" id="navDrawerBackdrop"></div>
+<div class="nav-drawer" id="navDrawer">
+  <div class="nav-drawer-head">
+    <img src="images/img-09-white.png" alt="DAOasis" />
+    <button class="nav-drawer-close" id="navDrawerClose" aria-label="Close menu">&times;</button>
+  </div>
+  <div class="nav-drawer-list">
     <a href="app.html">The App</a>
     <a href="sanctuary.html" class="active">The Sanctuary</a>
     <a href="web3.html">The Web3 Layer</a>
     <a href="about.html">About Us</a>
     <a href="investors.html">Investors</a>
+    <a class="nav-cta" href="#earlyAccess">Join the waitlist</a>
   </div>
-  <a class="nav-cta" href="#earlyAccess">Join the waitlist</a>
-  <button class="nav-burger" id="navBurger" aria-label="Menu"><span></span><span></span><span></span></button>
-</nav>
-
-<div class="nav-drawer" id="navDrawer">
-  <a href="app.html">The App</a>
-  <a href="sanctuary.html" class="active">The Sanctuary</a>
-  <a href="web3.html">The Web3 Layer</a>
-  <a href="about.html">About Us</a>
-  <a href="investors.html">Investors</a>
-  <a class="nav-cta" href="#earlyAccess">Join the waitlist</a>
 </div>
 
 
@@ -1720,15 +1754,21 @@ function cine(el, o){
 (function(){
   const burger = document.getElementById('navBurger');
   const drawer = document.getElementById('navDrawer');
-  if(!burger) return;
-  burger.addEventListener('click', () => {
-    const open = drawer.classList.toggle('open');
+  const backdrop = document.getElementById('navDrawerBackdrop');
+  const closeBtn = document.getElementById('navDrawerClose');
+  if(!burger || !drawer) return;
+  function setOpen(open){
+    drawer.classList.toggle('open', open);
     burger.classList.toggle('open', open);
+    if(backdrop) backdrop.classList.toggle('open', open);
+    burger.setAttribute('aria-expanded', open ? 'true' : 'false');
     document.body.style.overflow = open ? 'hidden' : '';
-  });
-  drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
-    drawer.classList.remove('open'); burger.classList.remove('open'); document.body.style.overflow = '';
-  }));
+  }
+  burger.addEventListener('click', () => setOpen(!drawer.classList.contains('open')));
+  if(closeBtn) closeBtn.addEventListener('click', () => setOpen(false));
+  if(backdrop) backdrop.addEventListener('click', () => setOpen(false));
+  document.addEventListener('keydown', e => { if(e.key === 'Escape' && drawer.classList.contains('open')) setOpen(false); });
+  drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setOpen(false)));
 })();
 
 (function(){

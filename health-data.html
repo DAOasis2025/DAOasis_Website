@@ -49,28 +49,31 @@
 
 <!-- ══ NAV ══ -->
 <nav class="nav">
+  <button class="nav-burger" id="navBurger" aria-label="Menu" aria-expanded="false" aria-controls="navDrawer">
+    <span class="nav-burger-bars"><i></i><i></i><i></i></span>
+    <span class="nav-burger-label">Menu</span>
+  </button>
   <a class="nav-brand" href="index.html">
     <img src="images/img-09-white.png" alt="DAOasis" />
     <span>DAOasis</span>
   </a>
-  <div class="nav-links">
+  <a class="nav-cta" href="index.html#waitlistSection">Join the waitlist</a>
+</nav>
+
+<div class="nav-drawer-backdrop" id="navDrawerBackdrop"></div>
+<div class="nav-drawer" id="navDrawer">
+  <div class="nav-drawer-head">
+    <img src="images/img-09-white.png" alt="DAOasis" />
+    <button class="nav-drawer-close" id="navDrawerClose" aria-label="Close menu">&times;</button>
+  </div>
+  <div class="nav-drawer-list">
     <a href="app.html">The App</a>
     <a href="sanctuary.html">The Sanctuary</a>
     <a href="web3.html">The Web3 Layer</a>
     <a href="about.html">About Us</a>
     <a href="investors.html">Investors</a>
+    <a class="nav-cta" href="index.html#waitlistSection">Join the waitlist</a>
   </div>
-  <a class="nav-cta" href="index.html#waitlistSection">Join the waitlist</a>
-  <button class="nav-burger" id="navBurger" aria-label="Menu" aria-expanded="false" aria-controls="navDrawer"><span></span><span></span><span></span></button>
-</nav>
-
-<div class="nav-drawer" id="navDrawer">
-  <a href="app.html">The App</a>
-  <a href="sanctuary.html">The Sanctuary</a>
-  <a href="web3.html">The Web3 Layer</a>
-  <a href="about.html">About Us</a>
-  <a href="investors.html">Investors</a>
-  <a class="nav-cta" href="index.html#waitlistSection">Join the waitlist</a>
 </div>
 
 <main>

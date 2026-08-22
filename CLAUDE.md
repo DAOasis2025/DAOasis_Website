@@ -1533,3 +1533,57 @@ The eight new photographs total **15.1 MB** and all nine layers are painted into
 sticky container, so the browser fetches every one on approach. They want resizing to
 about 1600px on the long edge and re-encoding (WebP or quality-80 JPEG) before this
 ships; there is no image tooling in this environment to do it here.
+
+---
+
+## Investor Business Plan 2026 — built as a print document (August 21)
+
+**Delivered:** `DAOasis Investor Ready Business Plan 2026.pdf` — 48 pages, A4, 6.5MB.
+**Source:** originally built in this folder under `bp/`; moved out on 21 August 2026 to
+`C:\Users\Lenovo x270\Desktop\DAOasis Business Plan 2026\`, a fully independent project
+(it copied the 20 photographs it needs into its own `source-images/` and no longer reads
+anything from this website folder). **This directory no longer contains the plan or its
+build.** See that project's own `README.md` for build notes; only the findings that
+generalise to the website itself are repeated below.
+
+Built as HTML + CSS printed by headless Chrome rather than as a Word file, so it uses
+the site's own palette, type ladder and idiom. Word was rejected because it reflows on
+the recipient's machine and cannot hold full-bleed pages or a baseline grid — the brief
+required a document that needs no formatting work on arrival.
+
+### Four findings that apply to the website too
+
+1. **An SVG `font-size` is viewBox units, not points** — already recorded for
+   `investors.html`, and it bit again here. `bp/pages/dg.js` now exports a `U(pt)`
+   converter so diagram type stays on the document's ladder by construction.
+2. **A flex item with `min-height: 0` spills silently.** `flex: 1` + `min-height: 0`
+   let a diagram draw straight across the paragraph beneath it on four separate pages,
+   and **every numeric check passed** — no overflow, no escape, nothing outside the
+   page box. Only a pairwise text-collision test found it. `bp/render.js audit` has one;
+   the site has no equivalent and the same shape exists in several pinned sections.
+3. **An `feTurbulence` grain filter costs 120MB in print.** Chrome rasterises the filter
+   once per page at print resolution: the same document was 126MB with the site's grain
+   and 6.5MB with a pre-rendered 128px PNG tile. Irrelevant on screen, fatal in a PDF.
+4. **The `<<'EOF'` heredoc in this environment collapses `\` to `\`.** A Windows path
+   written `'C:\Program Files\...'` inside a heredoc arrives as a single backslash and
+   the JS string eats it. Use forward slashes, or write the file with the Write tool.
+
+### Six more app mockups are unusable — same reason as the existing bans
+`11.png` and `18.png` (onboarding and quest screens) say **"Earn DRT tokens"** and
+"+45 DRT"; `Brathing_quest.png` and `Hydration.png` say "+20 DRT" / "+45 DRT";
+`img-04.png` is a wallet with "DVT Price $0.100 ↑24%" and Buy/Stake; `img-05.png`
+carries the same "$0.100 · 24h change ↑24%" header as the already-banned `img-06`/`img-10`.
+**DRT is retired terminology and appears nowhere in the site's copy — but it is still
+baked into six image assets.** Only `14.png` (Marketplace) and `17.png` / `img-03.png`
+(Learning, 42/128) are clean. All six want re-rendering before further external use.
+
+### What the plan could not resolve
+No Investor Pack, Business Plan, Whitepaper, Tokenomics paper, Feasibility Study,
+Competitor Analysis or Quarterly Update exists as a file in this project — the website
+is the only source. Fourteen gaps are recorded as visible **OPEN ITEM A1–A14** in the
+document's Annex A rather than filled by inference. The largest are: no company financial
+model, no tokenomics (supply, allocation, vesting, conversion rate), no unit economics,
+no instrument or valuation for either raise, and neither entity incorporated.
+
+**Annex A7 is a website defect, not a document one:** `index.html`'s waitlist form is
+still wired to nothing while every nav, drawer and footer CTA points at it.

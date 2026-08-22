@@ -34,11 +34,14 @@
   (function () {
     var burger = document.getElementById('navBurger');
     var drawer = document.getElementById('navDrawer');
+    var backdrop = document.getElementById('navDrawerBackdrop');
+    var closeBtn = document.getElementById('navDrawerClose');
     if (!burger || !drawer) return;
 
     function close() {
       drawer.classList.remove('open');
       burger.classList.remove('open');
+      if (backdrop) backdrop.classList.remove('open');
       burger.setAttribute('aria-expanded', 'false');
       document.body.style.overflow = '';
     }
@@ -46,16 +49,20 @@
     burger.addEventListener('click', function () {
       var open = drawer.classList.toggle('open');
       burger.classList.toggle('open', open);
+      if (backdrop) backdrop.classList.toggle('open', open);
       burger.setAttribute('aria-expanded', open ? 'true' : 'false');
       document.body.style.overflow = open ? 'hidden' : '';
     });
+
+    if (closeBtn) closeBtn.addEventListener('click', close);
+    if (backdrop) backdrop.addEventListener('click', close);
 
     drawer.querySelectorAll('a').forEach(function (a) {
       a.addEventListener('click', close);
     });
 
-    /* Escape closes it. The drawer covers the whole viewport, so
-       without this a keyboard user has no way out of it. */
+    /* Escape closes it. The drawer is now a left panel with a backdrop, but
+       a keyboard user tabbing through it still needs a fast way out. */
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape' && drawer.classList.contains('open')) close();
     });
