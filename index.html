@@ -6,10 +6,15 @@
   (function(){
     var t = localStorage.getItem('daoasis-theme') || 'dark';
     if(t === 'light') document.documentElement.setAttribute('data-theme','light');
-    /* a returning visitor has already watched the intro once — this class
-       hides it before first paint so there is no flash of the animation
-       ahead of the body script reaching the same decision */
-    if(localStorage.getItem('daoasis-visited') === '1') document.documentElement.classList.add('return-visit');
+    /* a visitor who was here in the last few days has already watched the
+       intro — this class hides it before first paint so there is no flash
+       of the animation ahead of the body script reaching the same
+       decision. It is a rolling window, not "ever": it expires after a
+       few days so the intro plays again for someone coming back later,
+       but not while they're just clicking around the site right now. */
+    var lastVisit = parseInt(localStorage.getItem('daoasis-visited-at') || '0', 10);
+    var RETURN_WINDOW_MS = 3 * 24 * 60 * 60 * 1000; // 3 days
+    if(Date.now() - lastVisit < RETURN_WINDOW_MS) document.documentElement.classList.add('return-visit');
   })();
 </script>
 
@@ -2351,15 +2356,20 @@
   }
   window.skipIntro = skipIntro;
 
-  /* A visitor who has already sat through the intro once does not see it
-     again — every future load (a fresh visit, or the logo/nav link from
-     any other page) drops straight onto the finished hero. The flag is
-     read again here (rather than trusted from the head script's early
-     class) so this is the single place that also WRITES it, right after
-     the read, and the flag is what future page loads check. */
-  const VISITED_KEY = 'daoasis-visited';
-  const returningVisitor = localStorage.getItem(VISITED_KEY) === '1';
-  localStorage.setItem(VISITED_KEY, '1');
+  /* A visitor who was here in the last few days has already sat through
+     the intro once and does not see it again — every load inside that
+     window (a fresh visit, or the logo/nav link from any other page)
+     drops straight onto the finished hero. The window rolls forward on
+     every visit, so someone who comes back after it has expired sees the
+     intro again — this is a "recently" check, not an "ever" flag. The
+     timestamp is read again here (rather than trusted from the head
+     script's early class) so this is the single place that also WRITES
+     it, right after the read. */
+  const VISITED_KEY = 'daoasis-visited-at';
+  const RETURN_WINDOW_MS = 3 * 24 * 60 * 60 * 1000; // 3 days — matches the head script
+  const lastVisit = parseInt(localStorage.getItem(VISITED_KEY) || '0', 10);
+  const returningVisitor = (Date.now() - lastVisit) < RETURN_WINDOW_MS;
+  localStorage.setItem(VISITED_KEY, String(Date.now()));
   if(returningVisitor) skipIntro();
 
   const skipBtn = document.getElementById('skipIntroBtn');
