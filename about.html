@@ -454,6 +454,20 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--gold); outline-
 .team-i .pf-q { margin-top: 26px; padding-top: 22px; font-size: clamp(18px,1.8vw,23px); max-width: 100%; }
 .team-i .pt { margin-bottom: 28px; }
 
+/* OPEN ROLE — the CTO position is vacant and is shown as vacant.
+   Same idiom as the Investor Pack: a gold rule and a gold name in
+   place of a monogram, so the two documents agree. The plate keeps
+   its 4:5 box so the three-up row stays aligned; only its contents
+   change. Nothing here names or implies a candidate. */
+.team-i.open .pt { background: rgba(196,138,90,0.05); }
+.on-dark .team-i.open .pt::after, .on-green .team-i.open .pt::after { border-color: rgba(196,138,90,0.34); }
+.team-i.open .pt::after { border-color: rgba(196,138,90,0.34); }
+.pt-open { font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: rgba(196,138,90,0.88); user-select: none; }
+.team-i.open > div { border-top: 1px solid rgba(196,138,90,0.6); padding-top: 24px; }
+.on-dark .team-i.open .pf-name { color: rgba(212,163,115,0.94); }
+.on-light .team-i.open .pf-name { color: #8a5f34; }
+
 /* TWO-UP VARIANT — the founding team is two people.
    Dropped into the three-column grid they would fill two thirds and
    leave a visible hole, which reads as a card having been deleted
@@ -747,7 +761,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
         <div class="disc-n">03</div>
         <div class="disc-t">Technology</div>
         <div class="disc-b">The Companion App, the platform beneath it, and the architecture that has to scale after it works.</div>
-        <div class="disc-w">Trong</div>
+        <div class="disc-w">CTO (TBC)</div>
       </div>
       <div class="disc-i soft d2">
         <div class="disc-n">04</div>
@@ -758,7 +772,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
       <div class="disc-i soft d2">
         <div class="disc-n">05</div>
         <div class="disc-t">Hospitality</div>
-        <div class="disc-b">The Sanctuary, and everything that has to be true for a digital journey to end somewhere real.</div>
+        <div class="disc-b">The Sanctuary, and everything that has to be true for a digital Journey to arrive somewhere real.</div>
         <div class="disc-w">George</div>
       </div>
       <div class="disc-i soft d3">
@@ -891,14 +905,16 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
 
 <!-- ══════════════════════════════════════════════
      05 — TECHNOLOGY & WEB3
-     The whole technology team lives here: Trong
-     (who moved out of the founding team row, where
-     he did not belong), Uchenna and Etiosa. Three
-     across, so it uses the same `.team` grid as the
-     founding row — the profile primitives are
-     already theme-aware, so the identical markup
-     renders correctly on this dark ground with no
-     extra CSS.
+     The whole technology team lives here: the open
+     CTO role, Uchenna and Etiosa. Three across, so
+     it uses the same `.team` grid as the founding
+     row — the profile primitives are already
+     theme-aware, so the identical markup renders
+     correctly on this dark ground with no extra CSS.
+     The first card is `.team-i.open`: the CTO
+     position is vacant and is shown as vacant, in
+     the same idiom the Investor Pack uses. Do not
+     put a name in it.
 ══════════════════════════════════════════════ -->
 <section class="sect bg-mineral on-dark grain" id="technology">
   <div class="sect-inner">
@@ -913,32 +929,28 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
       </div>
       <div class="copy wide soft d1">
         <p>The DAOasis experience should feel simple to the person using it. Someone
-        opens the app, goes for a walk, and their journey moves.</p>
+        opens the app, goes for a walk, and their Journey moves.</p>
         <p>Behind that simplicity is technology designed to support the Companion App,
         digital ownership, smart contracts and the infrastructure required to grow the
-        ecosystem responsibly. <strong>Trong directs the technical architecture</strong>,
-        Uchenna builds the Companion App, and Etiosa works on the on-chain layer
-        beneath it.</p>
+        ecosystem responsibly. <strong>Uchenna builds the Companion App</strong> and
+        Etiosa works on the on-chain layer beneath it. Technical direction sits with a
+        Chief Technology Officer — an open role, and a planned senior appointment.</p>
       </div>
     </div>
 
     <div class="team rv">
-      <article class="team-i soft">
-        <!-- PORTRAIT SLOT — <img src="images/team-trong.jpg" alt="Trong, Chief Technology Officer at DAOasis" /> -->
+      <!-- OPEN ROLE — no portrait slot and no name, deliberately. -->
+      <article class="team-i open soft">
         <figure class="pt">
-          <span class="pt-mono" aria-hidden="true">T</span>
-          <figcaption class="pt-tag">Portrait to follow</figcaption>
+          <span class="pt-open" aria-hidden="true">Open role</span>
         </figure>
         <div>
-          <h3 class="pf-name">Trong</h3>
+          <h3 class="pf-name">To be appointed</h3>
           <div class="pf-role">Chief Technology Officer</div>
-          <p class="pf-bio">Trong brings 20+ years leading developer teams across mobile,
-          web platforms and Web3 projects. He oversees the technical direction of the
-          ecosystem.</p>
-          <blockquote class="pf-q">
-            "Good technology should feel invisible. My focus is building systems that are
-            robust, intuitive and ready to scale."
-          </blockquote>
+          <p class="pf-bio">A planned senior hire to lead technical architecture, product
+          development and platform scaling as the ecosystem grows. No candidate is named,
+          and the appointment is a priority of the current funding stage.</p>
+          <div class="pf-soon">Appointment to follow</div>
         </div>
       </article>
 
@@ -992,14 +1004,14 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
     <div class="rv">
       <div class="eyebrow">The real world</div>
       <h2 class="display" style="max-width:16ch;">
-        <span class="ln"><i>Because the journey</i></span>
-        <span class="ln"><i>should eventually</i></span>
+        <span class="ln"><i>Because a Journey</i></span>
+        <span class="ln"><i>should be able to</i></span>
         <span class="ln"><i>become <em>physical.</em></i></span>
       </h2>
       <div class="copy wide soft d1" style="margin-top:38px;">
         <p>The Companion App creates the daily practice. The digital layer creates deeper
-        participation. The Sanctuary is where the journey stops being a number on a screen
-        and becomes somewhere a person actually goes.</p>
+        participation. The Sanctuary is the optional physical expression of that — somewhere
+        a member can go if they want to, not somewhere every member is expected to arrive.</p>
         <p>That last step is a hospitality problem, not a software one — and it needs
         someone who has run real buildings full of real guests.</p>
       </div>
@@ -1055,12 +1067,12 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
     </div>
 
     <div class="sys rv" role="img"
-         aria-label="Six remits — vision led by Jamie, strategy by Dan, operations by Nelson, technology by Trong, digital ownership by Nelson and Etiosa, and hospitality by George — converge into DAOasis, which produces the Companion App, digital ownership, and the Sanctuary.">
+         aria-label="Six remits — vision led by Jamie, strategy by Dan, operations by Nelson, technology by a Chief Technology Officer still to be appointed, digital ownership by Nelson and Etiosa, and hospitality by George — converge into DAOasis, which produces the Companion App, digital ownership, and the Sanctuary.">
       <div class="sys-row soft">
         <div class="sys-c"><div class="sys-k">Vision</div><div class="sys-p">Jamie</div></div>
         <div class="sys-c"><div class="sys-k">Strategy</div><div class="sys-p">Dan</div></div>
         <div class="sys-c"><div class="sys-k">Operations</div><div class="sys-p">Nelson</div></div>
-        <div class="sys-c"><div class="sys-k">Technology</div><div class="sys-p">Trong</div></div>
+        <div class="sys-c"><div class="sys-k">Technology</div><div class="sys-p">CTO (TBC)</div></div>
         <div class="sys-c"><div class="sys-k">Digital ownership</div><div class="sys-p">Nelson + Etiosa</div></div>
         <div class="sys-c"><div class="sys-k">Hospitality</div><div class="sys-p">George</div></div>
       </div>
@@ -1085,7 +1097,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
       <div class="sys-out soft d3">
         <div class="sys-o">
           <div class="sys-o-t">Companion App</div>
-          <div class="sys-o-b">The daily practice, and the only near-term scalable product.</div>
+          <div class="sys-o-b">The core operating environment, and the scalable foundation beneath everything else.</div>
         </div>
         <div class="sys-o">
           <div class="sys-o-t">Digital ownership</div>
@@ -1093,7 +1105,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
         </div>
         <div class="sys-o">
           <div class="sys-o-t">Sanctuary</div>
-          <div class="sys-o-b">The physical destination. Planned for Phuket in 2027.</div>
+          <div class="sys-o-b">The optional physical expression. Planned for Phuket in 2027.</div>
         </div>
       </div>
     </div>
@@ -1136,7 +1148,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
         <div class="pr-b">Recognition is only worth having if it is earned. That is why DRC is tied to genuine participation rather than handed out to acquire attention.</div></div>
       <div class="pr-i soft d3"><div class="pr-n">06</div>
         <div class="pr-t">The real world still matters</div>
-        <div class="pr-b">A wellness ecosystem that never leaves the screen has misunderstood the assignment. The journey has to be able to end somewhere.</div></div>
+        <div class="pr-b">A wellness ecosystem that never leaves the screen has misunderstood the assignment. A Journey has to be able to arrive somewhere.</div></div>
     </div>
   </div>
 </section>
@@ -1161,14 +1173,18 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
         </h2>
       </div>
       <div class="copy wide soft d1">
-        <p>The vision is broad. The execution is deliberate.</p>
+        <p>The vision is broad. The execution is deliberate. DAOasis has moved beyond
+        concept development: DAOasis Global Ltd is incorporated in the UK, the Experience
+        Map — the full product specification — is written, and MVP design handoff is
+        underway.</p>
         <p>DAOasis begins with the Companion App — daily habits, learning, quests and
         community. Steps, sleep, hydration, breathing and learning are not six separate
-        scores; they all move one journey, and they compound. Participation is
-        recognised through DAOasis Reward Credits. Those
-        credits create a pathway toward $DVT and deeper participation across the
-        ecosystem. And the long term vision extends into real-world Sanctuary experiences
-        and a community that can help shape what comes next.</p>
+        scores; they all move one Journey, and they compound. Bangkok to Phuket is the
+        launch Journey; completing one opens the next. Participation is recognised through
+        DAOasis Reward Credits. Those credits create a pathway toward $DVT and deeper
+        participation across the ecosystem. And the long term vision extends into
+        real-world Sanctuary experiences and a community that can help shape what comes
+        next.</p>
       </div>
     </div>
 
@@ -1191,7 +1207,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
         <div class="stage-n">03</div>
         <div class="stage-t">Sanctuary</div>
         <div class="stage-s">Real-world experience</div>
-        <div class="stage-b">The physical expression of the ecosystem, planned as a pilot in Phuket in 2027. No property is contracted and no bookings are open.</div>
+        <div class="stage-b">The optional physical expression of the ecosystem, planned as a pilot in Phuket in 2027. No property is contracted and no bookings are open.</div>
       </div>
     </div>
   </div>

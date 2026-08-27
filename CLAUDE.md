@@ -1861,3 +1861,308 @@ there is nothing to fumble when drag-dropping into the GitHub UI. Four
 references updated across index.html and app.html, verified 200.
 This closes PRE_DEPLOY items 1 and 2, both of which are now marked DONE there;
 PRE_DEPLOY section 0 is the concrete upload list for this batch.
+
+---
+
+## Investor-document alignment pass — August 25
+
+Editorial only. The two investor documents were revised on 25 August 2026 and are
+now the **source of truth**; they live in
+`C:\Users\Lenovo x270\Desktop\DAOasis Business Plan 2026\` (`pages/*.js` for the
+plan, `investor-pack/pages.js` for the pack) and were **not** edited by this pass.
+Eight files changed: `index` · `app` · `web3` · `investors` · `about` · `privacy` ·
+`terms` · `CONTENT_REQUIRED.md`. **`sanctuary.html` is byte-identical** (verified by
+diff) and the trust layer apart from privacy/terms is untouched.
+
+### The vocabulary, stated once
+- **DAOasis** is the ongoing ecosystem. A member never finishes it.
+- **Journeys** are the repeatable immersive experiences inside it. Completing one
+  opens the next.
+- **The launch Journey** is Bangkok → Phuket — the first of them, not the product.
+- **The Sanctuary** is the **optional** physical expression, planned for Phuket 2027.
+  Not somewhere every member is expected to reach.
+- **The Companion App** is the *core operating environment* and the scalable
+  foundation every later product launches through. It is **not** "the only near-term
+  scalable product" — that phrasing is retired and was removed from `investors.html`
+  (x3) and `about.html`.
+- Members move **user → participant → contributor → stakeholder**.
+
+**Banned on the marketing pages:** terminate / terminates / termination · endpoint ·
+final destination · end of the journey. Use *complete a Journey · reach a milestone ·
+arrive at a destination · unlock the next Journey · the ecosystem continues*.
+**`terms.html` is the sole exception** — its five uses of "termination" are correct
+account-termination law and must be left alone. Note that a naive grep for
+`terminat` also matches **self-de·terminat·ion** in `index.html`'s closing copy;
+that is a false positive, not a violation. Use `\bterminat[a-z]*\b`.
+
+### quest → Journey: what was renamed and what was NOT
+Route-level "quest" became "Journey" **in visible copy only**. Every CSS class, id
+and JS identifier is unchanged — `.quest-card`, `.quest-map-section`, `#questsGrid`,
+`#questMapOuter`, `questScroll()`, `.quest-desc`, `.qc-icon` — so the stagger
+observer, the scroll-driven SVG route and the hover states all still bind.
+
+| app.html, visible | was | now |
+|---|---|---|
+| hero bridge sub | The Bangkok → Phuket Quest awaits | …**Journey** awaits |
+| how-tag | The Bangkok → Phuket Quest | …**Journey** |
+| Section 4 kicker | Quest 01 | **The launch Journey** |
+| sticky header kicker | FEATURED QUEST · SCROLL | **LAUNCH JOURNEY** · SCROLL |
+| waypoint 01 tag (JS `WAYPOINTS`) | QUEST BEGINS | **JOURNEY BEGINS** |
+| Section 5 kicker | The Quest Map | **The Journey Map** |
+| Kilimanjaro desc | one of the shorter quests | one of the shorter **Journeys** |
+
+**The daily five keep the word "quests"** — Rest, Move, Learn, Reflect, Community.
+So "Complete daily quests", "Sleep and breathing quests have amplified rewards",
+"Quest bonus" and the community-quest copy on `index.html` are all correct usage and
+were deliberately left. Do not sweep them.
+
+`app.html` ~1661 ("Bangkok to Phuket is just the beginning. Once completed, the next
+Journey unlocks") is the best Journey copy on the site — the documents were raised to
+*its* level, not the reverse. Only the one word changed there.
+
+### Trong removed from about.html
+Profile card, bio, quote, portrait-slot comment, the disciplines block and the
+six-remits diagram (including its `aria-label`). Technology is now **Uchenna +
+Etiosa** plus an open CTO role. `grep -oE '\bTrong\b' *.html` returns nothing — a
+case-insensitive `trong` substring search matches `<strong>` and is useless here.
+
+**`.team-i.open` is a new variant and is the one CSS addition in this pass.** It
+mirrors the Investor Pack's `.mem.open`: a gold hairline on the portrait plate, a
+centred gold `OPEN ROLE` label instead of a monogram, a gold rule above the text
+block, and a gold name. The card keeps the 4:5 plate so the three-up row stays
+aligned — only the plate's contents change. It closes on `.pf-soon`
+("Appointment to follow") because a three-up row with one card ending early leaves
+exactly the ragged hole `.pf-soon` was invented for.
+- The plate's `.pt-tag` was **dropped from this card only**. With it the card said
+  "Appointment planned" in the plate and "Appointment to follow" 200px below — the
+  same sentence twice. Judged by eye at 1440 and 390 (headless screenshot of
+  `#technology`; see the capture note below).
+- **Do not put a name in this card.** The six-remits diagram reads
+  "Technology — CTO (TBC)" for the same reason.
+
+### Learning: 128 → 20, and the mockup contradiction
+The pilot ships **twenty lessons, ten per track**, framed as disciplined MVP scope.
+The curriculum stays **specified across four depth levels per track**; the library
+expands on what the first cohorts show.
+
+`app.html` had "128" four times. The stat bar went `128 Total lessons / 2 Tracks` →
+**`20 Pilot lessons / 4 Depth levels`**, which is exactly the plan's own figure row
+(20 / 4 / 100% / 0). Both new labels measured single-line (h15) at all seven widths,
+and the bar's geometry is identical to baseline.
+
+**The mockup is reconciled in text, not retouched.** `img-03.png` visibly shows
+"42/128", so the section body now says *"App screens here preview the full specified
+library, not the pilot scope."* Same fix the Business Plan uses. **Do not edit the
+PNG.** `17.png` / `img-03.png` remain the only clean learning mockups — the
+banned-image list above is unchanged by this pass.
+
+### Corporate structure — one wording everywhere
+- **DAOasis Global Ltd (UK)** — incorporated and live. Holds brand, website, app
+  development today.
+- **BVI parent** — *planned*. Intended group parent, UK company beneath it.
+- **Thai operating company** — *planned*. Holds the Sanctuary pilot.
+- **Sequencing is still being settled with counsel — never state firm timing.**
+
+`investors.html`'s hero strip read "BVI · Thailand", omitting the live UK entity; it
+is now "UK · BVI · Thailand / UK company live. BVI parent and Thai entity planned."
+Three uses of "incorporation across both jurisdictions" are gone, and the legal foot
+now names the UK company and says plainly that the other two are not yet formed and
+that there are no users, no revenue and nothing validated in market.
+
+### The entity name is published; nothing else was
+`privacy.html` §01/§19 and `terms.html` §01/§24 now print **DAOasis Global Ltd**,
+registered in the United Kingdom, as plain text. **The company number and the
+registered address stay visible `<span class="tbc">` markers**, and governing law and
+jurisdiction stay TBC. Neither was invented. `CONTENT_REQUIRED.md`'s LEGAL ENTITY
+table was rewritten to match. `privacy.html` §19 gained a **Company number** row so
+the card does not imply the address alone is outstanding.
+
+### Company status — the tone changed, the honesty did not
+"DAOasis has moved beyond concept development and is progressing through structured
+product build", never "still planning to". `investors.html`'s roadmap Today column
+gained *DAOasis Global Ltd (UK) — incorporated and live* and *Experience Map — the
+full product specification — written*, and "four pages" became **thirteen** (the real
+page count). Building gained *MVP build — design handoff underway* and *BVI parent
+and Thai operating company formation*. `about.html`'s "Building deliberately" section
+opens on the same three facts.
+**Every existing honesty disclosure was kept** — no users, no revenue, nothing
+validated in market, no property contracted, dates are working internal targets.
+
+### Taglines
+Tagline 1 (positioning) — *Traditional wellness apps create users. DAOasis creates
+stakeholders.* — is on `index.html` (hero, already there) and now `investors.html`
+(the `.tri-joint` and the closing). It was **not** wrapped in `<em>` inside
+`.tri-joint`: that rule is already fully italic Cormorant, so an `<em>` adds nothing
+and risks italic-cancelling. Tagline 2 — *Rest. Learn. Earn. Return.* — was already
+on all 13 pages and is untouched. Neither was shoehorned anywhere else.
+
+### Verified — and how
+A real headless Chrome is available at
+`C:/Program Files/Google/Chrome/Application/chrome.exe`, driven through the
+**`puppeteer-core` already installed in the Business Plan project**. Run the harness
+*from that folder* so the require resolves. For this kind of work it beats the
+Browser pane outright: it composites a full 1920 viewport, loads `js/cine.js` over
+real HTTP, and screenshots individual elements.
+
+- **13 pages × 7 widths (375/390/430/768/1024/1440/1920) = 91 measurements: 0
+  horizontal overflow** (`documentElement.scrollWidth === clientWidth` in all 91) and
+  **0 clipped `.ln` line-masks** in all 91.
+- **Console: only the two documented pre-existing 404s** — the site-wide missing
+  `favicon.ico` and `about-hero-mobile.jpg`. Zero new errors, zero page errors.
+- **298 internal links, anchors and assets re-resolved**; the only miss is
+  `about-hero-mobile.jpg`, the known gap.
+- `investors.html`'s request panel still works end to end: 12 entry points, panel
+  opens, 10 resource options, address printed from `INVESTOR_CONTACT`, Escape closes,
+  no page errors.
+- The learning section's grid, cards and stat bar are **geometrically identical to
+  baseline at every width**; the only change is `.learn-header`'s paragraph growing
+  from one line to two at desktop (58px → 115px), which is the copy doing its job. No
+  CSS, no layout and no animation code was touched on `index.html` or `app.html`.
+
+> **The measurement trap, worth keeping.** Auditing by *sweeping the document at 1440,
+> then `setViewport` to 375* leaves a **stale layout**: `app.html` reported a 20px
+> overflow that a fresh load at 375 did not show. Running it five times against the
+> pre-edit backup **and** the current build settled it — the **baseline** tripped it 2
+> times in 5 and the current build **0 in 5**. It is a pre-existing non-deterministic
+> race (the same one documented above as app.html's ~11–18px narrow-width overflow),
+> not a regression. The same artefact makes `index.html`'s intro `.headline` measure
+> 400px wide on a 390 viewport mid-reveal. **Diff a baseline copy of the site served
+> on a second port before believing any geometry regression**, and load each width
+> fresh.
+
+---
+
+## Cross-document alignment pass — August 26
+
+Audit of all five surfaces (Business Plan · Investor Pack · Tokenomics Paper ·
+Whitepaper · the 13-page website) against each other, then nine fixes applied.
+**Every genuine contradiction was between the website and the documents** — the
+four PDFs already agreed with each other. Thirteen load-bearing claims were
+verified aligned and left alone (supply, allocation, vesting, Sanctuary payment
+and status, entity structure, team, raise staging, 20 pilot lessons, the five
+quest categories, Journey vocabulary, zero price/yield leakage, zero banned words).
+
+### What changed, and why it is load-bearing
+
+1. **`index.html` waitlist was `href="#"`** — a dead link that the nav, drawer and
+   hero CTAs all pointed at, and the Business Plan's A7 launch blocker. Now a
+   `mailto:info@daoasis.xyz` plus a `.wl-note` saying the list is not automated.
+   **There is still no form backend anywhere in this project.** Because a mailto
+   collects nothing, this did **not** change the privacy/cookie position — but if
+   real capture is ever built, `privacy.html` §09 and `cookies.html` §04/§07 must
+   change in the same release. Both currently assert the site collects nothing.
+2. **`app.html` showed six device integrations as live**; investors.html said two.
+   Business Plan A1 had recorded the decision as "correct the website" and it had
+   never been done. New `.int-card-status` on all six — Apple Health and Google
+   Health Connect `first`, the other four `planned` — plus a corrected section
+   lede. Colours measured against `--dark-surface`: `#D49B69` is 6.1:1, the muted
+   white 5.3:1. **The Whitepaper already stated this position exactly** and needed
+   no change.
+3. **`investors.html` claimed detailed financial models exist.** Business Plan A12
+   quoted that very sentence in order to contradict it. The website now says no
+   model is published anywhere and that a three-year model is a Stage 2
+   precondition. **The Business Plan was right; the website was the thing to fix.**
+4. **Conversion was stated as fact site-wide** while the papers treat it as
+   designed-but-unresolved (Tokenomics Annex B1 unresolved, T1 records the
+   superseded study recommending *against* it, T2 has rate/caps/eligibility unset).
+   Ten sentences across `app.html` and `web3.html` — including two meta
+   descriptions — now say **designed to convert**. The tell that found it: on
+   web3.html the marketplace, governance, staking and Stake to Create rows all
+   carry a status label and **Convert was the only one without**. It now has
+   `.bridge-status` — "In design · rate and eligibility not set".
+5. **The Whitepaper exists but two documents said it was "in preparation."**
+   Fixed in four places in Tokenomics `g-back.js` (Annex B2, Annex B6, the
+   read-alongside note, the closing) and one in `investor-pack/pages.js`.
+6. **The investor resources list offered nine documents; four exist.**
+   **`Brand Kit` was REMOVED and must not be reinstated** without a new one being
+   produced — the May 2026 kit is retired (retreat-first positioning, Annex B6)
+   and sending it would contradict the whole set. A new `soon: true` flag on
+   `DOCS` renders "In preparation", drops the request button and drops the entry
+   from the request select, so **nothing can be requested that cannot be sent**.
+   The Whitepaper card description was also wrong (it promised token reasoning;
+   the actual Whitepaper defers every token figure to the Tokenomics Paper).
+7. **Governance's four phases** (Founders-led → Community advisory → Partial DAO →
+   Full DAO) were published in the Tokenomics Paper §14 and Whitepaper §13 and
+   nowhere else. Added as `.gov-phases` on web3.html (Phase 01 marked "Where we
+   are") and named in the Business Plan's utility table.
+8. **`sanctuary.html` never said how a stay is paid for**, or how big the pilot is.
+   Now states sixteen rooms, adults only, and that stays are booked and paid in
+   ordinary currency through the Thai company with $DVT carrying access, not
+   payment. **Do not soften or remove this** — the Tokenomics Paper calls it "a
+   regulatory difference, not an editorial one."
+9. **Investor Pack cover said "Feasibility Stage 2"** two pages above a section
+   whose whole content is Stage 1/2/3 of the *raise*. Now "Pre-launch · Pre-revenue".
+
+### Cascade the audit itself created
+Correcting the website made three Business Plan open items stale, since they
+described a website that no longer says those things. **A1** is now "resolved
+26 Aug 2026 / Closed", **A7** is retitled "The waitlist is manual, not automated"
+(still a launch blocker — real capture is still outstanding), and **A12**'s long
+form now records that the website was corrected rather than quoting it as an
+unverifiable public position. The substantive disclosures were kept intact.
+
+### Rebuilt
+Tokenomics 24pp 2.02MB · Investor Pack 4pp 2.84MB · Business Plan 48pp 8.03MB.
+**All three audits report HARD ISSUES: 0.** The Whitepaper needed no change and
+was not re-rendered.
+
+### Verified
+Real headless Chrome over real HTTP (`scratchpad/verify.js`) — the Browser pane
+serves local files as `data:` URLs so `js/cine.js` never loads there. Six
+marketing pages at 375×812 and 1440×900: **0 horizontal overflow on five of six,
+0 console errors, 12/12 alignment assertions pass.**
+
+**Three flags investigated and all pre-existing, none caused by this pass**
+(`scratchpad/diag.js`):
+- The only 404s are the documented two — site-wide `favicon.ico` and
+  `about-hero-mobile.jpg`.
+- Sub-9px type is `div.source` (8.5px) on index, `div.quest-prog-label` (8.0px)
+  and the collapsed `span.market-nav-item` on app. **None is an element added
+  here** — the new labels are 9.5px, 10px and 13.5px.
+- `app.html`'s 20px overflow at 375 is the quest-route SVG (`#questPathFill`,
+  `#wpC2`, `right=1050` in a 375 viewport). Measured on **5 fresh loads: 21
+  escaping elements, 0 of them inside `#integrations`.** This is the offender
+  already documented above as "the nav and an SVG elsewhere on the page".
+
+### Still open after this pass
+- **Real waitlist capture** (A7) — needs a backend; nothing in this project has one.
+- **Publishing the four PDFs as downloads.** They exist but sit behind the request
+  form. Setting `file:` turns the cards into downloads automatically — but that
+  removes the gate that tells you who asked, which is a **business decision, not a
+  technical one**, and the PDFs would have to be copied into the site repo.
+- The app mockups still carrying "DRT" and a DRC unit price (Annex B8).
+
+## Brand Kit 2026 built — August 26
+
+**`C:\Users\Lenovo x270\Desktop\DAOasis Brand Kit 2026\`** — a fifth sibling
+project, same pipeline as the Whitepaper. 15 pages, **A4 landscape**, 1.88 MB,
+audit clean at 0, all 15 pages looked at. See that project's own `README.md`.
+
+It exists because the alignment audit removed the Brand Kit card from
+`investors.html`: the only kit then in existence was the retired May 2026 one
+(retreat-first positioning, Annex B6). **The card is now reinstated and points
+at the new kit**, which is app-first. The `DOCS` comment in `investors.html`
+records this so the entry is not removed or restored blindly again.
+
+### Two findings that apply beyond that project
+1. **`optimise.js`'s `hasAlpha()` is wrong for indexed PNGs, in all five
+   projects.** It tests only colour types 4 and 6. `img-02.png`, `img-09.png`
+   and `img-09-white.png` — the lockup and both palm marks — are **colour type
+   3 with a `tRNS` chunk**, so they were called opaque and flattened onto JPEG,
+   which puts a solid box behind the logo. Fixed in the Brand Kit's copy by
+   walking the chunk list; **the other four copies still carry the bug.** It has
+   never bitten there only because none of them puts a logo on a plate.
+2. **The ivory ink weights fail on warm stone.** `--ink-3`, `--ink-4` and
+   `--gold-ink` are tuned for #F7F4EE; on #E8E1D6 they measure 4.29 / 4.06 /
+   3.81, all short of AA. Any page using a stone ground needs its own weighted
+   set — the Brand Kit uses #5A544A / #5F594F / #7F4F22.
+
+### The eye pass caught four things the clean audit did not
+Mislabelled type specimens (slabs said 62pt/31pt, specimens rendered 34pt/22pt);
+hex codes set in Cormorant's default old-style figures, so `#F7F4EE` hung its 7
+and 4 below the baseline; the warm-white swatch reading as an empty box against
+its own page ground; and "sand" named in two captions when the palette page
+lists six grounds and sand is not one of them.
+
+**`--sand` (#E7E0D4) is an `about.html`-only value**, two points off warm stone,
+and is deliberately NOT in the kit's six. Do not promote it.

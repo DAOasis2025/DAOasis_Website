@@ -11,9 +11,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>The Companion App — DAOasis</title>
-<meta name="description" content="Track your habits, complete real-world quests, and earn DAOasis Reward Credits (DRC), which convert to $DVT. The wellness app that rewards you for showing up." />
+<meta name="description" content="The Companion App is the core operating environment of DAOasis — daily quests, learning and community turned into one Journey. Bangkok to Phuket is the launch Journey; completing one opens the next. Earn DAOasis Reward Credits (DRC), with a designed one-way conversion to $DVT." />
 <meta property="og:title" content="The Companion App — DAOasis" />
-<meta property="og:description" content="Track your habits, complete real-world quests, and earn DAOasis Reward Credits (DRC), which convert to $DVT." />
+<meta property="og:description" content="Daily quests, learning and community, turned into one Journey. Bangkok to Phuket is the launch Journey — complete it and the next one opens. Rest. Learn. Earn. Return." />
 <meta property="og:image" content="images/img-10.jpg" />
 <meta property="og:type" content="website" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -1075,6 +1075,18 @@ body { overflow-x: clip; }
      the name while making it legible. */
   color: rgba(196,138,90,0.72);
 }
+/* Integration status. Business Plan A1 recorded the website as reading
+   "six platforms live" against the investor page's two; these labels are
+   the correction. Two are in scope for first release, four are planned.
+   Colours are measured against --dark-surface (#211D1A): the gold is
+   6.1:1 and the muted is 5.3:1, both clear of AA at 9.5px uppercase. */
+.int-card-status {
+  align-self: flex-start; margin-top: 10px;
+  font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase;
+  padding: 3px 9px; border: 1px solid currentColor;
+}
+.int-card-status.first { color: #D49B69; }
+.int-card-status.planned { color: rgba(247,244,238,0.55); }
 
 @media(max-width:900px) { .int-grid { grid-template-columns: 1fr 1fr; } }
 @media(max-width:480px) { .int-grid { grid-template-columns: 1fr; } }
@@ -1486,8 +1498,8 @@ body { overflow-x: clip; }
   <div class="hero-bridge" id="heroBridge">
     <div class="hero-bridge-inner">
       <div class="hero-bridge-line"></div>
-      <div class="hero-bridge-text">Your progress becomes a journey.</div>
-      <div class="hero-bridge-sub">The Bangkok → Phuket Quest awaits</div>
+      <div class="hero-bridge-text">Your progress becomes a Journey.</div>
+      <div class="hero-bridge-sub">The Bangkok → Phuket Journey awaits</div>
       <div class="hero-ctas hero-bridge-ctas">
         <a class="btn-primary" href="#waitlist">Join the Waitlist</a>
         <a class="btn-secondary" href="#how-it-works">Explore the App</a>
@@ -1534,8 +1546,8 @@ body { overflow-x: clip; }
         <img src="images/11.png" alt="App onboarding" />
       </div>
       <div class="how-title">Walk a real-world journey</div>
-      <div class="how-text">Your daily habits fuel a journey across a real route — starting with Bangkok to Phuket, 900km of Thailand. Every step, every completed quest, every boost moves your marker forward.</div>
-      <div class="how-tag">The Bangkok → Phuket Quest</div>
+      <div class="how-text">Your daily habits fuel a Journey across a real route — starting with Bangkok to Phuket, 900km of Thailand. Every step, every completed quest, every boost moves your marker forward.</div>
+      <div class="how-tag">The Bangkok → Phuket Journey</div>
     </div>
     <div class="how-card">
       <div class="how-step">03</div>
@@ -1543,7 +1555,7 @@ body { overflow-x: clip; }
         <img src="images/06.png" alt="Wallet screen" />
       </div>
       <div class="how-title">Earn DRC → $DVT</div>
-      <div class="how-text">Consistency earns DAOasis Reward Credits — DRC. DRC converts to $DVT, the on-chain layer. $DVT is designed to carry premium access, the marketplace and Sanctuary stays in Phuket, each introduced in stages as it is built.</div>
+      <div class="how-text">Consistency earns DAOasis Reward Credits — DRC. DRC is designed to convert, one way and by choice, to $DVT — the on-chain layer. $DVT is designed to carry premium access, the marketplace and Sanctuary stays in Phuket, each introduced in stages as it is built.</div>
       <div class="how-tag">DRC → $DVT</div>
     </div>
   </div>
@@ -1560,7 +1572,7 @@ body { overflow-x: clip; }
      SECTION 4 — THE QUEST (scroll-driven SVG path)
 ══════════════════════════════ -->
 <div class="quest-intro-wrap">
-  <div class="s-kicker reveal" style="text-align:center;">Quest 01</div>
+  <div class="s-kicker reveal" style="text-align:center;">The launch Journey</div>
   <h2 class="s-headline reveal reveal-delay-1" style="text-align:center;color:var(--warm-white);">Bangkok<em style="color:var(--gold);"> to </em>Phuket</h2>
   <p class="s-body reveal reveal-delay-2" style="text-align:center;margin:0 auto;padding-bottom:6vh;">900 kilometres of Thailand. Your steps are the engine — and every other habit you build makes you faster. This is not a metaphor. It is a real route, animated inside the app, that you walk one day at a time.</p>
 </div>
@@ -1569,7 +1581,7 @@ body { overflow-x: clip; }
   <div class="quest-map-sticky" id="questMapSticky">
 
     <div class="quest-hd-wrap">
-      <div class="quest-hd-kicker">FEATURED QUEST · SCROLL</div>
+      <div class="quest-hd-kicker">LAUNCH JOURNEY · SCROLL</div>
       <div class="quest-hd-title">Bangkok <em>to</em> Phuket</div>
       <div class="quest-hd-desc">Six waypoints. 900km of Thai peninsula. Every step moves the dot forward.</div>
     </div>
@@ -1606,7 +1618,7 @@ body { overflow-x: clip; }
       <div class="wp-info-num" id="wpInfoNum">WAYPOINT 01 · START</div>
       <div class="wp-info-row">
         <div class="wp-info-name" id="wpInfoName">Bangkok</div>
-        <div class="wp-info-tag" id="wpInfoTag">QUEST BEGINS</div>
+        <div class="wp-info-tag" id="wpInfoTag">JOURNEY BEGINS</div>
       </div>
       <div class="wp-info-desc" id="wpInfoDesc">Set your intention. The trail opens.</div>
       <div class="wp-info-bar" id="wpInfoBar"></div>
@@ -1658,7 +1670,7 @@ body { overflow-x: clip; }
   </div>
 
   <div class="quest-note reveal">
-    <p><strong>Bangkok to Phuket is just the beginning.</strong> Once completed, the next quest unlocks — a new route, a new challenge, a new reason to keep going. The habit-building never stops. The rewards never stop either.</p>
+    <p><strong>Bangkok to Phuket is just the beginning.</strong> Once completed, the next Journey unlocks — a new route, a new challenge, a new reason to keep going. The habit-building never stops. The rewards never stop either.</p>
   </div>
 
 </div>
@@ -1758,9 +1770,9 @@ body { overflow-x: clip; }
      SECTION 5 — MORE QUESTS
 ══════════════════════════════ -->
 <section class="s-dark quest-map-section" id="quests">
-  <div class="s-kicker reveal">The Quest Map</div>
-  <h2 class="s-headline reveal reveal-delay-1">One journey ends.<br><em>Another begins.</em></h2>
-  <p class="s-body reveal reveal-delay-2">Complete Bangkok to Phuket and the world opens up. Every new quest brings a new route, new boosters, and new Reward Credits to earn. The system keeps going because you keep going.</p>
+  <div class="s-kicker reveal">The Journey Map</div>
+  <h2 class="s-headline reveal reveal-delay-1">One Journey ends.<br><em>Another begins.</em></h2>
+  <p class="s-body reveal reveal-delay-2">Complete Bangkok to Phuket and the world opens up. Every new Journey brings a new route, new boosters, and new Reward Credits to earn. The ecosystem keeps going because you keep going.</p>
 
   <div class="quests-grid" id="questsGrid">
     <!-- Each card gains a .qc-icon medallion. Nothing else changed: the
@@ -1811,7 +1823,7 @@ body { overflow-x: clip; }
       <div class="quest-status status-coming">Coming Soon</div>
       <div class="quest-name">Kilimanjaro Circuit</div>
       <div class="quest-route-label">Tanzania · Africa</div>
-      <div class="quest-desc">Circumnavigate the roof of Africa. One of the shorter quests — but the altitude bonuses and breathing multipliers make it among the most rewarding.</div>
+      <div class="quest-desc">Circumnavigate the roof of Africa. One of the shorter Journeys — but the altitude bonuses and breathing multipliers make it among the most rewarding.</div>
       <div class="quest-distance">65 <span>km</span></div>
     </div>
   </div>
@@ -1831,7 +1843,7 @@ body { overflow-x: clip; }
   <div class="learn-header reveal">
     <div class="s-kicker">Learn &amp; Earn</div>
     <h2 class="s-headline">Knowledge has<br><em>always had value.</em><br>Now it pays.</h2>
-    <p class="s-body" style="margin:0 auto;text-align:center;">128 lessons across two tracks. Every lesson earns Reward Credits directly. You don't need to understand blockchain to start — you will by the time you finish.</p>
+    <p class="s-body" style="margin:0 auto;text-align:center;">Two tracks, specified across four depth levels each. The pilot launches with twenty lessons — ten per track — and grows on what the first cohorts show. App screens here preview the full specified library, not the pilot scope. Every lesson earns Reward Credits directly. You don't need to understand blockchain to start — you will by the time you finish.</p>
   </div>
   <div class="learn-track-grid">
     <div class="learn-track-card" id="learnCard0">
@@ -1839,7 +1851,7 @@ body { overflow-x: clip; }
       <svg class="learn-track-icon" viewBox="0 0 24 24" fill="none" stroke="#A8B7A2" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a5 5 0 0 1 5 5c0 3-2 5-5 8-3-3-5-5-5-8a5 5 0 0 1 5-5z"/><circle cx="12" cy="7" r="1.5"/></svg>
       <div class="learn-track-tag" style="color:#A8B7A2;border-color:rgba(168,183,162,0.35);background:rgba(168,183,162,0.08);">Wellness Track</div>
       <div class="learn-track-name">Understand your body.<br>Own your health.</div>
-      <div class="learn-track-desc">64 lessons built around the science of how you actually function. No fluff — just the evidence-backed knowledge that changes how you move, sleep, eat, and think.</div>
+      <div class="learn-track-desc">Ten lessons at pilot launch, inside a track specified to four depth levels. No fluff — just the evidence-backed knowledge that changes how you move, sleep, eat, and think.</div>
       <div class="learn-topic-pills">
         <span class="learn-topic-pill">Sleep science</span><span class="learn-topic-pill">Nutrition</span><span class="learn-topic-pill">Movement</span><span class="learn-topic-pill">Breathwork</span><span class="learn-topic-pill">Nervous system</span><span class="learn-topic-pill">Recovery</span><span class="learn-topic-pill">Mental fitness</span>
       </div>
@@ -1854,7 +1866,7 @@ body { overflow-x: clip; }
       <svg class="learn-track-icon" viewBox="0 0 24 24" fill="none" stroke="#7F97A2" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg>
       <div class="learn-track-tag" style="color:#7F97A2;border-color:rgba(127,151,162,0.35);background:rgba(127,151,162,0.08);">Web3 Track</div>
       <div class="learn-track-name">Understand the system.<br>Own your future.</div>
-      <div class="learn-track-desc">64 lessons on what blockchain actually is, how tokens work, and why digital ownership matters — written for people who have never touched crypto, without the jargon.</div>
+      <div class="learn-track-desc">Ten lessons at pilot launch, inside a track specified to four depth levels — what blockchain actually is, how tokens work, and why digital ownership matters, without the jargon.</div>
       <div class="learn-topic-pills">
         <span class="learn-topic-pill">Blockchain basics</span><span class="learn-topic-pill">Tokens &amp; wallets</span><span class="learn-topic-pill">Digital ownership</span><span class="learn-topic-pill">DAOs explained</span><span class="learn-topic-pill">DeFi concepts</span><span class="learn-topic-pill">$DVT &amp; DAOasis</span><span class="learn-topic-pill">Web3 future</span>
       </div>
@@ -1866,8 +1878,8 @@ body { overflow-x: clip; }
     </div>
   </div>
   <div class="learn-stat-bar reveal">
-    <div class="learn-stat"><div class="learn-stat-num">128</div><div class="learn-stat-label">Total lessons</div></div>
-    <div class="learn-stat"><div class="learn-stat-num">2</div><div class="learn-stat-label">Tracks</div></div>
+    <div class="learn-stat"><div class="learn-stat-num">20</div><div class="learn-stat-label">Pilot lessons</div></div>
+    <div class="learn-stat"><div class="learn-stat-num">4</div><div class="learn-stat-label">Depth levels</div></div>
     <div class="learn-stat"><div class="learn-stat-num">100%</div><div class="learn-stat-label">Credit-earning</div></div>
     <div class="learn-stat"><div class="learn-stat-num">0</div><div class="learn-stat-label">Jargon required</div></div>
   </div>
@@ -1886,7 +1898,7 @@ body { overflow-x: clip; }
 <section class="s-dark" id="rewards" style="padding-bottom:0;">
   <div class="s-kicker reveal">The Reward System</div>
   <h2 class="s-headline reveal reveal-delay-1">Every habit earns.<br><em>Every credit counts.</em></h2>
-  <p class="s-body reveal reveal-delay-2">DAOasis Reward Credits — DRC — accumulate every time you complete a quest, finish a lesson, or hit a daily target. DRC converts to $DVT, and $DVT is the layer that carries deeper participation across the ecosystem.</p>
+  <p class="s-body reveal reveal-delay-2">DAOasis Reward Credits — DRC — accumulate every time you complete a quest, finish a lesson, or hit a daily target. DRC is designed to convert to $DVT, one way and by choice, and $DVT is the layer that carries deeper participation across the ecosystem.</p>
   <div class="reward-pipeline" id="rewardFlow">
     <div class="reward-pipe-node">
       <svg class="reward-pipe-icon" viewBox="0 0 24 24" fill="none" stroke="#C48A5A" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2z"/><path d="M8 8.5L6.5 15l3 1L11 20h2l1.5-4 2.5 1L18 9l-4-1-.5-1.5H10L8 8.5z"/></svg>
@@ -1906,7 +1918,7 @@ body { overflow-x: clip; }
       <svg class="reward-pipe-icon" viewBox="0 0 24 24" fill="none" stroke="#C48A5A" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M9 10h4.5a1.5 1.5 0 0 1 0 3H9m0 0h5a1.5 1.5 0 0 1 0 3H9"/></svg>
       <div class="reward-pipe-label">Step 03</div>
       <div class="reward-pipe-name">$DVT</div>
-      <div class="reward-pipe-desc">DRC converts to $DVT — DAOasis's on-chain utility layer. Transferable ownership, and the layer that carries deeper participation across the ecosystem.</div>
+      <div class="reward-pipe-desc">DRC is designed to convert to $DVT — DAOasis&rsquo;s on-chain utility layer. Transferable ownership, and the layer that carries deeper participation across the ecosystem.</div>
     </div>
   </div>
   <div class="s-kicker reveal" style="text-align:center;margin-bottom:24px;">What $DVT unlocks</div>
@@ -2022,7 +2034,7 @@ body { overflow-x: clip; }
   <div class="int-section-left">
   <div class="s-kicker reveal">Device Integrations</div>
   <h2 class="s-headline reveal reveal-delay-1">Works with what<br><em>you already use.</em></h2>
-  <p class="s-body reveal reveal-delay-2">DAOasis connects to your existing health platforms so your data flows automatically — steps, sleep, heart rate. You live your life. The app does the rest.</p>
+  <p class="s-body reveal reveal-delay-2">DAOasis reads from the health platforms you already use, so your data flows in on its own — steps, sleep, heart rate. Apple Health and Google Health Connect are in scope for first release; the rest are planned. You live your life. The app does the rest.</p>
 
   <div class="int-visual reveal reveal-delay-3">
     <img class="whoop-img" src="images/whoop.png" alt="Whoop band" />
@@ -2040,6 +2052,7 @@ body { overflow-x: clip; }
         <text x="38" y="19" font-family="'Frank Ruhl Libre',serif" font-size="13" fill="rgba(247,244,238,0.6)">Apple Health</text>
       </svg>
       <div class="int-card-name">Apple Health</div>
+      <div class="int-card-status first">At first release</div>
       <div class="int-card-desc">Steps, sleep, heart rate and activity data synced automatically from HealthKit. Covers iPhone and Apple Watch.</div>
       <div class="int-card-tag">iOS · Apple Watch</div>
     </div>
@@ -2053,6 +2066,7 @@ body { overflow-x: clip; }
         <text x="30" y="19" font-family="'Frank Ruhl Libre',serif" font-size="13" fill="rgba(247,244,238,0.6)">Google Health</text>
       </svg>
       <div class="int-card-name">Google Health Connect</div>
+      <div class="int-card-status first">At first release</div>
       <div class="int-card-desc">Android health data hub — connects Pixel, Samsung, and any Android device directly into DAOasis.</div>
       <div class="int-card-tag">Android · Pixel · Samsung</div>
     </div>
@@ -2065,6 +2079,7 @@ body { overflow-x: clip; }
         <text x="30" y="19" font-family="'Frank Ruhl Libre',serif" font-size="13" fill="rgba(247,244,238,0.6)" letter-spacing="2">WHOOP</text>
       </svg>
       <div class="int-card-name">Whoop</div>
+      <div class="int-card-status planned">Planned</div>
       <div class="int-card-desc">HRV, recovery score, sleep performance and strain data — Whoop's depth makes it one of the most powerful boosters in the app.</div>
       <div class="int-card-tag">HRV · Recovery · Sleep</div>
     </div>
@@ -2077,6 +2092,7 @@ body { overflow-x: clip; }
         <text x="30" y="19" font-family="'Frank Ruhl Libre',serif" font-size="13" fill="rgba(247,244,238,0.6)">Oura Ring</text>
       </svg>
       <div class="int-card-name">Oura Ring</div>
+      <div class="int-card-status planned">Planned</div>
       <div class="int-card-desc">Sleep staging, readiness score, body temperature and HRV from the ring that many consider the gold standard in passive health tracking.</div>
       <div class="int-card-tag">Sleep · Readiness · HRV</div>
     </div>
@@ -2089,6 +2105,7 @@ body { overflow-x: clip; }
         <text x="30" y="19" font-family="'Frank Ruhl Libre',serif" font-size="13" fill="rgba(247,244,238,0.6)">Garmin</text>
       </svg>
       <div class="int-card-name">Garmin</div>
+      <div class="int-card-status planned">Planned</div>
       <div class="int-card-desc">GPS activity, VO2 max, advanced sleep tracking and Body Battery score. Ideal for serious movers using the quest mechanic to its fullest.</div>
       <div class="int-card-tag">GPS · VO2 Max · Activity</div>
     </div>
@@ -2103,6 +2120,7 @@ body { overflow-x: clip; }
         <text x="30" y="19" font-family="'Frank Ruhl Libre',serif" font-size="13" fill="rgba(247,244,238,0.6)">Fitbit</text>
       </svg>
       <div class="int-card-name">Fitbit</div>
+      <div class="int-card-status planned">Planned</div>
       <div class="int-card-desc">Daily steps, active zone minutes, sleep analysis and heart rate tracking. One of the most widely used wearables — fully supported from day one.</div>
       <div class="int-card-tag">Steps · Sleep · Heart Rate</div>
     </div>
@@ -2475,7 +2493,7 @@ function cine(el, o){
     { svg:'<path d="M12 2L6 10a6 6 0 1 0 12 0L12 2z"/>', name:'Hydration', color:'#5a8aad', glow:'rgba(90,138,173,0.12)', tag:'Booster', tagBg:'rgba(90,138,173,0.15)', what:'Log your daily water intake and hit your 3L target to earn a bonus kilometre on your quest.', quest:'+1 km every day you hit your hydration goal. The river in your world rises with every bottle logged.' },
     { svg:'<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>', name:'Sleep', color:'#9B8CA8', glow:'rgba(155,140,168,0.12)', tag:'Booster', tagBg:'rgba(155,140,168,0.15)', what:'Quality sleep earns a nightly distance bonus. The app reads your sleep score from connected health devices.', quest:'+2 km for 7+ hours of quality sleep. Streak constellations grow in your app sky.' },
     { svg:'<path d="M12 2a5 5 0 0 1 5 5c0 3-2 5-5 8-3-3-5-5-5-8a5 5 0 0 1 5-5z"/><circle cx="12" cy="7" r="1.5"/>', name:'Nutrition', color:'#A8B7A2', glow:'rgba(168,183,162,0.10)', tag:'Booster', tagBg:'rgba(168,183,162,0.15)', what:'Log meals and earn Reward Credits. The app rewards dietary variety, consistency, and nutritional balance.', quest:'Logging varied meals earns credits and grows a garden inside your world. One of the most direct routes to $DVT.' },
-    { svg:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>', name:'Learning', color:'#DDD1C2', glow:'rgba(221,209,194,0.10)', tag:'Earner', tagBg:'rgba(221,209,194,0.15)', what:'Complete wellness and Web3 lessons to earn DAOasis Reward Credits directly. Knowledge is treated as a habit, and recognised like one.', quest:'Every lesson earns credits that convert to $DVT. 128 lessons across Wellness and Web3 — all rewarded.' }
+    { svg:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>', name:'Learning', color:'#DDD1C2', glow:'rgba(221,209,194,0.10)', tag:'Earner', tagBg:'rgba(221,209,194,0.15)', what:'Complete wellness and Web3 lessons to earn DAOasis Reward Credits directly. Knowledge is treated as a habit, and recognised like one.', quest:'Every lesson earns credits, and credits are designed to convert to $DVT. Twenty lessons at pilot launch across Wellness and Web3 — all rewarded.' }
   ];
 
   const tiles    = document.querySelectorAll('.eco-tile');
@@ -2555,7 +2573,7 @@ function cine(el, o){
   if (!outer || !pathFill) return;
 
   const WPS = [
-    { num:'01', label:'START',          name:'Bangkok',     tag:'QUEST BEGINS',      desc:'Set your intention. The trail opens.',               threshold:0     },
+    { num:'01', label:'START',          name:'Bangkok',     tag:'JOURNEY BEGINS',      desc:'Set your intention. The trail opens.',               threshold:0     },
     { num:'02', label:'ANCIENT CAPITAL',name:'Ayutthaya',   tag:'76 KM WALKED',      desc:'The first milestone. History beneath your feet.',    threshold:0.084 },
     { num:'03', label:'COAST BEGINS',   name:'Hua Hin',     tag:'199 KM WALKED',     desc:'The gulf appears. Sea air and open road.',           threshold:0.221 },
     { num:'04', label:'GATEWAY SOUTH',  name:'Surat Thani', tag:'544 KM WALKED',     desc:'Halfway. Community stories unlock here.',            threshold:0.604 },
@@ -2851,7 +2869,7 @@ function cine(el, o){
       kicker: 'Knowledge + Growth',
       title: 'Learn your way to better health.',
       body: '<p>The app includes a full library of wellness and education modules — covering movement, nutrition, sleep, hydration, mindfulness, and financial literacy. Each lesson is bite-sized, science-backed, and built for real life.</p><p>Complete a module and it counts as a quest. Knowledge doesn\'t just make you smarter here — it moves you forward on the map and earns you rewards.</p>',
-      tag: '128 lessons across 8 pillars'
+      tag: 'Twenty lessons at pilot launch'
     },
     center: {
       icon: '📊',
@@ -2864,7 +2882,7 @@ function cine(el, o){
       icon: '🌐',
       kicker: 'The Web3 Layer',
       title: 'Ownership you actually earned.',
-      body: '<p>Every quest completed, every lesson finished, every streak maintained generates DAOasis Reward Credits — DRC. Those credits accumulate in your in-app wallet, and can be converted into $DVT — the DAOasis Value Token.</p><p>$DVT is yours. It is designed to be held or used within the ecosystem for Sanctuary stays and premium content, introduced in stages as each is built. The wallet screen gives you a live view of your balance and transaction history.</p>',
+      body: '<p>Every quest completed, every lesson finished, every streak maintained generates DAOasis Reward Credits — DRC. Those credits accumulate in your in-app wallet, and are designed to convert, one way and by choice, into $DVT — the DAOasis Value Token.</p><p>$DVT is yours. It is designed to be held or used within the ecosystem for Sanctuary stays and premium content, introduced in stages as each is built. The wallet screen gives you a live view of your balance and transaction history.</p>',
       tag: 'Earn · Convert · Hold · Use'
     }
   };

@@ -11,9 +11,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>The Web3 Layer — DAOasis</title>
-<meta name="description" content="DAOasis recognises meaningful participation through DRC — DAOasis Reward Credits. Over time DRC can be converted into $DVT, the token that connects deeper participation to the wider DAOasis ecosystem. No wallet required to begin." />
+<meta name="description" content="DAOasis recognises meaningful participation through DRC — DAOasis Reward Credits. Over time DRC is designed to convert into $DVT, the token that connects deeper participation to the wider DAOasis ecosystem. No wallet required to begin." />
 <meta property="og:title" content="The Web3 Layer — DAOasis" />
-<meta property="og:description" content="Participation is recognised through DRC. DRC converts to $DVT. $DVT connects you to the wider DAOasis ecosystem — marketplace, governance, staking, Stake to Create." />
+<meta property="og:description" content="Participation is recognised through DRC, which is designed to convert to $DVT. $DVT connects you to the wider DAOasis ecosystem — marketplace, governance, staking, Stake to Create." />
 <meta property="og:image" content="images/img-11.jpg" />
 <meta property="og:type" content="website" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -488,6 +488,17 @@ img { max-width: 100%; }
 .bridge-step-i { font-size: 9.5px; letter-spacing: 0.2em; color: var(--gold); margin-bottom: 10px; }
 .bridge-step-n { font-size: 12.5px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(247,244,238,0.9); }
 .bridge-foot { font-size: 13.5px; line-height: 1.8; color: #8a8377; max-width: 640px; margin-top: 26px; }
+/* Conversion was the only utility on this page with no status label, while
+   the marketplace, governance, staking and Stake to Create rows all carry
+   one. It is also the mechanism with the least settled behind it — rate,
+   caps, eligibility and timing are all unset. This is .util-q's treatment
+   rebuilt for a dark ground; #D49B69 clears AA against --mineral. */
+.bridge-status {
+  display: inline-block; margin-top: 16px;
+  font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: #D49B69; border: 1px solid rgba(212,155,105,0.34);
+  border-radius: 30px; padding: 7px 16px;
+}
 @media(min-width:901px) and (max-height:900px){
   .bridge-sticky { padding: 11vh 8% 6vh; }
   .bridge-head .display { font-size: clamp(28px,3.4vw,50px); }
@@ -594,6 +605,21 @@ img { max-width: 100%; }
 .gov-areas { margin-top: 9vh; display: flex; flex-wrap: wrap; gap: 10px; }
 .gov-areas span { font-size: 12px; letter-spacing: 0.1em; color: #5c554c; border: 1px solid rgba(43,38,35,0.18); border-radius: 30px; padding: 9px 20px; }
 .gov-foot { margin-top: 5vh; font-size: 13px; color: #8a7f6d; line-height: 1.8; max-width: 640px; }
+/* The four governance phases are published in the Tokenomics Paper §14 and
+   the Whitepaper §13; this page previously said only "in stages", which was
+   correct but vaguer than the documents an investor reads next. Numbered
+   because it genuinely is a sequence — each phase widens the one before.
+   Phase 01 is where the company actually is, and is marked as such. */
+.gov-phases { margin-top: 6vh; display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 1px;
+  background: rgba(43,38,35,0.16); border: 1px solid rgba(43,38,35,0.16); }
+.gov-ph { background: var(--warm-white); padding: 20px 22px; display: flex; flex-direction: column; gap: 8px; }
+.gov-ph-i { font-size: 10px; letter-spacing: 0.2em; color: var(--gold); }
+.gov-ph-n { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: clamp(19px,1.9vw,25px);
+  color: var(--charcoal); line-height: 1.1; }
+.gov-ph-s { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: #6f6a61; }
+.gov-ph.now .gov-ph-s { color: #9a6a3c; }
+@media(max-width:900px){ .gov-phases { grid-template-columns: 1fr 1fr; } }
+@media(max-width:520px){ .gov-phases { grid-template-columns: 1fr; } }
 @media(max-width:900px){ .gov-beats { grid-template-columns: 1fr; gap: 42px; margin-top: 7vh; } }
 
 /* ══════════════════════════════════════════════
@@ -909,7 +935,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
       </div>
     </div>
 
-    <p class="part-foot">You show up. You learn. You move. You build. You contribute. None of it sits in its own column — every one of these feeds the same journey, and together they compound. DAOasis recognises that participation and gives it somewhere to go, beginning in the <a href="app.html">Companion App</a>.</p>
+    <p class="part-foot">You show up. You learn. You move. You build. You contribute. None of it sits in its own column — every one of these feeds the same Journey, and together they compound. DAOasis recognises that participation and gives it somewhere to go, beginning in the <a href="app.html">Companion App</a>.</p>
 
   </div>
 </div>
@@ -998,7 +1024,8 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
         <div class="bridge-step"><div class="bridge-step-i">04</div><div class="bridge-step-n">Convert</div></div>
         <div class="bridge-step"><div class="bridge-step-i">05</div><div class="bridge-step-n">$DVT</div></div>
       </div>
-      <p class="bridge-foot">DRC can be converted into $DVT, creating a pathway from everyday participation into deeper ecosystem utility. Conversion is a step you choose to take — not a requirement for using DAOasis.</p>
+      <p class="bridge-foot">DRC is designed to convert into $DVT, creating a pathway from everyday participation into deeper ecosystem utility. Conversion is a step you choose to take — not a requirement for using DAOasis.</p>
+      <span class="bridge-status">In design · rate and eligibility not set</span>
     </div>
 
   </div>
@@ -1028,7 +1055,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
           <div>Earned through meaningful activity</div>
           <div>Held inside the DAOasis experience</div>
           <div>A record of what you have done</div>
-          <div>Can be converted into $DVT over time</div>
+          <div>Designed to convert into $DVT over time</div>
         </div>
       </div>
       <div class="two-card accent rv">
@@ -1214,7 +1241,29 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
       <div class="gov-areas soft">
         <span>Learning</span><span>Community</span><span>Sanctuaries</span><span>Partnerships</span><span>Ecosystem allocation</span><span>Platform development</span>
       </div>
-      <p class="gov-foot soft d2">Governance is being introduced in stages rather than switched on at once. What is described here is the direction of travel, and the detail will be published as each part is implemented.</p>
+      <div class="gov-phases soft d2">
+        <div class="gov-ph now">
+          <div class="gov-ph-i">Phase 01</div>
+          <div class="gov-ph-n">Founders-led</div>
+          <div class="gov-ph-s">Where we are</div>
+        </div>
+        <div class="gov-ph">
+          <div class="gov-ph-i">Phase 02</div>
+          <div class="gov-ph-n">Community advisory</div>
+          <div class="gov-ph-s">Designed</div>
+        </div>
+        <div class="gov-ph">
+          <div class="gov-ph-i">Phase 03</div>
+          <div class="gov-ph-n">Partial DAO</div>
+          <div class="gov-ph-s">Designed</div>
+        </div>
+        <div class="gov-ph">
+          <div class="gov-ph-i">Phase 04</div>
+          <div class="gov-ph-n">Full DAO</div>
+          <div class="gov-ph-s">Designed</div>
+        </div>
+      </div>
+      <p class="gov-foot soft d2">Governance is being introduced in four stages rather than switched on at once, and DAOasis is at the first of them. What is described here is the direction of travel, and the detail — thresholds, quorum, what a vote can reach — will be published as each part is implemented. No governance parameter is settled yet.</p>
     </div>
   </div>
 </section>
@@ -1232,7 +1281,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
       <span class="ln"><i>The digital layer doesn't</i></span>
       <span class="ln"><i>replace the real world.</i></span>
     </h2>
-    <p class="sanct-copy soft d2">The Sanctuary is the physical expression of DAOasis. The app carries the practice before and after it. The Web3 layer is the infrastructure underneath — participation, alignment and contribution, running the whole way through.</p>
+    <p class="sanct-copy soft d2">The Sanctuary is the optional physical expression of DAOasis — planned for Phuket in 2027, and somewhere a Journey can arrive rather than somewhere every member is expected to reach. The app carries the practice before and after it. The Web3 layer is the infrastructure underneath — participation, alignment and contribution, running the whole way through.</p>
     <div class="sanct-verbs soft d3"><span>Rest.</span><span>Learn.</span><span>Earn.</span><span>Return.</span></div>
     <div class="btn-row soft d3">
       <a class="btn btn-light" href="sanctuary.html">Explore the Sanctuary</a>
@@ -1380,7 +1429,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
       <div class="faq-item">
         <button class="faq-q" type="button" aria-expanded="false">How do DRC and $DVT work together?</button>
         <div class="faq-a"><div class="faq-a-inner">
-          <p>DRC recognises participation as it happens. Over time, accumulated DRC can be converted into $DVT.</p>
+          <p>DRC recognises participation as it happens. Over time, accumulated DRC is designed to convert into $DVT.</p>
           <p>One is the everyday record inside the app. The other is what opens up the wider ecosystem. Converting is a step you choose to take, not a requirement.</p>
         </div></div>
       </div>

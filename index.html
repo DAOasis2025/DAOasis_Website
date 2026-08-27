@@ -20,9 +20,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>DAOasis — Rest. Learn. Earn. Return.</title>
-<meta name="description" content="DAOasis is a wellness and accountability ecosystem — a daily habit app, a token that rewards consistency, and real-world sanctuary retreats, all in one connected journey." />
+<meta name="description" content="Traditional wellness apps create users. DAOasis creates stakeholders. An ongoing wellness ecosystem built around the Companion App, where daily habits become a Journey — Bangkok to Phuket is the launch Journey, and completing one opens the next." />
 <meta property="og:title" content="DAOasis — Rest. Learn. Earn. Return." />
-<meta property="og:description" content="A wellness and accountability ecosystem that rewards consistent habits, real learning, and long-term community — with premium real-world retreats as the immersive entry point." />
+<meta property="og:description" content="An ongoing wellness ecosystem that turns consistent habits, real learning and long-term community into one Journey — with an optional real-world Sanctuary planned for Phuket in 2027. Rest. Learn. Earn. Return." />
 <meta property="og:image" content="images/img-01.jpg" />
 <meta property="og:type" content="website" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1452,6 +1452,9 @@
   .wl-headline{font-family:'Cormorant Garamond',serif;font-weight:300;color:var(--charcoal);
     font-size:clamp(40px,6.4vw,92px);line-height:1.02;letter-spacing:-0.012em;margin-bottom:32px;}
   .wl-sub{font-size:16px;color:#5c554c;max-width:500px;margin:0 auto 56px;line-height:1.9;}
+  /* #635c52 on --warm-stone is 5.0:1 — this line has to stay readable, it is
+     the one that stops the button being a false promise */
+  .wl-note{font-size:13.5px;color:#635c52;max-width:440px;margin:26px auto 0;line-height:1.7;}
   @media (max-width:800px){.waitlist-section{padding:16vh 8%;}}
 
   /* FOOTER */
@@ -1613,7 +1616,7 @@
       <div class="content" id="heroContent">
         <div class="kicker">A behavioural wellness ecosystem</div>
         <div class="h1" id="heroH1"><span class="nowrap">Traditional wellness apps create users.</span><em>DAOasis creates stakeholders.</em></div>
-        <div class="sub">Wellness, learning, accountability and ownership — one connected journey.</div>
+        <div class="sub">Wellness, learning, accountability and ownership — one connected Journey.</div>
         <div class="ctas">
           <a class="btn btn-light" href="#waitlistSection">Join the waitlist</a>
           <a class="btn btn-ghost" href="#ecoSection">Explore the ecosystem</a>
@@ -1707,7 +1710,7 @@
 <div class="section on-light" id="ecoSection">
   <div class="eco-kicker">The DAOasis ecosystem</div>
   <h2 class="eco-headline rv"><span class="ln"><i>One ecosystem.</i></span><span class="ln"><i><em>Three connected experiences.</em></i></span></h2>
-  <div class="eco-sub">DAOasis combines a daily wellness app, premium real-world sanctuaries and digital ownership into one connected ecosystem that helps people build healthier habits, meaningful relationships and long-term wellbeing.</div>
+  <div class="eco-sub">DAOasis combines a daily wellness app, an optional real-world Sanctuary and digital ownership into one ongoing ecosystem. Every habit moves the same Journey — Bangkok to Phuket is the launch Journey, and completing one opens the next.</div>
   <div class="click-cue">Select any experience to explore it in detail</div>
 
   <div class="cards" id="ecoCards">
@@ -1737,7 +1740,7 @@
       <div class="card-body">
         <div class="card-step">Step two</div>
         <div class="card-title">DAOasis Sanctuaries</div>
-        <div class="card-desc">Immersive real-world retreats where the journey becomes tangible, starting in Phuket.</div>
+        <div class="card-desc">An optional real-world Sanctuary where a Journey becomes tangible. Planned for Phuket, 2027.</div>
         <a class="card-learn" href="/sanctuary">Learn more →</a>
         <div class="card-more" id="card2More"></div>
       </div>
@@ -2055,7 +2058,17 @@
     <div class="wl-tagline">Small actions. Consistent practice. Lasting change.</div>
     <h2 class="wl-headline rv"><span class="ln"><i>Be among the first.</i></span></h2>
     <div class="wl-sub">Join a community building a more intentional way to live, learn and grow.</div>
-    <div class="btn-row" style="justify-content:center;"><a class="btn btn-dark" href="#">Join the Waitlist</a></div>
+    <!-- Was `href="#"` — a dead link that every nav, drawer and hero CTA
+         pointed at, and the Business Plan's Annex A7 launch blocker.
+         There is still no form backend anywhere in this project, so this
+         hands off to the one published address instead of pretending to
+         capture. Because nothing is collected by the site, this does NOT
+         change the privacy or cookie position. If a real capture form is
+         ever built here, privacy.html §09 and cookies.html §04/§07 must be
+         updated in the same commit — both currently state as fact that the
+         site collects nothing and sets no cookies. -->
+    <div class="btn-row" style="justify-content:center;"><a class="btn btn-dark" href="mailto:info@daoasis.xyz?subject=Early%20access%20%E2%80%94%20DAOasis%20waitlist">Join the Waitlist</a></div>
+    <div class="wl-note">The list is not automated yet. This opens your email client, and we add you by hand.</div>
   </div>
 </section>
 
@@ -2101,7 +2114,7 @@
 <script src="js/cine.js"></script>
 <script>
   const waypoints = [
-    { frac: 0.0,  color:'#4a9a68', title:'Bangkok',    sub:'Day 1 · Begins the journey' },
+    { frac: 0.0,  color:'#4a9a68', title:'Bangkok',    sub:'Day 1 · Begins the Journey' },
     { frac: 0.24, color:'#7F97A2', title:'Hua Hin',    sub:'Day 6 · First 3-day streak' },
     { frac: 0.5,  color:'#C48A5A', title:'Krabi',      sub:'Day 14 · Learn module complete' },
     { frac: 0.76, color:'#9B8CA8', title:'Phang Nga',  sub:'Day 22 · Community quest unlocked' },
@@ -2644,8 +2657,8 @@
   updateParallax();
 
   const cardData = {
-    card1: { step:'Step one', title:'Companion App', text:'The DAOasis Companion App turns wellbeing into a daily practice instead of a one-time decision. Rituals, learning, and quests are woven into your everyday routine, so consistency builds naturally over time.', features:['Daily wellness metrics','Quests and streaks','Guided learning','Community connection','Progress tracking','Reward credits'], url:'/app' },
-    card2: { step:'Step two', title:'DAOasis Sanctuaries', text:'Real-world retreats where the daily practice becomes tangible. Starting in Phuket, each Sanctuary is an immersive environment for recovery, clarity, and renewal — the place the journey leads to, not the destination itself.', features:['Immersive retreat design','Rest and recovery focus','Guided practices on-site','Community gatherings'], url:'/sanctuary' },
+    card1: { step:'Step one', title:'Companion App', text:'The core operating environment of DAOasis — the daily relationship, and the foundation every later part of the ecosystem reaches you through. Rituals, learning and quests are woven into your routine, so consistency builds naturally over time.', features:['Daily wellness metrics','Quests and streaks','Guided learning','Community connection','Progress tracking','Reward credits'], url:'/app' },
+    card2: { step:'Step two', title:'DAOasis Sanctuaries', text:'The optional physical expression of the ecosystem, where the daily practice becomes tangible. Planned for Phuket in 2027 — somewhere a Journey can arrive, not somewhere every member is expected to reach.', features:['Immersive retreat design','Rest and recovery focus','Guided practices on-site','Community gatherings'], url:'/sanctuary' },
     card3: { step:'Step three', title:'Digital Ownership', text:'Consistency and participation are recognised and reflected in something you actually own. This layer strengthens community alignment and rewards meaningful, long-term involvement — not speculation.', features:['Reward credits','Governance participation','Staking','Ecosystem alignment'], url:'/web3' }
   };
 
@@ -3668,7 +3681,7 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
     'Every completed ritual is recognised — DRC that accumulates as your consistency does.',
     'For those who want more than a badge: DVT turns participation into actual ownership.',
     "Token holders don't just use the ecosystem — they help decide what it becomes.",
-    'The physical culmination of the digital journey — Phuket, and beyond.'
+    'Where a digital Journey can arrive in person — Phuket, and beyond.'
   ];
   function computeT(){ const rect = pin4.getBoundingClientRect(); const scrollable = pin4.offsetHeight - window.innerHeight; if(scrollable <= 0) return 0; return Math.max(0, Math.min(1, -rect.top / scrollable)); }
   const j4ReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;

@@ -15,14 +15,23 @@ described on the website, but they have not been reviewed by a lawyer.
 
 ## LEGAL ENTITY
 
+**Entity name RESOLVED, 25 August 2026 — `DAOasis Global Ltd`, registered in the United
+Kingdom.** It is now printed as plain text in `privacy.html` §01/§19 and `terms.html`
+§01/§24. The company number and the registered address remain unknown and are still
+visible `tbc` markers.
+
 | Needed | Appears on |
 |---|---|
-| Registered legal entity name of the DAOasis operating company | `privacy.html` §01, §19 · `terms.html` §01, §24 |
-| Registered address | `privacy.html` §19 · `terms.html` §24 |
-| Company registration number, and any trading names | Not yet referenced — add once known |
+| ~~Registered legal entity name~~ — **DAOasis Global Ltd (UK)** | resolved |
+| Company registration number | `privacy.html` §01, §19 · `terms.html` §01, §24 |
+| Registered address | `privacy.html` §01, §19 · `terms.html` §24 |
+| Any trading names | Not yet referenced — add once known |
 
-Nothing was invented here. No entity name, number, address or jurisdiction appears
-anywhere in the project files, so none was written.
+The planned BVI parent and Thai operating company are **not yet formed**, so neither
+appears as a contracting entity anywhere in the trust layer. Governing law and
+jurisdiction remain `tbc`.
+
+Nothing beyond the entity name was invented here.
 
 ---
 

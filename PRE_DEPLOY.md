@@ -4,6 +4,34 @@ Things that must be done outside this environment, before the site goes live.
 
 ---
 
+## 0a. UPLOAD LIST — the 25 August investor-document alignment pass
+
+Editorial pass only: copy, figures and meta tags. **No image changed**, so
+section 0 below (the whole `images/` folder, plus the ten deletions) is a
+SEPARATE, still-outstanding job — do that one too if it has not been done yet.
+
+### Seven page files — REPLACE
+
+```
+index.html
+app.html
+web3.html
+investors.html
+about.html
+privacy.html
+terms.html
+```
+
+`sanctuary.html` is **byte-identical** to the 22 August version and does not
+need re-uploading — it is still in section 0's list if that batch is outstanding.
+No stylesheet, no script and no image changed in this pass: `css/trust.css` and
+`js/cine.js` are untouched.
+
+`CONTENT_REQUIRED.md` and `CLAUDE.md` also changed, but they are project notes
+rather than site files; upload them only if the repo carries them.
+
+---
+
 ## 0. UPLOAD LIST — the 22 August changes
 
 Everything below is ready. Upload to `DAOasis2025/DAOasis_Website`; Vercel
