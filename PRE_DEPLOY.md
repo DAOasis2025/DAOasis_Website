@@ -4,6 +4,115 @@ Things that must be done outside this environment, before the site goes live.
 
 ---
 
+## 0A. UPLOAD LIST — 3 September  (NEWEST — do this one)
+
+Hero pin removed, pinned scroll cut back and re-paced, wellness-shift cards
+now take the centre, and seven fixes from the review list. See CLAUDE.md from
+"Pinned scroll cut back site-wide — 3 September 2026" onward.
+
+### Four page files — REPLACE
+```
+index.html
+app.html
+sanctuary.html
+web3.html
+```
+`investors.html`, `about.html` and the seven trust pages did NOT change.
+**`js/cine.js` DID change — it must be uploaded with them.** `css/trust.css` did not.
+
+---
+
+## 0A-BLOCKER. TWO APP MOCKUPS CONTRADICT THE CONTENT RULES
+
+**This is the one thing on the site that is a stated-position problem rather
+than a polish problem, and both instances have just been made more prominent.**
+
+| where | file | what it shows |
+|---|---|---|
+| `index.html` — "Track what matters" | `images/img-10.jpg` | **Reward Credits · $0.100 · 24H change ↑24%** |
+| `app.html` — "The Living Ecosystem" | `images/19.png` | **DVT Price · $0.100 · 24H change ↑24% · "Buy DVT" · "DRT earned"** |
+
+Both are now the visual centrepiece of their section — the app phone was
+enlarged 2.35x on 3 September, and the index dashboard is flanked by four
+annotation cards pointing at it.
+
+Every one of these contradicts a rule already written down:
+- **DRC must never be shown with a monetary price** — it is a recognition
+  layer with no monetary guarantee.
+- **$DVT must not be presented with a price or a 24h move**, and "Buy DVT"
+  frames it as a speculative instrument.
+- **DRT is retired terminology** and appears nowhere in the site's copy.
+
+`images/img-06.jpg`, `img-10.jpg`, `06.png`, `19.png`, `img-04.png`,
+`img-05.png`, `img-08.jpg`, `11.png`, `18.png`, `Brathing_quest.png` and
+`Hydration.png` are all already on the do-not-use list for the same reasons.
+**The only clean mockups in the project are `14.png` (Marketplace) and
+`17.png` / `img-03.png` (Learning) — and none of them is a wellness
+dashboard.** There is no clean replacement in the repository.
+
+**Three ways out, all needing a decision:**
+1. Re-render both dashboard screens without the price header — the correct
+   fix, needs design time.
+2. Swap in a clean mockup and reword the sections around it — changes what
+   those two sections are about.
+3. Ship as-is and accept that the two most prominent product shots on the
+   site say something the rest of the site explicitly denies.
+
+Do not "fix" this by editing the PNGs' pixels — the Business Plan reached the
+same conclusion and reconciled it in text instead.
+
+---
+
+## 0B. Still open, lower priority
+- **The seven-day 3D ride on `sanctuary.html`** reads as synthetic
+  ("very fake, nothing there is real"). Options are: improve materials and
+  lighting, replace with photography, or leave it. Design decision, not a
+  defect.
+- **Mobile pin heights have not been re-paced.** Every `@media` override still
+  carries its pre-3-September value.
+- `about-hero-mobile.jpg` is still missing (documented, degrades gracefully).
+- There is still **no favicon** anywhere in the project — one 404 per page load
+  on every page.
+- **No form backend anywhere.** The waitlist is a `mailto:` and the investor
+  request panel hands off to the reader's own email client. Both say so.
+
+---
+
+## 0z. UPLOAD LIST — the 1 September motion rebuild  (NEWEST — do this one)
+
+Site-wide rebuild of animation, transitions and scroll pacing, plus the
+pin3 two-phase composition and the investor route diagram (2 Sept). See CLAUDE.md,
+"Motion rebuilt site-wide — 1 September 2026".
+
+### Six page files — REPLACE
+
+```
+index.html
+app.html
+sanctuary.html
+web3.html
+investors.html
+about.html
+```
+
+### Two shared files — REPLACE  (do not miss these)
+
+```
+js/cine.js
+css/trust.css
+```
+
+`js/cine.js` carries the scroll engine itself. Without it every page falls back
+to direct scroll mapping rather than breaking, but none of the pacing exists —
+and every section now scrubs `pos()`/`lead()`, so the per-page fallback shims
+matter more than they used to. `css/trust.css` carries the shared motion tokens
+(`--ease`, `--ease-soft`) for the seven trust pages.
+
+**The seven trust HTML pages did not change and do not need re-uploading.**
+**No image changed.**
+
+---
+
 ## 0a. UPLOAD LIST — the 25 August investor-document alignment pass
 
 Editorial pass only: copy, figures and meta tags. **No image changed**, so

@@ -48,25 +48,6 @@
   --sand: #E7E0D4;
 }
 
-  /* ── THE TYPE LADDER (running text) ───────────────────────────────────
-     Seven steps for every sans size on the site. It carried twenty-four,
-     clustered so tightly that most were indistinguishable — 17/16.5/16.1/16
-     were all "body", and 10.5/10/9.5/9/8 were all "micro label". Every
-     bucket snaps UP, so nothing gets smaller and the crowded bottom end
-     clears the site's own 10px floor.
-     Rules inside @media keep their own values: mobile overrides were tuned
-     against real measurements and must not be flattened. */
-  :root{
-    --t-body:17px;     /* reading copy                     */
-    --t-body-s:15.5px; /* secondary copy, card body        */
-    --t-meta:14.5px;   /* small body, list text            */
-    --t-note:13.5px;   /* notes, footnotes, nav            */
-    --t-small:12.5px;  /* buttons, tags                    */
-    --t-micro:11.5px;  /* tracked labels                   */
-    --t-nano:10.5px;   /* the floor — eyebrows, sources    */
-  }
-
-
 /* ── BRAND TOKENS (identical to the other five pages) ── */
 :root {
   --warm-white: #F7F4EE;
@@ -110,7 +91,7 @@ img { max-width: 100%; }
 .skip-link {
   position: absolute; left: -9999px; top: 0; z-index: 200;
   background: var(--warm-white); color: var(--charcoal);
-  padding: 12px 22px; border-radius: 0 0 8px 0; font-size:var(--t-note); text-decoration: none;
+  padding: 12px 22px; border-radius: 0 0 8px 0; font-size: 13px; text-decoration: none;
 }
 .skip-link:focus { left: 0; }
 a:focus-visible, button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 2px; }
@@ -133,7 +114,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--gold); outline-
 .nav-brand img { width: 26px; opacity: 0.9; }
 .nav-brand span { font-family: 'Cormorant Garamond', serif; font-size: 18px; color: var(--warm-white); }
 .nav-cta {
-  background: var(--warm-white); color: var(--charcoal); font-size:var(--t-note);
+  background: var(--warm-white); color: var(--charcoal); font-size: 13px;
   padding: 10px 24px; border-radius: 24px; text-decoration: none;
   letter-spacing: 0.03em; transition: opacity 0.2s; white-space: nowrap;
 }
@@ -145,16 +126,16 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--gold); outline-
 .nav-burger.open .nav-burger-bars i:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
 .nav-burger.open .nav-burger-bars i:nth-child(2) { opacity: 0; }
 .nav-burger.open .nav-burger-bars i:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
-.nav-burger-label { font-family: 'Frank Ruhl Libre', serif; font-size:var(--t-small); letter-spacing: 0.1em; text-transform: uppercase; color: var(--warm-white); }
+.nav-burger-label { font-family: 'Frank Ruhl Libre', serif; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--warm-white); }
 /* on a narrow phone the full-text CTA is wide enough to collide with the
    centred logo — icon-only burger plus a tighter CTA buys back the room. */
 @media(max-width:420px) {
   .nav-burger-label { display: none; }
-  .nav-cta { padding: 9px 16px; font-size:var(--t-note); }
+  .nav-cta { padding: 9px 16px; font-size: 12px; }
 }
 @media(max-width:360px) {
   .nav-brand span { display: none; }
-  .nav-cta { padding: 8px 13px; font-size:var(--t-note); }
+  .nav-cta { padding: 8px 13px; font-size: 11px; }
 }
 .nav-drawer-backdrop {
   position: fixed; inset: 0; z-index: 88; background: rgba(9,8,7,0.55);
@@ -182,7 +163,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--gold); outline-
   padding: 16px 0; border-bottom: 1px solid rgba(247,244,238,0.08);
 }
 .nav-drawer a:hover, .nav-drawer a.active { color: var(--warm-white); }
-.nav-drawer .nav-cta { font-family: 'Frank Ruhl Libre', serif; font-size:var(--t-meta); margin: 24px 0 0; padding: 14px 32px; border-bottom: none; text-align: center; align-self: flex-start; }
+.nav-drawer .nav-cta { font-family: 'Frank Ruhl Libre', serif; font-size: 14px; margin: 24px 0 0; padding: 14px 32px; border-bottom: none; text-align: center; align-self: flex-start; }
 @media(max-width:520px) { .nav-drawer { width: 100vw; } }
 
 /* ══════════════════════════════════════════════
@@ -228,7 +209,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--gold); outline-
 .bg-surface { background: var(--dark-surface); }
 
 .eyebrow {
-  font-size:var(--t-micro); letter-spacing: 0.22em; text-transform: uppercase;
+  font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
   display: flex; align-items: center; gap: 14px; margin-bottom: 26px;
 }
 .eyebrow::before { content: ''; display: block; width: 0; height: 1px; background: currentColor; opacity: 0.55; transition: width 1.1s var(--ease) 0.15s; }
@@ -254,7 +235,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--gold); outline-
 .on-light .display-sm { color: var(--charcoal); }
 .on-dark .display-sm, .on-green .display-sm { color: var(--warm-white); }
 
-.copy { font-size:var(--t-body); line-height: 1.9; max-width: 620px; }
+.copy { font-size: 16.5px; line-height: 1.9; max-width: 620px; }
 .copy.wide { max-width: 760px; }
 .copy p + p { margin-top: 20px; }
 .on-light .copy { color: #5c554c; }
@@ -297,7 +278,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--gold); outline-
 
 /* ── BUTTONS ── */
 .btn { display: inline-block; padding: 16px 36px; border-radius: 40px; text-decoration: none;
-       font-size:var(--t-small); letter-spacing: 0.16em; text-transform: uppercase;
+       font-size: 12.5px; letter-spacing: 0.16em; text-transform: uppercase;
        transition: opacity 0.3s, border-color 0.3s, background 0.3s, color 0.3s; }
 .btn-light { background: var(--warm-white); color: var(--charcoal); }
 .btn-light:hover { opacity: 0.86; }
@@ -349,7 +330,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--gold); outline-
    the exact trap that put the homepage's scroll hint 80px off-centre. */
 .ah-hint {
   position: absolute; bottom: 30px; left: 0; right: 0; text-align: center; z-index: 3;
-  font-size:var(--t-nano); letter-spacing: 0.26em; text-transform: uppercase; color: #8a7f6d;
+  font-size: 10.5px; letter-spacing: 0.26em; text-transform: uppercase; color: #8a7f6d;
   opacity: 0; animation: hintIn 1.1s var(--ease) 1.5s forwards;
 }
 .ah-hint span { display: block; width: 1px; height: 34px; margin: 12px auto 0;
@@ -385,8 +366,8 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--gold); outline-
 .disc-n { font-family: 'Cormorant Garamond', serif; font-size: 13px; letter-spacing: 0.14em; color: #a8a093; }
 .disc-t { margin-top: 16px; font-family: 'Cormorant Garamond', serif; font-weight: 300;
   font-size: clamp(26px,2.7vw,36px); color: var(--charcoal); line-height: 1.12; }
-.disc-b { margin-top: 13px; font-size:var(--t-meta); line-height: 1.82; color: #5c554c; }
-.disc-w { margin-top: 16px; font-size:var(--t-nano); letter-spacing: 0.2em; text-transform: uppercase; color: #8a5f34; }
+.disc-b { margin-top: 13px; font-size: 14.5px; line-height: 1.82; color: #5c554c; }
+.disc-w { margin-top: 16px; font-size: 10.5px; letter-spacing: 0.2em; text-transform: uppercase; color: #8a5f34; }
 @media(max-width:900px){ .disc { grid-template-columns: 1fr 1fr; gap: 0 7%; margin-top: 8vh; } }
 @media(max-width:600px){ .disc { grid-template-columns: 1fr; } }
 
@@ -406,7 +387,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--gold); outline-
 .pt-mono { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: clamp(72px,11vw,150px);
   line-height: 1; color: rgba(43,38,35,0.17); user-select: none; }
 .pt-tag { position: absolute; z-index: 4; left: 0; right: 0; bottom: 18px; text-align: center;
-  font-size:var(--t-nano); letter-spacing: 0.2em; text-transform: uppercase; color: rgba(43,38,35,0.4); }
+  font-size: 10.5px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(43,38,35,0.4); }
 /* A slot that HAS a portrait is not "to follow". .pt-tag sits at z-index 4,
    above the image at 2, so without this the caption prints across the bottom
    of every real photograph. Paired with the onerror on the <img>: if the file
@@ -430,11 +411,11 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--gold); outline-
   font-size: clamp(38px,4.6vw,64px); line-height: 1.02; letter-spacing: -0.01em; }
 .on-light .pf-name { color: var(--charcoal); }
 .on-dark .pf-name, .on-green .pf-name { color: var(--warm-white); }
-.pf-role { margin-top: 14px; font-size:var(--t-micro); letter-spacing: 0.2em; text-transform: uppercase; }
+.pf-role { margin-top: 14px; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; }
 .on-light .pf-role { color: #8a5f34; }
 .on-dark .pf-role { color: rgba(196,138,90,0.9); }
 .on-green .pf-role { color: rgba(247,244,238,0.66); }
-.pf-bio { margin-top: 26px; font-size:var(--t-body); line-height: 1.9; max-width: 560px; }
+.pf-bio { margin-top: 26px; font-size: 16px; line-height: 1.9; max-width: 560px; }
 .on-light .pf-bio { color: #5c554c; }
 .on-dark .pf-bio { color: #b0a99b; }
 .on-green .pf-bio { color: rgba(247,244,238,0.78); }
@@ -454,7 +435,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--gold); outline-
    existing "Portrait to follow" idiom and is set in the same micro-label
    treatment as .pt-tag. It reads as pending rather than missing. */
 .pf-soon { margin-top: 26px; padding-top: 22px; border-top: 1px solid;
-  font-size:var(--t-nano); letter-spacing: 0.2em; text-transform: uppercase; }
+  font-size: 10.5px; letter-spacing: 0.2em; text-transform: uppercase; }
 .on-light .pf-soon { border-color: rgba(43,38,35,0.16); color: #6b6459; }
 .on-dark .pf-soon { border-color: rgba(247,244,238,0.14); color: #8f887d; }
 .on-green .pf-soon { border-color: rgba(247,244,238,0.2); color: rgba(247,244,238,0.72); }
@@ -470,7 +451,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--gold); outline-
 .team-i:nth-child(2) { margin-top: 6vh; }
 .team-i:nth-child(3) { margin-top: 12vh; }
 .team-i .pf-name { font-size: clamp(30px,3vw,42px); }
-.team-i .pf-bio { margin-top: 20px; font-size:var(--t-body-s); }
+.team-i .pf-bio { margin-top: 20px; font-size: 15px; }
 .team-i .pf-q { margin-top: 26px; padding-top: 22px; font-size: clamp(18px,1.8vw,23px); max-width: 100%; }
 .team-i .pt { margin-bottom: 28px; }
 
@@ -482,7 +463,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--gold); outline-
 .team-i.open .pt { background: rgba(196,138,90,0.05); }
 .on-dark .team-i.open .pt::after, .on-green .team-i.open .pt::after { border-color: rgba(196,138,90,0.34); }
 .team-i.open .pt::after { border-color: rgba(196,138,90,0.34); }
-.pt-open { font-size:var(--t-micro); letter-spacing: 0.22em; text-transform: uppercase;
+.pt-open { font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
   color: rgba(196,138,90,0.88); user-select: none; }
 .team-i.open > div { border-top: 1px solid rgba(196,138,90,0.6); padding-top: 24px; }
 .on-dark .team-i.open .pf-name { color: rgba(212,163,115,0.94); }
@@ -539,7 +520,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--gold); outline-
 .sys-row { display: grid; grid-template-columns: repeat(6,1fr); gap: 2px; }
 .sys-c { background: rgba(247,244,238,0.035); border: 1px solid rgba(247,244,238,0.09);
   padding: 26px 20px 24px; text-align: center; }
-.sys-k { font-size:var(--t-nano); letter-spacing: 0.18em; text-transform: uppercase; color: rgba(196,138,90,0.85); line-height: 1.6; }
+.sys-k { font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(196,138,90,0.85); line-height: 1.6; }
 .sys-p { margin-top: 14px; font-family: 'Cormorant Garamond', serif; font-weight: 300;
   font-size: 24px; color: var(--warm-white); line-height: 1.2; }
 
@@ -555,7 +536,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--gold); outline-
   background: rgba(196,138,90,0.05); }
 .sys-hub-t { font-family: 'Cormorant Garamond', serif; font-weight: 300;
   font-size: clamp(34px,4vw,54px); color: var(--warm-white); letter-spacing: 0.02em; line-height: 1; }
-.sys-hub-s { margin-top: 14px; font-size:var(--t-nano); letter-spacing: 0.22em; text-transform: uppercase; color: rgba(196,138,90,0.9); }
+.sys-hub-s { margin-top: 14px; font-size: 10.5px; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(196,138,90,0.9); }
 
 .sys-conv2 { position: relative; height: 66px; }
 .sys-conv2 .sys-drop { top: 0; height: 33px; }
@@ -567,7 +548,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--gold); outline-
 .sys-o { background: rgba(247,244,238,0.035); border: 1px solid rgba(247,244,238,0.09);
   padding: 28px 22px; text-align: center; }
 .sys-o-t { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: clamp(22px,2.3vw,30px); color: var(--warm-white); line-height: 1.16; }
-.sys-o-b { margin-top: 12px; font-size:var(--t-note); line-height: 1.75; color: #a29b8f; }
+.sys-o-b { margin-top: 12px; font-size: 13.5px; line-height: 1.75; color: #a29b8f; }
 
 /* Below 900 the six-across row would give 55px columns, so the diagram
    becomes a vertical list with the same reading order. */
@@ -590,7 +571,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--gold); outline-
 .pr-n { font-family: 'Cormorant Garamond', serif; font-size: 13px; letter-spacing: 0.14em; color: #a8a093; }
 .pr-t { margin-top: 14px; font-family: 'Cormorant Garamond', serif; font-weight: 300;
   font-size: clamp(24px,2.6vw,34px); color: var(--charcoal); line-height: 1.16; }
-.pr-b { margin-top: 13px; font-size:var(--t-meta); line-height: 1.85; color: #5c554c; }
+.pr-b { margin-top: 13px; font-size: 14.5px; line-height: 1.85; color: #5c554c; }
 @media(max-width:800px){ .pr { grid-template-columns: 1fr; } }
 
 /* ══════════════════════════════════════════════
@@ -598,12 +579,12 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--gold); outline-
 ══════════════════════════════════════════════ */
 .stage { margin-top: 10vh; display: grid; grid-template-columns: repeat(3,1fr); gap: 3%; }
 .stage-i { border-top: 1px solid rgba(43,38,35,0.22); padding-top: 26px; position: relative; }
-.stage-n { font-size:var(--t-nano); letter-spacing: 0.2em; color: #918977; }
+.stage-n { font-size: 10.5px; letter-spacing: 0.2em; color: #918977; }
 .stage-t { margin-top: 16px; font-family: 'Cormorant Garamond', serif; font-weight: 300;
   font-size: clamp(24px,2.5vw,34px); color: var(--charcoal); line-height: 1.14; }
-.stage-s { margin-top: 12px; font-size:var(--t-micro); letter-spacing: 0.18em; text-transform: uppercase; color: #8a5f34; }
-.stage-b { margin-top: 16px; font-size:var(--t-meta); line-height: 1.82; color: #5c554c; }
-.stage-arrow { display: none; text-align: center; color: rgba(196,138,90,0.9); font-size:var(--t-body); padding: 22px 0 4px; }
+.stage-s { margin-top: 12px; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #8a5f34; }
+.stage-b { margin-top: 16px; font-size: 14.5px; line-height: 1.82; color: #5c554c; }
+.stage-arrow { display: none; text-align: center; color: rgba(196,138,90,0.9); font-size: 17px; padding: 22px 0 4px; }
 @media(max-width:860px){
   .stage { grid-template-columns: 1fr; gap: 0; }
   .stage-arrow { display: block; }
@@ -632,17 +613,17 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--gold); outline-
 .footer-brand-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
 .footer-brand-logo img { width: 28px; opacity: 0.9; }
 .footer-brand-logo span { font-family: 'Cormorant Garamond', serif; font-size: 18px; color: var(--warm-white); }
-.footer-tagline { font-size:var(--t-note); line-height: 1.6; color: #8f887d; }
+.footer-tagline { font-size: 13px; line-height: 1.6; color: #8f887d; }
 .footer-tagline strong { display: block; color: #b8b1a4; font-weight: 500; }
 .footer-tagline em { font-style: italic; }
-.footer-col-label { font-size:var(--t-nano); letter-spacing: 0.12em; text-transform: uppercase; color: #8f887d; margin-bottom: 18px; }
-.footer-col a, .footer-col span { display: block; font-size:var(--t-note); color: #8a8377; text-decoration: none; margin-bottom: 11px; transition: color 0.2s; }
+.footer-col-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #8f887d; margin-bottom: 18px; }
+.footer-col a, .footer-col span { display: block; font-size: 13.5px; color: #8a8377; text-decoration: none; margin-bottom: 11px; transition: color 0.2s; }
 .footer-col a:hover { color: var(--warm-white); }
-.footer-bottom { display: flex; justify-content: space-between; padding-top: 4vh; font-size:var(--t-small); color: #8a8377; }
+.footer-bottom { display: flex; justify-content: space-between; padding-top: 4vh; font-size: 12px; color: #8a8377; }
 .footer-appearance { margin-top: 22px; }
-.footer-appearance-label { font-size:var(--t-nano); letter-spacing: 0.1em; text-transform: uppercase; color: #8f887d; margin-bottom: 8px; }
+.footer-appearance-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: #8f887d; margin-bottom: 8px; }
 .footer-toggle { display: inline-flex; background: rgba(247,244,238,0.08); border-radius: 20px; padding: 3px; }
-.footer-toggle button { background: none; border: none; color: #9a9285; font-size:var(--t-small); padding: 6px 14px; border-radius: 16px; cursor: pointer; transition: background 0.2s var(--ease), border-color 0.2s var(--ease), color 0.2s var(--ease), transform 0.2s var(--ease); letter-spacing: 0.04em; text-transform: uppercase; font-family: 'Frank Ruhl Libre', serif; }
+.footer-toggle button { background: none; border: none; color: #9a9285; font-size: 12px; padding: 6px 14px; border-radius: 16px; cursor: pointer; transition: background 0.2s var(--ease), border-color 0.2s var(--ease), color 0.2s var(--ease), transform 0.2s var(--ease); letter-spacing: 0.04em; text-transform: uppercase; font-family: 'Frank Ruhl Libre', serif; }
 .footer-toggle button.active { background: rgba(247,244,238,0.14); color: var(--warm-white); }
 @media(max-width:768px) { .footer-top { grid-template-columns: 1fr 1fr; gap: 32px; } .footer-bottom { flex-direction: column; gap: 8px; } }
 

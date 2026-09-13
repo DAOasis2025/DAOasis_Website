@@ -2132,6 +2132,371 @@ marketing pages at 375×812 and 1440×900: **0 horizontal overflow on five of si
   technical one**, and the PDFs would have to be copied into the site repo.
 - The app mockups still carrying "DRT" and a DRC unit price (Annex B8).
 
+## Motion rebuilt site-wide — 1 September 2026
+
+Reported as: timing issues, scrolling issues, "many issues between sections and
+animations". All of it traced to **one root cause plus two consistency failures**,
+and all of it is measurable. Changed: `index` · `app` · `sanctuary` · `web3` ·
+`investors` · `about` · **`js/cine.js`** · **`css/trust.css`**. The seven trust
+HTML pages are byte-identical (they inherit the motion tokens from `trust.css`).
+
+### The root cause: sticky sections rendered as many frames as they had states
+
+`cine`'s sticky mode quantised — it picked a whole state and eased to it — and
+**every consumer then did `Math.floor(p * n)`**, which throws the eased value
+away. An integer cannot express a transition, so the pacing was invisible and a
+class flip handed the actual motion to a CSS transition running on its own clock.
+
+Measured at 1440x900, driving each pin to 41 scroll positions, letting the pacing
+settle at each, and fingerprinting the rendered DOM (`scratchpad/states.js`):
+
+| section | pin height | distinct frames BEFORE | AFTER |
+|---|---|---|---|
+| `index` pin3 — daily experience | 3348px | **9 / 41**  (80% frozen) | 20–23 / 41 |
+| `index` pin4 — the journey | 5184px | 12 / 41  (73%) | **38 / 41** |
+| `index` pinContainer / palm / pin5 | — | 41 / 41 / 36 | 41 / 41 / 36 |
+| `app` quest map | 5400px | 11 / 41  (75%) | **41 / 41** |
+| `app` marketplace | 4500px | **7 / 41**  (85%) | **41 / 41** |
+| `sanctuary` four foundations | 3240px | **4 / 41**  (93%) | **37 / 41** |
+| `sanctuary` seven days | 5220px | 7 / 41  (85%) | **41 / 41** |
+| `sanctuary` an average day | 7344px | 9 / 41  (80%) | **41 / 41** |
+| `web3` participation | 5040px | **6 / 41**  (88%) | **41 / 41** |
+| `web3` the bridge | 4140px | 11 / 41  (75%) | **38 / 41** |
+| `web3` the complete loop | 3780px | 23 / 41  (45%) | **41 / 41** |
+
+> The proof of diagnosis was already in the file: **`pin5`, the Principle section
+> rebuilt in August as a pure function of the paced value, scored 36/41. Every
+> section still flooring a state index scored 3 to 12.** The fix was to do to the
+> other fifteen what had already been done to that one.
+
+**`web3`'s hero fabric** was frozen for its last **1.17 viewports** (the pull-back
+finished at p=0.76, the section ran to 1.0). Canvas-sampled: 22/31 distinct frames
+→ **29/31**, no frozen range. The camera now keeps easing back very slightly
+through the statement.
+
+### `js/cine.js` — four changes, all load-bearing
+
+1. **The stops are MAGNETS, not steps.** Raw scroll is remapped per segment
+   through `magnet(u) = u<0.5 ? 0.5(2u)^k : 1-0.5(2(1-u))^k`, `k = 2.6`, then
+   followed with the same damped speed cap guided mode uses. Motion concentrates
+   in the middle of a segment and dwells near each stop, so **a state still lands
+   and holds, one firm scroll still carries one beat, but the scene is never
+   motionless while the page is moving.** Verified in node against real geometry
+   (`scratchpad/engine.js`): steady read = **2 of 26 samples with no visible
+   change** (was effectively 24 of 26); a full-aggression flick 0→1 still takes
+   **2.07s** so it cannot flash through; direction reversal mid-transition has a
+   max single-frame hop of **0.75%**; guided mode is unchanged at 3.61s.
+2. **`pos()`, `weigh()`, `lead()`, `ramp()`, `smooth()` — the consumer helpers.**
+   `pos()` is the continuous position along the stops (2.4 = 40% of the way from
+   state 2 to state 3, correct for uneven stops). **Consumers scrub these; they
+   never floor them.** All three page-level `cine()` shims answer them too, so a
+   missing controller file still degrades rather than breaks.
+3. **Read and write are two passes per frame.** `Track.read()` collects every
+   track's scroll position *before* any subscriber writes a style. They used to
+   interleave, so track 1's `getBoundingClientRect` forced a full synchronous
+   layout after track 0's subscribers had written — four forced layouts per frame
+   on index, every frame, for as long as anything was moving.
+4. **Resize no longer settles on a phone's URL bar.** `settle()` snaps every track
+   to true scroll; scrolling on a handset fires `resize` continuously as the bar
+   collapses. Width changes always count, height changes only above 140px.
+
+The keyframed 30/70 transition curve is **gone** — both modes now follow a target
+with a damped speed cap, which answers within a frame, has no duration to expire,
+and re-targets mid-flight without the kink a re-based keyframed ease produced.
+
+### `lead()` — why it is a triangle raised to a power, not a hold
+
+For a list whose rows are all on screen together, two constraints pull against
+each other: **at rest on a row its neighbours must be at zero** (one live row),
+and **between two rows one of them must still read as live** (no dead frame — the
+same "least confident moment" the Principle section was rebuilt to remove).
+
+A linear ramp cannot satisfy both, and an asymmetric hold does not either: holding
+the outgoing row longer only moves the 0.5/0.5 crossover later (it lands at
+`d = (1+hold)/2` with the same value), while adding a plateau that put `web3`
+participation back to 50% static. **`(1-|d|)^0.6`** satisfies both exactly — 0 at
+the neighbours, 1 on the row, **0.66 at the crossover** — with no plateau.
+
+The remaining muddiness at a crossover is solved separately, in CSS: **the
+sub-items are gated high (`--sd` starts at 0.62)** so only the row that has
+actually arrived is annotated. Two rows may be similarly bright mid-handover; only
+one carries its list, which is what makes the handover legible.
+
+### Scrubbing, in CSS
+
+Every converted section writes `--w` (how live) and where relevant `--p` (how far
+past) as inline custom properties, and the CSS is a pure function of them:
+
+```css
+.found-item .found-name { opacity: calc(0.4 + 0.26*var(--p,0) + 0.6*var(--w,0)); }
+```
+
+**There is deliberately no CSS transition on any scrubbed property.** A transition
+there is a second clock running against the paced scroll value — that is the bug,
+not a nicety. Where a scrubbed element also needs a discrete class (the callout
+arrival pulse, the mobile plate path), the class carries *only* the discrete part;
+`.callout.show{opacity:1}` was removed because it outranked the scrubbed opacity.
+
+Two `transition: all` declarations were animating SVG geometry (`.arc-dot`'s `r`,
+`.loop-node`) on a 0.45–0.5s clock, re-rasterising every frame. Both gone.
+
+### Text never changes under the reader
+
+`web3`'s loop centre copy and `sanctuary`'s day readout are text, so they cannot
+cross-fade with their successor. Both now **fade out across the midpoint between
+two nodes — where the arc never rests — and swap while invisible.**
+
+### A real geometry bug this exposed: web3's loop had nine stops for nine nodes
+
+Nine equally spaced nodes on a full circle need a **tenth** stop for the arc to
+close back onto the first. With nine, every resting position landed *between* two
+nodes (stop 5 sat 0.02 from a stage boundary, so the centre copy rested at 20%
+opacity, and stages 4 and 6 were never rested on at all). It is now
+`states: STAGES.length + 1`, and `sp = p * STAGES.length` is an exact integer at
+every stop.
+
+### One reveal line for the whole site
+
+29 content-reveal observers across six pages used **eight different trigger
+points** — thresholds of 0.08, 0.1, 0.12, 0.15, 0.16, 0.2, 0.25, 0.4, 0.5 and 0.6
+— so a short card appeared the instant it peeked over the fold while a tall
+section waited until it was half way up the screen. **A ratio threshold depends on
+the element's own height, which is why it could never be consistent.** All 29 are
+now `{ threshold: 0, rootMargin: '0px 0px -15% 0px' }` — content commits when its
+top crosses 85% of the viewport. The four remaining `threshold: 0` observers are
+functional visibility gates and the day section's reading line; leave them.
+
+### One motion language
+
+The site carried **five easing curves and 161 distinct transition declarations**,
+and **`app.html` had no `--ease` token at all** — it had drifted onto Material's
+`cubic-bezier(.4,0,.2,1)` for the drawer and bare `ease` elsewhere, while the
+other five pages shared `cubic-bezier(0.22,1,0.36,1)`. `index` also carried an
+overshoot bounce (`0.34,1.56,0.64,1`), the one springy thing on the site.
+
+Now, on all 13 pages and `trust.css`:
+
+```css
+--ease:      cubic-bezier(0.22, 1, 0.36, 1);   /* signature, decelerating   */
+--ease-soft: cubic-bezier(0.16, 1, 0.30, 1);   /* longer tail, longer moves */
+```
+
+**Zero off-system curves and zero `transition: all` remain anywhere in the
+project.** Durations were deliberately NOT mass-snapped: several are tied to JS
+constants (`CYCLE_MS` and its `width 2800ms` rail), and a 100ms duration
+difference is far less perceptible than a different curve.
+
+### Frame cost — what was running the whole time
+
+Profiled with real headless Chrome over real HTTP during a scripted 900-frame read
+(`scratchpad/perf.js`, `profile.js`). Software rendering, so absolute figures are
+pessimistic; the ratios are what matter.
+
+| | before | after |
+|---|---|---|
+| `index` mean frame | 20.9ms | **18.2–18.7ms** |
+| `index` p95 | **33.6ms** | 16.9–33.2ms |
+| `index` frames >32ms (of 899) | **123** | **36–49** |
+| `sanctuary` worst frame | **817–901ms** | 167–183ms |
+
+Four things were running regardless of where the reader was:
+
+1. **The palm's three.js scene rendered every frame for the whole page** — the
+   largest single piece of work on the site, drawing sixty times a second while
+   its section was twenty thousand pixels away. Now gated on a 60%-margin
+   observer.
+2. **The first `render()` of a 3D scene compiled every shader at once.** On
+   sanctuary's loop that was a **901ms freeze at the exact moment the reader
+   arrived** — the section froze solid for most of a second as it came into view.
+   Both scenes now `renderer.compile()` and render once at 2x2 during
+   `requestIdleCallback` after `load`, with a guard in the loop if the reader
+   beats it. **If a third 3D scene is ever added, warm it the same way.**
+3. **`animateTraveler` called `getPointAtLength` sixty times a second forever** —
+   third most expensive thing in a CPU profile of an ordinary scroll. The route is
+   now sampled once into a 260-point lookup table and the loop is gated on
+   visibility. `getPointAtLength` no longer appears in the profile at all.
+4. **The starfield built ~32 radial gradients per frame plus a rotated nine-screen
+   fill, for the whole page.** The Milky Way is rendered once per resize onto its
+   own canvas and blitted; glows are two pre-rendered sprites drawn with
+   `globalAlpha`; the loop is gated on visibility.
+
+`sanctuary`'s Four Foundations spine also read `offsetTop` in the same frame it
+wrote `height` — a read-after-write layout thrash every frame. Row bottoms are
+cached and re-measured on resize/load/fonts-ready. **The cache is built BEFORE the
+track is created, because `cine`'s `.on()` fires its callback immediately on
+subscribe.**
+
+### Verified
+
+- **42 responsive checks** (6 pages x 375/390/430/768/1024/1440/1920): **0
+  horizontal overflow, 0 invisible content, 0 JS errors** at every one.
+- **0 JS errors** on a full scroll of all six pages, down and back up. The only
+  404 anywhere is the documented site-wide missing `favicon.ico`.
+- **Every reveal fires**: index 8/8 dividers + 5/5 `.rv`, investors 18/18 + 55/56
+  (the miss is the `display:none` mobile route fallback), sanctuary 10/10 + 25/25,
+  web3 7/7 + 51/51, about 7/7 + 17/17.
+- **Mobile paths intact at 390**: the day plates advance correctly with the clock
+  (wake/07:00 → move/08:00 → learn/10:30 → reset/13:00 → connect/17:00 →
+  integrate/19:00) on the class-driven path; all four foundations and all seven
+  days render at opacity 1.
+- **3D scenes animate throughout**: sanctuary's loop is **25/25 distinct frames**
+  across the ride, captured through the existing `?shot=1` hook.
+- **Judged by eye** at 1440x900: the Four Foundations resting frame and crossover,
+  web3 participation, the web3 loop ring landing exactly on its CONVERT node, and
+  index's pin3 callouts. **`index.html`'s intro locks scroll for ~1.65s — set
+  `localStorage['daoasis-visited-at']` to `Date.now()` before navigating or every
+  screenshot of that page is of the intro overlay.**
+
+### Known, and deliberately not changed
+
+- ~~`index` pin3's callout cards overlap the section's own lede copy.~~ —
+  **fixed 2 September**, see the section directly below.
+- `index` remains the most expensive page (its palm is a real three.js scene).
+  Under software rendering it still shows ~40 frames over 32ms in a 900-frame
+  sweep; on a real GPU this is a different picture.
+- The hero plate-pass timing on `sanctuary.html` is **still** the one sequence
+  never tuned by eye, unchanged from the August note.
+
+### pin3 given a two-phase composition — 2 September 2026
+
+`index.html` only. The callout collision listed as "known, and deliberately not
+changed" above is fixed, and the section is better for it rather than merely
+un-broken.
+
+**The collision, measured.** `co2` points at the wellness ring on the LEFT of the
+dashboard, so its card hangs left out of the frame and lands on the copy column.
+At six widths (`scratchpad/overlap2.js` — the geometry of every card against every
+text block, at nine points along the section):
+
+| width | over the HEADLINE | over the lede |
+|---|---|---|
+| 1280 | 171 x 48px | 78 x 86px |
+| 1366 | 158 x 74px | 65 x 68px |
+| 1440 | 152 x 73px | 59 x 69px |
+| 1680 | 172 x 73px | 79 x 69px |
+| 1920 | 160 x 73px | 67 x 69px |
+
+Present at **every width from 1280 up**, and because callouts latch once reached it
+**never cleared** — the headline sat under a card for the last half of the section.
+Only 1101–1200 was clean, and only because the narrower dashboard changes the sums.
+
+**The geometry does not allow both.** The card would have to lose 172 of its 288px
+to clear the column, and the column cannot go below ~380px without wrecking a 52px
+Cormorant headline. Moving `co2`'s dot is not available either — it is pointing at
+a specific feature of the photograph.
+
+**So the copy hands over, which is what the lede's own last clause already
+promises** ("see how, as you scroll"):
+
+- **Phase 1** — the claim. Copy left, dashboard right, no callouts.
+- **Phase 2** — the evidence. The copy steps aside (`--recede`, opacity plus a
+  46px drift) and **the dashboard travels into the space it leaves**, so the
+  annotated frame is centred rather than the same off-centre one with a hole in
+  it. All four cards then sit around a centred dashboard.
+
+`--recede` is scrubbed across **0.16 → 0.32**, closing just as `co2` begins to
+arrive at 0.28. At the widest point of the crossover the column is at 0.125 and
+the card at 0.09, so the two are never both legible.
+
+`--shift` is **measured from the real column width and flex gap on resize**
+(`(overlay.offsetWidth + gap) / 2`), not computed from the breakpoints — 217.5px
+at 1101 rising to 238px at 1920. Never read per frame.
+
+The three copy elements also lost their `transition: opacity 0.6s ease`. They are
+written inline every frame, so that transition was the same second-clock bug
+being fixed everywhere else in this pass.
+
+**Verified: 108 frames across nine widths (1101/1150/1200/1280/1366/1440/1536/1680/1920)
+x twelve points along the section — 0 overlaps, 0 cards off-screen**, and all four
+callouts confirmed reaching full strength at every width. pin3's distinct-frame
+count went **9/41 → 26/41**. 0 horizontal overflow at ten widths including both
+sides of the 1100px breakpoint where `.pin3` becomes `display:none`.
+
+> **Testing note, and it invalidated two earlier runs of this same check.** The
+> paced value needs ~2s to cross this section, so a script that jumps to a scroll
+> position and waits a fixed number of frames measures an **unconverged** frame —
+> `co3` and `co4` read 0.00 at the very bottom of the pin and the check passes
+> "clean" because the cards it should be testing were never drawn. Poll until the
+> value stops moving, and **poll on a metric that actually changes late** (the sum
+> of all four callout opacities). A first attempt polled `co1 + co4 + overlay`,
+> which is constant from early on, so it exited immediately and reported a clean
+> result for frames that had not been rendered yet.
+
+
+### The investor route diagram — waypoints rebuilt from the data — 2 September 2026
+
+`investors.html` only, section 05 ("Your habits become a Journey."). The six
+waypoints were hand-placed with hardcoded SVG coordinates and were wrong in four
+independent ways at once. Measured before the fix (`scratchpad/wp.js` reads the
+node attributes and samples the real path with `getPointAtLength`):
+
+| | km | x drawn | x true | error | node y | curve y | off route | stem |
+|---|---|---|---|---|---|---|---|---|
+| Bangkok | 0 | 52 | 52.0 | 0 | 190 | 190 | 0 | 36 |
+| Ayutthaya | 76 | 218 | 130.3 | **+87.7** | 180 | 190.9 | **−10.9** | 38 |
+| Hua Hin | 199 | 364 | 257.0 | **+107.0** | 132 | 132 | 0 | **94** |
+| Surat Thani | 544 | 537 | 612.3 | **−75.3** | 212 | 156.2 | **+55.8** | **70** |
+| Khao Lak | 782 | 780 | 857.5 | **−77.5** | 130 | 115.9 | **+14.1** | **96** |
+| Phuket | 900 | 979 | 979.0 | 0 | 118 | 118 | 0 | 38 |
+
+1. **x did not correspond to the kilometres.** The diagram's entire subject is
+   distance, and it drew the 76km opening leg longer than the 238km run down the
+   peninsula. x is now `52 + 927 * km / 900`, exactly.
+2. **Three of the six nodes floated off the route line** — Surat Thani by 55.8
+   units, which is visible. The route is now drawn THROUGH the nodes, so this
+   cannot recur.
+3. **The label side was arbitrary, not read off the curve.** Hua Hin and Khao Lak
+   sit on crests and were labelled *below*, giving 94- and 96-unit stems that
+   crossed the whole chart; Surat Thani sits in a trough and was labelled above.
+   (The same lesson was learned on `web3.html` in August — "side comes from the
+   node's own height" — and never applied here.)
+4. **The above-line names did not share a baseline.** Ayutthaya 126, Surat Thani
+   126, **Phuket 70** — 56 units higher than its own row.
+
+**How it is built now.** Six data rows (name, km, role, side); x from km; a
+**centripetal** Catmull-Rom through the six points converted to cubic Béziers.
+Centripetal (alpha 0.5), not uniform: the spacing is very uneven — 78 units
+between the first pair and 355 between the middle pair — and uniform
+Catmull-Rom overshoots badly on spacing like that. The phantom end points are
+**extrapolated, not duplicated**; duplicating makes the first control point equal
+the start point and flattens both ends of the route into stubs.
+
+Sides alternate, and each side has **one shared baseline**, so the names read
+across as a row and the stems are the leader lines — which is the right way round
+for a distance chart. `scratchpad/route.js` is the generator; if a waypoint ever
+changes, regenerate rather than nudging the numbers.
+
+The 30-unit gap between a small label and the Cormorant name ABOVE it is kept —
+that is the documented minimum from the August build (the ascent box reaches
+nearly a full em above the baseline). 20 is enough everywhere else.
+
+**Verified** at 1101/1200/1280/1440/1680/1920: x error 0.0 and node-off-curve 0.0
+at all six waypoints, stems 24–30 units (were 36–96), **0 text collisions** and 0
+elements escaping the viewBox at every width. Smallest rendered type is 10.67px at
+1101, above the site's 10px floor. 0 horizontal overflow at ten widths including
+both sides of the 1100px breakpoint where the diagram hands over to the itinerary
+list; that list is a vertical stack and carries the same six km values, so it was
+not affected. 0 JS errors sitewide; all 18 investor dividers and 55/56 `.rv` still
+reveal (the miss is the `display:none` mobile route fallback, as before).
+
+> **The same route data lives on three pages.** `app.html`'s quest map was already
+> correct — its waypoint thresholds are exactly km/900 (0, 0.084, 0.221, 0.604,
+> 0.869, 1.0). **`index.html`'s hero route is a different set of towns** —
+> Bangkok, Hua Hin, Krabi, Phang Nga, Phuket, with day-based subs rather than
+> kilometres, and Krabi and Phang Nga are not on the canonical route at all. It
+> makes no distance claim so it is not self-contradictory, but it does depict the
+> same journey with different stops. That is a content decision, not a geometry
+> defect, and it was left alone.
+
+
+### Upload
+
+`index.html` · `app.html` · `sanctuary.html` · `web3.html` · `investors.html` ·
+`about.html` · **`js/cine.js`** · **`css/trust.css`**. The seven trust HTML pages
+did not change. No image changed.
+
+---
+
 ## Brand Kit 2026 built — August 26
 
 **`C:\Users\Lenovo x270\Desktop\DAOasis Brand Kit 2026\`** — a fifth sibling
@@ -2166,3 +2531,670 @@ lists six grounds and sand is not one of them.
 
 **`--sand` (#E7E0D4) is an `about.html`-only value**, two points off warm stone,
 and is deliberately NOT in the kit's six. Do not promote it.
+
+---
+
+## Pinned scroll cut back site-wide — 3 September 2026
+
+Reported as "the animation isn't quite hitting", with a specific complaint that
+the home hero "is still there when users scroll back up". Both were real, and
+they were the same problem seen from two angles.
+
+### The measurement that drove everything
+
+How much of each page is **held** — the viewport frozen while something plays:
+
+| page | before | after |
+|---|---|---|
+| index | 30.0 screens, **75% held** | 19.6 screens, 56% |
+| app | 27.3 screens, 59% | 18.6 screens, 40% |
+| sanctuary | 45.4 screens, 62% | 34.7 screens, 51% |
+| web3 | 35.4 screens, 58% | 25.9 screens, 42% |
+| investors | 39.1 screens, **0%** | untouched |
+| about | 14.2 screens, **0%** | untouched |
+
+**35,307px of scrolling removed across the four pages.** No section was
+redesigned, no copy changed, no animation logic rewritten.
+
+For scale: the Rockstar GTA VI page is ~9 screens with **nothing** pinned
+(measured 3 Sep — it runs GSAP 3.12.5 + Lenis 1.3.17). And this project's own
+`investors.html` / `about.html` pin nothing and are the most composed pages
+here. The problem was never the individual animations; it was five pinned
+sequences in a row on the homepage with almost no ordinary reading between.
+
+### The home hero: pin AND route removed
+
+`maxProgress = Math.max(maxProgress, raw)` meant the route only ever advanced.
+Measured: fresh load `strokeDashoffset` 737.8px; after scrolling past, 0px;
+**scroll back to the very top, still 0px.** Once anyone passed the hero it was
+frozen on its finished frame for the rest of the visit — and the 400vh pin held
+them for 2,700px of that dead frame on the way back up.
+
+Removing the latch would have fixed the freeze but not the hold, and the route
+was the only reason the section needed four screens. Gone: `.journey-wrap`, the
+SVG, `.wp-*`, `#routeMaskPath`, `waypoints`, `wpEls`, `placeLabels()`,
+`buildJourney()`, the traveller LUT and the whole route timeline (209 lines of
+JS). Kept: the background's wall-clock `breathe`.
+
+**The hero is now one unpinned viewport** — photograph, headline, two CTAs —
+and it is much stronger for it. The journey is still told twice further down
+(`.pin4` desktop, `.journey-mobile-section` mobile), so nothing was lost.
+
+`__startHeroWaypointsNow` is deliberately not redefined; both call sites are
+`if(window.__...)`-guarded and simply never fire. `#pinContainer` survives as a
+plain `position:relative` wrapper — harmless, and removing it is pure churn.
+
+### The house rate was halved, 62-68vh/beat -> 32-36vh
+
+Section height is still `beats x rate + 100vh`. Desktop values only — every
+mobile override was left for the mobile pass.
+
+| | before | after | beats |
+|---|---|---|---|
+| index palm | 516vh | 290 | 6 |
+| index daily | 372 | 230 | 4 |
+| index journey | 576 | **350** | 7 |
+| index principle | 372 | 230 | 4 |
+| app hero | 515 | 200 | 3 |
+| app quest route | 600 | 320 | 6 |
+| app marketplace | 500 | 230 | 4 |
+| sanctuary hero | 620 | 200 | 3 |
+| sanctuary foundations | 360 | 230 | 4 |
+| sanctuary seven days | 580 | 350 | 7 |
+| sanctuary 3D loop | 460 | 330 | 7 |
+| sanctuary `.day-entry` | 88vh each | 70vh | 9 slots |
+| web3 hero | 600 | 200 | 3 |
+| web3 participation | 560 | 290 | 6 |
+| web3 bridge | 460 | 260 | 5 |
+| web3 loop | 420 | 340 | 9+1 |
+
+The two seven-stage sequences keep the most room per beat (36vh) on purpose.
+
+### Verified
+Every beat still reached on all four pages. Smoothness (the 1 Sep distinct-frame
+metric, 41 samples per pin): index palm 34/41, daily **39/41** (was 20-23),
+journey 30/41, principle 36/41 — all far above the ~12 steppy threshold.
+0 JS errors and 0 horizontal overflow at 1101/1280/1440/1680/1920 on all six
+pages. Reveals and dividers unchanged from the 1 Sep baseline: index 5/5 + 8/8,
+sanctuary 25/25 + 10/10, web3 51/51 + 7/7, investors 55/56 + 18/18, about 17/17
++ 7/7. Only 404 anywhere is the site-wide missing `favicon.ico`.
+
+> **Measurement trap, and it produced three false regressions before it was
+> caught.** Sweeping a pin on a fixed pixel grid and taking each item's peak
+> opacity is *not* a correctness test: shortening a section means the same grid
+> samples fewer points per beat, so items get caught mid-transition and read
+> low. `.market-scene` measured min 0.81 and `.seven-day` min 0.60 that way —
+> both "regressions" evaporated (1.00 and 0.96) once each sample **polled until
+> the rendered values stopped changing** before reading. Always let the pacing
+> converge, and A/B against a backup served on a second port before believing
+> any regression.
+
+### Still to do
+- **Mobile has not been touched.** Every `@media` pin-height override still
+  carries its old value (`app.html` 320/420/400vh, `sanctuary.html` 500vh,
+  `web3.html` 480/380vh, `.day-entry` 68vh).
+- `index.html`'s daily-experience section is still a UI screenshot floating in
+  black, and the mockup it uses (`img-10.jpg`) shows **"Reward Credits $0.100 ·
+  24H change ↑24%"** — a price and a 24h move on DRC, which contradicts the
+  content rules. Flagged and deliberately deferred; it is a content job.
+- Pre-change copies of all four pages are in the session scratchpad under
+  `backup/`, not in the project folder.
+
+### Corrected the same day — the first cut was far too aggressive
+
+Reported back as "scrolling seems too rapid on every animation now, way too
+fast". Correct, and the cause was a bad assumption: **the site never had one
+house rate.** Forcing every section to 32-36vh/beat was not a trim, it was a
+5-6x speed-up on the sections that mattered most.
+
+| | original vh/beat |
+|---|---|
+| index palm / journey / principle | 82 - 93 |
+| app quest / marketplace | 100 - 125 |
+| **app hero** | **172** |
+| **web3 hero** | **200** |
+| **sanctuary hero** | **207** |
+
+The three heroes were the slowest, most cinematic things on the site, and the
+flat rate compressed them hardest. Replaced with **~80% of each section's own
+original height**, so every sequence keeps its intended character and is only
+modestly tighter:
+
+index palm 415 · daily 300 · journey 460 · principle 300 · app hero 410 ·
+quest 480 · marketplace 400 · sanctuary hero 495 · foundations 290 ·
+seven days 465 · loop 370 · `.day-entry` 78vh · web3 hero 480 ·
+participation 450 · bridge 370 · loop 340.
+
+Result: index 20,990px (78% of original — the extra is the removed hero pin),
+app 88%, sanctuary 89%, web3 89%. Held: index 63%, app 54%, sanctuary 58%,
+web3 52%.
+
+> **The lesson: a per-beat rate is a property of a section, not of a site.**
+> Do not normalise these to a single number again. If they need to move,
+> scale each one against its own previous value.
+
+### The palm was ~150px left of centre on wide screens
+
+`placeLogo()` had `centreXpx = w * 0.43`, tuned at ~1440. The two things the
+mark sits between do not scale together — the copy column is a fixed 460px
+inside an 8% pad, while the card dock is pinned to the right edge at
+`min(30vw,380px)` — so the true centre of the gap drifts from 0.54 at 1280 to
+0.53 at 2560 while a fixed 0.43 drifts the other way. At 1820 the mark sat
+185px left of the gap centre and its fronds ran through the "Why DAOasis
+matters now" headline.
+
+Now measured from the same numbers the layout uses:
+
+```
+copyRight = w*0.08 + 460          cardsLeft = w - w*0.06 - min(w*0.30, 380)
+centreXpx = min((copyRight+cardsLeft)/2,  cardsLeft - sizePx/2 - 12)
+```
+
+The clamp matters: below ~1500 the gap is narrower than the mark, so centring
+would push it under the cards. Clamped, it sits over the copy instead — the
+right way round, because `.overlay::before` already scrims the left 58% and
+nothing protects the cards. At 1280 the clamp binds at 0.41, so narrow
+desktops are unchanged and only wide screens are corrected. Verified by eye at
+1820 and 1440.
+
+### The landing now plays on arrival, not on a timer
+
+Was a 3-day localStorage window (`daoasis-visited-at`), which meant a genuine
+fresh visit within three days — from a link, a search result or a bookmark —
+silently lost the landing.
+
+It is now a **same-origin referrer test**, in both the `<head>` (pre-paint, to
+avoid a flash) and the body script (`cameFromWithinSite`). **The two must stay
+in step.** The landing plays on every arrival from outside; it is skipped only
+when the reader came from another page on this site, so "Home" lands on the
+home page. A missing or stripped referrer reads as an outside arrival and the
+intro plays — the safe direction. `daoasis-visited-at` is gone entirely.
+
+> **Testing note:** scripts can no longer skip the intro by seeding
+> `localStorage['daoasis-visited-at']`. Pass a same-origin referrer instead —
+> in puppeteer, `page.goto(url, { referer: 'http://localhost:PORT/app.html' })`.
+
+Verified: fresh arrival SHOW · external referrer SHOW · from app.html SKIP ·
+from sanctuary.html SKIP. Re-swept after all three fixes — 0 JS errors, 0
+horizontal overflow at 1280/1440/1920 on all six pages, reveals and dividers
+unchanged (index 5/5 + 8/8, sanctuary 25/25 + 10/10, web3 51/51 + 7/7,
+investors 55/56 + 18/18, about 17/17 + 7/7).
+
+### The wellness-shift stat cards now take the centre — 3 September 2026
+
+`index.html`, the `.pin` (palm) section only. Requested: the cards should
+"pop to the center nice and smooth, allow scroll time to read and then settle
+on their place on the right."
+
+Four phases per card, driven entirely by the paced scroll value:
+
+```
+inStart -> inEnd    flies in from the right and lands at frame centre
+inEnd   -> holdEnd  HELD at centre, full size — the reading beat
+holdEnd -> setEnd   travels out to its dock slot and scales back to rest
+after               sits in the right-hand dock with the others
+```
+
+`CARD_WINS` = `{0.10,0.20,0.32,0.40}` · `{0.36,0.46,0.58,0.66}` ·
+`{0.62,0.72,0.84,0.92}`. Section height went **415vh -> 480vh** to pay for the
+holds; each hold is ~12% of the scrub, about **510px of scrolling** at
+1440x900. **If this section is ever shortened again, shorten the travel
+phases and leave the holds alone** — the hold is the entire point.
+
+**The old code refused to do this on purpose**, and the objection was sound: a
+large opaque card parked over the mark hides the mark exactly when it is worth
+looking at, three times running. It is handled rather than ignored —
+`centredK` (the max `k` across the three cards) dims the dust to 45% while a
+card holds the frame, and releases it as the card leaves. Measured: dust 0.48
+between cards, 0.38 while one is centred, 0.85 once all three have settled.
+
+**The centre target is the same free-gap formula the palm uses**, not the raw
+viewport centre — `(copyRight + cardsLeft) / 2`, which at 1440 is x=774. The
+viewport centre (720) would put the card over the copy column's right edge.
+
+**`panelHome` is measured with the card's transform cleared.** The dock is a
+`space-between` flex column, so all three sit at different heights and each
+needs its own `dy`; and `getBoundingClientRect` reports the *transformed* box,
+which is useless here because every card is mid-transform for most of the
+section. Re-measured on resize, on `load` and on `fonts.ready` — never per
+frame.
+
+Verified at 1440x900 by driving the section at 21 positions with the pacing
+allowed to converge at each: card 1 centred at x=774 across t 0.20-0.30, card 2
+0.45-0.60, card 3 0.70-0.85, all three resting at x=1164 from t=0.95. Judged by
+eye at 1440 and 1820. 0 JS errors, 0 horizontal overflow at 1101-1920, reveals
+5/5 and dividers 8/8, every callout / journey node / principle statement still
+reaching full strength. Home page is now 21,575px (24.0 screens).
+
+## Seven section fixes from the review list — 3 September 2026
+
+### 1. The Rhythm section was genuinely broken (sanctuary)
+The seven days are `position:absolute; inset:0` — stacked in ONE box — and the
+cross-fade was `1 - |pos - n|`. At the midpoint between two days that puts both
+at 0.5, so "Day Six / Connect" printed straight through "Day Seven / Integrate"
+with the numerals ghosting into each other. Present for a third of every
+handover.
+
+**A cross-fade is right for a LIST whose rows occupy different places, and
+wrong for stacked type.** Now: full within 0.30 of its own stop, gone by 0.44,
+so there is a brief clear frame — the page turning — and never two days
+legible at once. Same rule already used by web3's loop copy and this page's day
+readout. Verified: max days legible at once across 41 samples = **1**.
+
+### 2. "Sanctuary Life" removed (sanctuary)
+Six rows — Movement, Recovery, Learning, Nature & Reflection, Community,
+Nourishment — that were **the third telling of one taxonomy**. The Structure
+already names Recovery / Learning / Accountability / Community; A Day already
+walks Wake / Move / Nourish / Learn / Reset / Explore / Connect / Integrate /
+Rest. Every row restated one of those and added nothing.
+
+The divider below it now bridges the IMMERSION photograph into The Place, so it
+changed `light bg-ivory` -> `dark bg-mineral` with the white mark. **A black
+palm mark on a dark photograph is invisible** — check this whenever a section
+between two dividers is removed. Page 40,894px -> 32,199px.
+
+### 3. The Structure got photography (sanctuary)
+It was a highlighted list on flat green — correct content, but it read as a
+table of contents on a page where every other section carries an image. A
+plate now sits in the right of the stage and cross-fades per foundation
+(rest / Learn / Integrate / connect), driven by the same paced value as the
+rows. **A plain triangle cross-fade is correct here** — two photographs at
+half strength read as a dissolve; two blocks of type read as a double
+exposure. That is the whole difference from item 1.
+
+`.found-list` reserves the plate's column with `padding-right`, so no row
+geometry changed and the spine's cached measurements still hold. **The list's
+opening rule moved to `.found-item:first-child`** — padding does not shrink a
+border box, so a `border-top` on `.found-list` drew a hairline across the
+photograph.
+
+### 4. Living Ecosystem — the phone was never the size it looked (app)
+`19.png` is an 1800x1800 transparent canvas in which the phone occupies only
+**x 30.56-69.33%, y 9.89-90.11%** (measured with sharp, matching the figures
+already recorded for web3's `.dev`). With `width:100%` the phone rendered
+**122px wide inside a 315px box** — that, not the container, was why it read as
+a thumbnail. Now cropped (`width:257.88%; left:-78.80%; top:-12.33%` in a
+`698/1444` box) and **287px wide, 2.35x larger**. The column also went
+1fr -> 1.15fr.
+
+> **`overflow-x: clip` on `.eco-layout` is load-bearing.** The canvas overhangs
+> its wrap by ~79% each side; on a handset that pushed the document
+> **113-121px** wider than the viewport. `clip`, not `hidden` — it contains the
+> overhang without creating a scroll container, so the drop-shadow below the
+> phone survives. Re-verified against the baseline on a second port: mobile
+> overflow is now **20/16/13/6 at 375/390/430/768, identical to baseline**.
+
+New `.eco-tiles-head` above the grid — "The six habits" + "Select one — or
+watch them cycle". The tiles cycle on a timer AND are clickable, and nothing
+said so.
+
+### 5. Track what matters — cards off the image, and a running head (index)
+**Three of the four cards were printed over the product shot.** Measured at
+1440x900: co1 covered the top 60px, co3 overlapped by 156px, co4 sat on the
+bottom 40px. The dots were right — they annotate features — but the connectors
+were 22-30px, nowhere near enough to carry a card past a 558px-wide dashboard.
+
+Connectors are now sized against the largest `.dash-wrap` can be, so clearance
+holds at every width: co2 104px, co3 200px, co1 100px. **co1 changed direction
+entirely** — it pointed UP, and there is no room up there: the dashboard is
+vertically centred in a 100vh stage, so a 168px card above it lands at y=-55.
+Off-screen at every width from 1101 to 1920. It joined co2 on the left flank at
+`left:16%`, on the same top band it always named.
+
+**`.track-runhead` is new.** The copy column receded to nothing and handed the
+frame to a screenshot alone in black for the whole second half of the section —
+that was the "very bare" complaint. The running head fades in on the same
+`--recede`, so it is one hand-over, not two animations on separate clocks.
+
+Verified at 1101/1280/1440/1680/1920: **card-over-image overlap 0px at every
+width, 0 cards off-screen**, co1 clears co2 by 82px.
+
+### 6. Web3 hero — the eight layers are drawn in the brand now
+Every mark was the same 1px warm-white tick and every label the same white
+caps, so the eight NAMED layers were indistinguishable from the anonymous
+participation ticks either side of them and read as scale marks on a ruler.
+
+A named layer now gets a gold node with the page's own glow, a heavier
+gold-tinted stem, and a gold rule under its name drawn to the name's own width.
+Unnamed ticks are unchanged — the contrast between the two is what makes the
+layers read as layers. `trackedText()` now RETURNS its drawn width; canvas
+letter-spacing is unreliable across engines, so that function is the only place
+that knows how wide a tracked label actually ends up.
+
+### 7. Still open — the seven-day 3D ride
+Reported as "I love it, but it's very fake, nothing there is real." Not
+actioned: making a procedural three.js scene read as photographic is a
+different order of work from everything above, and the options (improve
+materials and lighting / replace with photography / leave it) are a design
+decision, not a defect. Flagged for a decision.
+
+### Verified after all six
+13 pages x 7 widths = 91 measurements: **0 horizontal overflow except
+app.html's documented pre-existing mobile figure, which is byte-identical to
+the baseline**. 0 JS errors anywhere. Only 404s are the known `favicon.ico` and
+`about-hero-mobile.jpg`. Reveals and dividers: index 5/5 + 8/8, sanctuary
+18/18 + 10/10 (was 25/25 — the seven removed reveals are the deleted section),
+web3 51/51 + 7/7, investors 55/56 + 18/18, about 17/17 + 7/7.
+
+## "Way too rapid" — the real cause was reduced motion — 3 September 2026
+
+Reported three times, and the first two fixes barely touched it because they
+were aimed at the wrong thing. Adjusting pin heights could not fix this.
+
+### The measurement that found it
+
+`index.html`'s journey (`pin4`), 1440x900, one 100px wheel notch, measuring the
+rendered fill:
+
+| | movement per notch | time to settle |
+|---|---|---|
+| `prefers-reduced-motion: no-preference` | 10.2px | 321ms |
+| **`prefers-reduced-motion: reduce`** | **40.6px** | **1ms** |
+
+**Four times the movement, delivered instantly.** Under reduced motion
+`cine.js` emitted the raw scroll position and the entire pacing engine — the
+speed cap, the damping, the magnet curve — never ran at all.
+
+**"Show animations in Windows = off" reports `prefers-reduced-motion: reduce`,
+and a great many people have it set** without intending to opt out of
+scroll-linked storytelling. `index.html`'s palm section already said exactly
+this in a comment; `cine.js` had never been brought into line with it.
+
+This also explains why the earlier height changes disappointed: with pacing
+bypassed, the ONLY thing setting the speed is the raw scroll mapping, so
+shortening the pins made it 4-5x worse and restoring them to 80% still left it
+a quarter faster than it had ever been.
+
+### Two bypasses, and the second one was the one that mattered
+
+1. `tick()` — `if(reduced || this.o.off){ this.emit(raw); return; }`
+2. **`get()` — `return (reduced || this.o.off) ? this.rawV : this.value;`**
+
+Removing (1) alone changed **nothing measurable** — still 30.7px in 15ms —
+because every consumer reads the scene through `get()`/`pos()`, so the unpaced
+value reached them anyway. Both had to go.
+
+> **If a paced value ever appears not to be pacing, check the READ path, not
+> just the write path.** `tick()` can be perfect and still be invisible.
+
+### The reasoning for keeping pacing under reduced motion
+
+This is scroll-LINKED motion: it moves only while the reader is actively
+scrolling and stops the instant they stop. It is their own input played back,
+not motion the page performs by itself. The pacing *damps* it — so bypassing
+it did not reduce motion, it removed the smoothing and made the same motion
+happen faster and more abruptly, which is worse for vestibular sensitivity,
+not better.
+
+Reduced motion is now handled in ONE place, `Track.prototype.times()`, where
+`reducedScale: 0.55` shortens the durations. The long cinematic dwell is what
+reads as scroll-jacking, and that is the part someone asking for less motion
+actually wants gone. Genuinely autonomous motion — the intro, ambient loops,
+decorative pulses — is still switched off by each page's `@media` blocks,
+which is where that belongs.
+
+Result: **30.7px / 15ms -> 9.8px / 335ms.** Reduced motion now behaves within
+noise of the normal path.
+
+### Also slowed, for everyone
+
+- `TIMING` step/back raised ~30%: epic 1150/880 -> **1500/1150**, major
+  950/740 -> **1250/960**, simple 720/600 -> **950/780**. For any gap larger
+  than ~1.4% of a section the speed cap binds, so this — not section height —
+  is what sets the pace once the reader is inside a section.
+- `follow` 0.15 -> **0.11**. At 0.15 a small gap closed 85% in ten frames, so
+  short moves (the ones the cap never touches) arrived almost instantly and
+  read as snappy next to the long ones.
+- **Every pin height restored to its original value.** index palm 580 (516
+  original + 65 for the card holds), daily 372, journey 576, principle 372;
+  app 515 / 600 / 500; sanctuary 620 / 360 / 580 / 460 and `.day-entry` 88vh;
+  web3 600 / 560 / 460 / 420. The home hero stays unpinned — that was a
+  separate fix and is not part of the pacing.
+
+### Verified
+Every beat still reaches full strength on all four pages **in both motion
+modes**, confirmed with convergence polling (the coarse fixed-grid sweep now
+reports false zeros, because the slower pacing needs far longer than 85ms to
+settle — same trap as before, and it produced four more false regressions).
+0 JS errors, 0 horizontal overflow at seven widths on five of six pages, and
+app.html's mobile figure is byte-identical to baseline. Reveals and dividers
+unchanged.
+
+---
+
+## Mobile pass — 4 September 2026
+
+Brought mobile up to the desktop work of 3 September. Changed: `app.html` ·
+`sanctuary.html` · `web3.html`. **`index.html` and `js/cine.js` were not
+touched** — index's pins are all `display:none` below 1100px and already had
+their mobile fallbacks, and the pacing engine is width-agnostic.
+
+Verified with real headless Chrome over real HTTP, A/B against a copy of the
+3 September build served on a second port. **42 mobile checks (6 pages x
+320/360/375/390/414/430/768): 0 horizontal overflow, 0 JS errors.** Only 404s
+are the documented `favicon.ico` and `about-hero-mobile.jpg`. Desktop
+re-audited at 1280/1440/1920: 0 overflow, 0 errors, no new sub-10px type.
+
+### 1. app.html was rendering 3-5% ZOOMED OUT on every phone
+
+The horizontal overflow documented against this page for weeks — "~11-20px at
+narrow widths", "the quest-route SVG (`#questPathFill`, `#wpC2`)",
+"non-deterministic", "a pre-existing race" — **is none of those things, and
+the recorded diagnosis was wrong.** It is one element.
+
+`.learn-track-card` opens at `perspective(700px) rotateX(22deg)`. A rotateX
+under perspective brings the near edge toward the camera and **scales it up**,
+so the element's painted box is wider than its layout box: a 328px card paints
+422px. `.learn-track-grid` is the one card container with no padding of its own
+(`max-width:1200px; margin:0 auto`), so its cards fill the section's content
+width exactly and the surplus goes straight past the viewport edge.
+
+It read as non-deterministic because `.show` sets `rotateX(0deg)` — the
+overflow exists from load until the learning section reveals, then disappears.
+Scrolling past and back returns the document to its true width.
+
+**The consequence was much worse than a sideways scroll.** A mobile browser
+scales the layout viewport down to fit an overflowing document, so:
+
+| viewport | 360 | 375 | 390 | 430 |
+|---|---|---|---|---|
+| layout viewport before | 379 | 395 | 406 | 443 |
+| effective scale | **0.950** | **0.949** | **0.961** | **0.971** |
+| after | 360 | 375 | 390 | 430 — all 1.000 |
+
+Every element on the page — all type, the Living Ecosystem phone, every card —
+was rendered **3-5% smaller than designed on every mobile device**, purely
+because one card's pre-reveal transform was 16px too wide.
+
+**Fix:** on mobile the tilt is dropped for all four card reveals on the page
+(`.learn-track-card`, `.reward-use`, `.reward-pipe-node`, `.booster-card`) in
+favour of a plain `translateY` rise. The other three only escaped the bug
+because they sit inside padded containers — one padding change and it is back.
+It is also right on its own terms: at full-bleed width a 22deg card flip reads
+as a wobble, not depth, and it costs a low-power device a 3D composite on four
+elements.
+
+> **The block sits at the END of the stylesheet deliberately.** `.reward-use`
+> and `.reward-pipe-node` are defined below `.learn-track-card`, so an
+> override next to the learning rules would lose to them at equal specificity.
+> Both the resting AND the `.show` state are restated, because
+> `.learn-track-card.show` is (0,2,0) and outranks a single-class override.
+
+**`docH` is byte-identical before and after (27,929px).** The page did not get
+longer; it stopped being zoomed out. A "screens" count that RISES after a fix
+like this is the viewport returning to 1:1, not a regression — compare
+`window.innerWidth` against the emulated width before believing it.
+
+### 2. The Structure had no photography on mobile at all
+
+`.found-plate { display: none }` below 900px, so the section the 3 September
+pass was asked to make less bland was still four rows of type on flat green on
+the device most people will read it on.
+
+The old comment was right that a single cross-fading plate has nothing to
+track when mobile opens all four foundations at once — but that is an argument
+against the desktop COMPOSITION, not against photography. Each row now carries
+its own plate.
+
+- **No new markup.** `.found-item::before` is the live row's wash on desktop
+  and is switched off on mobile anyway, so the pseudo is free here; and
+  because `.found-item` is a grid, the pseudo participates as its first grid
+  item and reserves its own height with no positioning at all. The green wash
+  the desktop plate gets from `.found-plate::after` is a second background
+  layer here rather than a second element.
+- **16/10, not the desktop plate's portrait.** A tall plate in a 328px column
+  runs most of a viewport on its own and pushes the name it belongs to off the
+  bottom of the screen.
+- **The wash is deeper than desktop's** (0.20->0.52 becomes 0.34->0.64). The
+  desktop plate is a 25vw accent beside the type; mobile gives the same
+  photograph the whole column, so the same alpha is not equivalent. Judged by
+  eye at 390.
+- Revealed by an IntersectionObserver on the site's one reveal line
+  (`threshold 0, rootMargin 0 0 -15% 0`), registered unconditionally — `.in`
+  does nothing outside the mobile media query, so it needs no resize handling
+  and cannot strand a row if the reader rotates the device. `<noscript>`
+  forces the plates visible.
+- Verified 4/4 revealed on a continuous sweep at 390.
+
+> **Still open, and it is a content call, not a defect.** `Integrate.jpg` is
+> mapped to **Accountability** (Tracking · Reflection · Behavioural
+> implementation) and it is a bonfire at sunset. At 25vw on desktop it is a
+> small accent; at full width on mobile the flame is a near-white specular
+> that no dark-green overlay can subdue, and it takes the section over. It is
+> also the wrong subject — and `connect.jpg` (Community) is a second
+> group-at-dusk frame, so the two read as near-duplicates. `clarity.jpg` came
+> free when Sanctuary Life was removed and fits Accountability far better.
+> **Not changed: the mapping is shared with desktop and swapping it is a
+> brand decision.**
+
+### 3. The 3D loop was the one pin with no mobile height at all
+
+Its height was an inline `style="height:460vh"`, **which no media query can
+reach without `!important`** — that is why it was missed. Every other pin is
+cut for a handset (sanctuary hero 620->500, app hero 515->320, quest 600->420,
+market 500->400, web3 hero 600->480); this one held a phone reader for the
+full desktop 460vh, 4.6 screens of first-person WebGL.
+
+Height moved to CSS on `#loopOuter` and given **370vh** on mobile (80% of
+desktop, in line with the two heroes). Verified all seven day readouts still
+reached at the new height, 0 JS errors.
+
+> web3's `.part-outer` / `.bridge-outer` / `.loop-outer` look like they have
+> the same gap but do not — they go `height:auto` and unpin below 1000px.
+> sanctuary's `.found-outer` / `.seven-outer` likewise. Only `#loopOuter` was
+> genuinely unhandled.
+
+### 4. web3's hero: the named layer had no node for half the sequence
+
+The 3 September gold-node treatment reached mobile only by accident and was
+internally inconsistent there.
+
+- **The bug.** The node's weight came from `labA = clamp01((z - 2.0) / 0.65)`,
+  which is zero below z = 2.0 — but the mobile name walk runs down to z = 1.2.
+  So for the back half of the sequence the page named a layer with **no node
+  lit anywhere**, and for the front half the name (drawn at frame centre) and
+  the node (at its own x) were two unrelated objects that happened to share an
+  x coordinate.
+- **The fix.** The centre tick is the only mark always on screen (its world x
+  is 0, so its screen x is exactly `cx` at every zoom), and measured, at most
+  three ticks are on screen at any point in the walk — so neighbours can never
+  carry a label of their own on a narrow frame. On mobile the centre tick is
+  now the **reading head**: name on it, gold rule under the name, node lit
+  beneath, and the eight layers pass through it as the camera pulls back. One
+  object instead of three, and ONE label-drawing path for both compositions
+  instead of a separate mobile block with no rule and no brand colour.
+- **The field was nearly empty.** `Z0 = 4.8` was measured against a 1440px
+  frame and never re-checked; a 390px frame is 3.7x narrower, so at the same
+  `GAP` the nearest neighbour sits 312px off centre in the middle of the
+  pull-back. Measured at p=0.42 the mobile hero carried one gold thread and
+  two hairlines for most of a viewport of scrolling — the same failure the
+  desktop `Z0` fix was for. Mobile now gets `GAP 85` / `Z0 3.2`; at p=0.60 the
+  field is twelve threads with no crossings.
+- **`GAP` is bounded, not chosen freely:** a thread's excursion is amp (16-38)
+  plus amp2 (6-14), up to 52 world units, so any spacing near that lets
+  neighbours cross and the weave turns to noise. 85 keeps a clear margin.
+- `tickA` is keyed to `Z0` on mobile. Hard-coded `/3.2` against a desktop `Z0`
+  of 4.8 gives 1.19 at the open (clamped to 1); the same 3.2 against a mobile
+  `Z0` of 3.2 gives 0.69, so the marks would arrive already faded.
+
+> **`GAP` and `Z0` are now `let`, set in `resize()`, and DECLARED ABOVE IT.**
+> `resize()` is called immediately below its own definition, which is before
+> the point these used to sit — a `let` read from a function running during
+> its temporal dead zone throws rather than reading undefined. Do not move
+> them back down.
+
+Verified by wrapping `CanvasRenderingContext2D.fillText` and recording what is
+actually painted across 61 scroll positions: **8/8 layers painted on mobile,
+8/8 on desktop** (desktop unregressed).
+
+### 5. Mobile type raised to the site's own 10px floor
+
+`.hero-plate-cap` (sanctuary) and `.hero-mark` (web3) dropped to **9px** in
+their mobile blocks, purely so a `white-space: nowrap` line would fit.
+
+**Spend the tracking, not the type size.** Both are now 10px at 0.14em instead
+of 9px at 0.2em, and centred with `left:0; right:0` rather than `left:50%` +
+`translateX(-50%)` — half the stage is not enough room to centre a nowrap line
+in, and the overflow is silent. Measured ink extents (Range client rects, NOT
+a clone — a clone inherits the class's `right:0` and reports nonsense):
+
+| | 320 | 360 | 390 |
+|---|---|---|---|
+| `.hero-mark` | 239px ink, 41..279 | 239px | 239px |
+| `.hero-plate-cap` | 271px ink, 25..295 | 271px | 271px |
+
+Both hold on a 320px screen with margin to spare.
+
+`.eco-tiles-hint` lost its `nowrap` below 520px — at 10px/0.22em it needs
+~278px, inside 3px of the column at 320. The nowrap existed so the hint did
+not break awkwardly BESIDE the title; once the pair has wrapped onto two lines
+that reason is gone.
+
+**Deliberately left at 9px:** `index.html`'s `.kicker` and `.scroll-hint`.
+Those are the measured 22 August decision (at 9.5px/0.26em the kicker wrapped
+while its rules stayed on the first line and read as a broken element) and
+must not be "fixed".
+
+### Mobile page length — measured, and left alone by decision
+
+At 390x844, after this pass: index 21.3 screens · about 23.2 · app 33.1 ·
+sanctuary 33.0 · web3 32.8 · investors 63.1. Held (viewport frozen while
+something plays): sanctuary 50%, app 34%, web3 26%, index 27%.
+
+Sanctuary is **net flat** — the four new plates cost almost exactly what the
+loop reduction saved (docH 27,787 -> 27,846, +0.2%) — so it gained photography
+and lost 0.9 screens of WebGL ride for nothing.
+
+The rest was **not** changed, by decision: mobile overrides sit at 62-83% of
+their desktop values and the 3 September lesson stands — a per-beat rate is a
+property of a section, not of a site. Reducing app/sanctuary/web3 below ~33
+screens on a phone means cutting content (sanctuary's nine day-entries alone
+are 7.75 screens), which is a separate call.
+
+### Pre-existing on mobile, confirmed NOT caused by this pass
+- **Sanctuary's divider marks clear their nearest text by only 16px at 375 and
+  390**, against the documented 49px floor. Identical on both builds when
+  measured side by side. The 49px figure was established on desktop and never
+  re-checked on a handset.
+- 9px type that is the same on desktop and therefore a site-wide type-scale
+  question, not a mobile regression: `.quest-hd-kicker`, `.wp-info-num` and
+  `.wp-label-km` (app), `.bh-sub` and `.bridge-step-i` at 9.5px (web3),
+  `.source` at 8.5px (index).
+- `investors.html`'s `.pm` table reports as "escaping" to any audit that only
+  treats `overflow:hidden`/`clip` as clipping — it sits in a `.pm-scroll` with
+  `overflow-x:auto`. Not a defect.
+
+### Still open — unchanged by this pass
+**The two mockups still contradict the content rules, and mobile has made it
+worse.** Enlarging the Living Ecosystem phone means `app.html`'s mobile view
+now leads with **"DVT Price $0.100 · 24H change up 24% · Buy DVT · DRT
+earned"** as the single largest element on the page; `index.html`'s "Track
+what matters" still uses `img-10.jpg` ("Reward Credits $0.100, 24H up 24%").
+DRC has no price, $DVT is not a traded instrument, DRT is retired terminology.
+There is still no clean dashboard mockup in the repo — only `14.png`
+(Marketplace) and `17.png`/`img-03.png` (Learning) are clean. **Flagged and
+deliberately left: this needs a re-render, not a website edit.**
+
+### Upload
+`app.html` · `sanctuary.html` · `web3.html`. No image, no JS file and no other
+page changed.

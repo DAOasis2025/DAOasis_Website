@@ -48,50 +48,18 @@
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
   :root{
-    --warm-white:#F7F6F2; --charcoal:#17150F; --mineral:#171412;
-    --sanctuary:#31463F; --gold:#C48A5A; --clay:#B8A58D; --purple:#9B8CA8; --blue:#7F97A2; --warm-stone:#E9E2D6;
-    --soft-stone:#D6D3CC; --warm-grey:#6F6F6F; --dark-surface:#211D1A; --space:#030609;
-    /* AA-safe carry of --clay for text on ivory, the same way #8A5A2B has
-       always carried --gold on light grounds — clay itself (#B8A58D) is
-       only 2.2:1 on ivory, nowhere near the 3:1 large-text floor. 6.1:1. */
-    --clay-ink:#6B5A44;
+    --warm-white:#F7F4EE; --charcoal:#2B2623; --mineral:#171412;
+    --sanctuary:#31463F; --gold:#C48A5A; --purple:#9B8CA8; --blue:#7F97A2; --warm-stone:#E8E1D6;
+    --soft-stone:#CFC8BE; --dark-surface:#211D1A; --space:#030609;
     --ease: cubic-bezier(0.22, 1, 0.36, 1);
     --ease-soft: cubic-bezier(0.16, 1, 0.30, 1);
     --nav-h:61px; /* 18px padding × 2 + 24px brand + 1px rule */
   }
-
-  /* ── THE TYPE LADDER (running text) ───────────────────────────────────
-     Seven steps for every sans size on the site. It carried twenty-four,
-     clustered so tightly that most were indistinguishable — 17/16.5/16.1/16
-     were all "body", and 10.5/10/9.5/9/8 were all "micro label". Every
-     bucket snaps UP, so nothing gets smaller and the crowded bottom end
-     clears the site's own 10px floor.
-     Rules inside @media keep their own values: mobile overrides were tuned
-     against real measurements and must not be flattened. */
-  :root{
-    --t-body:17px;     /* reading copy                     */
-    --t-body-s:15.5px; /* secondary copy, card body        */
-    --t-meta:14.5px;   /* small body, list text            */
-    --t-note:13.5px;   /* notes, footnotes, nav            */
-    --t-small:12.5px;  /* buttons, tags                    */
-    --t-micro:11.5px;  /* tracked labels                   */
-    --t-nano:10.5px;   /* the floor — eyebrows, sources    */
-  }
-
-  /* 2026 refinement — lighter, sharper, more editorial. --charcoal moved from
-     a warm brown-grey (#2B2623) to a near-black (#17150F) for real contrast
-     on the light sections, which are now the bulk of the page. --clay is the
-     new light-mode accent — replaces --gold wherever type sits on a light
-     ground, since gold-on-cream reads as a crypto tell in a way gold-on-
-     midnight never did; --gold stays exactly where it always was, on the
-     hero, the palm section and the other deliberately cinematic dark beats,
-     which keep their identity. --warm-stone/--soft-stone are now literally
-     the brief's sand/divider-grey. */
   *{margin:0;padding:0;box-sizing:border-box;}
   html,body{background:var(--mineral);font-family:'Frank Ruhl Libre',serif;}
   body{overflow-x:clip;}
   img{max-width:100%;}
-  ::selection{background:rgba(184,165,141,0.35);}
+  ::selection{background:rgba(196,138,90,0.3);}
   /* in-page anchors must clear the fixed nav rather than land beneath it */
   #ecoSection,#waitlistSection,#communitySection,#closingSection{scroll-margin-top:var(--nav-h);}
   @media (prefers-reduced-motion: no-preference){html{scroll-behavior:smooth;}}
@@ -101,7 +69,7 @@
      The type, rhythm and reveal language established on
      sanctuary.html, so all three pages read as one system.
   ═══════════════════════════════════════════ */
-  .sect{padding:19vh 8%;}
+  .sect{padding:16vh 8%;}
   .sect-inner{max-width:1360px;margin:0 auto;}
   .bg-ivory{background:var(--warm-white);}
   .bg-stone{background:var(--warm-stone);}
@@ -115,21 +83,19 @@
     transition:width 1.1s var(--ease) 0.15s;}
   .rv.show .eyebrow::before,.eyebrow.show::before{width:28px;}
   .eyebrow.centered{justify-content:center;}
-  .on-light .eyebrow{color:var(--warm-grey);}
+  .on-light .eyebrow{color:#8a7f6d;}
   .on-dark .eyebrow{color:var(--gold);}
 
   .display{font-family:'Cormorant Garamond',serif;font-weight:300;
     font-size:clamp(36px,5.4vw,78px);line-height:1.06;letter-spacing:-0.008em;}
   .display em{font-style:italic;color:var(--gold);}
   .on-light .display{color:var(--charcoal);}
-  .on-light .display em{color:var(--clay-ink);}
   .on-dark .display{color:var(--warm-white);}
 
   .display-sm{font-family:'Cormorant Garamond',serif;font-weight:300;
     font-size:clamp(28px,3.6vw,52px);line-height:1.1;letter-spacing:-0.006em;}
   .display-sm em{font-style:italic;color:var(--gold);}
   .on-light .display-sm{color:var(--charcoal);}
-  .on-light .display-sm em{color:var(--clay-ink);}
   .on-dark .display-sm{color:var(--warm-white);}
 
   .copy{font-size:16px;line-height:1.9;max-width:620px;}
@@ -174,28 +140,15 @@
   .par-layer{position:absolute;inset:-12% 0;background-size:cover;background-position:center 50%;will-change:transform;}
 
   /* buttons */
-  /* Sharpened from a 40px pill to a 3px hairline-radius rectangle — a pill
-     button is the one shape every generic Web3/SaaS landing page shares,
-     and it was fighting the site's own vocabulary of thin gold rules and
-     square photography everywhere else. Hover lifts 1px and eases the
-     shadow in rather than snapping opacity, which reads as considered
-     rather than a flat state-swap. */
-  .btn{display:inline-block;padding:16px 36px;border-radius:3px;text-decoration:none;
-    font-size:var(--t-micro);letter-spacing:0.16em;text-transform:uppercase;
-    transition:transform 0.45s var(--ease), box-shadow 0.45s var(--ease), border-color 0.3s ease, background 0.3s ease, color 0.3s ease;}
-  .btn:hover{transform:translateY(-1px);}
-  .btn:active{transform:translateY(0);}
+  .btn{display:inline-block;padding:16px 36px;border-radius:40px;text-decoration:none;
+    font-size:12.5px;letter-spacing:0.16em;text-transform:uppercase;
+    transition:opacity 0.3s ease, border-color 0.3s ease, background 0.3s ease, color 0.3s ease;}
   .btn-light{background:var(--warm-white);color:var(--charcoal);}
-  .btn-light:hover{box-shadow:0 10px 24px rgba(0,0,0,0.18);}
+  .btn-light:hover{opacity:0.86;}
   .btn-ghost{border:1px solid rgba(247,244,238,0.3);color:var(--warm-white);}
-  /* the ghost's counterpart for light grounds — added with the 13 September
-     hero, which is the first place on this page a secondary button sits on
-     ivory rather than on a photograph */
-  .btn-ghost-dark{border:1px solid rgba(23,21,15,0.28);color:var(--charcoal);}
-  .btn-ghost-dark:hover{border-color:rgba(23,21,15,0.55);}
   .btn-ghost:hover{border-color:rgba(247,244,238,0.8);}
   .btn-dark{background:var(--mineral);color:var(--warm-white);}
-  .btn-dark:hover{box-shadow:0 10px 24px rgba(0,0,0,0.22);}
+  .btn-dark:hover{opacity:0.86;}
   .btn-row{display:flex;flex-wrap:wrap;gap:12px;}
 
   /* fixed scroll progress */
@@ -242,7 +195,7 @@
   .intro-skip{position:fixed;bottom:34px;right:34px;z-index:110;
     background:transparent;border:1px solid rgba(247,244,238,0.22);color:rgba(247,244,238,0.6);
     padding:12px 26px;border-radius:40px;font-family:'Frank Ruhl Libre',serif;
-    font-size:var(--t-nano);letter-spacing:0.24em;text-transform:uppercase;cursor:pointer;
+    font-size:10px;letter-spacing:0.24em;text-transform:uppercase;cursor:pointer;
     transition:border-color 0.3s ease, color 0.3s ease;}
   .intro-skip:hover{border-color:rgba(247,244,238,0.6);color:var(--warm-white);}
   html[data-theme="light"] .intro-skip{border-color:rgba(43,38,35,0.22);color:rgba(43,38,35,0.6);}
@@ -301,35 +254,14 @@
      The hero is now ONE viewport of ordinary, unpinned page.
   ────────────────────────────────────────────────────────────────────── */
   .pin-container{position:relative;}
-  /* THE HERO IS ONE VIEWPORT. A min-height guard of calc(53.2vw + nav) was
-     tried here so that `cover` never had to crop past the product on a wide
-     window — but it makes the hero TALLER than the viewport exactly where
-     the problem bites: at 1917x920 it computes to 1093px, so the phone was
-     whole and 173px of it sat below the fold, which is worse than a crop.
-     The real constraint is the source image, not this rule. images/hero.jpg
-     is 1.777:1 and its phone fills y 3.0%-95.5%, leaving 7.5% of croppable
-     height; a maximised laptop viewport is ~2.08:1 and needs ~15% removed.
-     Until the photograph is re-rendered wider with real headroom around the
-     devices, some clipping at wide-short windows is unavoidable — position
-     40% at least splits it in proportion to the room at each end. */
-  .hero{position:relative;height:100vh;overflow:hidden;
-    background:var(--mineral);
-    opacity:0;transition:opacity 1.1s ease;}
-  /* the portrait frame is scaled to width and never cropped vertically, so
-     the desktop guard would only add dead height on a handset */
-  @media (max-width:800px){ .hero{min-height:0;} }
+  .hero{position:relative;height:100vh;overflow:hidden;opacity:0;transition:opacity 1.1s ease;}
   .hero.reveal{opacity:1;}
   #heroH1{opacity:0;transition:opacity 0.5s ease;}
   #heroH1.settled{opacity:1;}
 
   body.intro-skipped .intro{display:none !important;}
-  /* .hero-plate MUST be in this list. Every element here starts at opacity:0
-     and is brought up by the intro's fadeUp; anything left out simply never
-     appears when the intro is skipped — which is every arrival from another
-     page on this site. The plate was added on 13 September and omitting it
-     made the hero photograph permanently invisible. */
   body.intro-skipped .kicker, body.intro-skipped .h1, body.intro-skipped .sub,
-  body.intro-skipped .ctas, body.intro-skipped .hero-plate,
+  body.intro-skipped .ctas,
   body.intro-skipped .scroll-hint{animation:none !important;opacity:1 !important;transform:none !important;}
   body.intro-skipped #heroH1{opacity:1 !important;}
 
@@ -340,18 +272,13 @@
      path (and the JS handoff) relies on. */
   html.return-visit .intro{display:none !important;}
   html.return-visit .kicker, html.return-visit .h1, html.return-visit .sub,
-  html.return-visit .ctas, html.return-visit .hero-plate,
+  html.return-visit .ctas,
   html.return-visit .scroll-hint{animation:none !important;opacity:1 !important;transform:none !important;}
   html.return-visit #heroH1{opacity:1 !important;}
 
   /* The vignette and centre bloom now carry the edge falloff, so the flat
      scrim over the photograph can ease off and let the image read. */
-  /* The veil was 0.68 -> 0.56 -> 0.54 -> 0.88, which smothered a sunrise
-     into brown murk. It is now bottom-weighted instead of flat: light
-     across the sky and the water so the photograph reads as morning, and
-     only gathering under the CTAs where white type needs a floor. The
-     vignette and the centre bloom (below) carry the rest. */
-  .bg{position:absolute;inset:0;z-index:0;background-image:linear-gradient(180deg, rgba(15,13,11,0.34) 0%, rgba(15,13,11,0.24) 30%, rgba(15,13,11,0.34) 62%, rgba(15,13,11,0.72) 100%), url('images/img-01.jpg');background-size:cover;background-position:center 30%;
+  .bg{position:absolute;inset:0;z-index:0;background-image:linear-gradient(180deg, rgba(15,13,11,0.68) 0%, rgba(15,13,11,0.56) 32%, rgba(15,13,11,0.54) 58%, rgba(15,13,11,0.88) 100%), url('images/img-01.jpg');background-size:cover;background-position:center 30%;
     opacity:0;transform:translateY(var(--py,0px)) scale(var(--bgs,1.045));
     transition:opacity 1.8s var(--ease), transform 2.1s var(--ease);
     will-change:transform,opacity;}
@@ -364,26 +291,11 @@
      It previously lived inside the sticky hero, so it scrolled away and
      left the remaining ~40 screens of the page with no navigation at all.
   ═══════════════════════════════════════════ */
-  /* Two states. Over the hero it is a DISTINCT DARK BAR with its own ground,
-     not type floating on the photograph: the hero image now begins below it
-     (see .hero-plate's `top`), so the bar is the lid of the composition
-     rather than something bleeding into it. Once the reader is past the hero
-     the sections below are paper, so it resolves to ivory with a hairline
-     and the type flips dark.
-     It used to be transparent with only a soft top-down scrim, which is what
-     let the photograph run up under the menu. */
   .nav{position:fixed;top:0;left:0;right:0;z-index:90;
     display:flex;align-items:center;justify-content:space-between;padding:18px 5%;
-    background:var(--mineral);border-bottom:1px solid rgba(247,244,238,0.09);
-    transition:transform 0.35s ease, opacity 0.6s ease,
-               background 0.5s var(--ease), border-color 0.5s var(--ease),
-               backdrop-filter 0.5s var(--ease);}
-  .nav.nav-solid{background:rgba(250,249,245,0.90);backdrop-filter:blur(14px);
-    border-bottom-color:rgba(23,21,15,0.09);}
-  .nav.nav-solid .nav-brand img{filter:invert(1) brightness(0.18);}
-  .nav.nav-solid .nav-burger-bars i{background:var(--charcoal);}
-  .nav.nav-solid .nav-burger-label{color:var(--charcoal);}
-  .nav.nav-solid .nav-cta{background:var(--charcoal);color:var(--warm-white);}
+    background:rgba(23,20,18,0.88);backdrop-filter:blur(12px);
+    border-bottom:1px solid rgba(247,244,238,0.07);
+    transition:transform 0.35s ease, opacity 0.6s ease;}
   .nav.nav-hidden{transform:translateY(-100%);}
   /* held back until the intro sequence hands over */
   .nav.nav-waiting{opacity:0;pointer-events:none;}
@@ -400,7 +312,7 @@
      afterthought once it is the sole thing up there. */
   @media(max-width:768px){.nav-brand img{height:34px;}}
   @media(max-width:420px){.nav-brand img{height:30px;}}
-  .nav-cta{background:var(--warm-white);color:var(--charcoal);font-size:var(--t-note);
+  .nav-cta{background:var(--warm-white);color:var(--charcoal);font-size:13px;
     padding:10px 24px;border-radius:24px;text-decoration:none;letter-spacing:0.03em;
     transition:opacity 0.2s;white-space:nowrap;}
   .nav-cta:hover{opacity:0.88;}
@@ -411,16 +323,16 @@
   .nav-burger.open .nav-burger-bars i:nth-child(1){transform:translateY(6.5px) rotate(45deg);}
   .nav-burger.open .nav-burger-bars i:nth-child(2){opacity:0;}
   .nav-burger.open .nav-burger-bars i:nth-child(3){transform:translateY(-6.5px) rotate(-45deg);}
-  .nav-burger-label{font-family:'Frank Ruhl Libre',serif;font-size:var(--t-small);letter-spacing:0.1em;text-transform:uppercase;color:var(--warm-white);}
+  .nav-burger-label{font-family:'Frank Ruhl Libre',serif;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;color:var(--warm-white);}
   /* on a narrow phone the full-text CTA is wide enough to collide with the
      centred logo — icon-only burger plus a tighter CTA buys back the room. */
   @media(max-width:420px){
     .nav-burger-label{display:none;}
-    .nav-cta{padding:9px 16px;font-size:var(--t-note);}
+    .nav-cta{padding:9px 16px;font-size:12px;}
   }
   @media(max-width:360px){
     .nav-brand img{height:27px;}
-    .nav-cta{padding:8px 13px;font-size:var(--t-note);}
+    .nav-cta{padding:8px 13px;font-size:11px;}
   }
   .nav-drawer-backdrop{position:fixed;inset:0;z-index:88;background:rgba(9,8,7,0.55);
     opacity:0;pointer-events:none;transition:opacity 0.4s;}
@@ -441,7 +353,7 @@
     color:#8a8377;text-decoration:none;transition:color 0.2s;
     padding:16px 0;border-bottom:1px solid rgba(247,244,238,0.08);}
   .nav-drawer a:hover,.nav-drawer a.active{color:var(--warm-white);}
-  .nav-drawer .nav-cta{font-family:'Frank Ruhl Libre',serif;font-size:var(--t-meta);margin:24px 0 0;padding:14px 32px;
+  .nav-drawer .nav-cta{font-family:'Frank Ruhl Libre',serif;font-size:14px;margin:24px 0 0;padding:14px 32px;
     border-bottom:none;text-align:center;align-self:flex-start;}
   @media(max-width:520px){.nav-drawer{width:100vw;}}
 
@@ -456,149 +368,27 @@
   .hero-grain{position:absolute;inset:0;z-index:3;pointer-events:none;opacity:0.038;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
 
-  /* HERO — full bleed, type in a strong left column.
-     The placement is measured, not chosen by eye. At cover, the phone in
-     images/hero.jpg occupies source x 34%-58%, which lands on screen at:
-
-         1280  x 435-742      1440  x 463-847      1920  x 652-1113
-
-     so the clear zone to its left is 435px at the narrowest desktop width.
-     The type column is capped at min(30%, 430px) to stay inside that at
-     every width — it never crosses the product.
-     The scrim is DIRECTIONAL, not a flat veil: heavy on the left where the
-     type sits, fully clear by 64% so the phone, the watch and the DAOasis
-     signage keep their own light. A flat veil over this frame was built
-     first and it flattened the sunrise, which is the exact fault the
-     8 September veil lift had just corrected. */
-  .content{position:relative;z-index:10;height:100%;
-    /* padded to the BAND, not to the viewport, so the column centres inside
-       the photograph rather than inside the whole hero */
-    padding:calc(var(--nav-h) + 3.5vh) 6% calc(14vh + 26px + 3.5vh);
-    display:flex;flex-direction:column;align-items:flex-start;justify-content:center;
-    text-align:left;gap:0;
+  .content{position:relative;z-index:10;height:100%;padding:calc(var(--nav-h) + 4vh) 8% 11vh;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:0;
     transition:opacity 0.15s linear, transform 0.15s linear;}
-  /* 26vw, measured against the LEFT-ANCHORED frame. Anchoring the image left
-     rather than centre pushes the phone's left edge from 464 to 544 at 1440
-     and 541 to 634 at 1680 (there is no slack at 1280 or 1920, where the
-     source and viewport ratios coincide), so the usable column becomes:
-        1280 338px · 1440 437px · 1680 514px · 1920 518px
-     26vw is the largest single value inside all four. */
-  .hero-type{display:block;width:min(26vw,500px);}
-  /* The photograph is a BAND, not a bleed to all four edges. It starts below
-     the navigation and stops above the divider, so neither the nav bar nor
-     the divider's palm mark is ever printed over the product — both were
-     landing on the phone, the mark directly on its home indicator.
-     --divider-h is declared on .divider itself and is not in scope here, so
-     the same expression is restated; if that one changes, change this too. */
-  /* FULL BLEED. One photograph, edge to edge, running under the navigation
-     and down to the bottom of the viewport, with the interface layered over
-     it. The previous rule listed FOUR background-size values against a
-     single url(), so `auto 100%` landed on the photograph and anchored it
-     right — that hard left edge, plus a 96deg scrim running to 64% at 0.90,
-     is what read as a text column beside an image column.
 
-     THE CROP. hero.jpg was re-rendered on 13 September at 1862x845
-     (2.204:1) with the devices pulled in from the edges — the phone now
-     occupies y 20.8%-87.5% instead of 3.0%-95.5%, so 33.3% of the height
-     can be cropped rather than 7.5%. That lifts the viewport ratio at which
-     anything clips from 1.92 to 3.30, which is past any real window, so the
-     hero is one viewport again with no height guard.
-     background-position 62% splits the crop in proportion to the headroom
-     at each end (20.8 above : 12.5 below), so neither clips before the
-     other. Re-measure both numbers if the photograph is replaced. */
-  .hero-plate{position:absolute;top:var(--nav-h);left:0;right:0;bottom:0;z-index:0;
-    background-color:var(--mineral);
-    background-image:
-      /* atmospheric only — soft enough that the photograph stays dominant.
-         The old 0.90-to-64% ramp was a panel; this reaches 0.62 at the very
-         edge and is gone by 48%, which still measures 6.5:1 for white type
-         over the brightest part of the frame it covers. */
-      linear-gradient(100deg,
-        rgba(8,7,6,0.62) 0%,
-        rgba(8,7,6,0.50) 20%,
-        rgba(8,7,6,0.26) 34%,
-        rgba(8,7,6,0.07) 42%,
-        rgba(8,7,6,0.00) 48%),
-      /* top: lets the navigation read as its own dark band without a bar.
-         bottom: the photograph melts into the NEXT section's ground rather
-         than ending on a rule or a black strip — image, darkening image,
-         next section. --warm-white because the section below is the ivory
-         palm ground; if that section's colour changes, change this too. */
-      linear-gradient(180deg,
-        rgba(8,7,6,0.46) 0%,
-        rgba(8,7,6,0.10) 9%,
-        rgba(8,7,6,0.00) 20%,
-        rgba(8,7,6,0.00) 70%,
-        rgba(20,17,15,0.30) 88%,
-        rgba(247,246,242,0.35) 97%,
-        var(--warm-white) 100%),
-      url('images/hero.jpg');
-    background-size:cover,cover,cover;
-    background-position:center,center,center 62%;
-    background-repeat:no-repeat,no-repeat,no-repeat;}
-
-  /* The aspect-ratio branch that used to live here is gone. It switched
-     to a height-fit past 16/9, but it tested the VIEWPORT while the
-     photograph is now a band between the nav and the divider — and that
-     band is wider than the image's 1.78 at every desktop size measured
-     (2.06 to 2.63). So the height-fit is simply the base behaviour, and
-     the cover under-copy fills the strip beside it. Testing the viewport
-     meant 1440x900 fell to cover and clipped the phone's top edge. */
-
-  /* Eyebrow. Back to the category line: the four movements are DAOasis
-     philosophy and live elsewhere on the site — repeating them here, and
-     again as a strip under the calls to action, was saying the same thing
-     three times in one screen. */
-  .kicker{font-size:var(--t-micro);letter-spacing:0.22em;color:rgba(247,246,242,0.88);
-    text-transform:uppercase;white-space:nowrap;opacity:0;
-    display:flex;align-items:center;gap:13px;
+  .kicker{font-size:11px;letter-spacing:0.24em;color:var(--gold);text-transform:uppercase;opacity:0;
+    display:flex;align-items:center;gap:14px;padding-left:0.24em;
     animation:fadeUp 1.3s ease-out forwards;animation-delay:6.3s;}
-  .kicker::before{content:'';display:block;width:26px;height:1px;
-    background:currentColor;opacity:0.5;flex:none;}
+  .kicker::before,.kicker::after{content:'';display:block;width:26px;height:1px;background:currentColor;opacity:0.5;}
   /* Both the type and the measure scale with vw, so each sentence holds a
      single line all the way down to the mobile breakpoint. 4.6vw is the
      ceiling that keeps it there — at 5.6vw the first line wraps to two and
      the whole hero stack stops fitting inside the 100vh pin. */
-  /* Smaller than the old full-bleed headline (was up to 74px) because it no
-     longer has a whole viewport to itself — it shares the frame with the
-     plate. 3.5vw keeps each sentence to two lines at every desktop width. */
-  /* Clamped on viewport HEIGHT as well as width, the same rule sanctuary's
-     type ladder uses — a 430px column on a 720px-tall laptop cannot carry
-     the same size as it does at 1080. The column is narrow by design, so
-     the headline runs 3-4 lines: a tall, narrow Cormorant column reads as
-     editorial, which is the register, and it keeps the type entirely clear
-     of the phone. */
-  /* Display scale. Clamped on viewport HEIGHT as well as width so a 720px
-     laptop does not get a headline the stack cannot fit under. */
   .h1{font-family:'Cormorant Garamond',serif;font-weight:300;color:var(--warm-white);
-    font-size:clamp(38px,min(4.6vw,8.4vh),78px);line-height:1.0;letter-spacing:-0.022em;
-    max-width:none;margin-top:clamp(14px,2vh,26px);
-    opacity:0;animation:fadeUp 1.3s ease-out forwards;animation-delay:6.3s;
-    text-shadow:0 2px 40px rgba(10,8,6,0.45);}
+    font-size:clamp(32px,4.6vw,74px);line-height:1.06;letter-spacing:-0.01em;
+    max-width:none;margin-top:30px;opacity:0;animation:fadeUp 1.3s ease-out forwards;animation-delay:6.3s;}
   .h1 .nowrap{display:block;}
-  /* inline, not display:block — "together" continues the line rather than
-     starting a new stanza, which is what the reference composition does */
-  .h1 em{font-style:italic;color:#E8B88A;}
-  .sub{color:rgba(247,244,238,0.80);font-size:var(--t-body);line-height:1.62;
-    max-width:30ch;margin-top:clamp(14px,2vh,24px);
+  .h1 em{display:block;font-style:italic;color:var(--gold);}
+  .sub{color:rgba(247,244,238,0.72);font-size:15.5px;line-height:1.85;max-width:520px;margin-top:26px;
     opacity:0;animation:fadeUp 1.3s ease-out forwards;animation-delay:6.5s;}
-  /* ONE button and ONE text link, not two buttons. Two buttons need ~430px
-     side by side and the column is 320px at 1280, so they either wrapped to
-     two rows of unequal width or forced the column over the phone. A filled
-     primary with a quiet underlined secondary is also the stronger
-     hierarchy — the old pair gave equal weight to two unequal actions. */
-  /* The site's own button styling, at its own size — not full-width pills.
-     Pills reversed the 8 September move to a 3px hairline rectangle, and at
-     column width they were the loudest thing in the frame, which is the
-     opposite of integrating them into the photograph. */
-  .ctas{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-start;
-    gap:12px;margin-top:clamp(20px,3vh,34px);
+  .ctas{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:36px;
     opacity:0;animation:fadeUp 1.3s ease-out forwards;animation-delay:6.65s;}
-  .ctas .btn{padding:15px 30px;font-size:var(--t-micro);letter-spacing:0.14em;white-space:nowrap;}
-
-  /* The REST / LEARN / EARN / RETURN strip that sat under the calls to
-     action is removed. It duplicated the eyebrow above it and added a third
-     tier of content to a hero that should carry one statement. */
   @keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
   /* Centred with left/right, NOT translateX(-50%): fadeUp ends on
      transform:translateY(0), and animation-fill-mode:forwards keeps that
@@ -609,13 +399,8 @@
      26px) above the divider mark, which is NEGATIVE at ordinary laptop
      heights — the hint and the mark touched. This clears the mark by a fixed
      34px at every viewport height instead of drifting with it. */
-  /* Left-aligned with the type column since 13 September. Centred, it
-     printed across the middle of the phone — the one element in the hero
-     that was still assuming an empty centre. Still positioned with
-     left/right rather than a transform: fadeUp ends on translateY(0) and
-     fill-mode forwards would replace a centring translateX. */
-  .scroll-hint{position:absolute;bottom:calc(3vh + 26px + 34px);left:6%;right:auto;z-index:10;
-    text-align:left;color:rgba(247,244,238,0.5);font-size:var(--t-nano);letter-spacing:0.28em;text-transform:uppercase;
+  .scroll-hint{position:absolute;bottom:calc(3vh + 26px + 34px);left:0;right:0;z-index:10;
+    text-align:center;color:rgba(247,244,238,0.45);font-size:10px;letter-spacing:0.28em;text-transform:uppercase;
     opacity:0;animation:fadeUp 1.3s ease-out forwards;animation-delay:6.9s;}
 
   /* The hero route map (.journey-wrap, .wp-label, .wp-sub, #routeMaskPath,
@@ -645,76 +430,24 @@
      clips on a short screen. */
   @media (max-width:800px){
     .content{padding:calc(var(--nav-h) + 2vh) 7% 9vh;justify-content:center;}
-    /* MOBILE — full bleed too, type in the upper band.
-       A different PHOTOGRAPH, not a crop: images/hero-mobile.jpg is
-       941x1672 portrait with the products recomposed vertically. Cover-
-       cropping the landscape frame into a phone showed only its centre
-       third and lost the band and the watch entirely.
-       The products occupy 33%-90% of this frame, so the clear zone is the
-       top third. The headline is sized to finish inside it, and the scrim
-       is heaviest there, clearing completely by 46% so the phone, the band
-       and the watch keep their own light.
-       The sub is dropped: it restates the headline, and there is no band
-       left here that does not belong to a product. */
-    /* MOBILE — the same composition, made for a portrait frame rather
-       than shrunk from the desktop one. Full bleed, copy over the
-       photograph, no panel and no split.
-       images/hero-mobile.jpg is 941x1672 with the products at source y
-       35.5%-88.3%. Scaled to the WIDTH and anchored bottom it renders
-       390x693, which puts the phone's top edge at 47% of the screen and its
-       base at 92% — the phone, the band and the watch all whole, and 336px
-       of clear frame above them for the type. Cover would scale it by
-       height instead, lifting the products to 33% and leaving 198px, which
-       forces the headline down to 23px.
-       The 151px the frame no longer reaches at the top is filled by a second
-       copy at cover; in that strip the cover copy shows only source y
-       0-18% — sky and karst, no phone — so there is no double image and the
-       join is a change of scale inside the sky, not a colour step. */
-    .content{padding:calc(var(--nav-h) + 2.2vh) 7% 0;justify-content:flex-start;}
-    .hero-type{width:auto;}
-    .kicker{font-size:var(--t-micro);letter-spacing:0.2em;gap:11px;}
-    .kicker::before{width:20px;}
-    .h1{font-size:clamp(31px,9.2vw,42px);line-height:1.03;margin-top:1vh;
-      text-shadow:0 2px 30px rgba(10,8,6,0.5);}
-    .sub{display:block;font-size:var(--t-body);line-height:1.55;max-width:29ch;margin-top:1.2vh;}
-    /* stacked, per the brief, and at the site's own button size */
-    /* stacked, but sized to their own content — stretched to the column
-       they were the heaviest thing in the frame, which is the opposite of
-       sitting inside the photograph */
-    .ctas{flex-direction:column;align-items:flex-start;margin-top:1.6vh;gap:8px;}
-    .ctas .btn{padding:13px 24px;font-size:var(--t-micro);letter-spacing:0.13em;}
-    /* the hero image runs to the bottom of the viewport and melts into the
-       next section, so neither a divider nor a floating scroll cue belongs
-       between them */
-    .scroll-hint{display:none;}
-    .hero-plate{inset:0;
-      background-image:
-        linear-gradient(180deg,
-          rgba(8,7,6,0.62) 0%,
-          rgba(8,7,6,0.55) 14%,
-          rgba(8,7,6,0.34) 27%,
-          rgba(8,7,6,0.10) 38%,
-          rgba(8,7,6,0.00) 48%,
-          rgba(8,7,6,0.00) 76%,
-          rgba(20,17,15,0.26) 90%,
-          rgba(247,246,242,0.30) 97%,
-          var(--warm-white) 100%),
-        url('images/hero-mobile.jpg'),
-        url('images/hero-mobile.jpg');
-      background-size:cover,100% auto,cover;
-      background-position:center,center bottom,center top;
-      background-repeat:no-repeat,no-repeat,no-repeat;}
-    /* The hero's own mobile type rules live ABOVE, with the rest of the
-       13 September hero. What used to be here — a 38-60px headline, a 9px
-       kicker with two rules, the sub and 14px/26px buttons — was written on
-       22 August for a hero that had NO product in it and a whole viewport
-       to spend on type. This hero has a phone occupying 33%-90% of the
-       frame, so the type is sized against the 198px of clear band above it
-       instead. Those rules sat after the new ones and silently won, which
-       is why the headline kept overrunning the phone by 28px.
-       Only the italic's extra leading is kept. */
-    .h1 em{margin-top:0.18em;}
-    .scroll-hint{bottom:calc(3vh + 26px + 20px);font-size:var(--t-nano);letter-spacing:0.24em;}
+    /* the 13ch desktop measure is far too narrow once the type shrinks —
+       it forces the headline into five or six lines on a phone */
+    .h1{font-size:clamp(38px,11vw,60px);line-height:1.04;letter-spacing:-0.018em;
+      max-width:none;margin-top:3.4vh;}
+    /* the italic second line is the payoff — let it sit apart from the setup
+       rather than butting straight against it */
+    .h1 em{margin-top:0.24em;}
+    /* Measured, not guessed: at 9.5px/0.26em plus two 20px rules and two
+       14px gaps the label needs ~320px inside a 322px column at 375, so it
+       wrapped to two lines while the rules stayed on the first — which read
+       as a broken element. At 9px/0.22em with 14px rules it needs ~275px and
+       holds one line down to 360. nowrap makes that a guarantee. */
+    .kicker{font-size:9px;letter-spacing:0.22em;gap:10px;white-space:nowrap;}
+    .kicker::before,.kicker::after{width:14px;}
+    .sub{font-size:14px;line-height:1.7;max-width:32ch;margin-top:3.2vh;}
+    .ctas{margin-top:4vh;gap:10px;}
+    .ctas .btn{padding:14px 26px;font-size:11px;letter-spacing:0.13em;}
+    .scroll-hint{bottom:calc(3vh + 26px + 20px);font-size:9px;letter-spacing:0.24em;}
     /* Drama comes from contrast, not from more elements. On a handset the
        frame is narrow enough that the desktop vignette barely reads, so the
        falloff is pulled in and deepened and the warm bloom is lifted — the
@@ -726,158 +459,10 @@
       linear-gradient(180deg, rgba(0,0,0,0.42) 0%, rgba(0,0,0,0) 26%);}
   }
 
-  /* ── THE ECOSYSTEM SEQUENCE ────────────────────────────────────────────
-     Three full-bleed photographic plates on a pinned stage, in the hero's
-     language: soft directional scrim, copy in a left column, same ladder.
-     HEIGHT: 3 stops = 2 transitions. 100vh sticky + 2 x 170vh of travel.
-     Was 100vh per transition; at that rate the hand-over occupied most of
-     each plate's time on screen and the section read as a continuous
-     dissolve rather than three photographs. 170vh gives each plate a long
-     clean hold and leaves the cross-fade a short, decisive moment inside
-     it. The magnet in cine's sticky mode does the dwelling; this gives it
-     room to dwell in.
-     The section carried 223 words in 1.49 screens before — 150 words per
-     screen, the densest block on the page against pinned sections running
-     13. At ~3.9 screens it sits near 58, inside the 31-98 band. */
-  .eco-outer{position:relative;height:440vh;background:var(--mineral);}
-  .eco-stage{position:sticky;top:0;height:100vh;overflow:hidden;}
-  /* Each item is plate + veil + copy. On desktop all three are stacked in the
-     same box and cross-faded; on a handset the stage unpins and each item
-     takes a viewport of its own. Two scrubbed values, not one: --pw drives
-     the photograph (a plain triangle, because two frames at half strength
-     read as a dissolve) and --tw drives the copy (sharpened well inside its
-     own stop and gone before the next, because TEXT cannot cross-fade with
-     its successor — it double-exposes). */
-  .eco-item{position:absolute;inset:0;}
-  .eco-plate{position:absolute;inset:0;background-size:cover;background-repeat:no-repeat;
-    opacity:var(--pw,0);transform:scale(calc(1 + 0.055 * (1 - var(--pw,0))));
-    transform-origin:52% 50%;will-change:opacity,transform;}
-  /* directional only. The ivory melt lives on .eco-outer, which scrolls —
-     inside the sticky stage it painted a pale band on every frame. */
-  .eco-veil{position:absolute;inset:0;pointer-events:none;opacity:var(--pw,0);
-    background:
-      linear-gradient(100deg,
-        rgba(8,7,6,0.84) 0%, rgba(8,7,6,0.74) 20%, rgba(8,7,6,0.48) 34%,
-        rgba(8,7,6,0.20) 44%, rgba(8,7,6,0.04) 54%, rgba(8,7,6,0.00) 62%),
-      linear-gradient(180deg,
-        rgba(8,7,6,0.26) 0%, rgba(8,7,6,0.00) 16%,
-        rgba(8,7,6,0.00) 82%, rgba(8,7,6,0.30) 100%);}
-  .eco-outer::before,.eco-outer::after{content:'';position:absolute;left:0;right:0;
-    height:14vh;z-index:4;pointer-events:none;}
-  .eco-outer::before{top:0;background:linear-gradient(180deg,
-    var(--warm-white) 0%, rgba(247,246,242,0.55) 34%, rgba(247,246,242,0) 100%);}
-  .eco-outer::after{bottom:0;background:linear-gradient(0deg,
-    var(--warm-white) 0%, rgba(247,246,242,0.55) 34%, rgba(247,246,242,0) 100%);}
-  .eco-panel{position:absolute;left:6%;top:50%;width:min(30vw,470px);z-index:3;
-    transform:translateY(-50%);}
-  /* THE COPY ARRIVES IN SEQUENCE, not as one block fading up 18px.
-     Each part reads --tw (the item's own text-arrival value, written per
-     frame by the driver) through its own window, so the step lands first,
-     then the title, then the paragraph, then the chips, then the link.
-     It is still a pure function of the paced scroll value — there is no
-     transition and no timer anywhere, so scrubbing back up retraces the
-     same frames rather than replaying. */
-  .eco-step  { --a: clamp(0, calc( var(--tw,0)         / 0.32), 1); }
-  .eco-title { --a: clamp(0, calc((var(--tw,0) - 0.07) / 0.34), 1); }
-  .eco-text  { --a: clamp(0, calc((var(--tw,0) - 0.15) / 0.36), 1); }
-  .eco-feat  { --a: clamp(0, calc((var(--tw,0) - 0.23) / 0.38), 1); }
-  .eco-learn { --a: clamp(0, calc((var(--tw,0) - 0.31) / 0.40), 1); }
-  .eco-step, .eco-title, .eco-text, .eco-feat, .eco-learn{
-    opacity:var(--a,1);
-    transform:translateY(calc((1 - var(--a,1)) * 30px));
-    will-change:opacity,transform;}
-  .eco-step{font-size:var(--t-micro);letter-spacing:0.22em;text-transform:uppercase;
-    color:rgba(247,246,242,0.95);display:flex;align-items:center;gap:13px;}
-  .eco-step::before{content:'';display:block;width:26px;height:1px;
-    background:currentColor;opacity:0.5;flex:none;}
-  .eco-title{font-family:'Cormorant Garamond',serif;font-weight:300;
-    font-size:clamp(32px,min(3.6vw,6.4vh),58px);line-height:1.04;letter-spacing:-0.018em;
-    color:var(--warm-white);margin:clamp(12px,1.8vh,22px) 0 0;
-    text-shadow:0 2px 26px rgba(8,7,6,0.55);}
-  .eco-text{font-size:var(--t-meta);line-height:1.68;
-    color:rgba(247,244,238,0.94);margin:clamp(12px,1.8vh,20px) 0 0;max-width:34ch;
-    text-shadow:0 1px 18px rgba(8,7,6,0.5);}
-  .eco-feat{list-style:none;margin:clamp(14px,2vh,22px) 0 0;padding:0;
-    display:flex;flex-wrap:wrap;gap:7px 8px;}
-  .eco-feat li{font-size:var(--t-nano);letter-spacing:0.14em;text-transform:uppercase;
-    color:rgba(247,244,238,0.92);border:1px solid rgba(247,244,238,0.38);
-    background:rgba(8,7,6,0.22);backdrop-filter:blur(2px);
-    border-radius:2px;padding:6px 11px;}
-  .eco-learn{display:inline-flex;align-items:center;gap:9px;margin-top:clamp(16px,2.4vh,26px);
-    font-size:var(--t-micro);letter-spacing:0.14em;text-transform:uppercase;text-decoration:none;
-    color:var(--warm-white);border-bottom:1px solid rgba(247,244,238,0.34);padding-bottom:5px;
-    transition:border-color 0.3s var(--ease);}
-  .eco-learn:hover{border-bottom-color:var(--warm-white);}
-  .eco-learn span{transition:transform 0.35s var(--ease);}
-  .eco-learn:hover span{transform:translateX(3px);}
-  .eco-marks{position:absolute;left:6%;bottom:calc(4vh + 26px);z-index:5;display:flex;gap:10px;}
-  .eco-mark{display:block;width:34px;}
-  .eco-mark > span{display:block;height:1px;background:rgba(247,244,238,0.30);position:relative;}
-  .eco-mark > span::after{content:'';position:absolute;inset:0;background:var(--warm-white);
-    transform:scaleX(var(--w,0));transform-origin:left;}
-
-  @media (max-width:900px){
-    /* Unpinned: one plate per viewport, copy over its own plate. A 30vw
-       column has no meaning at 390, and a pinned three-state stage on a
-       handset is three screens the reader cannot leave. */
-    .eco-outer{height:auto;background:none;}
-    .eco-outer::before,.eco-outer::after{display:none;}
-    .eco-stage{position:static;height:auto;overflow:visible;}
-    .eco-item{position:relative;inset:auto;height:88vh;}
-    .eco-plate{opacity:1;transform:none;}
-    /* Item one has a PORTRAIT companion frame — eco-app-mobile.jpg, the same
-       scene recomposed vertically. Cover-cropping the 2.21 landscape into a
-       0.52 phone box shows only its centre 24%, which is the phone alone.
-       Items two and three have no portrait variant, so their crop is aimed
-       by hand at the subject instead. */
-    .eco-item:nth-child(1) .eco-plate{background-image:url('images/eco-app-mobile.jpg')!important;
-      background-position:center 50%;}
-    .eco-item:nth-child(2) .eco-plate{background-position:32% 46%;}
-    .eco-item:nth-child(3) .eco-plate{background-position:56% 52%;}
-    /* The copy takes the lower band, not the centre. Centred, it printed
-       straight over the phone on item one and over the figure on item two —
-       the veil cannot be strong enough to fix that without killing the
-       photograph. Subject above, type below, gradient heaviest under it. */
-    /* Weighted to the band the TYPE occupies (bottom 6% up to about 35%),
-       not simply darkest at the floor. At a flat 0.92 base the footprints on
-       item three — the whole subject of that frame — disappeared into it. */
-    .eco-veil{opacity:1;background:
-      linear-gradient(180deg,
-        rgba(8,7,6,0.30) 0%, rgba(8,7,6,0.10) 18%, rgba(8,7,6,0.08) 34%,
-        rgba(8,7,6,0.44) 54%, rgba(8,7,6,0.74) 72%, rgba(8,7,6,0.80) 88%,
-        rgba(8,7,6,0.70) 100%);}
-    .eco-panel{position:absolute;left:7%;right:7%;top:auto;bottom:6%;width:auto;
-      opacity:1;transform:none;}
-    /* --tw is only written while the desktop stage is scrubbing; on a
-       handset the plates are static, so the staggered windows above would
-       leave every part of the copy at 0. Pinned open here. */
-    .eco-step, .eco-title, .eco-text, .eco-feat, .eco-learn{
-      --a:1;opacity:1;transform:none;}
-    /* The chips are secondary and they are what makes the panel tall — three
-       wrapped rows, ~120px. Dropped here so the copy block fits inside one
-       clear band whichever end of the frame that band is. The paragraph
-       carries the meaning on a handset. */
-    .eco-feat{display:none;}
-    /* Item one is the exception: its portrait frame puts the phone at
-       y 35%-88%, so its clear band is the TOP, not the bottom. Copy and veil
-       both flip for it. The other two have their subject high and their
-       clear ground low. */
-    .eco-item:nth-child(1) .eco-panel{top:5%;bottom:auto;}
-    .eco-item:nth-child(1) .eco-veil{background:
-      linear-gradient(180deg,
-        rgba(8,7,6,0.86) 0%, rgba(8,7,6,0.78) 20%, rgba(8,7,6,0.48) 33%,
-        rgba(8,7,6,0.12) 44%, rgba(8,7,6,0.00) 56%,
-        rgba(8,7,6,0.00) 80%, rgba(8,7,6,0.30) 100%);}
-    .eco-marks{display:none;}
-    .eco-title{font-size:clamp(28px,8vw,36px);}
-    .eco-text{font-size:var(--t-meta);max-width:none;}
-    .eco-feat li{font-size:var(--t-nano);padding:5px 9px;}
-  }
-
   .section{background:var(--warm-white);padding:16vh 8%;max-width:none;margin:0;}
   .section > *{max-width:1360px;margin-left:auto;margin-right:auto;}
   .eco-kicker{display:flex;justify-content:center;align-items:center;gap:14px;
-    font-size:var(--t-micro);letter-spacing:0.22em;color:#8a7f6d;text-transform:uppercase;padding-left:0.22em;
+    font-size:11px;letter-spacing:0.22em;color:#8a7f6d;text-transform:uppercase;padding-left:0.22em;
     opacity:0;transform:translateY(14px);transition:opacity 0.8s ease, transform 0.8s ease;}
   .eco-kicker::before{content:'';display:block;width:0;height:1px;background:currentColor;opacity:0.55;
     transition:width 1.1s var(--ease) 0.35s;}
@@ -886,12 +471,7 @@
   .eco-headline{text-align:center;font-family:'Cormorant Garamond',serif;font-weight:300;color:var(--charcoal);
     font-size:clamp(36px,5.4vw,74px);line-height:1.06;letter-spacing:-0.008em;max-width:16ch;margin:30px auto 0;}
   .eco-headline em{font-style:italic;color:var(--gold);}
-  /* .eco-headline is shared with the dark mobile Track/Journey fallbacks
-     (gold reads correctly there), so the light carry is scoped to .on-light
-     ancestors only — the Ecosystem section itself and the Principle mobile
-     fallback. */
-  .on-light .eco-headline em{color:var(--clay-ink);}
-  .eco-sub{text-align:center;color:#5c554c;font-size:var(--t-body);line-height:1.9;max-width:620px;margin:34px auto 0;
+  .eco-sub{text-align:center;color:#5c554c;font-size:16px;line-height:1.9;max-width:620px;margin:34px auto 0;
     opacity:0;transform:translateY(14px);transition:opacity 0.9s ease 0.2s, transform 0.9s ease 0.2s;}
 
   .section.in-view .eco-kicker,.section.in-view .eco-sub,.section.in-view .click-cue{opacity:1;transform:translateY(0);}
@@ -1001,6 +581,16 @@
   .divider.light .divider-line{background:rgba(43,38,35,0.2);}
   .divider.shown.light .divider-mark{opacity:0.55;}
 
+  /* Below 900px the Principle pin is replaced by its warm-stone fallback, so
+     this divider now overlays a light section and its mark and rule have to
+     invert to stay visible. No background here — it stays transparent and
+     borrows the warm stone it sits on. */
+  @media (max-width:900px){
+    .divider.divider-after-principle .divider-line{background:rgba(43,38,35,0.2);}
+    .divider.divider-after-principle .divider-mark{filter:invert(1);}
+    .divider.shown.divider-after-principle .divider-mark{opacity:0.55;}
+  }
+
   /* WHY DAOASIS */
   /* 516vh, for a true 30% slowdown.
 
@@ -1011,34 +601,12 @@
      by 39%, since the fixed 100vh subtraction inflates the ratio. Every
      timeline fraction below is unchanged; they all just take proportionally
      longer to cross. */
-  /* Heights are set from SCROLLABLE TRAVEL PER TRANSITION, not from total
-     height per beat — the 100vh the sticky viewport occupies is not scroll
-     spent on the animation, so height = 100vh + (transitions * rate).
-     The rate is 55vh. Reference points from this site's own sections:
-     web3's loop runs at 36vh/transition and is the smoothest thing here
-     (41/41 distinct frames); sanctuary's loop runs at 60. The site median
-     was ~90 and the three heroes were 208-260, which is why they read as
-     empty. 6 states = 5 transitions -> 100 + 275 = 375vh. */
-  /* 560vh, not 375. See the CARD_WINS note for the arithmetic: this section
-     has more happening per beat than any other on the page — three cards
-     each with a four-phase path, the palm assembling behind them and the
-     copy receding — and at 55vh per transition those phases ran into one
-     another and the whole thing skimmed past. 92vh per transition is the
-     site median and is what this one actually needs. */
-  .pin{position:relative;height:560vh;}
+  .pin{position:relative;height:580vh;}
   .pin.reduced-static{height:auto;}
-  /* SAND, NOT SPACE.
-     This was a deep-space radial with a starfield canvas over it and warm
-     gold dust resolving into the mark — which is a beautiful effect and also
-     the single most "crypto landing page" frame on the site: stars, gold,
-     glass. It is now a warm paper ground and the same mark assembles out of
-     DARK grains, so it reads as sand settling into shape rather than a
-     constellation. Same choreography, same particle system, same timing —
-     only the material changed. Sand is already one of the brand's own
-     metaphors (foundation), which the space treatment never was. */
   .stage{position:sticky;top:0;height:100vh;overflow:hidden;
-    background:radial-gradient(ellipse at 45% 26%, #FDFCF9 0%, #F6F3EC 50%, #E9E2D6 100%);}
+    background:radial-gradient(ellipse at 45% 28%, #0d1a26 0%, #060c12 55%, #030609 100%);}
   .pin.reduced-static .stage{position:relative;}
+  #starfield{position:absolute;inset:0;z-index:0;}
   /* FULL BLEED. The noise field has to fill the whole frame — that is the
      "mess" the section resolves out of. The resolved mark is kept clear of
      the copy and the card dock by placing it in WORLD space at runtime
@@ -1053,26 +621,26 @@
 
   .overlay{position:relative;z-index:10;height:100%;display:flex;flex-direction:column;justify-content:center;
     padding:0 8%;pointer-events:none;}
-  /* The copy stays visible for the whole section, so it needs a guard
-     against the grains resolving underneath it — inverted with the ground:
-     a soft paper wash lifting the type off the sand, confined to the left
-     ~55% so it never touches the mark or the dock. */
+  /* Now that the copy stays visible for the whole section (it used to fade
+     out of the mark's way), it needs its own contrast guard against the dust
+     resolving underneath it. Confined to the left ~55% so it never dulls the
+     mark itself or the card dock. */
   .overlay::before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;
-    background:linear-gradient(90deg, rgba(253,252,249,0.92) 0%, rgba(253,252,249,0.68) 26%, transparent 45%);}
+    background:linear-gradient(90deg, rgba(3,6,9,0.55) 0%, rgba(3,6,9,0.30) 38%, transparent 58%);}
 
-  .why-kicker{font-size:var(--t-micro);letter-spacing:0.22em;color:var(--clay-ink);text-transform:uppercase;
+  .why-kicker{font-size:11px;letter-spacing:0.22em;color:var(--gold);text-transform:uppercase;
     display:flex;align-items:center;gap:14px;padding-left:0.22em;
     opacity:1;transition:opacity 0.5s ease;}
   .why-kicker::before{content:'';display:block;width:28px;height:1px;background:currentColor;opacity:0.55;}
-  .why-headline{font-family:'Cormorant Garamond',serif;font-weight:300;color:var(--charcoal);
+  .why-headline{font-family:'Cormorant Garamond',serif;font-weight:300;color:var(--warm-white);
     font-size:clamp(36px,5.4vw,74px);line-height:1.06;letter-spacing:-0.008em;margin-top:28px;max-width:13ch;
     opacity:1;transition:opacity 0.5s ease;}
-  .why-headline em{font-style:italic;color:var(--clay-ink);}
-  .lede{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;color:#4a443c;
+  .why-headline em{font-style:italic;color:var(--gold);}
+  .lede{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;color:rgba(247,244,238,0.74);
     font-size:clamp(19px,2.1vw,26px);line-height:1.45;margin-top:30px;max-width:22ch;
     opacity:1;transition:opacity 0.5s ease;}
   .body-copy{margin-top:22px;max-width:460px;opacity:1;}
-  .body-copy p{font-size:var(--t-body);color:#5c554c;line-height:1.7;margin-bottom:0;}
+  .body-copy p{font-size:17px;color:#b0a99b;line-height:1.7;margin-bottom:0;}
   .why-cta{margin-top:38px;pointer-events:auto;}
   .why-cta .btn{padding:15px 34px;}
 
@@ -1083,144 +651,67 @@
      citation-heavy footer as the thing that gives each card its identity,
      and the glass is cleaner — less blur, a crisper hairline — so it reads
      as one confident object instead of a translucent smear. */
-  /* Wider and further in from the edge than it was (was right:6% and
-     min(31vw,400px)). The cards are the evidence in this section and they
-     were reading as a sidebar. placeLogo() derives the palm's centre from
-     these same two numbers — if they change, change them there too. */
-  .panels{position:absolute;top:7%;bottom:7%;right:10%;left:auto;width:min(34vw,470px);z-index:15;
+  .panels{position:absolute;top:7%;bottom:7%;right:6%;left:auto;width:min(31vw,400px);z-index:15;
     pointer-events:none;display:flex;flex-direction:column;justify-content:space-between;}
-  /* Paper, not glass. Backdrop-blur over a light ground is just a grey
-     smudge, and the brief rules glassmorphism out anyway — so the cards are
-     now flat warm paper with a hairline and a soft, wide, low-opacity
-     shadow. That reads as a physical card lying on the sand rather than a
-     translucent UI panel floating over it. */
   .panel{position:relative;width:100%;
-    background:#FDFCF9;
-    border:1px solid rgba(23,21,15,0.09);border-radius:4px;
-    padding:clamp(22px,3vh,34px) clamp(24px,2vw,34px);color:var(--charcoal);
-    box-shadow:0 18px 44px rgba(60,50,35,0.10);
+    background:linear-gradient(158deg, rgba(28,24,22,0.72), rgba(14,12,11,0.62));
+    backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%);
+    border:1px solid rgba(196,138,90,0.16);border-radius:5px;
+    padding:clamp(18px,2.4vh,27px) clamp(20px,1.7vw,28px);color:var(--warm-white);
+    box-shadow:0 20px 52px rgba(0,0,0,0.44), inset 0 1px 0 rgba(247,244,238,0.05);
     opacity:0;pointer-events:auto;will-change:transform,opacity;
     transition:box-shadow 0.55s ease, border-color 0.55s ease;}
   .panel-num{position:absolute;top:clamp(14px,1.9vh,20px);right:clamp(18px,1.5vw,24px);
     font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;
-    font-size:15px;color:rgba(107,90,68,0.45);letter-spacing:0.02em;}
-  .panel .bar{width:22px;height:1px;background:var(--clay-ink);opacity:0.7;
+    font-size:15px;color:rgba(196,138,90,0.42);letter-spacing:0.02em;}
+  .panel .bar{width:22px;height:1px;background:var(--gold);opacity:0.85;
     margin-bottom:clamp(10px,1.5vh,17px);}
   .panel .stat{font-family:'Cormorant Garamond',serif;font-weight:300;
-    font-size:clamp(31px,3.05vw,48px);line-height:1.02;letter-spacing:-0.014em;color:var(--charcoal);}
-  .panel .desc{font-size:var(--t-meta);color:#5c554c;line-height:1.66;
+    font-size:clamp(27px,2.5vw,39px);line-height:1.02;letter-spacing:-0.012em;color:var(--warm-white);}
+  .panel .desc{font-size:clamp(12px,0.92vw,13.5px);color:#b3ab9e;line-height:1.62;
     margin-top:clamp(8px,1.2vh,13px);}
-  .panel .source{font-size:var(--t-nano);letter-spacing:0.1em;text-transform:uppercase;color:#8b8478;
+  .panel .source{font-size:8.5px;letter-spacing:0.1em;text-transform:uppercase;color:#75705f;
     margin-top:clamp(9px,1.4vh,15px);padding-top:clamp(7px,1vh,11px);
-    border-top:1px solid rgba(23,21,15,0.09);line-height:1.55;}
-  /* the card currently taking its turn — lifted, never a colour change big
-     enough to look like a different component */
-  .panel.panel-active{border-color:rgba(107,90,68,0.28);
-    box-shadow:0 30px 66px rgba(60,50,35,0.16);}
-  .panel.panel-active .panel-num{color:rgba(107,90,68,0.8);}
+    border-top:1px solid rgba(247,244,238,0.08);line-height:1.55;}
+  /* the card currently taking its turn — lifted, warmer edge, never a colour
+     change big enough to look like a different component */
+  .panel.panel-active{border-color:rgba(217,165,102,0.55);
+    box-shadow:0 30px 72px rgba(0,0,0,0.52), 0 0 0 1px rgba(217,165,102,0.12),
+               inset 0 1px 0 rgba(247,244,238,0.08);}
+  .panel.panel-active .panel-num{color:rgba(217,165,102,0.75);}
   /* Mobile: the resting panels show only their rule + stat (desc/source are
      toggled off by script until a panel has faded in), so the stack collapses
      to roughly a third of the stage and the full overlay copy still fits
      above it. */
-  /* ── MOBILE: THIS SECTION IS NOT PINNED ────────────────────────────────
-     Rebuilt 13 September. It used to be the desktop composition squeezed
-     into one 844px sticky stage: the palm canvas, the statement AND all
-     three statistic cards stacked in the same frame at the same time. Three
-     consequences, all of them visible on a phone and none on desktop:
-
-       1. the grains rendered straight through the headline and the lede,
-          because the copy only receded to 0.68 while the mark rose to 1.0
-          and on a handset they occupy the SAME space rather than sitting
-          side by side;
-       2. the cards had ~300px of dock for ~557px of content, so only the
-          most recent card could carry its detail and the other two showed
-          as large empty boxes with a number in them;
-       3. 4,051px of the page was held for a frame that could not be read.
-
-     It is now three beats in ordinary flow, in sequence: the statement,
-     then the mark on its own, then the three statistics in full. Nothing
-     overlaps anything, every card carries its evidence, and the reader's
-     own scroll does the pacing. */
   @media (max-width:900px){
-    .pin{height:auto;}
-    .stage{position:static;height:auto;display:flex;flex-direction:column;
-      overflow:visible;padding-bottom:2vh;}
-    .overlay{position:static;order:1;}
-    /* the mark gets a band of its own — this is the first time on a phone
-       that it has been the only thing in the frame */
-    /* 31vh, not 54: the scene's camera sits the mark high in its frame, so
-       a taller band only adds empty canvas beneath it — measured, a 340px
-       band put 35px above the mark and 220px below. */
-    /* 25vh, and the mark takes almost all of it. At 31vh with the mark at
-       0.82 of the band height it rendered ~130px inside 262px, so half the
-       band was empty paper and the section read as three separated blocks
-       rather than one composition. */
-    #canvas{position:static;order:2;width:100%;height:20vh;max-height:172px;
-      margin-top:1.6vh;display:block;}
-    .panels{position:static;order:3;width:auto;left:auto;right:auto;
-      top:auto;bottom:auto;transform:none;margin:2vh 8% 0;gap:12px;
-      display:flex;flex-direction:column;}
-    /* opacity and transform are written inline by setPanel on desktop;
-       setPanel returns early on mobile now, and the reveal below takes over */
-    .panel{padding:20px 22px;border-radius:3px;opacity:0;transform:translateY(16px);
-      transition:opacity 0.7s var(--ease), transform 0.7s var(--ease);}
-    .panel.in{opacity:1;transform:none;}
-    .panel-num{top:13px;right:17px;font-size:13px;}
-    .panel .bar{margin-bottom:13px;width:20px;}
-    .panel .stat{font-size:24px;}
-    .panel .desc{font-size:var(--t-meta);line-height:1.68;margin-top:13px;}
-    .panel .source{font-size:var(--t-nano);margin-top:15px;padding-top:12px;letter-spacing:0.09em;}
-    /* every card carries its detail now — there is no dock to run out of.
-       .compact-hidden is a desktop-only mechanism and must not apply here. */
-    .panel .desc.compact-hidden,.panel .source.compact-hidden{display:block;}
+    .panels{width:88vw;left:50%;right:auto;transform:translateX(-50%);top:44%;bottom:3.5%;gap:8px;}
+    .panel{padding:18px 20px;border-radius:3px;}
+    .panel-num{top:12px;right:16px;font-size:13px;}
+    .panel .bar{margin-bottom:12px;width:20px;}
+    .panel .stat{font-size:23px;}
+    .panel .desc{font-size:12.5px;line-height:1.65;margin-top:12px;}
+    .panel .source{font-size:8.5px;margin-top:14px;padding-top:11px;letter-spacing:0.09em;}
+    .panel .desc.compact-hidden,.panel .source.compact-hidden{display:none;}
   }
-  /* Reduced motion SHORTENS this reveal; it does not remove it. The rule
-     here used to be opacity:1 / transition:none, which pinned all three
-     cards visible from first paint — so on any machine reporting "reduce"
-     (Windows' Show-animations-off does, and so does headless Chrome) this
-     section had no card animation at all.
-     Same fault the 3 September cine.js pass fixed: a fade-up triggered by
-     the reader's own scroll is not autonomous motion, and switching it off
-     leaves the section dead rather than calmer. Genuinely autonomous
-     motion — the intro, ambient loops, decorative pulses — is still
-     disabled elsewhere, which is where that belongs. */
-  @media (max-width:900px) and (prefers-reduced-motion:reduce){
-    .panel{transition-duration:0.25s;}
+  /* Short handsets (iPhone SE and similar). The expanded card is the tallest
+     thing in the dock and at 667px of stage it overran the bottom by a hair,
+     so the detail type tightens rather than the citation being dropped —
+     the source line is what makes the statistic credible and it stays. */
+  @media (max-width:900px) and (max-height:720px){
+    .panel{padding:14px 17px;}
+    .panel .bar{margin-bottom:9px;}
+    .panel .stat{font-size:20px;}
+    .panel .desc{font-size:11.5px;line-height:1.5;margin-top:9px;}
+    .panel .source{font-size:8px;margin-top:9px;padding-top:8px;line-height:1.45;}
   }
-  /* SHORT HANDSETS (iPhone SE, and any 700px-tall window). Measured at
-     390x659: the statement, the mark and their margins came to 529px, so
-     the first statistic card began at y=619 in a 659px viewport — on screen,
-     below the reveal line, and therefore blank. The reader met a screen of
-     copy, a mark, and then nothing.
-     Everything above the cards tightens here so the first one is properly
-     in view rather than clinging to the bottom edge. */
-  @media (max-width:900px) and (max-height:740px){
-    .lede{font-size:15px;line-height:1.34;margin-top:14px;}
-    .body-copy{margin-top:12px;}
-    .body-copy p{font-size:var(--t-body);line-height:1.6;}
-    .why-cta{margin-top:16px;}
-    #canvas{height:16vh;max-height:118px;margin-top:1.2vh;}
-    .panels{margin-top:1.4vh;gap:10px;}
-    .panel{padding:17px 19px;}
-    .panel .stat{font-size:21px;}
-    .panel .desc{font-size:var(--t-meta);line-height:1.55;margin-top:9px;}
-    .panel .source{font-size:var(--t-nano);margin-top:10px;padding-top:8px;}
-  }
-  /* Short handsets (iPhone SE and similar, 667px tall). The clear band above
-     the product is only 142px there rather than 198px, and measured the
-     stack finished flush against the phone at both ends — 2px at the top and
-     2px at the foot. Everything tightens rather than anything being dropped;
-     both calls to action survive. */
-  @media (max-width:900px) and (max-height:700px){
-    .kicker{font-size:var(--t-micro);letter-spacing:0.16em;gap:9px;}
-    .kicker::before{width:16px;}
-    .h1{font-size:26px;margin-top:0.8vh;}
-    /* the sentence is what the 161px budget cannot carry on a 667px screen —
-       the headline says the same thing and is the one that has to survive */
-    .sub{display:none;}
-    .ctas{margin-top:1.2vh;gap:6px;}
-    .ctas .btn{padding:11px 16px;font-size:var(--t-micro);}
-  }
+
+  .scroll-progress{position:absolute;bottom:6%;left:8%;z-index:16;display:flex;align-items:center;gap:16px;
+    opacity:0;transition:opacity 0.5s ease;}
+  .scroll-progress-track{width:150px;height:1px;background:rgba(247,244,238,0.18);position:relative;}
+  .scroll-progress-fill{position:absolute;left:0;top:0;height:100%;background:var(--gold);width:0%;
+    box-shadow:0 0 12px rgba(196,138,90,0.6);}
+  .scroll-progress-label{font-size:9.5px;letter-spacing:0.24em;color:#7a746a;text-transform:uppercase;}
+  @media (max-width:900px){.scroll-progress{display:none;}}
 
   @media (max-width:900px){
     .overlay{padding:calc(var(--nav-h) + 3.5vh) 8% 0;align-items:flex-start;justify-content:flex-start;text-align:left;}
@@ -1228,7 +719,7 @@
     .why-headline{font-size:clamp(28px,7.4vw,38px);margin-top:18px;max-width:11ch;}
     .lede{font-size:16px;line-height:1.4;margin-top:18px;max-width:100%;}
     .body-copy{margin-top:16px;max-width:100%;}
-    .body-copy p{font-size:var(--t-body);line-height:1.7;}
+    .body-copy p{font-size:14px;line-height:1.7;}
     /* The cards own the lower half of the stage here (see .panels), so the
        CTA — which has no fixed spot to reserve on a stacked mobile layout —
        stays desktop-only. The waitlist is one scroll away either way: the
@@ -1239,15 +730,7 @@
   /* TRACK WHAT MATTERS */
   /* 4 callouts, each with a paragraph to read — at 260vh they arrived at
      40vh/beat, faster than the copy could be taken in */
-  /* 6 states = 5 transitions -> 100 + 5*55 = 375vh. Almost exactly the old
-     372vh, and that is deliberate: at 68vh/transition this section was
-     already near the site's best rate, so it was never too long. What it
-     lacked was an ENDING. The fourth callout used to complete at cur = 1.0
-     — the exact frame the sticky releases — so the section was evicted
-     mid-arrival while the Journey below was already fully revealed. The
-     sixth state is a closing hold: all four callouts and the dashboard sit
-     finished and alone before anything else begins. */
-  .pin3{position:relative;height:375vh;}
+  .pin3{position:relative;height:372vh;}
   /* Callouts must escape the dashboard vertically, but the right-hand card
      used to hang past the viewport and give the whole page a horizontal
      scroll. `overflow-x:clip` with `overflow-y:visible` is the one legal
@@ -1257,7 +740,7 @@
      hangs into. Without it the card runs out of the stage and collides with
      the section divider below. */
   .stage3{position:sticky;top:0;height:100vh;overflow-x:clip;overflow-y:visible;
-    background:radial-gradient(ellipse at 50% 38%, #FDFCF9 0%, #F1EDE4 68%, #E9E2D6 100%);
+    background:radial-gradient(ellipse at 50% 40%, #211b16 0%, var(--mineral) 72%);
     display:flex;align-items:center;justify-content:center;gap:5vw;padding:0 8% 11vh;}
 
   /* TWO-PHASE COMPOSITION.
@@ -1295,22 +778,22 @@
     width:min(560px,58vw);text-align:center;pointer-events:none;
     opacity:var(--recede,0);
     display:flex;flex-direction:column;align-items:center;gap:14px;}
-  .track-runhead-k{font-size:var(--t-nano);letter-spacing:0.26em;color:var(--clay-ink);text-transform:uppercase;
+  .track-runhead-k{font-size:10px;letter-spacing:0.26em;color:var(--gold);text-transform:uppercase;
     padding-left:0.26em;}
-  .track-runhead-t{font-family:'Cormorant Garamond',serif;font-weight:300;color:var(--charcoal);
+  .track-runhead-t{font-family:'Cormorant Garamond',serif;font-weight:300;color:var(--warm-white);
     font-size:clamp(22px,2.4vw,34px);line-height:1.12;letter-spacing:-0.008em;}
-  .track-runhead-t em{font-style:italic;color:var(--clay-ink);}
+  .track-runhead-t em{font-style:italic;color:var(--gold);}
   /* the pin is desktop-only below 1100, but keep this out of the way if the
      stage is ever shown shorter than the cards need */
   @media (max-height:700px){ .track-runhead{top:3%;} }
-  .track-kicker{font-size:var(--t-micro);letter-spacing:0.22em;color:var(--clay-ink);text-transform:uppercase;
+  .track-kicker{font-size:11px;letter-spacing:0.22em;color:var(--gold);text-transform:uppercase;
     display:flex;align-items:center;gap:14px;padding-left:0.22em;opacity:1;}
   .track-kicker::before{content:'';display:block;width:28px;height:1px;background:currentColor;opacity:0.55;}
-  .track-headline{font-family:'Cormorant Garamond',serif;font-weight:300;color:var(--charcoal);
+  .track-headline{font-family:'Cormorant Garamond',serif;font-weight:300;color:var(--warm-white);
     font-size:clamp(30px,3.8vw,52px);line-height:1.08;letter-spacing:-0.008em;margin-top:26px;
     opacity:1;}
-  .track-headline em{font-style:italic;color:var(--clay-ink);}
-  .track-lede{font-size:var(--t-body-s);color:#5c554c;line-height:1.9;margin-top:26px;max-width:34ch;
+  .track-headline em{font-style:italic;color:var(--gold);}
+  .track-lede{font-size:15px;color:#a49d90;line-height:1.9;margin-top:26px;max-width:34ch;
     opacity:1;}
 
   /* The 62vh term is what makes this survive short viewports. Sized on width
@@ -1322,13 +805,11 @@
      one with a hole in it. --shift is measured from the real column and gap
      on resize, so this is exact at every width instead of a guessed number. */
   .dash-wrap{position:relative;z-index:10;width:min(560px,40vw,62vh);aspect-ratio:1004/901;flex-shrink:0;
-    opacity:var(--enter,1);
-    transform:translateX(calc(var(--recede,0) * var(--shift,0px) * -1))
-              translateY(calc((1 - var(--enter,1)) * 28px));}
+    opacity:1;transform:translateX(calc(var(--recede,0) * var(--shift,0px) * -1));}
   .dash-img{width:100%;height:100%;object-fit:cover;border-radius:4px;display:block;
-    box-shadow:0 34px 88px rgba(60,50,35,0.20);}
+    box-shadow:0 40px 110px rgba(0,0,0,0.6);}
   .dash-wrap::after{content:'';position:absolute;inset:0;pointer-events:none;border-radius:4px;
-    box-shadow:inset 0 0 0 1px rgba(23,21,15,0.10);}
+    box-shadow:inset 0 0 0 1px rgba(247,244,238,0.1);}
 
   /* SCRUBBED off the paced scroll value (--w), not transitioned. A 0.6s
      opacity transition fired by a class flip is a second clock running
@@ -1336,9 +817,8 @@
      frames across 2.7 viewports of pin. */
   .callout{position:absolute;display:flex;align-items:center;z-index:20;
     opacity:var(--w,0);pointer-events:none;}
-  .co-dot{width:11px;height:11px;border-radius:50%;background:var(--clay-ink);flex-shrink:0;position:relative;
-    box-shadow:0 0 0 calc(3px * var(--w,0)) rgba(107,90,68,0.16);}
-  .co-dot::after{content:'';position:absolute;inset:-7px;border-radius:50%;border:1px solid rgba(107,90,68,0.5);opacity:0;}
+  .co-dot{width:9px;height:9px;border-radius:50%;background:var(--gold);flex-shrink:0;position:relative;}
+  .co-dot::after{content:'';position:absolute;inset:-7px;border-radius:50%;border:1px solid rgba(196,138,90,0.55);opacity:0;}
   .callout.show .co-dot::after{animation:coPulse 1.6s ease-out 0.15s 1;}
   @keyframes coPulse{0%{transform:scale(0.5);opacity:0.9;}100%{transform:scale(2.6);opacity:0;}}
   .co-line{flex-shrink:0;}
@@ -1346,34 +826,24 @@
      own `transform` for POSITIONING, so a rise on .callout would either be
      overridden or would drag the card off the dashboard feature it points
      at. Scaling the card leaves the dot and connector exactly on anchor. */
-  /* POP. The card used to scale 0.955 -> 1.0 — a 4.5% nudge that was
-     invisible at this size. It now arrives from 0.90 with a 16px lift, and
-     its shadow deepens as it lands, so the card reads as coming forward off
-     the photograph rather than simply fading up.
-     The transform lives on .co-card, never on .callout: .callout carries its
-     own transform for POSITIONING, so animating it would drag the card off
-     the dashboard feature its dot is anchored to. */
-  .co-card{width:380px;background:#FDFCF9;
-    border:1px solid rgba(23,21,15,0.10);border-radius:5px;padding:26px 30px;color:var(--charcoal);flex-shrink:0;
-    box-shadow:0 calc(14px + 16px * var(--w,0)) calc(34px + 30px * var(--w,0))
-               rgba(60,50,35,calc(0.06 + 0.10 * var(--w,0)));
-    transform:translateY(calc((1 - var(--w,0)) * 16px))
-              scale(calc(0.90 + 0.10 * var(--w,0)));
-    transform-origin:center;}
-  .co-label{font-size:var(--t-micro);letter-spacing:0.22em;color:var(--clay-ink);text-transform:uppercase;}
-  .co-text{font-size:var(--t-body-s);color:#544d44;line-height:1.72;margin-top:14px;}
+  .co-card{width:320px;background:rgba(20,17,15,0.72);backdrop-filter:blur(16px);
+    border:1px solid rgba(247,244,238,0.1);border-radius:4px;padding:22px 24px;color:var(--warm-white);flex-shrink:0;
+    box-shadow:0 30px 80px rgba(0,0,0,0.5);
+    transform:scale(calc(0.955 + 0.045 * var(--w,0)));}
+  .co-label{font-size:10px;letter-spacing:0.24em;color:var(--gold);text-transform:uppercase;}
+  .co-text{font-size:13.5px;color:#a49d90;line-height:1.8;margin-top:12px;}
   /* .show now carries ONLY the arrival pulse (.co-dot::after). Opacity is
      scrubbed on .callout above; a `.callout.show{opacity:1}` here would
      outrank it and put every reached callout back on a hard cut. */
 
   .callout.co-dir-right{flex-direction:row;}
-  .callout.co-dir-right .co-line{width:22px;height:1px;background:repeating-linear-gradient(90deg, rgba(107,90,68,0.6) 0 4px, transparent 4px 8px);}
+  .callout.co-dir-right .co-line{width:22px;height:1px;background:repeating-linear-gradient(90deg, rgba(196,138,90,0.65) 0 4px, transparent 4px 8px);}
   .callout.co-dir-left{flex-direction:row-reverse;}
-  .callout.co-dir-left .co-line{width:22px;height:1px;background:repeating-linear-gradient(90deg, rgba(107,90,68,0.6) 0 4px, transparent 4px 8px);}
+  .callout.co-dir-left .co-line{width:22px;height:1px;background:repeating-linear-gradient(90deg, rgba(196,138,90,0.65) 0 4px, transparent 4px 8px);}
   .callout.co-dir-up{flex-direction:column-reverse;align-items:flex-start;}
-  .callout.co-dir-up .co-line{width:1px;height:30px;background:repeating-linear-gradient(180deg, rgba(107,90,68,0.6) 0 4px, transparent 4px 8px);}
+  .callout.co-dir-up .co-line{width:1px;height:30px;background:repeating-linear-gradient(180deg, rgba(196,138,90,0.65) 0 4px, transparent 4px 8px);}
   .callout.co-dir-down{flex-direction:column;align-items:center;}
-  .callout.co-dir-down .co-line{width:1px;height:30px;background:repeating-linear-gradient(180deg, rgba(107,90,68,0.6) 0 4px, transparent 4px 8px);}
+  .callout.co-dir-down .co-line{width:1px;height:30px;background:repeating-linear-gradient(180deg, rgba(196,138,90,0.65) 0 4px, transparent 4px 8px);}
 
   /* THE LEADER LINES CLEAR THE IMAGE.
 
@@ -1412,14 +882,12 @@
   .callout.co3 .co-line{width:200px;}
   /* mid-desktop widths leave little room to the right of the dashboard */
   @media (max-width:1560px){
-    .co-card{width:340px;padding:23px 26px;}
+    .co-card{width:288px;}
   }
   /* Below ~1200 the dashboard is width-limited (40vw), so the flanks lose
      more than the image does and a 288px card ran off the left edge. */
   @media (max-width:1200px){
-    .co-card{width:268px;padding:19px 21px;}
-    .co-text{font-size:var(--t-body-s);line-height:1.66;margin-top:11px;}
-    .co-label{font-size:var(--t-micro);}
+    .co-card{width:262px;}
   }
   .co4{left:50%;top:92%;transform:translate(-50%,0);}
   /* co4 is the only callout that hangs BELOW the dashboard, and the space
@@ -1435,7 +903,6 @@
      and loses to `.callout.co-dir-down .co-line`, which is three. */
   .callout.co4{top:99%;}
   .callout.co4 .co-line{height:30px;}
-  @media (max-height:780px){ .callout.co4 .co-line{height:20px;} }
   .callout.co4 .co-card{width:min(440px,44vw);}
 
   .track-dots{position:absolute;bottom:6%;left:8%;z-index:16;display:flex;gap:10px;opacity:0;transition:opacity 0.5s ease;}
@@ -1455,7 +922,7 @@
       position:relative;box-shadow:0 34px 80px rgba(0,0,0,0.55);
       opacity:0;transform:translateY(24px);transition:opacity 0.9s var(--ease), transform 0.9s var(--ease);}
     .track-mobile-section.in-view .tm-dash{opacity:1;transform:translateY(0);}
-    .tm-dash::after{content:'';position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 0 1px rgba(23,21,15,0.10);}
+    .tm-dash::after{content:'';position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 0 1px rgba(247,244,238,0.1);}
     .tm-dash img{width:100%;height:100%;object-fit:cover;display:block;}
     .tm-list{max-width:520px;margin:9vh auto 0;display:flex;flex-direction:column;gap:0;}
     .tm-item{padding:26px 0;border-top:1px solid rgba(247,244,238,0.1);
@@ -1495,20 +962,7 @@
   /* THE JOURNEY */
   /* 7 stages of one short line each. 760vh gave 94vh per stage — by far the
      slowest beat on the page, and the section that most read as dragging. */
-  /* 7 states = 6 transitions -> 100 + 6*55 = 430vh (was 576 at 79vh). */
-  .pin4{position:relative;height:430vh;}
-  /* NO SEAM ELEMENT. Two attempts at one (34vh, then 10vh) both read as a
-     white hole rather than as a beat, and the reason is worth recording:
-     an empty band between two sections is not stillness, it is absence.
-     Worse, it painted a THIRD tone — flat --warm-white between pin3's warm
-     gradient tail above and the photograph's hard dark edge below — so it
-     announced itself as a band rather than disappearing.
-     The stillness is already fully provided by pin3's closing hold, in
-     which the finished composition sits alone for ~1000px. The separation
-     the seam was trying to create is provided by the sticky handover
-     itself: pin3's stage rides up as pin4's photograph rises behind it.
-     What actually needed fixing was only the OVERLAP, and that is handled
-     by gating the Journey header on pin3's exit — see the tick() note. */
+  .pin4{position:relative;height:576vh;}
   /* Three explicit bands, not "centre everything and overlay a card".
      Row 1 header, row 2 the card, row 3 the track. The card used to be
      absolutely centred on the stage, which put it straight on top of the
@@ -1561,7 +1015,7 @@
     padding:clamp(52px,8.5vh,86px) 5% clamp(40px,6vh,64px);}
 
   .journey-header{text-align:center;position:relative;z-index:10;margin-bottom:0;}
-  .j-kicker{font-size:var(--t-micro);letter-spacing:0.22em;color:var(--gold);text-transform:uppercase;
+  .j-kicker{font-size:11px;letter-spacing:0.22em;color:var(--gold);text-transform:uppercase;
     display:flex;justify-content:center;align-items:center;gap:14px;padding-left:0.22em;}
   .j-kicker::before,.j-kicker::after{content:'';display:block;width:28px;height:1px;background:currentColor;opacity:0.55;}
   .j-headline{font-family:'Cormorant Garamond',serif;font-weight:300;color:var(--warm-white);
@@ -1633,79 +1087,56 @@
      made six "done" stages louder than the one being read. Weight now
      goes UP with state (quiet ring -> warm ring -> lit ring) instead of
      every reached stage shouting at once. */
-  /* SCRUBBED, not class-flipped. This medallion used to carry four separate
-     CSS transitions on discrete .done/.active/.tease flips — transform
-     0.55s, stroke 0.5s, colour 0.5s and opacity 0.7s, all on bare `ease`.
-     That is four independent clocks running against the paced scroll value
-     while the rule and the comet beneath moved continuously, which is
-     exactly what read as jolty: the line slid, the medallions stepped.
-     It is also the bug the 1 September pass removed everywhere else, and
-     the reason this section scored 38/41 distinct frames where the fully
-     scrubbed ones scored 41/41.
-
-     Two continuous inputs, written every frame by the section's own paced
-     value:  --w  how LIVE this node is (1 on it, 0 at its neighbours)
-             --p  how far PAST it the reader is (0 before, 1 after)
-     The ring is three stacked inset shadows rather than a border, because
-     a border-color cannot be cross-faded between three states — first
-     shadow paints on top, so they run active / done / resting. */
   .j-dot{width:var(--medal);height:var(--medal);border-radius:50%;margin:0 auto;position:relative;
     display:flex;align-items:center;justify-content:center;
-    border:1px solid transparent;
-    /* the warm "live" fill sits OVER the resting fill with its own alpha
-       scrubbed by --w, so the two genuinely cross-fade. Two opaque
-       gradients would simply have covered one another. */
-    background:
-      radial-gradient(circle at 38% 28%,
-        rgba(112,84,56, calc(0.97 * var(--w,0))),
-        rgba(38,29,22,  calc(0.96 * var(--w,0)))),
-      radial-gradient(circle at 38% 30%, rgba(64,55,46,0.92), rgba(22,19,16,0.94));
-    transform:scale(calc(1 + 0.10 * var(--w,0)));
-    box-shadow:
-      inset 0 0 0 1px rgba(242,203,164, calc(0.95 * var(--w,0))),
-      inset 0 0 0 1px rgba(196,138,90, calc(0.58 * var(--p,0))),
-      inset 0 0 0 1px rgba(247,244,238,0.30),
-      0 0 54px -10px rgba(196,138,90, calc(0.75 * var(--w,0))),
-      0 12px 30px -14px rgba(0,0,0,0.85),
-      inset 0 1px 0 rgba(247,244,238,0.07);}
-  /* the "you are here" halo. Was an infinite 1.7s jPulse keyframe — a
-     wall-clock animation on a scroll-driven section, so it drifted while
-     the reader stood still. It is now simply a function of --w. */
-  .j-dot::after{content:'';position:absolute;inset:-9px;border-radius:50%;
-    border:1px solid rgba(196,138,90,0.5);
-    opacity:calc(0.85 * var(--w,0));
-    transform:scale(calc(0.78 + 0.22 * var(--w,0)));}
+    border:1px solid rgba(247,244,238,0.30);
+    background:radial-gradient(circle at 38% 30%, rgba(64,55,46,0.92), rgba(22,19,16,0.94));
+    box-shadow:0 12px 30px -14px rgba(0,0,0,0.85), inset 0 1px 0 rgba(247,244,238,0.07);
+    transition:transform 0.55s var(--ease),
+               border-color 0.5s ease, box-shadow 0.5s ease, background 0.5s ease;}
+  .j-dot::after{content:'';position:absolute;inset:-9px;border-radius:50%;border:1px solid rgba(196,138,90,0.5);
+    opacity:0;transform:scale(0.7);}
 
-  /* neutral -> gold -> pale gold, scrubbed. color-mix is the only way to
-     cross-fade a HUE from a custom property; the plain rgba() line above it
-     is the fallback, so anything without color-mix simply gets the resting
-     colour rather than nothing. Same pattern on .j-num and .j-title. */
   .j-ico{width:calc(var(--medal) * 0.42);height:calc(var(--medal) * 0.42);display:block;
-    fill:none;stroke:rgba(247,244,238,0.52);stroke-width:calc(1.4 + 0.15 * var(--w,0));
-    stroke-linecap:round;stroke-linejoin:round;}
-  .j-ico{stroke:color-mix(in srgb,
-    color-mix(in srgb, rgba(247,244,238,0.52), rgba(216,164,116,0.92) calc(var(--p,0) * 100%)),
-    #ffdcb4 calc(var(--w,0) * 100%));}
+    fill:none;stroke:rgba(247,244,238,0.52);stroke-width:1.4;
+    stroke-linecap:round;stroke-linejoin:round;
+    transition:stroke 0.5s ease;}
   /* The stage index, set above the ring as an editorial folio rather than
      inside it — the ring belongs to the icon. --numh reserves its room, so
      it never overlaps the ring however --medal is tuned. */
   .j-num{position:absolute;top:0;left:50%;transform:translateX(-50%);
     font-family:'Cormorant Garamond',serif;font-size:clamp(11px,1.05vw,13px);
-    letter-spacing:0.20em;line-height:1;color:#8a8177;}
-  .j-num{color:color-mix(in srgb,
-    color-mix(in srgb, #8a8177, rgba(196,138,90,0.85) calc(var(--p,0) * 100%)),
-    #f2cba4 calc(var(--w,0) * 100%));}
+    letter-spacing:0.20em;line-height:1;color:#8a8177;
+    transition:color 0.5s ease;}
 
-  /* The .done / .active / .tease visual rules are gone — every property
-     they set is now a continuous function of --w and --p above, so the
-     live stage still wins on all four axes (ring luminosity, warmer fill,
-     gold halo, 10% scale) but it arrives by scrubbing rather than by
-     flipping a class and waiting on a transition.
-     `.active` is still SET on the nearest node, because the hover rules
-     (.j-node:not(.active):hover) and renderCard depend on it — it simply
-     no longer carries any appearance of its own.
-     `.tease` is no longer set at all: --w on the next node already rises
-     before the reader reaches it, which is what tease was faking. */
+  .j-node.done .j-dot{border-color:rgba(196,138,90,0.58);
+    background:radial-gradient(circle at 38% 30%, rgba(76,58,42,0.94), rgba(26,21,17,0.94));
+    box-shadow:0 12px 30px -14px rgba(0,0,0,0.85), 0 0 0 1px rgba(196,138,90,0.12),
+               inset 0 1px 0 rgba(247,244,238,0.07);}
+  .j-node.done .j-ico{stroke:rgba(216,164,116,0.92);}
+  .j-node.done .j-num{color:rgba(196,138,90,0.85);}
+
+  /* The live stage. It has to win against six lit neighbours, so it moves
+     on four axes at once — ring luminosity, a warmer fill, an ambient
+     gold halo and a 10% scale — none of which alone was enough to make it
+     unmistakable at a glance. */
+  .j-node.active .j-dot{border-color:rgba(242,203,164,0.95);transform:scale(1.10);
+    background:radial-gradient(circle at 38% 28%, rgba(112,84,56,0.97), rgba(38,29,22,0.96));
+    box-shadow:0 20px 46px -16px rgba(0,0,0,0.9), 0 0 0 1px rgba(242,203,164,0.30),
+               0 0 54px -10px rgba(196,138,90,0.75),
+               inset 0 1px 0 rgba(247,244,238,0.14);}
+  .j-node.active .j-ico{stroke:#ffdcb4;stroke-width:1.55;}
+  .j-node.active .j-num{color:#f2cba4;}
+  .j-node.active .j-dot::after{opacity:1;animation:jPulse 1.7s ease-out infinite;}
+  @keyframes jPulse{0%{transform:scale(0.75);opacity:0.8;}100%{transform:scale(1.7);opacity:0;}}
+
+  .j-node{transition:opacity 0.7s ease;}
+  .j-node.tease .j-dot{border-color:rgba(196,138,90,0.38);
+    background:radial-gradient(circle at 38% 32%, rgba(58,46,35,0.82), rgba(22,18,15,0.90));
+    box-shadow:0 12px 30px -14px rgba(0,0,0,0.85), inset 0 1px 0 rgba(247,244,238,0.05);}
+  .j-node.tease .j-ico{stroke:rgba(203,185,160,0.62);}
+  .j-node.tease .j-num{color:#8c8378;}
+  .j-node.tease .j-title{color:#b3ac9f;}
 
   /* Serif titles, to match the section headline and the stage card. At
      12px sans with 0.1em tracking these read as UI labels under a 64px
@@ -1713,21 +1144,18 @@
      component rather than part of the page. */
   .j-title{font-family:'Cormorant Garamond',serif;font-weight:300;
     font-size:clamp(15px,1.32vw,20px);letter-spacing:0.005em;line-height:1.18;
-    color:#8a8377;margin-top:clamp(14px,1.9vh,21px);}
-  .j-title{color:color-mix(in srgb,
-    color-mix(in srgb, #8a8377, var(--warm-white) calc(var(--p,0) * 100%)),
-    #f6efe4 calc(var(--w,0) * 100%));}
+    color:#8a8377;margin-top:clamp(14px,1.9vh,21px);transition:color 0.5s ease;}
   /* A rule that grows as the stage is reached — the accent is earned by
-     progress rather than painted on every card at once. Width and opacity
-     are scrubbed, so it draws WITH the reader rather than on a 0.6s timer
-     that started when a class was added. */
-  .j-title::after{content:'';display:block;height:1px;margin:10px auto 0;
-    background:var(--gold);
-    width:calc((14px * var(--p,0)) + (14px * var(--w,0)));
-    opacity:calc((0.35 * var(--p,0)) + (0.50 * var(--w,0)));}
-  .j-sub{font-size:var(--t-micro);line-height:1.65;margin-top:9px;
-    opacity:calc(0.7 + 0.3 * max(var(--p,0), var(--w,0)));
-    color:color-mix(in srgb, #5f5a52, #b8b1a4 calc(max(var(--p,0), var(--w,0)) * 100%));}
+     progress rather than painted on every card at once. */
+  .j-title::after{content:'';display:block;height:1px;width:0;margin:10px auto 0;
+    background:var(--gold);opacity:0;
+    transition:width 0.6s var(--ease), opacity 0.6s ease;}
+  .j-node.done .j-title::after{width:14px;opacity:0.35;}
+  .j-node.active .j-title::after{width:28px;opacity:0.85;}
+  .j-sub{font-size:11.5px;color:#5f5a52;line-height:1.65;margin-top:9px;transition:color 0.5s ease, opacity 0.5s ease;opacity:0.7;}
+  .j-node.done .j-title,.j-node.active .j-title{color:var(--warm-white);}
+  .j-node.active .j-title{color:#f6efe4;}
+  .j-node.done .j-sub,.j-node.active .j-sub{color:#b8b1a4;opacity:1;}
 
   @media (prefers-reduced-motion: reduce){
     .j-node{transition:opacity 0.2s ease !important;}
@@ -1784,22 +1212,15 @@
     transform:translateX(-50%);width:72px;height:2px;
     background:linear-gradient(90deg,transparent,var(--gold),transparent);
     pointer-events:none;}
-  /* Scale only — opacity was removed. A CSS animation beats an inline style
-     in the cascade, so animating opacity here overrode the scrubbed swap
-     fade for 0.62s on every card change: a second clock against the paced
-     value, the same fault being removed from the medallions.
-     The card's fade is now entirely --pc (set per frame); this is only the
-     arrival accent, and it is fired on HOVER alone — a scroll-driven swap
-     already happens while the card is invisible, so it had nothing to show. */
   .j-popcard.pop{animation:jPop 0.62s var(--ease);}
   @keyframes jPop{
-    0%{transform:scale(0.955);}
+    0%{transform:scale(0.955);opacity:0;}
     55%{transform:scale(1.008);}
-    100%{transform:scale(1);}}
+    100%{transform:scale(1);opacity:1;}}
   /* #8A5A2B was the AA-safe carry of --gold for the old ivory card — the
      card is dark now, so the ordinary --gold (already tuned for dark
      grounds everywhere else on the site) applies directly. */
-  .j-pop-eyebrow{font-size:var(--t-nano);letter-spacing:0.3em;color:var(--gold);text-transform:uppercase;
+  .j-pop-eyebrow{font-size:10px;letter-spacing:0.3em;color:var(--gold);text-transform:uppercase;
     padding-left:0.3em;margin-bottom:clamp(16px,2vh,22px);}
   /* max-width in ch, and balanced: the seven texts run 62–118 characters, so
      an unconstrained centred paragraph produced everything from one long line
@@ -1811,14 +1232,7 @@
      has nothing to point at, so it is retired rather than left dangling */
   .j-pop-arrow{display:none;}
 
-  /* Scrubbed by pin4's own paced value via --jh, NOT revealed on viewport
-     entry. It used to have no opacity gate at all, so "A path that unfolds
-     at your own pace." was at full strength while the Daily Experience
-     section was still on screen above it — the two ideas were simultaneous
-     and neither owned the frame. No transition here on purpose: a
-     transition would be a second clock running against the paced value,
-     which is the bug being removed, not a nicety. */
-  .journey-header{opacity:var(--jh,0);transform:translateY(calc((1 - var(--jh,0)) * 16px));}
+  .journey-header{transition:opacity 0.55s var(--ease), transform 0.55s var(--ease);}
   /* Centred in whatever the header and card leave, rather than pinned to the
      bottom edge. Bottom-pinned it left a ~300px dead band under the card at
      900px of stage — a void bigger than the card itself, which reads as a
@@ -1894,14 +1308,14 @@
     opacity:0;transform:translateY(18px);transition:opacity 0.9s var(--ease), transform 0.9s var(--ease);}
   .community-section.in-view .cm-header{opacity:1;transform:translateY(0);}
   .cm-kicker{display:flex;justify-content:center;align-items:center;gap:14px;
-    font-size:var(--t-micro);letter-spacing:0.22em;color:#8a7f6d;text-transform:uppercase;margin-bottom:30px;padding-left:0.22em;}
+    font-size:11px;letter-spacing:0.22em;color:#8a7f6d;text-transform:uppercase;margin-bottom:30px;padding-left:0.22em;}
   .cm-kicker::before{content:'';display:block;width:0;height:1px;background:currentColor;opacity:0.55;
     transition:width 1.1s var(--ease) 0.35s;}
   .community-section.in-view .cm-kicker::before{width:28px;}
   .cm-headline{font-family:'Cormorant Garamond',serif;font-weight:300;color:var(--charcoal);
     font-size:clamp(36px,5.4vw,74px);line-height:1.06;letter-spacing:-0.008em;max-width:17ch;margin:0 auto 34px;}
-  .cm-headline em{font-style:italic;color:var(--clay-ink);}
-  .cm-sub{font-size:var(--t-body);color:#5c554c;line-height:1.9;max-width:620px;margin:0 auto;}
+  .cm-headline em{font-style:italic;color:var(--gold);}
+  .cm-sub{font-size:16px;color:#5c554c;line-height:1.9;max-width:620px;margin:0 auto;}
 
   /* the audience index */
   .cm-who{max-width:1000px;margin:0 auto 14vh;border-top:1px solid rgba(43,38,35,0.14);}
@@ -1912,10 +1326,10 @@
   .community-section.in-view .cm-who-item:nth-child(2){transition-delay:0.09s;}
   .community-section.in-view .cm-who-item:nth-child(3){transition-delay:0.18s;}
   .community-section.in-view .cm-who-item:nth-child(4){transition-delay:0.27s;}
-  .cm-who-num{font-size:var(--t-nano);letter-spacing:0.2em;color:var(--clay-ink);}
+  .cm-who-num{font-size:10px;letter-spacing:0.2em;color:var(--gold);}
   .cm-who-title{font-family:'Cormorant Garamond',serif;font-weight:400;
     font-size:clamp(22px,2.6vw,36px);line-height:1.1;color:var(--charcoal);}
-  .cm-who-sub{font-size:var(--t-nano);letter-spacing:0.22em;text-transform:uppercase;color:#8a7f6d;
+  .cm-who-sub{font-size:10.5px;letter-spacing:0.22em;text-transform:uppercase;color:#8a7f6d;
     text-align:right;line-height:1.7;max-width:24ch;}
   @media (max-width:820px){
     .cm-who-item{grid-template-columns:auto 1fr;gap:18px;padding:26px 0;}
@@ -1931,15 +1345,17 @@
   .community-section.in-view .cm-open{opacity:1;transform:translateY(0);transition-delay:0.36s;}
   .cm-open-headline{font-family:'Cormorant Garamond',serif;font-weight:300;
     font-size:clamp(26px,3.4vw,44px);line-height:1.14;letter-spacing:-0.01em;color:var(--charcoal);}
-  .cm-open-lead{font-size:var(--t-body-s);line-height:1.85;color:#5f584e;margin-top:24px;}
+  .cm-open-lead{font-size:clamp(14px,1.05vw,16px);line-height:1.85;color:#5f584e;margin-top:24px;}
   /* the three disclaimers read as a set, so they get a bounded block of
      their own rather than three loose sentences */
   .cm-open-nots{margin:32px auto 0;display:inline-flex;flex-direction:column;gap:11px;
     padding:22px 40px;border-top:1px solid rgba(43,38,35,0.14);border-bottom:1px solid rgba(43,38,35,0.14);}
-  .cm-open-not{font-size:var(--t-micro);letter-spacing:0.2em;text-transform:uppercase;color:#7d7466;}
+  .cm-open-not{font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:#7d7466;}
   .cm-open-close{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;
     font-size:clamp(18px,1.9vw,26px);line-height:1.5;color:var(--charcoal);margin-top:32px;}
-  .cm-open-close em{font-style:italic;color:var(--clay-ink);}
+  /* #8A5A2B, not --gold: the brand gold is tuned for dark grounds and lands
+     at ~2.6:1 on ivory, under the 3:1 large-text floor. Same hue, carried. */
+  .cm-open-close em{font-style:italic;color:#8A5A2B;}
   @media (max-width:820px){
     .cm-open-nots{display:flex;padding:20px 0;width:100%;}
   }
@@ -1954,18 +1370,18 @@
     box-shadow:inset 0 0 0 1px rgba(43,38,35,0.12);
     background:linear-gradient(to top, rgba(15,12,10,0.6) 0%, transparent 45%);}
   .cm-body-image-caption{position:absolute;bottom:28px;left:28px;right:28px;z-index:3;
-    font-size:var(--t-nano);letter-spacing:0.24em;color:rgba(247,244,238,0.78);text-transform:uppercase;}
+    font-size:10px;letter-spacing:0.24em;color:rgba(247,244,238,0.78);text-transform:uppercase;}
   @media (max-width:900px){.cm-body-image{aspect-ratio:4/3;}}
 
   .cm-body-text{opacity:0;transform:translateY(24px);transition:opacity 0.9s var(--ease) 0.3s, transform 0.9s var(--ease) 0.3s;}
   .community-section.in-view .cm-body-text{opacity:1;transform:translateY(0);}
   .cm-body-eyebrow{display:flex;align-items:center;gap:14px;
-    font-size:var(--t-micro);letter-spacing:0.22em;color:#8a7f6d;text-transform:uppercase;margin-bottom:28px;padding-left:0.22em;}
+    font-size:11px;letter-spacing:0.22em;color:#8a7f6d;text-transform:uppercase;margin-bottom:28px;padding-left:0.22em;}
   .cm-body-eyebrow::before{content:'';display:block;width:28px;height:1px;background:currentColor;opacity:0.55;}
   .cm-body-headline{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(28px,3.6vw,52px);
     color:var(--charcoal);line-height:1.08;letter-spacing:-0.006em;margin-bottom:32px;max-width:14ch;}
-  .cm-body-headline em{font-style:italic;color:var(--clay-ink);}
-  .cm-body-para{font-size:var(--t-body);color:#5c554c;line-height:1.9;margin-bottom:20px;max-width:44ch;}
+  .cm-body-headline em{font-style:italic;color:var(--gold);}
+  .cm-body-para{font-size:16px;color:#5c554c;line-height:1.9;margin-bottom:20px;max-width:44ch;}
   .cm-body-para:last-of-type{margin-bottom:0;}
 
   /* pillars — hairline columns, not bordered cards */
@@ -1980,7 +1396,7 @@
   .cm-pillar-icon svg{width:22px;height:22px;stroke:var(--gold);fill:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;}
   .cm-pillar-title{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:clamp(21px,2.1vw,28px);
     line-height:1.15;color:var(--charcoal);margin-bottom:18px;}
-  .cm-pillar-text{font-size:var(--t-meta);color:#5c554c;line-height:1.85;}
+  .cm-pillar-text{font-size:14.5px;color:#5c554c;line-height:1.85;}
 
   /* ═══════════════════════════════════════════
      PRINCIPLE — a scroll-scrubbed editorial sequence.
@@ -1996,12 +1412,9 @@
      scroll on (headline, then each statement) where before it had none — the
      old 300vh was 100vh of typing followed by 200vh of a frozen pin.
   ═══════════════════════════════════════════ */
-  /* 4 states = 3 transitions -> 100 + 3*55 = 265vh (was 372 at 91vh).
-     The four states are headline + three statements and map 1:1 onto the
-     content, so the BEAT COUNT is not reduced here — only the rate. */
-  .pin5{position:relative;height:265vh;}
+  .pin5{position:relative;height:372vh;}
   .stage5{position:sticky;top:0;height:100vh;overflow:hidden;
-    background:linear-gradient(135deg,#FDFCF9 0%,#F4F0E7 58%,#E9E2D6 100%);
+    background:linear-gradient(135deg,#1a1410 0%,#0e0b08 60%,#141008 100%);
     display:flex;align-items:center;gap:6vw;padding:0 8%;}
 
   .pr-blob{position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none;}
@@ -2014,7 +1427,7 @@
   .pr-left{position:relative;z-index:10;flex:0 0 clamp(380px,33vw,460px);display:flex;flex-direction:column;gap:0;align-self:center;
     will-change:transform;}
 
-  .pr-kicker{font-size:var(--t-micro);letter-spacing:0.22em;color:var(--clay-ink);text-transform:uppercase;
+  .pr-kicker{font-size:11px;letter-spacing:0.22em;color:var(--gold);text-transform:uppercase;
     display:flex;align-items:center;gap:14px;padding-left:0.22em;
     opacity:0;margin-bottom:30px;}
   /* the rule draws outward as the kicker arrives — same idiom as .eyebrow */
@@ -2023,9 +1436,9 @@
   /* Headline: set in the markup as one mask per word. Each word rises out of
      its own baseline and resolves from blur to sharp, staggered — the site's
      existing .ln line-mask vocabulary, applied at word scale. */
-  .pr-headline{font-family:'Cormorant Garamond',serif;font-weight:300;color:var(--charcoal);
+  .pr-headline{font-family:'Cormorant Garamond',serif;font-weight:300;color:var(--warm-white);
     font-size:clamp(44px,5.6vw,76px);line-height:1.06;letter-spacing:-0.012em;margin-bottom:42px;}
-  .pr-headline em{font-style:italic;color:var(--clay-ink);}
+  .pr-headline em{font-style:italic;color:var(--gold);}
   .pr-w{display:inline-block;overflow:hidden;vertical-align:bottom;
     padding-bottom:0.16em;margin-bottom:-0.16em;}
   .pr-w>i{display:block;font-style:normal;color:inherit;transform:translateY(108%);
@@ -2047,19 +1460,19 @@
        statement is always the lowest one. The first pass ran the gradient the
        other way, which put the brightest part of the rule beside the two
        statements that had already receded. */
-    background:linear-gradient(180deg,rgba(107,90,68,0.16),rgba(107,90,68,0.62));}
-  .pr-stmt{font-size:var(--t-body);color:#5c554c;line-height:1.9;margin-bottom:24px;opacity:0;
+    background:linear-gradient(180deg,rgba(196,138,90,0.14),rgba(196,138,90,0.58));}
+  .pr-stmt{font-size:16.5px;color:#a49d90;line-height:1.9;margin-bottom:24px;opacity:0;
     will-change:opacity,transform,filter;}
   .pr-stmt:last-child{margin-bottom:0;}
-  .pr-stmt strong{color:var(--charcoal);font-weight:500;}
+  .pr-stmt strong{color:var(--warm-white);font-weight:400;}
 
   /* RIGHT: large image — always visible, settling slowly across the section */
   .pr-image-col{position:relative;z-index:10;flex:1;align-self:stretch;display:flex;align-items:center;
     min-height:0;}
   .pr-clarity-image{width:100%;height:84vh;max-height:760px;object-fit:cover;border-radius:4px;display:block;
-    box-shadow:0 34px 90px rgba(60,50,35,0.22);transform-origin:58% 50%;will-change:transform;}
+    box-shadow:0 40px 110px rgba(0,0,0,0.62);transform-origin:58% 50%;will-change:transform;}
   .pr-image-col::after{content:'';position:absolute;inset:0;pointer-events:none;border-radius:4px;
-    box-shadow:inset 0 0 0 1px rgba(23,21,15,0.10);}
+    box-shadow:inset 0 0 0 1px rgba(247,244,238,0.1);}
 
   /* MOBILE — the same narrative, told by the page itself rather than by a
      pin. There is no sticky here at all: each statement is revealed as it
@@ -2117,14 +1530,14 @@
   .closing-content{position:relative;z-index:10;margin-left:auto;width:min(600px,52%);padding:14vh 8% 14vh 4%;}
   .closing-rule{width:1px;height:64px;
     background:linear-gradient(180deg, transparent, rgba(196,138,90,0.6), transparent);margin-bottom:34px;}
-  .closing-eyebrow{font-size:var(--t-micro);letter-spacing:0.22em;color:var(--gold);text-transform:uppercase;margin-bottom:30px;
+  .closing-eyebrow{font-size:11px;letter-spacing:0.22em;color:var(--gold);text-transform:uppercase;margin-bottom:30px;
     padding-left:0.22em;
     opacity:0;transform:translateY(10px);transition:opacity 0.7s var(--ease), transform 0.7s var(--ease);}
   /* headline reveal is carried by the line masks, not a block fade */
   .closing-headline{font-family:'Cormorant Garamond',serif;font-weight:300;color:var(--warm-white);
     font-size:clamp(36px,4.8vw,68px);line-height:1.06;letter-spacing:-0.01em;margin-bottom:34px;}
   .closing-headline em{font-style:italic;color:var(--gold);}
-  .closing-body{font-size:var(--t-body);color:rgba(247,244,238,0.72);line-height:1.9;margin-bottom:44px;
+  .closing-body{font-size:16px;color:rgba(247,244,238,0.72);line-height:1.9;margin-bottom:44px;
     opacity:0;transform:translateY(14px);transition:opacity 0.8s var(--ease) 0.2s, transform 0.8s var(--ease) 0.2s;}
   .closing-tagline{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;font-size:clamp(19px,2.2vw,28px);
     color:rgba(247,244,238,0.5);border-top:1px solid rgba(247,244,238,0.12);padding-top:32px;letter-spacing:0.01em;
@@ -2145,16 +1558,16 @@
   .waitlist-section{background:var(--warm-stone);text-align:center;padding:22vh 8%;}
   .waitlist-inner{max-width:1360px;margin:0 auto;}
   .wl-kicker{display:flex;justify-content:center;align-items:center;gap:14px;
-    font-size:var(--t-micro);letter-spacing:0.22em;color:#8a7f6d;text-transform:uppercase;margin-bottom:38px;padding-left:0.22em;}
+    font-size:11px;letter-spacing:0.22em;color:#8a7f6d;text-transform:uppercase;margin-bottom:38px;padding-left:0.22em;}
   .wl-kicker::before,.wl-kicker::after{content:'';display:block;width:28px;height:1px;background:currentColor;opacity:0.55;}
   .wl-tagline{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;font-size:clamp(19px,2.4vw,30px);
     color:var(--gold);margin-bottom:30px;line-height:1.3;}
   .wl-headline{font-family:'Cormorant Garamond',serif;font-weight:300;color:var(--charcoal);
     font-size:clamp(40px,6.4vw,92px);line-height:1.02;letter-spacing:-0.012em;margin-bottom:32px;}
-  .wl-sub{font-size:var(--t-body);color:#5c554c;max-width:500px;margin:0 auto 56px;line-height:1.9;}
+  .wl-sub{font-size:16px;color:#5c554c;max-width:500px;margin:0 auto 56px;line-height:1.9;}
   /* #635c52 on --warm-stone is 5.0:1 — this line has to stay readable, it is
      the one that stops the button being a false promise */
-  .wl-note{font-size:var(--t-note);color:#635c52;max-width:440px;margin:26px auto 0;line-height:1.7;}
+  .wl-note{font-size:13.5px;color:#635c52;max-width:440px;margin:26px auto 0;line-height:1.7;}
   @media (max-width:800px){.waitlist-section{padding:16vh 8%;}}
 
   /* FOOTER */
@@ -2166,21 +1579,21 @@
   .footer-brand-logo{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
   .footer-brand-logo img{width:28px;opacity:0.9;}
   .footer-brand-logo span{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--warm-white);}
-  .footer-tagline{font-size:var(--t-note);line-height:1.6;color:#8f887d;margin-bottom:20px;}
+  .footer-tagline{font-size:13px;line-height:1.6;color:#8f887d;margin-bottom:20px;}
   .footer-tagline strong{display:block;color:#b8b1a4;font-weight:500;}
   .footer-tagline em{font-style:italic;color:#8a8377;}
   .footer-appearance{margin-top:22px;}
-  .footer-appearance-label{font-size:var(--t-nano);letter-spacing:0.1em;text-transform:uppercase;color:#8f887d;margin-bottom:8px;}
+  .footer-appearance-label{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#8f887d;margin-bottom:8px;}
   .footer-toggle{display:inline-flex;background:rgba(247,244,238,0.08);border-radius:20px;padding:3px;gap:0;}
-  .footer-toggle button{background:none;border:none;color:#9a9285;font-size:var(--t-small);padding:6px 14px;
+  .footer-toggle button{background:none;border:none;color:#9a9285;font-size:12px;padding:6px 14px;
     border-radius:16px;cursor:pointer;transition:background 0.2s var(--ease),border-color 0.2s var(--ease),color 0.2s var(--ease),transform 0.2s var(--ease);letter-spacing:0.04em;text-transform:uppercase;}
   .footer-toggle button.active{background:rgba(247,244,238,0.14);color:var(--warm-white);}
-  .footer-col-label{font-size:var(--t-nano);letter-spacing:0.22em;text-transform:uppercase;color:#8f887d;margin-bottom:22px;}
-  .footer-col a{display:block;font-size:var(--t-note);color:#8a8377;text-decoration:none;margin-bottom:13px;
+  .footer-col-label{font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:#8f887d;margin-bottom:22px;}
+  .footer-col a{display:block;font-size:13.5px;color:#8a8377;text-decoration:none;margin-bottom:13px;
     transition:color 0.2s ease;}
   .footer-col a:hover{color:var(--warm-white);}
   .footer-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:4vh;
-    font-size:var(--t-micro);letter-spacing:0.08em;color:#8a8377;}
+    font-size:11px;letter-spacing:0.08em;color:#8a8377;}
   @media(max-width:900px){
     .footer-top{grid-template-columns:1fr 1fr;gap:34px;}
     .footer-brand{grid-column:1/-1;}
@@ -2259,14 +1672,7 @@
   .cm-header, .cm-who-item, .cm-body-image, .cm-body-text, .cm-pillars,
   .eco-kicker, .eco-headline, .eco-sub, .click-cue, .card,
   .closing-eyebrow, .closing-headline, .closing-body, .closing-tagline,
-  .tm-dash, .tm-item, .pr-para,
-  /* the mobile statistic cards start hidden and are revealed by an observer */
-  .panel { opacity: 1 !important; transform: none !important; }
-  .panel .desc, .panel .source { display: block !important; }
-  /* the Journey header is scrubbed by pin4's paced value via --jh; without
-     script it would render at opacity 0 and the section would lose its
-     headline entirely */
-  .journey-header { opacity: 1 !important; transform: none !important; }
+  .tm-dash, .tm-item, .pr-para { opacity: 1 !important; transform: none !important; }
   /* the Principle is scrubbed by script; without it, show it as plain type */
   .pr-para { filter: none !important; }
   .pr-para::before { width: 28px !important; }
@@ -2317,28 +1723,18 @@
 
   <div class="pin-container" id="pinContainer">
     <div class="hero">
-      <!-- .bg (the full-bleed sunrise) was removed on 13 September when the
-           hero became a contained product plate on ivory. The sunrise
-           photograph is still on this page — it is the parallax band in the
-           Community section (.cm-body-image). -->
-      <!-- Full-bleed photograph + the directional scrim, as a SIBLING of
-           .content, not a child of it. Inside .content it was a positioned
-           later sibling of the type and painted straight over it — the
-           headline, the sub and both links were rendered at opacity 1 and
-           were still invisible. -->
-      <div class="hero-plate" role="img" aria-label="The DAOasis Companion App on a phone beside a wearable band and a watch, on a stone ledge above the sea at sunrise"></div>
+      <div class="bg"></div>
       <div class="hero-grain"></div>
 
       <div class="content" id="heroContent">
-        <div class="hero-type">
-          <div class="kicker">A behavioural wellness ecosystem</div>
-          <div class="h1" id="heroH1">A healthier tomorrow, <em>together</em></div>
-          <div class="sub">A behavioural wellness ecosystem combining daily habits, real-world experiences and a like-minded community.</div>
-          <div class="ctas">
-            <a class="btn btn-light" href="#waitlistSection">Join the waitlist</a>
-            <a class="btn btn-ghost" href="#ecoSection">Explore the ecosystem</a>
-          </div>
+        <div class="kicker">A behavioural wellness ecosystem</div>
+        <div class="h1" id="heroH1"><span class="nowrap">Traditional wellness apps create users.</span><em>DAOasis creates stakeholders.</em></div>
+        <div class="sub">Wellness, learning and accountability — every positive action moves your Journey forward.</div>
+        <div class="ctas">
+          <a class="btn btn-light" href="#waitlistSection">Join the waitlist</a>
+          <a class="btn btn-ghost" href="#ecoSection">Explore the ecosystem</a>
         </div>
+
         <!-- The hero's route map lived here and was removed on 3 September,
              together with the section's pin. The mobile journey stand-in
              (#journeyMobileHero) had already gone on 22 August. The full
@@ -2350,16 +1746,18 @@
     </div>
   </div>
 
-  <!-- The hero→"Why DAOasis" divider was removed on 13 September. The hero
-       photograph now runs full bleed to the bottom of the viewport and melts
-       into the next section's own ground, so a rule-and-mark between them
-       drew exactly the hard horizontal line the transition is meant not to
-       have. Every other divider on the page is untouched. -->
+  <!-- Divider: hero → Why DAOasis (both dark) -->
+  <div class="divider dark bg-mineral">
+    <div class="divider-inner">
+      <div class="divider-line"></div>
+      <img src="images/img-09-white.png" alt="" class="divider-mark" />
+      <div class="divider-line"></div>
+    </div>
+  </div>
 
   <div class="pin">
   <div class="stage grain" id="stage">
-    <!-- The starfield canvas was removed with the move from a night sky to a
-         paper ground. Its script self-disables on the missing element. -->
+    <canvas id="starfield"></canvas>
     <canvas id="canvas"></canvas>
 
     <div class="overlay">
@@ -2369,7 +1767,7 @@
       <div class="body-copy" id="oBody">
         <p>DAOasis turns the time you already spend on rest, movement and learning into a Journey that rewards you for showing up.</p>
       </div>
-      <div class="why-cta" id="oCta"><a class="btn btn-dark" href="#waitlistSection">Join the waitlist</a></div>
+      <div class="why-cta" id="oCta"><a class="btn btn-light" href="#waitlistSection">Join the waitlist</a></div>
     </div>
 
     <div class="panels">
@@ -2396,18 +1794,19 @@
       </div>
     </div>
 
+    <div class="scroll-progress" id="scrollProgress">
+      <div class="scroll-progress-label">Noise</div>
+      <div class="scroll-progress-track"><div class="scroll-progress-fill" id="progressFill"></div></div>
+      <div class="scroll-progress-label">Order</div>
+    </div>
   </div>
 </div>
 
-<!-- Divider: Why DAOasis (now paper) → Ecosystem (warm-white).
-     Dividers are transparent and overlay the TAIL of the section above, so
-     the mark has to contrast with that section, not with the one below.
-     This one used the white mark against deep space; the section above it is
-     now ivory, so it takes the black mark. -->
-<div class="divider light bg-ivory">
+<!-- Divider: Why DAOasis (deep space) → Ecosystem (warm-white) -->
+<div class="divider dark bg-space">
   <div class="divider-inner">
     <div class="divider-line"></div>
-    <img src="images/img-09.png" alt="" class="divider-mark" />
+    <img src="images/img-09-white.png" alt="" class="divider-mark" />
     <div class="divider-line"></div>
   </div>
 </div>
@@ -2416,63 +1815,61 @@
   <div class="eco-kicker">The DAOasis ecosystem</div>
   <h2 class="eco-headline rv"><span class="ln"><i>One ecosystem.</i></span><span class="ln"><i><em>Three connected experiences.</em></i></span></h2>
   <div class="eco-sub">DAOasis combines a daily wellness app, an optional real-world Sanctuary and digital ownership into one ongoing ecosystem. Every habit moves the same Journey — Bangkok to Phuket is the launch Journey, and completing one opens the next.</div>
-</div>
+  <div class="click-cue">Select any experience to explore it in detail</div>
 
-<!-- The three experiences, as full-bleed photographic plates on a pinned
-     stage. Was a three-up card grid; see the driver's note in the script for
-     what was removed and why two of its three images could not be kept.
-     Each plate, its veil and its copy are ONE .eco-item — they have to be,
-     because on a handset the stage unpins and each item takes a viewport of
-     its own, and panels held in a separate list cannot pair with a plate. -->
-<div class="eco-outer" id="ecoOuter">
-  <div class="eco-stage" id="ecoStage">
-      <div class="eco-item">
-        <div class="eco-plate" style="background-image:url('images/eco-app.jpg');background-position:center 52%;" role="img" aria-label="Companion App"></div>
-        <div class="eco-veil" aria-hidden="true"></div>
-        <div class="eco-panel">
-          <div class="eco-step">Step one</div>
-          <h3 class="eco-title">Companion App</h3>
-          <p class="eco-text">The core operating environment of DAOasis — the daily relationship, and the foundation every later part of the ecosystem reaches you through. Rituals, learning and quests are woven into your routine, so consistency builds naturally over time.</p>
-          <ul class="eco-feat"><li>Daily wellness metrics</li><li>Quests and streaks</li><li>Guided learning</li><li>Community connection</li><li>Progress tracking</li><li>Reward credits</li></ul>
-          <a class="eco-learn" href="/app">Learn more <span aria-hidden="true">&rarr;</span></a>
-        </div>
+  <div class="cards" id="ecoCards">
+    <svg class="eco-connector" id="ecoConnector">
+      <path id="ecoConnBase" fill="none" stroke="#C48A5A" stroke-width="1" opacity="0.16"/>
+      <defs>
+        <linearGradient id="ecoPulseGradient" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#C48A5A" stop-opacity="0"/>
+          <stop offset="50%" stop-color="#F7F4EE" stop-opacity="0.9"/>
+          <stop offset="100%" stop-color="#C48A5A" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <path id="ecoConnPulse" fill="none" stroke="url(#ecoPulseGradient)" stroke-width="1.4" opacity="0"/>
+    </svg>
+    <div class="card" id="card1">
+      <div class="card-media"><img src="images/img-06.jpg" alt="DAOasis Companion App" style="object-position:center;"/></div>
+      <div class="card-body">
+        <div class="card-step">Step one</div>
+        <div class="card-title">Companion App</div>
+        <div class="card-desc">Daily rituals, learning, and quests that turn wellbeing into a consistent practice.</div>
+        <a class="card-learn" href="/app">Learn more →</a>
+        <div class="card-more" id="card1More"></div>
       </div>
-      <div class="eco-item">
-        <div class="eco-plate" style="background-image:url('images/img-07.jpg');background-position:38% 55%;" role="img" aria-label="DAOasis Sanctuaries"></div>
-        <div class="eco-veil" aria-hidden="true"></div>
-        <div class="eco-panel">
-          <div class="eco-step">Step two</div>
-          <h3 class="eco-title">DAOasis Sanctuaries</h3>
-          <p class="eco-text">The optional physical expression of the ecosystem, where the daily practice becomes tangible. Planned for Phuket in 2027 — somewhere a Journey can arrive, not somewhere every member is expected to reach.</p>
-          <ul class="eco-feat"><li>Immersive retreat design</li><li>Rest and recovery focus</li><li>Guided practices on-site</li><li>Community gatherings</li></ul>
-          <a class="eco-learn" href="/sanctuary">Learn more <span aria-hidden="true">&rarr;</span></a>
-        </div>
+    </div>
+    <div class="card" id="card2">
+      <div class="card-media"><img src="images/img-07.jpg" alt="DAOasis Sanctuary" style="object-position:38% 55%;"/></div>
+      <div class="card-body">
+        <div class="card-step">Step two</div>
+        <div class="card-title">DAOasis Sanctuaries</div>
+        <div class="card-desc">An optional real-world Sanctuary where a Journey becomes tangible. Planned for Phuket, 2027.</div>
+        <a class="card-learn" href="/sanctuary">Learn more →</a>
+        <div class="card-more" id="card2More"></div>
       </div>
-      <div class="eco-item">
-        <div class="eco-plate" style="background-image:url('images/eco-ownership.jpg');background-position:center 50%;" role="img" aria-label="Digital Ownership"></div>
-        <div class="eco-veil" aria-hidden="true"></div>
-        <div class="eco-panel">
-          <div class="eco-step">Step three</div>
-          <h3 class="eco-title">Digital Ownership</h3>
-          <p class="eco-text">Consistency and participation are recognised and reflected in something you actually own. This layer strengthens community alignment and rewards meaningful, long-term involvement — not speculation.</p>
-          <ul class="eco-feat"><li>Reward credits</li><li>Governance participation</li><li>Staking</li><li>Ecosystem alignment</li></ul>
-          <a class="eco-learn" href="/web3">Learn more <span aria-hidden="true">&rarr;</span></a>
-        </div>
+    </div>
+    <div class="card" id="card3">
+      <div class="card-media"><img src="images/img-08.jpg" alt="DAOasis Wallet" style="object-position:center top;"/></div>
+      <div class="card-body">
+        <div class="card-step">Step three</div>
+        <div class="card-title">Digital Ownership</div>
+        <div class="card-desc">Participation and consistency are rewarded and reflected in something you actually own.</div>
+        <a class="card-learn" href="/web3">Learn more →</a>
+        <div class="card-more" id="card3More"></div>
       </div>
-    <div class="eco-marks" aria-hidden="true">
-      <span class="eco-mark" data-i="0"><span></span></span>
-      <span class="eco-mark" data-i="1"><span></span></span>
-      <span class="eco-mark" data-i="2"><span></span></span>
     </div>
   </div>
 </div>
-<!-- The divider that sat here was left orphaned by the ecosystem rebuild —
-     only its mark and trailing rule survived, with two unmatched closing
-     divs, which painted 32px of body background as a black band between the
-     photograph and the section below. It is removed rather than repaired:
-     the ecosystem plates melt into the next section's own ground at
-     .eco-outer::after, so a rule and a palm mark between them would draw
-     exactly the hard line that transition exists to avoid. -->
+
+<!-- Divider: Ecosystem (warm-white) → Track (dark) -->
+<div class="divider light bg-ivory">
+  <div class="divider-inner">
+    <div class="divider-line"></div>
+    <img src="images/img-09.png" alt="" class="divider-mark" />
+    <div class="divider-line"></div>
+  </div>
+</div>
 
 <div class="pin3" id="pin3">
   <div class="stage3 grain" id="stage3">
@@ -2549,12 +1946,11 @@
   </div>
 </div>
 
-<!-- Divider: Track (now paper) → Journey (photograph). Overlays the tail
-     of Track, which is light now, so it takes the black mark. -->
-<div class="divider light bg-ivory">
+<!-- Divider: Track (dark) → Journey (dark) -->
+<div class="divider dark bg-mineral">
   <div class="divider-inner">
     <div class="divider-line"></div>
-    <img src="images/img-09.png" alt="" class="divider-mark" />
+    <img src="images/img-09-white.png" alt="" class="divider-mark" />
     <div class="divider-line"></div>
   </div>
 </div>
@@ -2743,13 +2139,12 @@
   <div class="pr-para">Built for founders, traders, technical professionals, solo operators, creators and location independent digital nomads seeking clarity, structure and long term sustainability.</div>
 </div>
 
-<!-- Divider: Principle → Closing. Light on BOTH now — the desktop pin is
-     paper and the mobile fallback was always warm stone — so it no longer
-     needs the mobile-only inversion it used to carry. -->
-<div class="divider light bg-ivory divider-after-principle">
+<!-- Divider: Principle → Closing. Desktop sits below the dark .pin5; mobile
+     sits below the warm-stone principle fallback, so it restyles to match. -->
+<div class="divider dark bg-mineral divider-after-principle">
   <div class="divider-inner">
     <div class="divider-line"></div>
-    <img src="images/img-09.png" alt="" class="divider-mark" />
+    <img src="images/img-09-white.png" alt="" class="divider-mark" />
     <div class="divider-line"></div>
   </div>
 </div>
@@ -2885,22 +2280,6 @@
     const nav = document.getElementById('siteNav');
     const prog = document.getElementById('scrollProg');
     if(!nav) return;
-
-    /* --nav-h is declared as 61px, worked out from the brand mark and the
-       padding — but the bar is actually sized by the taller "Join the
-       waitlist" pill and renders 73px on desktop. The hero photograph starts
-       at top:var(--nav-h), so a 12px strip of it was running up underneath
-       the menu. Measure the bar and publish the real figure; the hero's
-       min-height guard reads the same variable, so both stay in step. */
-    function measureNav(){
-      const h = Math.round(nav.getBoundingClientRect().height);
-      if(h > 0) document.documentElement.style.setProperty('--nav-h', h + 'px');
-    }
-    measureNav();
-    window.addEventListener('resize', measureNav, { passive: true });
-    window.addEventListener('load', measureNav);
-    if(document.fonts && document.fonts.ready) document.fonts.ready.then(measureNav);
-
     let lastY = 0, ticking = false;
     window.addEventListener('scroll', () => {
       if(ticking) return;
@@ -2908,8 +2287,6 @@
       requestAnimationFrame(() => {
         const y = window.scrollY;
         if(y > lastY && y > 80) nav.classList.add('nav-hidden'); else nav.classList.remove('nav-hidden');
-        /* resolve to the paper bar once the hero photograph is behind us */
-        nav.classList.toggle('nav-solid', y > window.innerHeight * 0.72);
         if(prog){
           const max = document.body.scrollHeight - window.innerHeight;
           prog.style.width = (max > 0 ? (y / max) * 100 : 0) + '%';
@@ -3221,76 +2598,130 @@
   }, { threshold: 0, rootMargin: '0px 0px -15% 0px' });
   closingObs.observe(document.getElementById('closingSection'));
 
-  /* ── THE ECOSYSTEM SEQUENCE ────────────────────────────────────────────
-     Replaces the three-up card grid (13 September). That grid carried a
-     cardObserver stagger, a hover parallax on .card-media, a connector SVG
-     drawn between the cards, and a .card-more expand driven by a cardData
-     object — about 125 lines. All of it is gone; the copy it held is now in
-     the markup, where it is readable without script.
-     Two of its three images also had to go: img-06.jpg showed a "$0.100"
-     dashboard and img-08.jpg was a staking screen with an APY, a lock-up
-     period and projected dollar earnings. Both are on the do-not-use list.
-     The section is now three full-bleed photographic plates on a pinned
-     stage, in the hero's language — scrub, no class flips, no transitions
-     on scrubbed properties. */
+  const cardObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if(entry.isIntersecting){
+        const idx = [...document.querySelectorAll('.card')].indexOf(entry.target);
+        setTimeout(() => { entry.target.classList.add('in-view'); setTimeout(() => { if(window.__measureEcoConnector) window.__measureEcoConnector(); }, 850); }, idx * 150);
+        cardObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0, rootMargin: '0px 0px -15% 0px' });
+  document.querySelectorAll('.card').forEach(c => cardObserver.observe(c));
+
+  const mediaImgs = document.querySelectorAll('.card-media img');
+  const hoverState = new Map();
+  mediaImgs.forEach(img => {
+    hoverState.set(img, 1);
+    img.parentElement.addEventListener('mouseenter', () => hoverState.set(img, 1.04));
+    img.parentElement.addEventListener('mouseleave', () => hoverState.set(img, 1));
+  });
+  function updateParallax(){
+    mediaImgs.forEach(img => {
+      const rect = img.parentElement.getBoundingClientRect();
+      const center = rect.top + rect.height / 2;
+      const viewportCenter = window.innerHeight / 2;
+      const offset = (center - viewportCenter) / window.innerHeight;
+      img.style.transform = `translateY(${offset * -30}px) scale(${hoverState.get(img)})`;
+    });
+  }
+  window.addEventListener('scroll', () => requestAnimationFrame(updateParallax), { passive: true });
+  updateParallax();
+
+  const cardData = {
+    card1: { step:'Step one', title:'Companion App', text:'The core operating environment of DAOasis — the daily relationship, and the foundation every later part of the ecosystem reaches you through. Rituals, learning and quests are woven into your routine, so consistency builds naturally over time.', features:['Daily wellness metrics','Quests and streaks','Guided learning','Community connection','Progress tracking','Reward credits'], url:'/app' },
+    card2: { step:'Step two', title:'DAOasis Sanctuaries', text:'The optional physical expression of the ecosystem, where the daily practice becomes tangible. Planned for Phuket in 2027 — somewhere a Journey can arrive, not somewhere every member is expected to reach.', features:['Immersive retreat design','Rest and recovery focus','Guided practices on-site','Community gatherings'], url:'/sanctuary' },
+    card3: { step:'Step three', title:'Digital Ownership', text:'Consistency and participation are recognised and reflected in something you actually own. This layer strengthens community alignment and rewards meaningful, long-term involvement — not speculation.', features:['Reward credits','Governance participation','Staking','Ecosystem alignment'], url:'/web3' }
+  };
+
   (function(){
-    const outer = document.getElementById('ecoOuter');
-    if(!outer) return;
-    const items  = [...document.querySelectorAll('.eco-item')];
-    const plates = [...document.querySelectorAll('.eco-plate')];
-    const panels = [...document.querySelectorAll('.eco-panel')];
-    const marks  = [...document.querySelectorAll('.eco-mark')];
-    const N = plates.length;
+    const ecoReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const ecoCards = document.querySelectorAll('#ecoCards .card');
+    const ecoCardsWrap = document.getElementById('ecoCards');
+    const connBase = document.getElementById('ecoConnBase');
+    const connPulse = document.getElementById('ecoConnPulse');
+    const connGradient = document.getElementById('ecoPulseGradient');
+    const connSvg = document.getElementById('ecoConnector');
 
-    /* sticky, so each experience lands on a stop and is held there by the
-       magnet rather than smearing past — that dwell is the point of the
-       section. states = N, so the stops are the three experiences. */
-    const track = (window.DAO && DAO.cine)
-      ? DAO.cine.track(outer, { mode: 'sticky', pace: 'epic', states: N })
-      : null;
+    ecoCards.forEach(card => {
+      const data = cardData[card.id];
+      const moreEl = document.getElementById(card.id + 'More');
+      if(data && moreEl){
+        moreEl.innerHTML = `<div class="card-more-text">${data.text}</div><div class="card-more-features">${data.features.map(f => `<div>${f}</div>`).join('')}</div>`;
+      }
+    });
 
-    function progress(){
-      const r = outer.getBoundingClientRect();
-      const s = outer.offsetHeight - window.innerHeight;
-      return s <= 0 ? 0 : Math.max(0, Math.min(1, -r.top / s));
+    let connPoints = [];
+    function measureConnector(){
+      if(!connSvg || window.innerWidth <= 900) return;
+      const wrapRect = ecoCardsWrap.getBoundingClientRect();
+      connSvg.setAttribute('viewBox', `0 0 ${wrapRect.width} ${wrapRect.height}`);
+      connPoints = [...ecoCards].map(card => {
+        const media = card.querySelector('.card-media');
+        const r = media.getBoundingClientRect();
+        return { x: r.left - wrapRect.left + r.width / 2, y: r.top - wrapRect.top + r.height / 2 };
+      });
+      if(connPoints.length === 3){
+        const d = `M${connPoints[0].x},${connPoints[0].y} L${connPoints[1].x},${connPoints[1].y} L${connPoints[2].x},${connPoints[2].y}`;
+        connBase.setAttribute('d', d);
+        connPulse.setAttribute('d', d);
+      }
+    }
+    measureConnector();
+    window.__measureEcoConnector = measureConnector;
+    window.addEventListener('resize', measureConnector);
+
+    function pulseConnector(fromIdx){
+      if(ecoReducedMotion || connPoints.length !== 3) return;
+      const minX = Math.min(connPoints[0].x, connPoints[1].x, connPoints[2].x);
+      const maxX = Math.max(connPoints[0].x, connPoints[1].x, connPoints[2].x);
+      const fromX = connPoints[fromIdx].x;
+      connGradient.setAttribute('x1', fromX); connGradient.setAttribute('x2', fromX);
+      connPulse.style.transition = 'none';
+      connPulse.style.opacity = '1';
+      requestAnimationFrame(() => {
+        connGradient.style.transition = 'none';
+        let start = null;
+        const duration = 1000;
+        function step(ts){
+          if(!start) start = ts;
+          const p = Math.min(1, (ts - start) / duration);
+          const spread = (maxX - minX) * 0.8 * p;
+          connGradient.setAttribute('x1', fromX - spread);
+          connGradient.setAttribute('x2', fromX + spread);
+          if(p < 1){ requestAnimationFrame(step); }
+          else { connPulse.style.transition = 'opacity 0.5s ease'; connPulse.style.opacity = '0'; }
+        }
+        requestAnimationFrame(step);
+      });
     }
 
-    function render(){
-      /* continuous position along the stops — never floored. pos() is
-         fractional between stops, which is what lets a plate cross-fade
-         rather than cut. */
-      const sp = track ? track.pos() : progress() * (N - 1);
-      for(let i = 0; i < N; i++){
-        const d = Math.abs(sp - i);
-        /* HOLD, then dissolve. A plain triangle (w = 1 - d) starts fading a
-           plate the instant the reader leaves its stop, so for most of the
-           section two photographs were on screen at partial strength and it
-           read as one long double exposure.
-           Each plate now holds at full strength while it is within 0.34 of
-           its own stop and is gone by 0.74, so the dissolve is a short
-           decisive moment. The 0.62 power makes the pair sum to ~1.34 at
-           the crossover rather than 1.0 — without it both sit at 0.5 and
-           the frame washes out to the ground colour underneath. */
-        const HOLD = 0.34, GONE = 0.74;
-        const wRaw = d <= HOLD ? 1 : (d >= GONE ? 0 : 1 - (d - HOLD) / (GONE - HOLD));
-        const w = wRaw <= 0 ? 0 : Math.pow(wRaw, 0.62);
-        items[i].style.setProperty('--pw', w.toFixed(4));
-        /* copy is TEXT: it cannot cross-fade with its successor, so it is
-           sharpened well inside its own stop and gone before the next */
-        const t = d >= 0.62 ? 0 : Math.pow(1 - d / 0.62, 0.7);
-        items[i].style.setProperty('--tw', t.toFixed(4));
-        if(marks[i]) marks[i].style.setProperty('--w', (d >= 1 ? 0 : 1 - d).toFixed(4));
+    function toggleCard(card){
+      const idx = [...ecoCards].indexOf(card);
+      const already = card.classList.contains('card-selected');
+      ecoCards.forEach(c => c.classList.remove('card-selected'));
+      if(already){
+        ecoCardsWrap.classList.remove('has-selected');
+      } else {
+        card.classList.add('card-selected');
+        ecoCardsWrap.classList.add('has-selected');
+        pulseConnector(idx);
       }
     }
 
-    if(track) track.on(render);
-    else {
-      let tick = false;
-      addEventListener('scroll', () => { if(tick) return; tick = true;
-        requestAnimationFrame(() => { tick = false; render(); }); }, { passive: true });
-    }
-    addEventListener('resize', render, { passive: true });
-    render();
+    ecoCards.forEach(card => {
+      card.addEventListener('click', (e) => {
+        if(e.target.closest('.card-learn')) return;
+        toggleCard(card);
+      });
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if(e.key === 'Escape'){
+        const sel = document.querySelector('#ecoCards .card-selected');
+        if(sel) toggleCard(sel);
+      }
+    });
   })();
 </script>
 
@@ -3480,16 +2911,9 @@
   const shimmerArr = new Float32Array(COUNT * 2);
   const assemblyStart = new Float32Array(COUNT);
   const assemblyEnd = new Float32Array(COUNT);
-  /* Grains on paper, not dust in space. These three are lerped per particle
-     (see the mix below) so the field spans ink -> clay -> deep green, all
-     dark enough to read on the ivory ground. They were #D9A566 / #3F6E5B /
-     #F4F1EA — a gold-and-cream palette that only worked against near-black.
-     NormalBlending is what makes the inversion viable: under additive,
-     overlapping dark dots would have summed toward white and the mark would
-     have dissolved as it densified. */
-  const colGold = new THREE.Color('#8A7355');
-  const colGreen = new THREE.Color('#35564A');
-  const colCream = new THREE.Color('#2A2521');
+  const colGold = new THREE.Color('#D9A566');
+  const colGreen = new THREE.Color('#3F6E5B');
+  const colCream = new THREE.Color('#F4F1EA');
 
   /* Spread wide enough to overfill the frustum at any aspect ratio. The
      noise has to read as filling the entire frame — a cloud sitting politely
@@ -3807,12 +3231,7 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
     if(mobile){
       /* the dock owns the lower half, so the mark sits high and centred */
       centreXpx = w / 2;
-      /* h * 0.32 was sized for the old full-height sticky stage, where the
-         canvas was the whole viewport and the dock sat over its lower half.
-         The canvas is now a 31vh band of its own with nothing else in it, so
-         the mark takes most of it — at 0.32 it rendered 84px in a 262px band
-         and read as a detail floating in empty paper. */
-      sizePx = Math.min(w * 0.62, h * 0.96);
+      sizePx = Math.min(w * 0.74, h * 0.32);
     } else {
       /* The mark is centred in the space it actually has, measured from the
          same numbers the layout uses. The dock is pinned to the right edge
@@ -3828,7 +3247,7 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
          and nothing protects the cards. */
       sizePx = Math.min(w * 0.44, h * 0.68);
       const copyRight = w * 0.08 + 460;
-      const cardsLeft = w - w * 0.10 - Math.min(w * 0.34, 470);
+      const cardsLeft = w - w * 0.06 - Math.min(w * 0.31, 400);
       centreXpx = Math.min((copyRight + cardsLeft) / 2, cardsLeft - sizePx / 2 - 12);
     }
 
@@ -3918,17 +3337,10 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
      change, so if this section is ever shortened again, shorten the travel
      phases and leave the holds alone. */
   const SHAPE_END = 0.56;
-  /* Retimed 13 September. The third card used to settle at 0.92, which left
-     0.08 of the scroll as a tail — 22px at the old height. There was no
-     pause: the section finished and was gone in the same movement.
-     It now completes at 0.78, so the last 0.22 (~100vh at 560vh) is a hold
-     in which all three cards, the resolved palm and the copy simply sit
-     there finished. The reader gets to look at the completed frame before
-     the page moves on. */
   const CARD_WINS = [
-    { inStart: 0.08, inEnd: 0.17, holdEnd: 0.27, setEnd: 0.34 },
-    { inStart: 0.30, inEnd: 0.39, holdEnd: 0.49, setEnd: 0.56 },
-    { inStart: 0.52, inEnd: 0.61, holdEnd: 0.71, setEnd: 0.78 }
+    { inStart: 0.10, inEnd: 0.20, holdEnd: 0.32, setEnd: 0.40 },
+    { inStart: 0.36, inEnd: 0.46, holdEnd: 0.58, setEnd: 0.66 },
+    { inStart: 0.62, inEnd: 0.72, holdEnd: 0.84, setEnd: 0.92 }
   ];
 
   /* Per-card translation from its settled slot to the centre of the frame.
@@ -3950,16 +3362,7 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
        more once a card returns to its slot */
     const w = sr.width;
     const copyRight = w * 0.08 + 460;
-    /* AS CENTRAL AS IT CAN GO WITHOUT COVERING THE COPY.
-       This was (copyRight + w) / 2 — the midpoint of the whole right-hand
-       area, which at 1440 is x=1007, i.e. 70% across. That is not a centred
-       card, it is a card that has moved a little left, and it is why the
-       centre-hold never read as the card taking the frame.
-       The target is now weighted well to the left and the clamp below does
-       the real work: the card sits 28px clear of the copy column's right
-       edge, which is the most central position available while the copy is
-       still on screen. 1440 -> 867 (60% across), 1920 -> 980 (51%). */
-    const gapCentre = copyRight + (w - copyRight) * 0.28;
+    const gapCentre = (copyRight + w) / 2;
     panelHome = panelEls.map(el => {
       const prev = el.style.transform;
       el.style.transform = 'none';
@@ -3968,8 +3371,7 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
       if(!r.width) return null;
       const half = r.width / 2;
       /* never let a centred card hang off either edge of the stage */
-      const cx = Math.max(sr.left + copyRight + 28 + half,
-                          Math.min(sr.left + gapCentre, sr.right - half - 16));
+      const cx = Math.max(sr.left + half + 16, Math.min(sr.left + gapCentre, sr.right - half - 16));
       return { dx: cx - (r.left + half), dy: (sr.top + sr.height / 2) - (r.top + r.height / 2) };
     });
   }
@@ -3979,13 +3381,6 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
   let centredK = 0;
 
   function setPanel(el, win, t, mobile, isCurrent, home){
-    /* MOBILE: this function does nothing. The cards are no longer docked in
-       a sticky stage — they are three blocks in ordinary flow revealed by
-       an IntersectionObserver on the site's standard reveal line (see the
-       CSS note above). Writing inline opacity/transform here would fight
-       that reveal, and the compact-hidden collapse it used to apply has no
-       purpose once there is no dock to overflow. */
-    if(mobile) return;
     const inP  = easeOutCubic(rampT(t, win.inStart, win.inEnd));   // arrival
     const setP = easeInOut(rampT(t, win.holdEnd, win.setEnd));     // departure to slot
     const k = home ? inP * (1 - setP) : 0;                         // 1 = holding the centre
@@ -3993,7 +3388,7 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
     const slide = (1 - inP) * (mobile ? 26 : 54);
     const dx = home ? home.dx * k : 0;
     const dy = home ? home.dy * k : 0;
-    const sc = 1 + (mobile ? 0.012 : 0.125) * k;
+    const sc = 1 + (mobile ? 0.012 : 0.085) * k;
     el.style.opacity = inP;
     el.style.transform = 'translate(' + (slide + dx).toFixed(1) + 'px, ' + dy.toFixed(1) + 'px) scale(' + sc.toFixed(4) + ')';
     /* only the card that currently owns the centre lifts above its siblings */
@@ -4063,6 +3458,7 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
     document.getElementById('oBody').style.opacity = 1;
     document.getElementById('oCta').style.opacity = 1;
     canvas.style.opacity = 1;
+    document.getElementById('scrollProgress').style.opacity = 0;
     /* t = 1: every card fully arrived and settled in its slot. panelHome is
        not passed, so k is 0 throughout and nothing is centred — which is the
        correct still frame for the no-WebGL fallback. */
@@ -4098,56 +3494,29 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
        upright as it resolves, so the mark is never rendered off-axis */
     points.rotation.y = reducedMotion ? 0 : time * 0.25 * (1 - assemblyT);
 
-    const kicker = document.getElementById('oKicker'), headline = document.getElementById('oHeadline'), lede = document.getElementById('oLede'), body = document.getElementById('oBody'), cta = document.getElementById('oCta');
+    const kicker = document.getElementById('oKicker'), headline = document.getElementById('oHeadline'), lede = document.getElementById('oLede'), body = document.getElementById('oBody'), cta = document.getElementById('oCta'), progressUI = document.getElementById('scrollProgress'), fill = document.getElementById('progressFill');
     const mobile = window.innerWidth <= 900;
 
     /* The statement only recedes to a still-legible floor as the mark
        resolves, never to zero — it has to stay readable through the whole
-       card sequence.
-       On MOBILE it does not recede at all: the mark now has its own band
-       below the copy instead of assembling behind it, so there is nothing
-       to yield to. Receding here is what made the headline and the lede
-       unreadable under the grains. */
-    const copyA = mobile ? 1 : 1 - 0.32 * rampT(t, 0.10, 0.26);
+       card sequence, on both mobile and desktop. */
+    const copyA = 1 - 0.32 * rampT(t, 0.10, 0.26);
     kicker.style.opacity = copyA; headline.style.opacity = copyA; lede.style.opacity = copyA; body.style.opacity = copyA; cta.style.opacity = copyA;
+    progressUI.style.opacity = t > 0.02 ? 1 : 0;
+    fill.style.width = (t * 100) + '%';
 
     /* the most recently arrived card — the one that owns the detail slot */
     let currentIdx = -1;
     for(let i = 0; i < CARD_WINS.length; i++) if(t >= CARD_WINS[i].inStart) currentIdx = i;
-
-    /* Two passes, and the first one writes nothing.
-       A card travelling to the centre passes straight over the ones already
-       docked. On the old dark glass that read as depth; on paper it reads as
-       a stacking bug — a white card half-hidden behind another white card.
-       So: work out who owns the centre FIRST, then recede everyone else
-       while they are being covered. It cannot be done in a single pass
-       because panel 0 is placed before panel 2's k is known. */
-    const ks = panelEls.map((el, i) => {
-      const w = CARD_WINS[i];
-      if(!panelHome[i]) return 0;
-      return easeOutCubic(rampT(t, w.inStart, w.inEnd)) * (1 - easeInOut(rampT(t, w.holdEnd, w.setEnd)));
-    });
-    const leadK = Math.max(0, ...ks);
-    const leadIdx = ks.indexOf(leadK);
-
     /* setPanel raises centredK; reset before the pass, read after it */
     centredK = 0;
-    panelEls.forEach((el, i) => {
-      setPanel(el, CARD_WINS[i], t, mobile, i === currentIdx, panelHome[i]);
-      if(leadK > 0.02 && i !== leadIdx){
-        el.style.opacity = (parseFloat(el.style.opacity) || 0) * (1 - 0.72 * leadK);
-      }
-    });
+    panelEls.forEach((el, i) => setPanel(el, CARD_WINS[i], t, mobile, i === currentIdx, panelHome[i]));
 
-    /* The grains yield while a card holds the frame — this is what makes the
+    /* The dust yields while a card holds the frame — this is what makes the
        centre-pop legible instead of a collision. Written AFTER the panel pass
-       because centredK is not known until every card has been placed.
-       Floor and ceiling both raised for the paper ground: dark grains on
-       ivory carry far less apparent weight than light ones did on near
-       black, so the same alpha that read as a confident mark before read as
-       a ghost after the inversion. */
-    const dustA = 0.46 + 0.54 * rampT(t, 0.08, 0.26);
-    canvas.style.opacity = dustA * (1 - 0.45 * centredK);
+       because centredK is not known until every card has been placed. */
+    const dustA = mobile ? (0.34 + 0.66 * rampT(t, 0.08, 0.26)) : (0.34 + 0.51 * rampT(t, 0.08, 0.26));
+    canvas.style.opacity = dustA * (1 - 0.55 * centredK);
 
     renderer.render(scene, camera);
   }
@@ -4243,34 +3612,8 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
      assembly rather than cutting to the end of it. */
   const CATCH_MAX_MS = 1300;
   let catchFrom = 0, catchStart = 0, catchDur = 0, catching = false, started = false;
-  /* MOBILE DRIVER. The pin is height:auto below 900px, so `pin` has no
-     scrollable travel and cine's track would sit at 0 forever — the mark
-     would never assemble. The canvas band supplies its own progress
-     instead: 0 when its top reaches the bottom of the viewport, 1 by the
-     time its own top has risen to a third of the way up. That places the
-     resolved mark squarely in view rather than at the moment it leaves.
-     Deliberately NOT paced through cine: this is the reader's own scroll
-     moving a single value in a single band, which is exactly the case the
-     controller is not for. */
-  function mobileT(){
-    const c = document.getElementById('canvas');
-    if(!c) return 0;
-    const r = c.getBoundingClientRect();
-    const vh = window.innerHeight;
-    /* The window has to be one the reader can actually WATCH. The first
-       version ran 0 -> 1 as the band's top travelled from the bottom of the
-       viewport to 0.28vh, which meant the mark finished assembling at
-       t = 0.91 while the band was still arriving — by the time it was
-       properly on screen it was already built, so there was no animation to
-       see. It now starts as the band crosses 0.92vh and completes when its
-       top reaches 0.30vh, which is ~520px of scroll with the band in view
-       for all of it. */
-    const from = vh * 0.92, to = vh * 0.30;
-    return clamp01((from - r.top) / (from - to));
-  }
   function effectiveT(){
     if(!logoReady) return 0;
-    if(window.innerWidth <= 900) return mobileT();
     if(!started){
       /* first frame after the raster landed — begin from a standing start
          and travel to wherever the reader actually is */
@@ -4328,20 +3671,6 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
   else window.addEventListener('load', function(){ idlePalm(warmPalm); }, { once: true });
 
   let lastT = -1;
-  /* Mobile card reveal. Registered unconditionally — `.in` does nothing
-     outside the mobile media query, so this needs no resize handling and
-     cannot strand a card if the reader rotates the device. Same threshold
-     as every other reveal on the site: content commits when its top crosses
-     85% of the viewport. */
-  if('IntersectionObserver' in window){
-    const panelIO = new IntersectionObserver((es) => {
-      es.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); panelIO.unobserve(e.target); } });
-    }, { threshold: 0, rootMargin: '0px 0px -8% 0px' });
-    panelEls.forEach(el => el && panelIO.observe(el));
-  } else {
-    panelEls.forEach(el => el && el.classList.add('in'));
-  }
-
   function loop(){
     requestAnimationFrame(loop);
     if(!near) return;
@@ -4378,13 +3707,8 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
      frame — the reader scrolled a screen and a quarter past a finished
      picture. The ramps are also read as ramps now, not collapsed to a
      midpoint boolean. */
-  /* Retimed to land on the six-state magnet (stops at 0/.2/.4/.6/.8/1.0) and
-     to COMPLETE AT 0.80, not 1.00. The last 20% of the scroll is a closing
-     hold in which nothing new arrives — the section simply sits finished.
-     Previously callout four was still arriving as the sticky released, so
-     the reader never saw the completed composition at all. */
-  const CO_TIMELINE = [{ inStart: 0.02, inEnd: 0.20 }, { inStart: 0.22, inEnd: 0.40 },
-                       { inStart: 0.42, inEnd: 0.60 }, { inStart: 0.62, inEnd: 0.80 }];
+  const CO_TIMELINE = [{ inStart: 0.03, inEnd: 0.25 }, { inStart: 0.28, inEnd: 0.50 },
+                       { inStart: 0.53, inEnd: 0.75 }, { inStart: 0.78, inEnd: 1.00 }];
   function computeT(){ const rect = pin3.getBoundingClientRect(); const scrollable = pin3.offsetHeight - window.innerHeight; if(scrollable <= 0) return 0; return Math.max(0, Math.min(1, -rect.top / scrollable)); }
 
   /* PACED, not lerped. This section used `cur += (target - cur) * 0.08`,
@@ -4397,11 +3721,10 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
      'sticky' because the callouts are discrete states — one meaningful
      scroll should land exactly one callout, not smear between two. */
   const track = (window.DAO && DAO.cine)
-    /* six stops: stop 0 is the bare dashboard, stops 1–4 are the four
-       callouts (each resting position lands exactly on the frame a callout
-       completes at), and stop 5 is the closing hold — the finished
-       composition, alone, before the Journey begins. */
-    ? DAO.cine.track(pin3, { mode: 'sticky', pace: 'epic', states: 6 })
+    /* five stops, not four: stop 0 is the bare dashboard and stops 1–4 are
+       the four callouts, so every resting position lands exactly on the
+       frame a callout completes at */
+    ? DAO.cine.track(pin3, { mode: 'sticky', pace: 'epic', states: 5 })
     : null;
   /* How far the dashboard travels once the copy has stepped aside: half the
      space the copy column plus the flex gap were occupying, which lands it
@@ -4434,23 +3757,10 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
     /* the running head rises as the column leaves — same value, so the two
        are one hand-over and cannot drift apart */
     if(runhead) runhead.style.setProperty('--recede', recede.toFixed(4));
-    /* THE SECTION ARRIVES COMPOSED. All of this used to key off `cur`,
-       which is clamped at 0 for the whole viewport-height the stage spends
-       scrolling into view — while .dash-wrap was hard-coded opacity:1. So
-       the first thing the reader saw of this section was the dashboard
-       photograph alone in empty paper, with no kicker, no headline and no
-       lede, for a full screen of scrolling.
-       The statement and the image now both arrive on the section's APPROACH,
-       together, and `cur` is left to drive only what it should — the four
-       callouts. Same fault and same fix as the Journey header above. */
-    const r3 = pin3.getBoundingClientRect();
-    const eWin = window.innerHeight * 0.55;
-    const eRaw = Math.max(0, Math.min(1, (window.innerHeight - r3.top) / eWin));
-    const enter = eRaw * eRaw * (3 - 2 * eRaw);
-    stage3El.style.setProperty('--enter', enter.toFixed(4));
-    tKicker.style.opacity = enter;
-    tHeadline.style.opacity = enter;
-    tLede.style.opacity = enter;
+    tKicker.style.opacity = Math.min(1, cur * 26);
+    tHeadline.style.opacity = Math.max(0, Math.min(1, (cur - 0.006) * 26));
+    tLede.style.opacity = Math.max(0, Math.min(1, (cur - 0.012) * 26));
+    dashWrap.classList.toggle('appear', cur > 0.05);
     if(trackDots) trackDots.classList.toggle('show', cur > 0.1);
     callouts.forEach((el, i) => {
       if(!el) return;
@@ -4523,9 +3833,6 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
   const lineFill = document.getElementById('jLineFill');
   const comet = document.getElementById('jComet');
   const jTrack = document.getElementById('jTrack');
-  const journeyHeader = pin4.querySelector('.journey-header');
-  /* the section above — the Journey header waits for it to leave */
-  const pin3El = document.getElementById('pin3');
   const nodes = [0,1,2,3,4,5,6].map(i => document.getElementById('jNode'+i));
   const popcard = document.getElementById('jPopcard');
   const popEyebrow = document.getElementById('jPopEyebrow');
@@ -4542,6 +3849,7 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
   function computeT(){ const rect = pin4.getBoundingClientRect(); const scrollable = pin4.offsetHeight - window.innerHeight; if(scrollable <= 0) return 0; return Math.max(0, Math.min(1, -rect.top / scrollable)); }
   const j4ReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const STAGE_END = 0.92; // reserve the tail of the scroll as a hold once the final stage is reached
+  const TEASE_FROM = 0.72; // fraction into a stage's own scroll window where the next waypoint starts previewing
   let cur = 0, target = 0, mouseX = 0, mouseY = 0, tMouseX = 0, tMouseY = 0;
   if(!j4ReducedMotion){
     window.addEventListener('mousemove', (e) => { tMouseX = (e.clientX / window.innerWidth - 0.5) * 2; tMouseY = (e.clientY / window.innerHeight - 0.5) * 2; });
@@ -4568,59 +3876,22 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
     if(track){ cur = track.get(); }
     else { target = computeT(); cur += (target - cur) * 0.07; if(Math.abs(target - cur) < 0.0008) cur = target; }
     mouseX += (tMouseX - mouseX) * 0.05; mouseY += (tMouseY - mouseY) * 0.05;
-    /* Driven by the section's APPROACH, not by `cur`. `cur` is still 0 for
-       the whole 900px the stage spends scrolling into view (it is clamped
-       at 0 until the sticky engages), so gating on it left the Journey fully
-       composed — photograph, seven medallions, every label — with no
-       headline. The header lagged its own section.
-       Keyed to the section ABOVE leaving, not to this one arriving. pin3
-       and pin4 now touch directly (the seam element is gone — see its CSS
-       note), so the only thing that guarantees the two ideas are never both
-       legible is that the header waits for pin3's last pixel.
-       0 while pin3's bottom is more than a quarter-viewport down the
-       screen, 1 once it has gone. */
-    const r3 = pin3El ? pin3El.getBoundingClientRect() : null;
-    const jhWin = window.innerHeight * 0.25;
-    const jh = r3
-      ? Math.max(0, Math.min(1, (jhWin - r3.bottom) / jhWin))
-      : 1;
-    journeyHeader.style.setProperty('--jh', (jh * jh * (3 - 2 * jh)).toFixed(4));
     const stageT = Math.min(1, cur / STAGE_END);
     const fillPct = stageT * 100;
     lineFill.style.width = fillPct + '%';
     comet.style.left = fillPct + '%';
     comet.style.opacity = stageT > 0.005 && stageT < 0.999 ? 1 : 0;
-    /* CONTINUOUS node position. `track.pos()` is the paced position along
-       the seven stops, fractional between them — 2.4 means 40% of the way
-       from node 2 to node 3. The old code did Math.floor(stageT * 7) and
-       threw that fraction away, which is why the medallions could only ever
-       step: an integer cannot express a hand-over. */
-    const sp = track ? track.pos() : stageT * 6;
-    const activeIndex = Math.max(0, Math.min(6, Math.round(sp)));
+    const raw = stageT * 7;
+    const activeIndex = Math.max(0, Math.min(6, Math.floor(raw)));
+    const stageFrac = raw - activeIndex;
+    const teaseIndex = stageFrac > TEASE_FROM && activeIndex < 6 ? activeIndex + 1 : -1;
     nodes.forEach((el, i) => {
-      const d = sp - i;
-      const ad = Math.abs(d);
-      /* --w: how live. Triangle raised to 0.6, the same shaping cine's own
-         lead() uses — 0 at the neighbours so only one node is ever live,
-         but 0.66 at the crossover so the hand-over is never a dead frame. */
-      const w = ad >= 1 ? 0 : Math.pow(1 - ad, 0.6);
-      /* --p: how far past. Ramped across the node rather than switched at
-         it, so a passed node warms up as the reader leaves it. */
-      const p = Math.max(0, Math.min(1, d + 0.5));
-      el.style.setProperty('--w', w.toFixed(4));
-      el.style.setProperty('--p', p.toFixed(4));
-      /* passed stages recede with distance so the live one keeps the frame */
-      const o = d < 0 ? 0.62 + 0.38 * w : Math.max(0.45, 1 - d * 0.14);
-      el.style.opacity = Math.max(o, w).toFixed(3);
-      /* appearance is entirely --w/--p now; .active survives only for the
-         hover rules and renderCard. See the CSS note. */
+      const isDone = i < activeIndex;
+      el.classList.toggle('done', isDone);
       el.classList.toggle('active', i === activeIndex);
+      el.classList.toggle('tease', i === teaseIndex);
+      el.style.opacity = isDone ? String(Math.max(0.42, 1 - (activeIndex - i) * 0.16)) : '';
     });
-    /* The stage card is TEXT, so it cannot cross-fade with its successor.
-       It fades out across the midpoint between two nodes — where the
-       position never rests — and swaps while invisible. */
-    const half = Math.abs(sp - Math.round(sp));
-    popcard.style.setProperty('--pc', Math.max(0, Math.min(1, (0.42 - half) / 0.12)).toFixed(3));
     currentActiveIndex = activeIndex;
     if(activeIndex !== lastActive){
       lastActive = activeIndex;
@@ -4631,12 +3902,7 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
     }
     /* no `card-up` any more: the card has its own grid row, so the headline
        never needs to recede out of its way */
-    /* combined: the card is present once the section has started, and dips
-       to invisible across each node-to-node midpoint so the text swap is
-       never seen happening. --pc is set above. */
-    popcard.style.opacity = stageT > 0.01
-      ? popcard.style.getPropertyValue('--pc') || '1'
-      : '0';
+    popcard.style.opacity = stageT > 0.01 ? 1 : 0;
     jTrack.style.transform = j4ReducedMotion ? 'none' : `rotateX(${mouseY * -3}deg) rotateY(${mouseX * 3}deg)`;
     requestAnimationFrame(tick);
   }
@@ -4646,16 +3912,16 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
      scroll position, and leaving the node hands the card back to whatever
      stage scroll actually has active. */
   let hoverIndex = -1, currentActiveIndex = 0;
-  function renderCard(i, pop){
+  function renderCard(i){
     popEyebrow.textContent = 'Stage 0' + (i + 1);
     popText.textContent = DETAILS[i];
     /* no `left` any more — the card is fixed to the centre of the viewport
        and the active node on the track below is what marks the position */
-    if(pop){ popcard.classList.remove('pop'); void popcard.offsetWidth; popcard.classList.add('pop'); }
+    popcard.classList.remove('pop'); void popcard.offsetWidth; popcard.classList.add('pop');
   }
   nodes.forEach((el, i) => {
-    el.addEventListener('mouseenter', () => { hoverIndex = i; renderCard(i, true); });
-    el.addEventListener('mouseleave', () => { hoverIndex = -1; renderCard(currentActiveIndex, true); });
+    el.addEventListener('mouseenter', () => { hoverIndex = i; renderCard(i); });
+    el.addEventListener('mouseleave', () => { hoverIndex = -1; renderCard(currentActiveIndex); });
   });
   /* Called directly for the same reason as the "why" section and the quest
      map above: rAF can be delayed on a tab that hasn't been composited yet,
