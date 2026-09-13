@@ -3198,3 +3198,161 @@ deliberately left: this needs a re-render, not a website edit.**
 ### Upload
 `app.html` · `sanctuary.html` · `web3.html`. No image, no JS file and no other
 page changed.
+
+---
+
+## "Why DAOasis matters now" — mobile rewritten from scratch — 13 September 2026
+
+`index.html` only. **Desktop is byte-identical in behaviour** — verified by
+diffing computed styles against a pre-change copy served on a second port
+(1 difference, the new hidden `.why-mark` child) and by re-running the card
+choreography (peak opacity 1.00/1.00/1.00, peak centre scale 1.125, dust 1.00,
+14/25 distinct frames — identical on both builds at 1280/1440/1920).
+
+### Why it was rebuilt rather than repaired
+
+Reported as not working on a phone, repeatedly, over many rounds. Every
+previous attempt kept the desktop composition and shrank it. That composition
+is three paper cards flying to the centre of a sticky 100vh stage and docking
+to the right of a mark assembling out of sand — it needs two columns and a
+viewport-height frame, and a handset has neither. Three consequences:
+
+1. **The mark rendered into a 172px band** — about 120px of dust. The one
+   piece of motion in the section was too small to register as motion.
+2. **The statistics were 24px figures inside bordered plates**, so the
+   section's actual argument arrived looking like interface.
+3. **All of it depended on a WebGL scene compiling on a phone.** A section
+   that can render as *nothing* is not an acceptable shape for the page's
+   central claim.
+
+### What it is now
+
+Four beats in ordinary flow — no pin, no sticky, no `cine` track:
+
+**statement → 01 → 02 → 03 → the mark**
+
+- Each statistic owns a **66vh beat** (74vh under 740px tall) with the figure
+  at `clamp(37px,11.2vw,54px)` — 43.9px at 390, against 24px before.
+- A **spine down the left** fills as the reader descends, with a node on each
+  beat's rule. Without it three statistics on three screens read as three
+  unrelated slides; the line is what makes them one argument with three parts,
+  and it tells the reader how much is left.
+- Per beat, staggered off one scrubbed value: the rule draws left to right,
+  the figure **writes itself along the same axis** (a `clip-path` wipe — the
+  only true mask available without a wrapper element around the type), then
+  the sentence rises, then the citation.
+- **The section ends on the mark**, not on the third card. The argument is
+  made, then the thing being argued for assembles out of the sand, alone and
+  wordless, before the divider.
+
+### Load-bearing decisions — do not undo
+
+1. **The WebGL scene does not run below 900px at all.** `initPalm` returns
+   before it constructs a renderer, so a phone never creates the context. It
+   re-arms through a `matchMedia('(min-width:901px)')` listener, so a desktop
+   browser resized up still gets it — verified in both directions (mobile →
+   desktop brings the canvas from `none` 300x150 to `block` 1440x900 with the
+   cards animating and the mobile `--b` properties cleared; desktop → mobile
+   hands over to the beats with all three statistics reaching 1.00).
+2. **Every CSS window falls back to `--b:1`.** The resting state is fully
+   visible and the script only ever takes things away and puts them back. The
+   animation is an enhancement, never a precondition for the content
+   existing — this section has rendered as a blank screen on a phone before.
+3. **No IntersectionObserver anywhere in it.** An observer that exists but
+   never fires leaves what it gates invisible forever, with no error. That was
+   the actual bug the last time.
+4. **…and replacing it with a scroll listener re-created the same bug one
+   layer down.** Reproduced by suppressing window scroll events: `--b` is
+   written once, at load, where it is 0, and all three statistics stay
+   invisible permanently — stats 0.00/0.00/0.00, no error. **A fallback that
+   depends on the thing it is a fallback FOR is not a fallback.** The section
+   is now pumped on rAF from load until three scroll events have actually been
+   observed, then the pump retires and the listeners carry it at no idle cost.
+   If the listeners never work the pump never retires, which is the right
+   trade in the one case where it matters.
+5. **No CSS transition on any scrubbed property** — a transition there is a
+   second clock running against the reader's scroll.
+6. **Reduced motion keeps this animation.** It is scroll-linked: it moves only
+   while the reader scrolls and stops when they stop. Same position as
+   `js/cine.js`.
+
+### The 2D mark, and three things that were only findable by looking
+
+`images/img-09.png` is sampled into ~3400 grains which converge from a
+scattered ring. The PNG is also the band's **CSS background**, i.e. the
+resting state; the script adds `.live` only after it has actually painted a
+frame, and that is what hands over to the canvas. The band can never be empty.
+
+1. **`getImageData` throws on a canvas that has had a `file://` image drawn
+   into it.** Over http (what ships) the full assembly runs; opened as a bare
+   local file the same band still animates, by scale and fade, using the image
+   directly. Both paths verified.
+2. **Scan-order subsampling renders the mark as vertical DASHES.** Taking
+   every k-th filled pixel walks a whole row before moving down, so grains
+   land ~3px apart horizontally and 1px apart vertically. Sampling on a square
+   fractional stride fixes it; the stride is fractional so the grid never
+   lands on an exact pixel lattice and moirés against the mark's own edges.
+3. **Grain size must be computed, not chosen.** At 1150 grains the resolved
+   mark was measurably correct — ring, trunk and horizon all in the right
+   places — and still read as a scatter of dots, because mean spacing was
+   5.2px against a 2.3px grain. It now uses the desktop scene's own formula,
+   `1.25 * sqrt(0.68 * size² / N)`, so density is identical at every band
+   height and pixel ratio.
+
+Also: the scattered phase reaches ~1.5x the mark's radius, so the cloud was
+being sliced off in mid-air at the band's edges — which reads as a clipping
+bug, not as dust. Grains now fade out over the outer 14%, which is also what
+hides the band's hard edges entirely.
+
+### Two collisions the numbers caught
+
+- **The assembled mark and the divider's palm mark were printing on each
+  other** — 0 to −7px. The divider overlays the section by its own full height
+  (`margin-top: calc(-1 * var(--divider-h))`), so the tail is load-bearing
+  geometry, not spacing. It is now `calc(6vh + 34px)`, and `calc(6vh + 52px)`
+  under 740px tall where the band is height-constrained and the mark nearly
+  fills it. Ink-to-mark clearance is **53–85px** at 320x640 / 360x740 /
+  375x667 / 390x659 / 390x844 / 430x932, against the site's 49px floor.
+- **The stage gradient ended on `#EAE3D7`** and drew a hard horizontal band
+  edge across the frame the divider sits in. It now returns to `#F7F6F2`, the
+  Ecosystem section's own ground, so the join is invisible.
+
+### Ecosystem "Learn more" — a bar on mobile, not a chip
+
+Measured at 390x844 the desktop pill rendered **166px wide inside a 336px
+column**, left-aligned and translucent over the photograph. On plate one —
+whose copy sits at the top — it hung in mid-air with 435px of photograph below
+it and read as a sticker dropped on the image; on plates two and three it sat
+44px off the plate floor, on the seam with the next plate. It is also the only
+thing on a full-bleed photograph the reader can act on, and a hairline chip
+over a 0.74-alpha veil has almost nothing to define it.
+
+Now full column width (335 of 390), solid warm-white with charcoal ink, the
+arrow pushed to the far edge so the bar reads as a row rather than a centred
+label, and the panel lifted clear of the plate floor (6% → 9%, and plate one's
+top 5% → 6%) so the bar closes the copy block instead of hanging off it.
+`:hover` is neutralised on mobile — a sticky hover after a tap would leave the
+bar lifted 2px out of its own block.
+
+### Verified
+- **18/18 failure scenarios PASS** at 390x659 and 390x844: normal · rAF
+  removed · IntersectionObserver removed · IO present but never firing ·
+  `getContext` returning null · `getImageData` throwing · `THREE` undefined ·
+  reduced motion · scroll events never firing. A scenario passes only if all
+  three statistics reach full legibility and the mark band shows something.
+- **36 sitewide checks clean** (6 pages x 375/390/768/1280/1440/1920): 0
+  horizontal overflow, 0 JS errors, no unexpected 404s.
+- Section length 2.88–3.38 screens at six handset sizes (was 1.6, but as a
+  frame that could not be read); index at 390x844 is 19.4 screens.
+- Judged by eye at 390x844 and 390x659, deviceScaleFactor 2.
+
+> **Testing trap, and it cost a full diagnostic detour.** A static server from
+> an EARLIER session was still bound to port 8802 serving a months-old build.
+> The new baseline server failed with `EADDRINUSE`, the log was not read, and
+> the A/B reported a confident, perfectly reproducible "desktop regression"
+> that did not exist — dark starfield background, 8.5px citations, a 5220px
+> pin. **Check the server's own log, and assert something build-specific in
+> the served HTML, before trusting any A/B on a second port.**
+
+### Upload
+`index.html` only. No image, no JS file and no other page changed.

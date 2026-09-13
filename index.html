@@ -884,6 +884,34 @@
     .eco-title{font-size:clamp(28px,8vw,36px);}
     .eco-text{font-size:var(--t-meta);max-width:none;}
     .eco-feat li{font-size:var(--t-nano);padding:5px 9px;}
+    /* THE CALL TO ACTION IS A BAR HERE, NOT A CHIP.
+       Measured at 390x844 the desktop pill rendered 166px wide inside a
+       336px column, left-aligned, translucent over the photograph. On plate
+       one — whose copy sits at the TOP — it hung in mid-air with 435px of
+       photograph below it and read as a sticker dropped on the image; on
+       plates two and three it sat 44px off the plate floor, on the seam
+       with the next plate, and read as falling out of the frame. It is also
+       the only thing on a full-bleed photograph the reader can act on, and
+       a translucent hairline chip over a 0.74-alpha veil has almost nothing
+       to define it.
+       Full column width, solid, ink on warm-white, with the arrow pushed to
+       the far edge so the bar reads as a row rather than a centred label —
+       and the panel is lifted clear of the plate floor so it closes the
+       copy block instead of hanging off the bottom of it. */
+    .eco-panel{bottom:9%;}
+    .eco-item:nth-child(1) .eco-panel{top:6%;bottom:auto;}
+    .eco-learn{display:flex;width:100%;justify-content:space-between;align-items:center;
+      margin-top:clamp(17px,2.4vh,24px);padding:15px 18px;gap:10px;
+      font-size:var(--t-small);letter-spacing:0.14em;
+      background:var(--warm-white);border-color:var(--warm-white);color:var(--charcoal);
+      backdrop-filter:none;transform:none;}
+    /* there is no hover on a touch screen, and a sticky :hover after a tap
+       would leave the bar lifted 2px out of its own block */
+    .eco-learn:hover{transform:none;background:var(--warm-white);
+      border-color:var(--warm-white);color:var(--charcoal);}
+    .eco-learn span{width:22px;height:22px;opacity:1;
+      border-color:rgba(23,21,15,0.32);transform:none;}
+    .eco-learn:hover span{transform:none;opacity:1;}
   }
 
   .section{background:var(--warm-white);padding:16vh 8%;max-width:none;margin:0;}
@@ -1130,105 +1158,185 @@
   .panel.panel-active{border-color:rgba(107,90,68,0.28);
     box-shadow:0 30px 66px rgba(60,50,35,0.16);}
   .panel.panel-active .panel-num{color:rgba(107,90,68,0.8);}
-  /* Mobile: the resting panels show only their rule + stat (desc/source are
-     toggled off by script until a panel has faded in), so the stack collapses
-     to roughly a third of the stage and the full overlay copy still fits
-     above it. */
-  /* ── MOBILE: THIS SECTION IS NOT PINNED ────────────────────────────────
-     Rebuilt 13 September. It used to be the desktop composition squeezed
-     into one 844px sticky stage: the palm canvas, the statement AND all
-     three statistic cards stacked in the same frame at the same time. Three
-     consequences, all of them visible on a phone and none on desktop:
+  /* The closing mark band is a MOBILE-ONLY beat. On desktop the mark lives
+     in the sticky stage's own canvas, behind the cards, where it belongs. */
+  .why-mark{display:none;}
+  /* ══ MOBILE: A DIFFERENT SECTION, NOT THE DESKTOP ONE STACKED ══════════
+     Rewritten from scratch, 13 September.
 
-       1. the grains rendered straight through the headline and the lede,
-          because the copy only receded to 0.68 while the mark rose to 1.0
-          and on a handset they occupy the SAME space rather than sitting
-          side by side;
-       2. the cards had ~300px of dock for ~557px of content, so only the
-          most recent card could carry its detail and the other two showed
-          as large empty boxes with a number in them;
-       3. 4,051px of the page was held for a frame that could not be read.
+     Desktop is three paper cards flying to the centre of a sticky stage and
+     docking to the right of a mark assembling out of sand. That composition
+     needs two columns and a 100vh frame and has neither on a handset. Every
+     previous attempt kept it and shrank it, which is why this section has
+     read as broken on a phone for as long as it has existed:
 
-     It is now three beats in ordinary flow, in sequence: the statement,
-     then the mark on its own, then the three statistics in full. Nothing
-     overlaps anything, every card carries its evidence, and the reader's
-     own scroll does the pacing. */
+       1. the mark rendered into a 172px band — a ~120px smudge of dust, so
+          the one piece of motion in the whole section was too small to
+          register as motion at all;
+       2. the three statistics were 24px figures inside bordered plates, so
+          the evidence arrived looking like UI rather than like the argument
+          it actually is;
+       3. all of it depended on a WebGL scene compiling on a phone, and a
+          section that can render as NOTHING when that fails is not an
+          acceptable shape for the page's central claim.
+
+     It is now four beats in ordinary flow: the statement, then one statistic
+     per screen at display size, then the mark resolving on its own as the
+     close. A spine down the left fills as the reader descends, so three
+     separate screens read as one argument with three parts. Nothing is
+     pinned, nothing overlaps anything, and no part of it needs WebGL. */
   @media (max-width:900px){
     .pin{height:auto;}
+    /* A vertical wash, not the desktop radial. The stage is ~3.5 screens
+       tall here; an ellipse centred at 45%/26% stretched over that distance
+       reads as a blotch. Descending warmth also gives the scroll somewhere
+       to be going. It opens on #FDFCF9 — the exact colour pin3 above closes
+       on — so the join stays invisible. */
+    /* The last stop returns to --warm-white (#F7F6F2), which is the
+       Ecosystem section's own ground, so the join below is invisible. An
+       earlier version ended on #EAE3D7 and drew a hard horizontal band edge
+       straight across the frame the divider sits in. */
+    /* The tail is load-bearing, not spacing. The divider below overlays the
+       section by its own full height (margin-top: calc(-1 * --divider-h)),
+       so with a 6vh tail the divider's palm mark landed 0 to 7px INSIDE the
+       assembled mark — one palm printed on another. The fixed 34px is what
+       carries the short viewports: 6vh alone is 38px at 640 tall and 56px
+       at 932, and the divider's own geometry does not scale with vh. */
     .stage{position:static;height:auto;display:flex;flex-direction:column;
-      overflow:visible;padding-bottom:2vh;}
+      overflow:visible;padding-bottom:calc(6vh + 34px);
+      background:linear-gradient(180deg,#FDFCF9 0%,#F6F2EA 34%,#EFE9DD 72%,#F1ECE1 88%,#F7F6F2 100%);}
     .overlay{position:static;order:1;}
-    /* the mark gets a band of its own — this is the first time on a phone
-       that it has been the only thing in the frame */
-    /* 31vh, not 54: the scene's camera sits the mark high in its frame, so
-       a taller band only adds empty canvas beneath it — measured, a 340px
-       band put 35px above the mark and 220px below. */
-    /* 25vh, and the mark takes almost all of it. At 31vh with the mark at
-       0.82 of the band height it rendered ~130px inside 262px, so half the
-       band was empty paper and the section read as three separated blocks
-       rather than one composition. */
-    #canvas{position:static;order:2;width:100%;height:20vh;max-height:172px;
-      margin-top:1.6vh;display:block;}
-    .panels{position:static;order:3;width:auto;left:auto;right:auto;
-      top:auto;bottom:auto;transform:none;margin:2vh 8% 0;gap:12px;
-      display:flex;flex-direction:column;}
-    /* opacity and transform are written inline by setPanel on desktop;
-       setPanel returns early on mobile now, and the reveal below takes over */
-    /* FAIL-VISIBLE. These used to start at opacity:0 and depend on an
-       IntersectionObserver to bring them back. If that observer never fired
-       — script error earlier in the file, an engine quirk, anything — the
-       three statistics were invisible permanently and the section rendered
-       as copy, mark, and a screen of nothing. That is not a state this can
-       be allowed to reach.
-       The resting state is now VISIBLE. The hidden start-state is opted
-       into by .reveal-armed, which the script adds only after the observer
-       has been constructed and is observing. Same principle as css/trust.css
-       and its html.js gate: animation is an enhancement, never a
-       precondition for the content existing. */
-    .panel{padding:20px 22px;border-radius:3px;opacity:1;transform:none;
-      transition:opacity 0.7s var(--ease), transform 0.7s var(--ease);}
-    .reveal-armed .panel{opacity:0;transform:translateY(16px);}
-    .reveal-armed .panel.in{opacity:1;transform:none;}
-    .panel-num{top:13px;right:17px;font-size:13px;}
-    .panel .bar{margin-bottom:13px;width:20px;}
-    .panel .stat{font-size:24px;}
-    .panel .desc{font-size:var(--t-meta);line-height:1.68;margin-top:13px;}
-    .panel .source{font-size:var(--t-nano);margin-top:15px;padding-top:12px;letter-spacing:0.09em;}
-    /* every card carries its detail now — there is no dock to run out of.
-       .compact-hidden is a desktop-only mechanism and must not apply here. */
+    /* The WebGL scene does not run below 900px AT ALL — initPalm returns
+       before it builds a renderer (see the note there). It was the most
+       expensive thing on the site running on the least capable device, to
+       produce a mark too small to read. */
+    #canvas{display:none;}
+
+    /* ── THE ARGUMENT: one statistic per screen ────────────────────────
+       Not cards. A bordered plate with a 24px figure inside it is a piece
+       of interface; these three numbers ARE the section's argument, so they
+       are set at display size, full column, with nothing around them. */
+    .panels{position:relative;order:2;width:auto;left:auto;right:auto;top:auto;bottom:auto;
+      transform:none;margin:0;padding:0 8% 0 calc(8% + 26px);display:block;gap:0;}
+    /* THE SPINE. Three statistics on three separate screens otherwise read
+       as three unrelated slides; the line is what makes them one argument,
+       and it is how the reader knows how much is left. One pseudo-element,
+       two stacked gradients — the track, and a fill whose height is the
+       scrubbed value. The fill head tracks the middle of the screen, so it
+       sits level with whatever is being read. */
+    .panels::before{content:'';position:absolute;left:8%;top:8vh;bottom:8vh;width:1px;
+      background:
+        linear-gradient(180deg,var(--clay-ink),var(--clay-ink)) top left / 1px calc(var(--fill,1) * 100%) no-repeat,
+        linear-gradient(180deg,rgba(23,21,15,0.16),rgba(23,21,15,0.16));}
+
+    /* 66vh, not 100. A statistic is ~300px of content; giving it a whole
+       viewport puts ~270px of empty column between one statement and the
+       next, which reads as the section having ended. At 66vh the gap is
+       ~0.27 of a screen — a breath, with the spine running through it — and
+       the beat is still tall enough that only one statistic is ever
+       properly in frame. */
+    .panel{position:relative;width:auto;min-height:66vh;
+      display:flex;flex-direction:column;justify-content:center;
+      background:none;border:0;border-radius:0;box-shadow:none;
+      padding:3.5vh 0;margin:0;opacity:1;transform:none;transition:none;will-change:auto;}
+
+    /* Every part is a pure function of --b, the beat's own 0-1 scrub value,
+       read through its own window. Two properties of this are deliberate
+       and load-bearing:
+
+       · There is NO CSS transition on any of it. A transition on a scrubbed
+         property is a second clock running against the reader's scroll —
+         the same fault the 1 September pass removed site-wide.
+       · Every window falls back to --b:1. If the script never runs, throws,
+         is blocked, or the browser does something unexpected, all of these
+         resolve to 1 and the section is simply fully visible. The animation
+         is an enhancement; it is never a precondition for the content
+         existing. That is the one property this section has to have,
+         because it has rendered as a blank screen on a phone before. */
+    .panel .bar   { --a:clamp(0, calc( var(--b,1)         / 0.22), 1); }
+    /* The node belongs on the RULE, not at the beat's own mid-height. The
+       beat is a 70vh box with its content optically centred inside it, so
+       `top:50%` put the node level with the description — which reads as an
+       arbitrary dot rather than as the mark of where this statistic starts
+       and the rule runs out from. */
+    .panel .bar::before{content:'';position:absolute;left:-29.5px;top:-3px;
+      width:7px;height:7px;border-radius:50%;background:var(--clay-ink);
+      opacity:var(--a,1);transform:scale(calc(0.34 + 0.66 * var(--a,1)));}
+    .panel-num    { --a:clamp(0, calc((var(--b,1) - 0.04) / 0.22), 1); }
+    .panel .stat  { --a:clamp(0, calc((var(--b,1) - 0.10) / 0.34), 1); }
+    .panel .desc  { --a:clamp(0, calc((var(--b,1) - 0.30) / 0.34), 1); }
+    .panel .source{ --a:clamp(0, calc((var(--b,1) - 0.50) / 0.30), 1); }
+
+    .panel-num{position:static;display:block;font-size:var(--t-body);
+      color:var(--clay-ink);letter-spacing:0.04em;margin:0 0 clamp(9px,1.3vh,13px);
+      opacity:calc(var(--a,1) * 0.8);transform:translateY(calc((1 - var(--a,1)) * 8px));}
+    /* The rule draws across the column and the figure then writes itself
+       along the same axis — one movement, left to right, rather than two
+       unrelated ones. A left-to-right wipe is also the only true mask this
+       can have without a wrapper element around the type. */
+    /* The rule draws by BACKGROUND SIZE, not by scaleX. A transform on the
+       bar would also scale the node hanging off its left end — at --a 0.1
+       the dot would be a tenth of a pixel wide. Sizing the gradient instead
+       leaves the pseudo untouched, and avoids putting a transform on a 1px
+       line, which shimmers under sub-pixel AA anyway. */
+    .panel .bar{position:relative;width:100%;height:1px;transform:none;opacity:1;
+      margin:0 0 clamp(16px,2.4vh,24px);background:
+        linear-gradient(90deg,rgba(107,90,68,0.42),rgba(107,90,68,0.42))
+        no-repeat left center / calc(var(--a,1) * 100%) 1px;}
+    .panel .stat{font-size:clamp(37px,11.2vw,54px);line-height:1.04;letter-spacing:-0.018em;
+      clip-path:inset(-0.18em calc((1 - var(--a,1)) * 100%) -0.22em -0.04em);
+      transform:translateY(calc((1 - var(--a,1)) * 9px));}
+    .panel .desc{font-size:var(--t-body);line-height:1.66;color:#5c554c;
+      margin-top:clamp(14px,2vh,20px);max-width:33ch;
+      opacity:var(--a,1);transform:translateY(calc((1 - var(--a,1)) * 14px));}
+    /* opacity on the element carries its own border-top with it, so the
+       rule above the citation arrives WITH the citation rather than sitting
+       there on its own beforehand */
+    .panel .source{font-size:var(--t-nano);letter-spacing:0.1em;
+      margin-top:clamp(17px,2.4vh,24px);padding-top:clamp(10px,1.4vh,14px);
+      border-top:1px solid rgba(23,21,15,0.11);line-height:1.55;max-width:38ch;
+      opacity:calc(var(--a,1) * 0.95);}
+    /* .compact-hidden is the desktop dock's overflow mechanism; there is no
+       dock here and every statistic carries its evidence */
     .panel .desc.compact-hidden,.panel .source.compact-hidden{display:block;}
+    .panel.panel-active{border-color:transparent;box-shadow:none;}
+
+    /* ── THE CLOSE ─────────────────────────────────────────────────────
+       The section used to end on the third card, with the mark stranded in
+       a band between the statement and the evidence. It ends on the mark
+       now: the argument is made, and then the thing being argued for
+       assembles out of the sand, alone and wordless, before the divider.
+
+       The PNG is the RESTING state and the canvas is the enhancement, so
+       the band can never be empty paper. The script adds .live only once it
+       has actually drawn a frame, and that is what swaps the two over. */
+    .why-mark{order:3;position:relative;display:block;width:100%;
+      height:40vh;max-height:330px;margin:2.4vh 0 0;
+      background:url('images/img-09.png') center center / auto 76% no-repeat;}
+    .why-mark.live{background-image:none;}
+    .why-mark canvas{display:block;width:100%;height:100%;opacity:0;}
+    .why-mark.live canvas{opacity:1;}
   }
-  /* Reduced motion SHORTENS this reveal; it does not remove it. The rule
-     here used to be opacity:1 / transition:none, which pinned all three
-     cards visible from first paint — so on any machine reporting "reduce"
-     (Windows' Show-animations-off does, and so does headless Chrome) this
-     section had no card animation at all.
-     Same fault the 3 September cine.js pass fixed: a fade-up triggered by
-     the reader's own scroll is not autonomous motion, and switching it off
-     leaves the section dead rather than calmer. Genuinely autonomous
-     motion — the intro, ambient loops, decorative pulses — is still
-     disabled elsewhere, which is where that belongs. */
-  @media (max-width:900px) and (prefers-reduced-motion:reduce){
-    .panel{transition-duration:0.25s;}
-  }
-  /* SHORT HANDSETS (iPhone SE, and any 700px-tall window). Measured at
-     390x659: the statement, the mark and their margins came to 529px, so
-     the first statistic card began at y=619 in a 659px viewport — on screen,
-     below the reveal line, and therefore blank. The reader met a screen of
-     copy, a mark, and then nothing.
-     Everything above the cards tightens here so the first one is properly
-     in view rather than clinging to the bottom edge. */
+  /* SHORT HANDSETS (iPhone SE, and any window under 740px tall). A beat is
+     sized as a fraction of the viewport, so it scales on its own — what has
+     to change here is the figure, which at 11.2vw takes three lines of a
+     375px column, and the statement above it. */
   @media (max-width:900px) and (max-height:740px){
     .lede{font-size:15px;line-height:1.34;margin-top:14px;}
     .body-copy{margin-top:12px;}
     .body-copy p{font-size:var(--t-body);line-height:1.6;}
     .why-cta{margin-top:16px;}
-    #canvas{height:16vh;max-height:118px;margin-top:1.2vh;}
-    .panels{margin-top:1.4vh;gap:10px;}
-    .panel{padding:17px 19px;}
-    .panel .stat{font-size:21px;}
-    .panel .desc{font-size:var(--t-meta);line-height:1.55;margin-top:9px;}
-    .panel .source{font-size:var(--t-nano);margin-top:10px;padding-top:8px;}
+    /* A short viewport makes the band height-constrained, so the mark very
+       nearly fills it and the empty margin inside the band that carries the
+       clearance to the divider below all but disappears. Measured, ink to
+       divider mark was 35px at 390x659 against the site's 49px floor; the
+       extra tail here takes it to 53. */
+    .stage{padding-bottom:calc(6vh + 52px);}
+    .panel{min-height:74vh;padding:3vh 0;}
+    .panel .stat{font-size:clamp(32px,9.4vw,42px);}
+    .panel .desc{line-height:1.56;margin-top:13px;}
+    .panel .source{margin-top:15px;padding-top:10px;}
+    .why-mark{height:34vh;max-height:238px;}
   }
   /* Short handsets (iPhone SE and similar, 667px tall). The clear band above
      the product is only 142px there rather than 198px, and measured the
@@ -2420,6 +2528,14 @@
       </div>
     </div>
 
+    <!-- MOBILE CLOSE. Hidden above 900px. The mark assembles out of sand in
+         a 2D canvas here rather than in the WebGL scene above, which does
+         not run on a handset at all. The PNG behind it is the resting
+         state: if the canvas cannot draw for any reason the band still
+         shows the mark, and .live (added by the script only after a frame
+         has actually been painted) is what hands over to the canvas. -->
+    <div class="why-mark" id="whyMark" aria-hidden="true"><canvas id="whyMarkCanvas"></canvas></div>
+
   </div>
 </div>
 
@@ -3423,6 +3539,29 @@
     }
     return;
   }
+  /* ── THIS SCENE DOES NOT RUN ON A HANDSET ────────────────────────────
+     Below 900px the section is a different composition entirely — four
+     beats in ordinary flow with a 2D canvas for the mark; see the mobile
+     block in the stylesheet and the whyMobile script further down. Running
+     thirty thousand WebGL points into a 172px band was the most expensive
+     thing on the site executing on the least capable device it has, and it
+     produced a mark too small to read as anything. Worse, it made the
+     page's central claim depend on a WebGL context compiling.
+     The bail is here — before the renderer is constructed — so a phone
+     never creates the context at all. Re-armed if the viewport ever grows
+     past the breakpoint, so a desktop browser resized up still gets it. */
+  if(window.innerWidth <= 900){
+    const up = window.matchMedia('(min-width:901px)');
+    const rearm = function(){
+      if(!up.matches) return;
+      if(up.removeEventListener) up.removeEventListener('change', rearm);
+      else if(up.removeListener) up.removeListener(rearm);
+      initPalm();
+    };
+    if(up.addEventListener) up.addEventListener('change', rearm);
+    else if(up.addListener) up.addListener(rearm);
+    return;
+  }
   const canvas = document.getElementById('canvas');
   const pin = document.querySelector('.pin');
   const stage = document.getElementById('stage');
@@ -4267,34 +4406,11 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
      assembly rather than cutting to the end of it. */
   const CATCH_MAX_MS = 1300;
   let catchFrom = 0, catchStart = 0, catchDur = 0, catching = false, started = false;
-  /* MOBILE DRIVER. The pin is height:auto below 900px, so `pin` has no
-     scrollable travel and cine's track would sit at 0 forever — the mark
-     would never assemble. The canvas band supplies its own progress
-     instead: 0 when its top reaches the bottom of the viewport, 1 by the
-     time its own top has risen to a third of the way up. That places the
-     resolved mark squarely in view rather than at the moment it leaves.
-     Deliberately NOT paced through cine: this is the reader's own scroll
-     moving a single value in a single band, which is exactly the case the
-     controller is not for. */
-  function mobileT(){
-    const c = document.getElementById('canvas');
-    if(!c) return 0;
-    const r = c.getBoundingClientRect();
-    const vh = window.innerHeight;
-    /* The window has to be one the reader can actually WATCH. The first
-       version ran 0 -> 1 as the band's top travelled from the bottom of the
-       viewport to 0.28vh, which meant the mark finished assembling at
-       t = 0.91 while the band was still arriving — by the time it was
-       properly on screen it was already built, so there was no animation to
-       see. It now starts as the band crosses 0.92vh and completes when its
-       top reaches 0.30vh, which is ~520px of scroll with the band in view
-       for all of it. */
-    const from = vh * 0.92, to = vh * 0.30;
-    return clamp01((from - r.top) / (from - to));
-  }
+  /* There is no mobile branch here any more. This whole script returns
+     before it builds anything below 900px (see the bail at the top), so
+     the old mobileT() band driver had nothing left to drive. */
   function effectiveT(){
     if(!logoReady) return 0;
-    if(window.innerWidth <= 900) return mobileT();
     if(!started){
       /* first frame after the raster landed — begin from a standing start
          and travel to wherever the reader actually is */
@@ -4352,52 +4468,10 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
   else window.addEventListener('load', function(){ idlePalm(warmPalm); }, { once: true });
 
   let lastT = -1;
-  /* Mobile card reveal. Registered unconditionally — `.in` does nothing
-     outside the mobile media query, so this needs no resize handling and
-     cannot strand a card if the reader rotates the device. Same threshold
-     as every other reveal on the site: content commits when its top crosses
-     85% of the viewport. */
-  /* SCROLL-CHECKED, NOT OBSERVED. This used to be an IntersectionObserver.
-     Tested by stubbing an observer whose callback never fires, all three
-     cards stayed at opacity 0 permanently — the section rendered as copy, a
-     mark, and a screen of nothing, with no error to show for it. An
-     observer that silently never fires is unfalsifiable from inside the
-     page, and it is not worth the risk for three cards.
-     A scroll handler cannot fail that way: it either runs or the page is not
-     scrolling. It is rAF-throttled, each card is dropped from the pending
-     list as it reveals, and the listener removes itself once all three are
-     done. The hidden start-state is armed here, so if any of this throws the
-     cards are simply visible — see the .panel note in the stylesheet. */
-  try{
-    const stageEl = document.getElementById('stage');
-    if(stageEl && panelEls.length){
-      stageEl.classList.add('reveal-armed');
-      let pending = panelEls.filter(Boolean);
-      let ticking = false;
-      const check = function(){
-        ticking = false;
-        const line = window.innerHeight * 0.92;
-        pending = pending.filter(function(el){
-          if(el.getBoundingClientRect().top < line){ el.classList.add('in'); return false; }
-          return true;
-        });
-        if(!pending.length){
-          window.removeEventListener('scroll', onScroll);
-          window.removeEventListener('resize', onScroll);
-        }
-      };
-      const onScroll = function(){
-        if(ticking) return; ticking = true;
-        (window.requestAnimationFrame || setTimeout)(check);
-      };
-      window.addEventListener('scroll', onScroll, { passive: true });
-      window.addEventListener('resize', onScroll, { passive: true });
-      check();
-    }
-  }catch(err){
-    const st = document.getElementById('stage');
-    if(st) st.classList.remove('reveal-armed');
-  }
+  /* The mobile card reveal that used to live here is gone with the rest of
+     the mobile path. The three statistics are scrubbed from their own beat
+     position by the whyMobile script, and their CSS resting state is
+     visible rather than hidden — there is nothing left to arm. */
 
   function loop(){
     requestAnimationFrame(loop);
@@ -4414,6 +4488,316 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
     }
   }
   requestAnimationFrame(loop);
+})();
+</script>
+
+<script>
+/* ══ "WHY DAOASIS MATTERS NOW" — THE MOBILE SECTION ══════════════════════
+   Written from scratch, 13 September. Runs ONLY below 900px; the WebGL
+   scene above returns before it builds anything at that width.
+
+   What this drives, and nothing else:
+     · --b  on each .panel — that beat's own 0-1 arrival value
+     · --fill on .panels   — how far down the spine the reader has come
+     · the closing mark's 2D sand assembly
+
+   Three rules it is built around, all of them learned on this exact
+   section:
+
+   1. NO IntersectionObserver. An observer that exists but whose callback
+      never fires leaves everything it gates invisible, permanently, with
+      no error — which is exactly how this section came to render as a
+      blank screen on a phone. A scroll listener cannot fail that way: it
+      either runs, or the page is not scrolling and there is nothing to
+      reveal. It is rAF-throttled, so it costs one rect read per frame
+      while the reader is moving and nothing at all when they stop.
+
+   2. NOTHING HERE IS REQUIRED. Every CSS window falls back to --b:1, so
+      the section's resting state is fully visible and this script only
+      ever takes things away and puts them back. If it throws on its first
+      frame it un-writes what it wrote and gives up, leaving the section
+      readable.
+
+   3. Reduced motion keeps its animation. This is scroll-LINKED — it moves
+      only while the reader is scrolling and stops the instant they stop,
+      so it is their own input played back, not motion the page performs by
+      itself. Switching it off leaves a dead section, not a calmer one.
+      (Same position as js/cine.js; see the 3 September note.) */
+(function whyMobile(){
+  const panelsEl = document.querySelector('.pin .panels');
+  const stage = document.getElementById('stage');
+  if(!panelsEl || !stage) return;
+  const beats = Array.prototype.slice.call(panelsEl.querySelectorAll('.panel'));
+  if(!beats.length) return;
+
+  const mark = document.getElementById('whyMark');
+  const cvs = document.getElementById('whyMarkCanvas');
+  const ctx = cvs && cvs.getContext ? cvs.getContext('2d') : null;
+
+  const mq = window.matchMedia('(max-width:900px)');
+  function clamp01(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }
+  function hash01(n){ const x = Math.sin(n * 12.9898) * 43758.5453; return x - Math.floor(x); }
+  /* small overshoot then a precise stop — the same settle the desktop
+     assembly uses, so a grain arriving reads identically on both */
+  function settle(x){
+    if(x <= 0) return 0; if(x >= 1) return 1;
+    const c1 = 1.12, c3 = c1 + 1, m = x - 1;
+    return 1 + c3 * m * m * m + c1 * m * m;
+  }
+
+  /* ── THE MARK ─────────────────────────────────────────────────────────
+     Points are sampled out of images/img-09.png, the site's own palm mark.
+     getImageData throws on a canvas that has had a file:// image drawn into
+     it, so the sample is wrapped: over http (which is what ships) the full
+     sand assembly runs; opened as a bare local file the same band still
+     animates, by scale and fade, using the image directly. The one thing
+     that cannot happen is an empty band. */
+  let grains = null;      /* the sampled point cloud, or null */
+  let img = null;         /* the decoded mark, for the fallback draw */
+  let live = false;       /* has a frame actually been painted */
+  /* 3400, matching the desktop scene's own mobile COUNT. At 1150 the
+     resolved mark was measurably correct — ring, trunk and horizon all in
+     the right places — and still read as a scatter of dots rather than as
+     the mark, because the mean spacing was 5.2px against a 2.3px grain. */
+  const GRAINS = 3400;
+
+  function sample(image){
+    /* 160 rather than 132: the sample grid is what quantises every grain's
+       resting position, and at 132 that is 1.8px of error on a 234px badge
+       — visible on the fine gap between the frond tips and the inner ring,
+       which is the detail the eye reads as "that is the logo". */
+    const R = 160;
+    const off = document.createElement('canvas');
+    off.width = R; off.height = R;
+    const octx = off.getContext('2d');
+    if(!octx) return null;
+    const s = Math.min(R / image.width, R / image.height);
+    const dw = image.width * s, dh = image.height * s;
+    octx.drawImage(image, (R - dw) / 2, (R - dh) / 2, dw, dh);
+    const data = octx.getImageData(0, 0, R, R).data;   /* throws if tainted */
+    const mask = new Uint8Array(R * R);
+    let filled = 0;
+    for(let i = 0; i < R * R; i++){ if(data[i * 4 + 3] > 140){ mask[i] = 1; filled++; } }
+    if(filled < 80) return null;
+
+    /* ONE GRAIN PER GRID CELL, not every k-th filled pixel in scan order.
+       Scan order walks a whole row before moving down, so taking every
+       third hit puts grains 3px apart horizontally and 1px apart
+       vertically — and the mark rendered as a field of short vertical
+       DASHES rather than as sand. A square stride gives equal spacing in
+       both axes; the stride is fractional so the grid never lands on an
+       exact pixel lattice and moirés against the mark's own edges. */
+    const stride = Math.max(1, Math.sqrt(filled / GRAINS));
+    const hits = [];
+    for(let gy = 0; gy < R; gy += stride){
+      const y = Math.round(gy); if(y >= R) break;
+      for(let gx = 0; gx < R; gx += stride){
+        const x = Math.round(gx);
+        if(x < R && mask[y * R + x]) hits.push([x / R - 0.5, y / R - 0.5]);
+      }
+    }
+    if(hits.length < 80) return null;
+    const N = hits.length;
+    const pts = new Array(N);
+    /* a jitter of up to half a cell, so the grid does not read as a screen
+       door where the mark is solid */
+    const jit = stride / R * 0.5;
+    for(let i = 0; i < N; i++){
+      const h0 = hits[i];
+      const h = [h0[0] + (hash01(i * 9.1 + 0.7) - 0.5) * jit,
+                 h0[1] + (hash01(i * 11.3 + 3.4) - 0.5) * jit];
+      /* chaos start: a ring outside the mark, flattened slightly so the
+         field reads as sand lying on a surface rather than a sphere */
+      const ang = hash01(i * 1.7 + 0.3) * 6.2831853;
+      const rad = 0.62 + hash01(i * 3.1 + 1.9) * 0.9;
+      /* Staggered outward from the mark's own centre, so the badge frame
+         settles first and the frond tips last — the shape becomes legible
+         early and then sharpens, instead of appearing all at once. */
+      const d = Math.min(1, Math.sqrt(h[0] * h[0] + h[1] * h[1]) / 0.5);
+      const st = clamp01(d * 0.6 + (hash01(i * 5.3 + 4.4) - 0.5) * 0.16);
+      const len = 0.26 + hash01(i * 7.7 + 2.2) * 0.24;
+      pts[i] = { ox: h[0], oy: h[1],
+                 cx: Math.cos(ang) * rad, cy: Math.sin(ang) * rad * 0.78,
+                 s: st, e: Math.min(1, st + len) };
+    }
+    return pts;
+  }
+
+  let cw = 0, ch = 0, dpr = 1;
+  function sizeCanvas(){
+    if(!cvs) return false;
+    const w = cvs.clientWidth, h = cvs.clientHeight;
+    if(!w || !h) return false;
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const nw = Math.round(w * dpr), nh = Math.round(h * dpr);
+    if(nw !== cvs.width || nh !== cvs.height){ cvs.width = nw; cvs.height = nh; }
+    cw = nw; ch = nh;
+    return true;
+  }
+
+  function drawMark(t){
+    if(!ctx || !sizeCanvas()) return;
+    ctx.clearRect(0, 0, cw, ch);
+    /* sized off the band, not the viewport — the band is the frame */
+    const size = Math.min(cw * 0.60, ch * 0.94);
+    if(!grains){
+      if(!img) return;
+      const ar = img.width / img.height;
+      const sc = 0.88 + 0.12 * t;
+      const dh = size * sc, dw = dh * ar;
+      ctx.globalAlpha = 0.12 + 0.88 * t;
+      ctx.drawImage(img, cw / 2 - dw / 2, ch / 2 - dh / 2, dw, dh);
+      ctx.globalAlpha = 1;
+      live = true;
+      return;
+    }
+    /* A grain a little WIDER than the mean spacing, so the solid parts of
+       the badge read as solid rather than as a screen door. Same formula as
+       the desktop uDotPx and derived from the same numbers: the mark's own
+       drawn area is ~68% of its bounding box and carries `grains.length`
+       points, so mean spacing is sqrt(0.68 * size^2 / N). Computing it
+       rather than hard-coding it is what keeps the density identical at
+       every band height and pixel ratio. */
+    const g = Math.max(1.3 * dpr,
+      Math.min(6 * dpr, 1.25 * Math.sqrt(0.68 * size * size / grains.length)));
+    ctx.fillStyle = 'rgb(58,50,38)';
+    /* The band has hard edges against the ivory, and the scattered phase
+       reaches ~1.5x the mark's own radius — so without this the cloud was
+       sliced off in mid-air at the top, bottom and both sides, which reads
+       as a clipping bug rather than as dust. Fading the grains out over the
+       outer 14% makes the field dissolve into the paper instead, and it is
+       what hides the band's edges entirely. */
+    const fadeX = cw * 0.14, fadeY = ch * 0.14;
+    for(let i = 0; i < grains.length; i++){
+      const p = grains[i];
+      const k = p.e > p.s ? clamp01((t - p.s) / (p.e - p.s)) : (t >= p.e ? 1 : 0);
+      const e = settle(k);
+      const x = cw / 2 + (p.cx + (p.ox - p.cx) * e) * size;
+      const y = ch / 2 + (p.cy + (p.oy - p.cy) * e) * size;
+      const edge = Math.min(1, Math.min(x, cw - x) / fadeX, Math.min(y, ch - y) / fadeY);
+      if(edge <= 0) continue;
+      ctx.globalAlpha = (0.22 + 0.72 * clamp01(k)) * edge;
+      ctx.fillRect(x - g / 2, y - g / 2, g, g);
+    }
+    ctx.globalAlpha = 1;
+    live = true;
+  }
+
+  if(ctx){
+    const im = new Image();
+    im.onload = function(){
+      img = im;
+      try { grains = sample(im); }
+      catch(err){ grains = null; }   /* tainted canvas — fall back to the image */
+      request();
+    };
+    im.onerror = function(){ /* the CSS background stays; nothing to do */ };
+    im.src = 'images/img-09.png';
+  }
+
+  /* ── THE SCRUB ────────────────────────────────────────────────────────
+     One rect read per element per frame, only while the reader is moving.
+
+     A beat's value is driven by its own CENTRE crossing the screen, not by
+     its top: a beat is 74vh and the viewport is 100vh, so keying off the
+     top would have a beat finish arriving before it was properly in frame.
+     Measured at 390x844 the window below is ~455px of scroll per beat with
+     the statistic on screen for all of it. */
+  /* declared above frame() and request() on purpose: the image's onload can
+     call request(), and a `let` read from inside its own temporal dead zone
+     throws rather than reading undefined */
+  let wrote = false, ticking = false, dead = false;
+  function frame(){
+    ticking = false;
+    if(!mq.matches){
+      if(wrote) clear();
+      return;
+    }
+    const vh = window.innerHeight || 1;
+    const from = vh * 1.00, to = vh * 0.46;
+    for(let i = 0; i < beats.length; i++){
+      const r = beats[i].getBoundingClientRect();
+      const centre = r.top + r.height / 2;
+      const b = clamp01((from - centre) / (from - to));
+      /* smoothstep, so a beat does not start and stop abruptly at the ends
+         of its own window */
+      beats[i].style.setProperty('--b', (b * b * (3 - 2 * b)).toFixed(4));
+    }
+    /* The spine's fill head sits on the middle of the screen, so the line
+       is always filled to exactly where the reader is looking. */
+    const pr = panelsEl.getBoundingClientRect();
+    const inset = vh * 0.08;
+    const span = pr.height - inset * 2;
+    if(span > 0){
+      panelsEl.style.setProperty('--fill',
+        clamp01((vh * 0.5 - (pr.top + inset)) / span).toFixed(4));
+    }
+    if(mark){
+      const mr = mark.getBoundingClientRect();
+      /* 0 as the band crosses 0.95vh, 1 by the time its top reaches
+         0.24vh — the band is fully in frame for the whole assembly, which
+         is the part the 172px version never managed */
+      const t = clamp01((vh * 0.95 - mr.top) / (vh * 0.71));
+      if(mr.bottom > -vh * 0.4 && mr.top < vh * 1.4) drawMark(t);
+      if(live && !mark.classList.contains('live')) mark.classList.add('live');
+    }
+    wrote = true;
+  }
+
+  function clear(){
+    wrote = false;
+    for(let i = 0; i < beats.length; i++) beats[i].style.removeProperty('--b');
+    panelsEl.style.removeProperty('--fill');
+    if(mark) mark.classList.remove('live');
+  }
+
+  /* If the very first frame throws, put everything back and stop. The
+     section is fully visible without this script; it must never be left
+     half-written. */
+  const raf = window.requestAnimationFrame || function(f){ return setTimeout(f, 16); };
+  function safeFrame(){
+    if(dead){ ticking = false; return; }
+    try { frame(); }
+    catch(err){ dead = true; ticking = false; try { clear(); } catch(e){} }
+  }
+  function request(){
+    if(dead || ticking) return;
+    ticking = true;
+    raf(safeFrame);
+  }
+
+  /* ── THE SAFETY NET ──────────────────────────────────────────────────
+     Replacing the IntersectionObserver with a scroll listener removed the
+     "observer that never fires" failure and quietly re-created it one layer
+     down: if scroll events never reach the window — a scroll container in
+     the way, an extension, an engine quirk — then --b is written exactly
+     once, at load, where it is 0, and all three statistics stay invisible
+     forever. Reproduced by suppressing window scroll events: stats
+     0.00/0.00/0.00 permanently, no error. It is the same bug wearing a
+     different hat, and a fallback that depends on the thing it is a
+     fallback FOR is not a fallback.
+
+     So the section is pumped on rAF from load until three scroll events
+     have actually been seen — proof that the cheap path works — and then
+     the pump retires and the listeners carry it with no idle cost. If the
+     listeners never work the pump simply never retires, which is exactly
+     the right trade in the one case where it matters. */
+  let scrollsSeen = 0;
+  function onScroll(){ scrollsSeen++; request(); }
+  function pump(){
+    if(dead) return;
+    request();
+    if(scrollsSeen < 3) raf(pump);
+  }
+  raf(pump);
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', request, { passive: true });
+  window.addEventListener('orientationchange', request, { passive: true });
+  window.addEventListener('load', request);
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(request);
+  if(mq.addEventListener) mq.addEventListener('change', request);
+  else if(mq.addListener) mq.addListener(request);
+  request();
 })();
 </script>
 
