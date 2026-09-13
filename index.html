@@ -781,7 +781,7 @@
   .eco-title { --a: clamp(0, calc((var(--tw,0) - 0.07) / 0.34), 1); }
   .eco-text  { --a: clamp(0, calc((var(--tw,0) - 0.15) / 0.36), 1); }
   .eco-feat  { --a: clamp(0, calc((var(--tw,0) - 0.23) / 0.38), 1); }
-  .eco-learn { --a: clamp(0, calc((var(--tw,0) - 0.31) / 0.40), 1); }
+  .eco-learn { --a: clamp(0, calc((var(--tw,0) - 0.33) / 0.38), 1); }
   .eco-step, .eco-title, .eco-text, .eco-feat, .eco-learn{
     opacity:var(--a,1);
     transform:translateY(calc((1 - var(--a,1)) * 30px));
@@ -803,13 +803,25 @@
     color:rgba(247,244,238,0.92);border:1px solid rgba(247,244,238,0.38);
     background:rgba(8,7,6,0.22);backdrop-filter:blur(2px);
     border-radius:2px;padding:6px 11px;}
-  .eco-learn{display:inline-flex;align-items:center;gap:9px;margin-top:clamp(16px,2.4vh,26px);
-    font-size:var(--t-micro);letter-spacing:0.14em;text-transform:uppercase;text-decoration:none;
-    color:var(--warm-white);border-bottom:1px solid rgba(247,244,238,0.34);padding-bottom:5px;
-    transition:border-color 0.3s var(--ease);}
-  .eco-learn:hover{border-bottom-color:var(--warm-white);}
-  .eco-learn span{transition:transform 0.35s var(--ease);}
-  .eco-learn:hover span{transform:translateX(3px);}
+  /* A real call to action, not a hairline. It was tracked caps on a 0.34
+     underline — at the foot of a full-bleed photograph that reads as a
+     footnote, and it is the only thing on the plate the reader can act on.
+     It is now a bordered pill that fills on hover, with the arrow in its own
+     circle so the affordance is legible without hovering. */
+  .eco-learn{display:inline-flex;align-items:center;gap:12px;
+    margin-top:clamp(18px,2.8vh,30px);
+    font-size:var(--t-small);letter-spacing:0.13em;text-transform:uppercase;text-decoration:none;
+    color:var(--warm-white);border:1px solid rgba(247,244,238,0.5);border-radius:2px;
+    padding:13px 20px;background:rgba(8,7,6,0.30);backdrop-filter:blur(3px);
+    transition:background 0.35s var(--ease), border-color 0.35s var(--ease),
+               color 0.35s var(--ease), transform 0.35s var(--ease);}
+  .eco-learn:hover{background:var(--warm-white);border-color:var(--warm-white);
+    color:var(--charcoal);transform:translateY(-2px);}
+  .eco-learn span{display:inline-flex;align-items:center;justify-content:center;
+    width:20px;height:20px;border-radius:50%;font-size:12px;line-height:1;
+    border:1px solid currentColor;opacity:0.75;
+    transition:transform 0.35s var(--ease), opacity 0.35s var(--ease);}
+  .eco-learn:hover span{transform:translateX(3px);opacity:1;}
   .eco-marks{position:absolute;left:6%;bottom:calc(4vh + 26px);z-index:5;display:flex;gap:10px;}
   .eco-mark{display:block;width:34px;}
   .eco-mark > span{display:block;height:1px;background:rgba(247,244,238,0.30);position:relative;}
@@ -1162,9 +1174,21 @@
       display:flex;flex-direction:column;}
     /* opacity and transform are written inline by setPanel on desktop;
        setPanel returns early on mobile now, and the reveal below takes over */
-    .panel{padding:20px 22px;border-radius:3px;opacity:0;transform:translateY(16px);
+    /* FAIL-VISIBLE. These used to start at opacity:0 and depend on an
+       IntersectionObserver to bring them back. If that observer never fired
+       — script error earlier in the file, an engine quirk, anything — the
+       three statistics were invisible permanently and the section rendered
+       as copy, mark, and a screen of nothing. That is not a state this can
+       be allowed to reach.
+       The resting state is now VISIBLE. The hidden start-state is opted
+       into by .reveal-armed, which the script adds only after the observer
+       has been constructed and is observing. Same principle as css/trust.css
+       and its html.js gate: animation is an enhancement, never a
+       precondition for the content existing. */
+    .panel{padding:20px 22px;border-radius:3px;opacity:1;transform:none;
       transition:opacity 0.7s var(--ease), transform 0.7s var(--ease);}
-    .panel.in{opacity:1;transform:none;}
+    .reveal-armed .panel{opacity:0;transform:translateY(16px);}
+    .reveal-armed .panel.in{opacity:1;transform:none;}
     .panel-num{top:13px;right:17px;font-size:13px;}
     .panel .bar{margin-bottom:13px;width:20px;}
     .panel .stat{font-size:24px;}
@@ -4333,13 +4357,46 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
      cannot strand a card if the reader rotates the device. Same threshold
      as every other reveal on the site: content commits when its top crosses
      85% of the viewport. */
-  if('IntersectionObserver' in window){
-    const panelIO = new IntersectionObserver((es) => {
-      es.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); panelIO.unobserve(e.target); } });
-    }, { threshold: 0, rootMargin: '0px 0px -8% 0px' });
-    panelEls.forEach(el => el && panelIO.observe(el));
-  } else {
-    panelEls.forEach(el => el && el.classList.add('in'));
+  /* SCROLL-CHECKED, NOT OBSERVED. This used to be an IntersectionObserver.
+     Tested by stubbing an observer whose callback never fires, all three
+     cards stayed at opacity 0 permanently — the section rendered as copy, a
+     mark, and a screen of nothing, with no error to show for it. An
+     observer that silently never fires is unfalsifiable from inside the
+     page, and it is not worth the risk for three cards.
+     A scroll handler cannot fail that way: it either runs or the page is not
+     scrolling. It is rAF-throttled, each card is dropped from the pending
+     list as it reveals, and the listener removes itself once all three are
+     done. The hidden start-state is armed here, so if any of this throws the
+     cards are simply visible — see the .panel note in the stylesheet. */
+  try{
+    const stageEl = document.getElementById('stage');
+    if(stageEl && panelEls.length){
+      stageEl.classList.add('reveal-armed');
+      let pending = panelEls.filter(Boolean);
+      let ticking = false;
+      const check = function(){
+        ticking = false;
+        const line = window.innerHeight * 0.92;
+        pending = pending.filter(function(el){
+          if(el.getBoundingClientRect().top < line){ el.classList.add('in'); return false; }
+          return true;
+        });
+        if(!pending.length){
+          window.removeEventListener('scroll', onScroll);
+          window.removeEventListener('resize', onScroll);
+        }
+      };
+      const onScroll = function(){
+        if(ticking) return; ticking = true;
+        (window.requestAnimationFrame || setTimeout)(check);
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll, { passive: true });
+      check();
+    }
+  }catch(err){
+    const st = document.getElementById('stage');
+    if(st) st.classList.remove('reveal-armed');
   }
 
   function loop(){
