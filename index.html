@@ -595,6 +595,9 @@
     gap:12px;margin-top:clamp(20px,3vh,34px);
     opacity:0;animation:fadeUp 1.3s ease-out forwards;animation-delay:6.65s;}
   .ctas .btn{padding:15px 30px;font-size:var(--t-micro);letter-spacing:0.14em;white-space:nowrap;}
+  /* Desktop keeps the hero exactly as it was signed off: no icons, no
+     pills. The spans exist in the markup for the mobile composition only. */
+  .ctas .btn-i{display:none;}
 
   /* The REST / LEARN / EARN / RETURN strip that sat under the calls to
      action is removed. It duplicated the eyebrow above it and added a third
@@ -674,15 +677,48 @@
     .hero-type{width:auto;}
     .kicker{font-size:var(--t-micro);letter-spacing:0.2em;gap:11px;}
     .kicker::before{width:20px;}
-    .h1{font-size:clamp(31px,9.2vw,42px);line-height:1.03;margin-top:1vh;
-      text-shadow:0 2px 30px rgba(10,8,6,0.5);}
-    .sub{display:block;font-size:var(--t-body);line-height:1.55;max-width:29ch;margin-top:1.2vh;}
-    /* stacked, per the brief, and at the site's own button size */
-    /* stacked, but sized to their own content — stretched to the column
-       they were the heaviest thing in the frame, which is the opposite of
-       sitting inside the photograph */
-    .ctas{flex-direction:column;align-items:flex-start;margin-top:1.6vh;gap:8px;}
-    .ctas .btn{padding:13px 24px;font-size:var(--t-micro);letter-spacing:0.13em;}
+    /* THREE SHORT LINES, NOT A LONG ONE AND AN ORPHAN.
+       At 35.9px "A healthier tomorrow," fits on one line and "together" is
+       left alone under it — a line running to 83% of the column with a
+       single word beneath, which is the weakest shape a three-word headline
+       can take. The break points are pure arithmetic: Cormorant Light runs
+       about 0.42em per lowercase character, so "A healthier tomorrow," (21
+       chars) needs ~8.8em and "A healthier" (11) needs ~4.6em. Any size
+       between column/8.8 and column/4.6 — 38px to 72px at 390 — wraps into
+       the three balanced lines the composition wants. No max-width is
+       needed and none is set; the column does the work. */
+    .h1{font-size:clamp(31px,9.4vw,42px);line-height:1.04;margin-top:0.9vh;
+      letter-spacing:-0.026em;text-shadow:0 2px 30px rgba(10,8,6,0.5);}
+    /* The headline took the space, so the sub gives some back: one step
+       down the ladder and a wider measure takes it from four lines to
+       three, which is what the reference composition carries. */
+    .sub{display:block;font-size:var(--t-body-s);line-height:1.5;max-width:34ch;margin-top:1vh;}
+    /* PILLS, EQUAL WIDTH, WITH THEIR DIRECTION ON THEM.
+       They were two rectangles of different widths (176px and 221px) at
+       11.5px — a ragged right edge, two different sizes for two actions,
+       and neither big enough to read as a target on a photograph. They are
+       now one width, pill-shaped, a step larger, with the icon pushed to
+       the far edge so each bar reads as a row that goes somewhere: the
+       primary sends you onward, the secondary sends you down the page.
+       align-items:stretch on the column is what makes them equal, and the
+       column is capped so they do not become a full-bleed slab — the
+       stylesheet's earlier objection to pills was that at full column width
+       they became the loudest thing in the frame, and that still holds. */
+    .ctas{flex-direction:column;align-items:stretch;margin-top:1.6vh;gap:9px;
+      width:min(78%,300px);}
+    .ctas .btn{display:flex;align-items:center;justify-content:space-between;gap:12px;
+      padding:15px 22px;border-radius:999px;
+      font-size:var(--t-small);letter-spacing:0.1em;white-space:nowrap;}
+    .ctas .btn-i{display:flex;align-items:center;justify-content:center;
+      width:22px;height:22px;flex:none;border-radius:50%;
+      font-size:12px;line-height:1;border:1px solid currentColor;opacity:0.55;}
+    /* The scrim has cleared to zero by 48% so the phone keeps its own
+       light, and the calls to action sit at 36-45% — right where it is
+       thinnest, over open water. The filled button is opaque and needs
+       nothing; the ghost carries its own ground instead, which is far more
+       surgical than darkening the band the product is in. */
+    .ctas .btn-ghost{background:rgba(8,7,6,0.34);border-color:rgba(247,246,242,0.45);
+      backdrop-filter:blur(3px);}
     /* the hero image runs to the bottom of the viewport and melts into the
        next section, so neither a divider nor a floating scroll cue belongs
        between them */
@@ -702,7 +738,20 @@
         url('images/hero-mobile.jpg'),
         url('images/hero-mobile.jpg');
       background-size:cover,100% auto,cover;
-      background-position:center,center bottom,center top;
+      /* THE PLATE IS PUSHED DOWN 5vh, AND THAT IS WHERE THE ROOM CAME FROM.
+         The type block had exactly ZERO clearance above the phone at
+         390x844 — measured, the stack ended on the pixel the product
+         started — so the headline could not grow by even a point without
+         printing on the photograph. It was not a type problem: the frame
+         carries 67-89px of dead foreground BELOW the watch at every handset
+         size (measured from the source, products at y 35.5%-88.3%), and all
+         of it was being spent on empty stone. Anchoring 5vh lower crops
+         that ground instead and hands the band 32-47px, which is what pays
+         for the larger headline and the bigger calls to action.
+         5vh, not a fixed value: the slack scales with the frame, and the
+         product base still clears the viewport floor by 20-42px at every
+         size checked. Re-measure both numbers if hero-mobile.jpg changes. */
+      background-position:center,center bottom -6.5vh,center top;
       background-repeat:no-repeat,no-repeat,no-repeat;}
     /* The hero's own mobile type rules live ABOVE, with the rest of the
        13 September hero. What used to be here — a 38-60px headline, a 9px
@@ -724,6 +773,62 @@
     .hero::after{background:
       radial-gradient(ellipse at 50% 46%, transparent 30%, rgba(0,0,0,0.72) 100%),
       linear-gradient(180deg, rgba(0,0,0,0.42) 0%, rgba(0,0,0,0) 26%);}
+  }
+  /* TABLET PORTRAIT (601-900 wide). The portrait plate is painted
+     `100% auto`, so at 768 wide it renders 1364px TALL — the products are
+     scaled to half again their intended size and the phone's top edge lands
+     at y=210 in a 1024 viewport, leaving 126px of band for a stack that
+     needs 374. Measured at baseline the type printed 234px into the
+     photograph here; this is not a regression, it is what painting a
+     941x1672 portrait frame across a 768 viewport does.
+     Anchoring the plate to the TOP instead lets the products run off the
+     bottom of the fold rather than climbing into the type — which is how
+     the reference composition crops them anyway — and hands the band back
+     the 274px it needs. The existing bottom melt fades whatever reaches the
+     floor into the next section's ground, so the crop reads as continuing
+     rather than as cut. */
+  @media (min-width:601px) and (max-width:900px){
+    .hero-plate{background-position:center,center top,center top;}
+  }
+  /* THE THREE-LINE HEADLINE BLOCK — only where the frame can pay for it.
+     "A healthier tomorrow," fills the whole column and leaves "together"
+     alone underneath: a 21-character line and an 8-character orphan, which
+     is the weakest shape a three-word headline can take and is most of why
+     the type read as dumped at the top rather than composed.
+     Broken into three short lines it becomes a compact left-aligned block
+     occupying about half the column — the shape the reference carries.
+     The measure is in em so it scales with the type and the break holds at
+     every width: Cormorant Light runs ~0.365em per lowercase character
+     here (measured), so "A healthier tomorrow," is 7.7em and "A healthier"
+     is 4.0em, and any measure between the two breaks in the same place.
+     `together` takes its own line rather than trailing the second. On
+     DESKTOP it stays inline — there the headline has a wide column and
+     continuing the line is the stronger shape; here the column is the whole
+     screen and the block is.
+     GATED AT 801px TALL, and that gate is the whole point: three lines cost
+     ~40px more than two, and below 800 the band above the phone does not
+     have 40px to give. Measured, applying it unconditionally printed the
+     calls to action 10-35px into the photograph at 375x667, 390x659 and
+     360x740. Those sizes keep the two-line form. */
+  @media (max-width:900px) and (min-height:801px){
+    .h1{max-width:6.4em;}
+    .h1 em{display:block;}
+  }
+  /* THE 700-800 BAND, which is where most Android handsets live (360x740,
+     360x780, 393x786). The clear band above the phone is a function of both
+     axes — it is `vh - 1.146vw` — so height alone decides how much type
+     fits, and at 740 there are 288px against the 360px a 844-tall screen
+     gets. Measured, the full composition needs 317px there and printed the
+     calls to action 29px into the photograph.
+     Everything steps down one notch rather than anything being dropped:
+     both actions survive, and so does the sub-copy. Below 700 the sub does
+     have to go, and that block is further down the sheet so it wins. */
+  @media (max-width:900px) and (max-height:800px){
+    .h1{font-size:clamp(29px,8.8vw,38px);margin-top:0.7vh;}
+    .sub{font-size:var(--t-note);line-height:1.45;max-width:36ch;margin-top:0.9vh;}
+    .ctas{margin-top:1.5vh;gap:8px;width:min(80%,286px);}
+    .ctas .btn{padding:13px 20px;font-size:var(--t-micro);letter-spacing:0.1em;}
+    .ctas .btn-i{width:20px;height:20px;font-size:11px;}
   }
 
   /* ── THE ECOSYSTEM SEQUENCE ────────────────────────────────────────────
@@ -781,7 +886,11 @@
   .eco-title { --a: clamp(0, calc((var(--tw,0) - 0.07) / 0.34), 1); }
   .eco-text  { --a: clamp(0, calc((var(--tw,0) - 0.15) / 0.36), 1); }
   .eco-feat  { --a: clamp(0, calc((var(--tw,0) - 0.23) / 0.38), 1); }
-  .eco-learn { --a: clamp(0, calc((var(--tw,0) - 0.33) / 0.38), 1); }
+  /* Pulled earlier and tightened (was 0.33 over a 0.38 window). It is the
+     payoff so it still lands last, but starting at 0.33 meant it only
+     reached full strength in the tail of the plate's hold — the opposite
+     of prominent. */
+  .eco-learn { --a: clamp(0, calc((var(--tw,0) - 0.29) / 0.30), 1); }
   .eco-step, .eco-title, .eco-text, .eco-feat, .eco-learn{
     opacity:var(--a,1);
     transform:translateY(calc((1 - var(--a,1)) * 30px));
@@ -803,25 +912,37 @@
     color:rgba(247,244,238,0.92);border:1px solid rgba(247,244,238,0.38);
     background:rgba(8,7,6,0.22);backdrop-filter:blur(2px);
     border-radius:2px;padding:6px 11px;}
-  /* A real call to action, not a hairline. It was tracked caps on a 0.34
-     underline — at the foot of a full-bleed photograph that reads as a
-     footnote, and it is the only thing on the plate the reader can act on.
-     It is now a bordered pill that fills on hover, with the arrow in its own
-     circle so the affordance is legible without hovering. */
-  .eco-learn{display:inline-flex;align-items:center;gap:12px;
-    margin-top:clamp(18px,2.8vh,30px);
-    font-size:var(--t-small);letter-spacing:0.13em;text-transform:uppercase;text-decoration:none;
-    color:var(--warm-white);border:1px solid rgba(247,244,238,0.5);border-radius:2px;
-    padding:13px 20px;background:rgba(8,7,6,0.30);backdrop-filter:blur(3px);
-    transition:background 0.35s var(--ease), border-color 0.35s var(--ease),
-               color 0.35s var(--ease), transform 0.35s var(--ease);}
-  .eco-learn:hover{background:var(--warm-white);border-color:var(--warm-white);
-    color:var(--charcoal);transform:translateY(-2px);}
+  /* THE ONLY ACTION ON THE PLATE, AND IT HAS TO OUTRANK THE CHIPS.
+     Two previous versions failed for the same reason. It began as 11px
+     tracked caps on a 0.34 underline — a footnote at the foot of a
+     full-bleed photograph. It then became a bordered pill, which was better
+     but still lost: the four .eco-feat chips directly above it carry the
+     SAME hairline, the same tracked caps and the same translucent dark
+     fill, so the eye read five near-identical chips in a stack and nothing
+     in the composition said which one was clickable. Outlining it harder
+     could never fix that — it had to leave the chips' register entirely.
+
+     It is now the site's own primary button, .btn-light: solid warm-white,
+     charcoal ink, lifting on hover. That is an unambiguous figure against a
+     photograph and it cannot be mistaken for a label. Larger than the
+     standard .btn (14.5px against 11.5px, 55px tall against 48px) because
+     it sits under a 52px Cormorant headline and has a whole frame to hold
+     its own against. */
+  .eco-learn{display:inline-flex;align-items:center;gap:14px;
+    margin-top:clamp(24px,3.6vh,38px);
+    font-size:var(--t-meta);letter-spacing:0.16em;text-transform:uppercase;text-decoration:none;
+    color:var(--charcoal);background:var(--warm-white);
+    border:1px solid var(--warm-white);border-radius:3px;
+    padding:18px 30px;box-shadow:0 14px 34px rgba(8,7,6,0.30);
+    transition:transform 0.45s var(--ease), box-shadow 0.45s var(--ease),
+               background 0.3s ease, color 0.3s ease;}
+  .eco-learn:hover{transform:translateY(-2px);box-shadow:0 20px 46px rgba(8,7,6,0.42);}
+  .eco-learn:active{transform:translateY(0);}
   .eco-learn span{display:inline-flex;align-items:center;justify-content:center;
-    width:20px;height:20px;border-radius:50%;font-size:12px;line-height:1;
-    border:1px solid currentColor;opacity:0.75;
-    transition:transform 0.35s var(--ease), opacity 0.35s var(--ease);}
-  .eco-learn:hover span{transform:translateX(3px);opacity:1;}
+    width:24px;height:24px;border-radius:50%;font-size:13px;line-height:1;
+    border:1px solid rgba(23,21,15,0.4);
+    transition:transform 0.35s var(--ease), border-color 0.35s var(--ease);}
+  .eco-learn:hover span{transform:translateX(3px);border-color:rgba(23,21,15,0.7);}
   .eco-marks{position:absolute;left:6%;bottom:calc(4vh + 26px);z-index:5;display:flex;gap:10px;}
   .eco-mark{display:block;width:34px;}
   .eco-mark > span{display:block;height:1px;background:rgba(247,244,238,0.30);position:relative;}
@@ -901,17 +1022,14 @@
     .eco-panel{bottom:9%;}
     .eco-item:nth-child(1) .eco-panel{top:6%;bottom:auto;}
     .eco-learn{display:flex;width:100%;justify-content:space-between;align-items:center;
-      margin-top:clamp(17px,2.4vh,24px);padding:15px 18px;gap:10px;
-      font-size:var(--t-small);letter-spacing:0.14em;
-      background:var(--warm-white);border-color:var(--warm-white);color:var(--charcoal);
-      backdrop-filter:none;transform:none;}
+      margin-top:clamp(18px,2.6vh,26px);padding:17px 20px;gap:10px;
+      font-size:var(--t-meta);letter-spacing:0.15em;
+      box-shadow:0 10px 26px rgba(8,7,6,0.34);}
     /* there is no hover on a touch screen, and a sticky :hover after a tap
        would leave the bar lifted 2px out of its own block */
-    .eco-learn:hover{transform:none;background:var(--warm-white);
-      border-color:var(--warm-white);color:var(--charcoal);}
-    .eco-learn span{width:22px;height:22px;opacity:1;
-      border-color:rgba(23,21,15,0.32);transform:none;}
-    .eco-learn:hover span{transform:none;opacity:1;}
+    .eco-learn:hover{transform:none;box-shadow:0 10px 26px rgba(8,7,6,0.34);}
+    .eco-learn span{width:24px;height:24px;transform:none;}
+    .eco-learn:hover span{transform:none;}
   }
 
   .section{background:var(--warm-white);padding:16vh 8%;max-width:none;margin:0;}
@@ -1346,12 +1464,18 @@
   @media (max-width:900px) and (max-height:700px){
     .kicker{font-size:var(--t-micro);letter-spacing:0.16em;gap:9px;}
     .kicker::before{width:16px;}
-    .h1{font-size:26px;margin-top:0.8vh;}
+    /* 30px, not 26. Pushing the plate down 6.5vh handed this band 38-48px
+       it did not have before; the headline gets ~4 of them and still holds
+       one line at 320 (measured: 30 characters at ~0.365em is 274px inside a
+       275px column), which is the point of keeping it here — two lines and
+       an orphan on a 640px screen is worse than one clean line. */
+    .h1{font-size:clamp(27px,7.8vw,31px);margin-top:0.8vh;}
     /* the sentence is what the 161px budget cannot carry on a 667px screen —
        the headline says the same thing and is the one that has to survive */
     .sub{display:none;}
-    .ctas{margin-top:1.2vh;gap:6px;}
-    .ctas .btn{padding:11px 16px;font-size:var(--t-micro);}
+    .ctas{margin-top:1.4vh;gap:8px;width:min(80%,282px);}
+    .ctas .btn{padding:12px 18px;font-size:var(--t-micro);letter-spacing:0.09em;}
+    .ctas .btn-i{width:19px;height:19px;font-size:11px;}
   }
 
   @media (max-width:900px){
@@ -2463,12 +2587,24 @@
 
       <div class="content" id="heroContent">
         <div class="hero-type">
-          <div class="kicker">A behavioural wellness ecosystem</div>
+          <!-- The eyebrow was "A behavioural wellness ecosystem", which is
+               the first four words of the sub-copy directly beneath it —
+               the same phrase twice in one glance, and 32 characters wide,
+               so on a handset it ran the full column and read as a bar.
+               Tagline 2 is shorter, it is the site's own line, and it does
+               not repeat anything else in the frame. (An older note in the
+               stylesheet argued against it because the four movements also
+               appeared as a strip under the calls to action — that strip
+               was removed on 13 September, so the objection is spent.) -->
+          <div class="kicker">Rest &middot; Learn &middot; Earn &middot; Return</div>
           <div class="h1" id="heroH1">A healthier tomorrow, <em>together</em></div>
           <div class="sub">A behavioural wellness ecosystem combining daily habits, real-world experiences and a like-minded community.</div>
+          <!-- The icon spans are MOBILE ONLY — hidden above 900px so the
+               approved desktop hero is unchanged. See .ctas in the mobile
+               block. -->
           <div class="ctas">
-            <a class="btn btn-light" href="#waitlistSection">Join the waitlist</a>
-            <a class="btn btn-ghost" href="#ecoSection">Explore the ecosystem</a>
+            <a class="btn btn-light" href="#waitlistSection">Join the waitlist<span class="btn-i" aria-hidden="true">&rarr;</span></a>
+            <a class="btn btn-ghost" href="#ecoSection">Explore the ecosystem<span class="btn-i" aria-hidden="true">&darr;</span></a>
           </div>
         </div>
         <!-- The hero's route map lived here and was removed on 3 September,

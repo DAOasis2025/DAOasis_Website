@@ -3354,5 +3354,123 @@ bar lifted 2px out of its own block.
 > pin. **Check the server's own log, and assert something build-specific in
 > the served HTML, before trusting any A/B on a second port.**
 
+### Ecosystem "Learn more" made prominent, and the mobile hero recomposed — 13 September 2026
+
+`index.html` only. **Desktop is unchanged apart from the hero eyebrow's
+copy** — computed styles diff against a pre-session copy on a second port
+returns one difference at 1280/1440/1920, the new `display:none` icon span.
+
+#### The CTA was losing to the chips it sat under
+
+`.eco-learn` had already been raised once from tracked caps on an underline
+to a bordered pill, and it still did not read as the action. The reason was
+not its size: the four `.eco-feat` chips directly above it carry the **same
+hairline, the same tracked caps and the same translucent dark fill**, so the
+eye read five near-identical chips in a stack and nothing said which one was
+clickable. Outlining it harder could never fix that — it had to leave the
+chips' register entirely.
+
+It is now the site's own primary button, `.btn-light`: solid warm-white,
+charcoal ink, a soft shadow so the plate sits ON the photograph, lifting on
+hover. Larger than the standard `.btn` (14.5px against 11.5px, 62px tall
+against 48px, 211px wide against 166px) because it sits under a 52px
+Cormorant headline with a whole frame to hold its own against. Mobile keeps
+the full-width bar, raised to match.
+
+Its arrival window was also pulled earlier and tightened — `(--tw - 0.29) /
+0.30`, was `0.33 / 0.38`. It still lands last, because it is the payoff, but
+starting at 0.33 meant it only reached full strength in the tail of the
+plate's hold, which is the opposite of prominent.
+
+Verified at 1280/1440/1920 with convergence polling: every part of every
+plate reaches 1.00, and the CTA is at full strength for 7/14/16 of 41
+samples per plate.
+
+#### The mobile hero — where the room came from
+
+Reported as "the wording is above everything and looks shit", with a
+reference composition. Three things were wrong and one of them was the
+reason the other two could not be fixed:
+
+1. **The type block had ZERO clearance above the phone.** Measured at
+   390x844 on the pre-session build, the stack ended on the exact pixel the
+   product started, and at 360x740 and 390x659 it was already printing 58px
+   and 1px INTO the photograph. Nothing could grow by a point.
+2. **The headline was a 21-character line and an 8-character orphan.**
+   "A healthier tomorrow," filled the column and "together" sat alone under
+   it — the weakest shape a three-word headline can take.
+3. **The two buttons were 176px and 221px wide**, 41px and 43px tall, at
+   11.5px: a ragged right edge, two different sizes for two actions, neither
+   big enough to read as a target on a photograph.
+
+**The room came from the photograph, not from the type.** `hero-mobile.jpg`
+carries 67-89px of dead foreground BELOW the watch at every handset size
+(products at source y 35.5%-88.3%, painted `100% auto` anchored bottom), and
+all of it was being spent on empty stone. The plate is now anchored
+**`center bottom -6.5vh`**, which crops that ground and hands the band
+32-60px. The product base still clears the viewport floor by 25-38px
+everywhere. **Re-measure both numbers if `hero-mobile.jpg` is replaced.**
+
+What that bought:
+
+| | before | after |
+|---|---|---|
+| headline | 35.9px, 2 lines | 36.7px, **3 lines** |
+| buttons | 176x41 + 221x43 | **258x52 + 258x54, equal, pill** |
+| clearance above the phone | **0 / -1 / -58** at 844 / 659 / 740 | **+23 / +23 / +35** |
+
+- **Pills, equal width, with their direction on them.** `align-items:stretch`
+  makes them equal; the column is capped at `min(78%,300px)` so they do not
+  become a full-bleed slab — the stylesheet's earlier objection to pills was
+  that at full column width they became the loudest thing in the frame, and
+  that still holds. The primary sends you onward (→), the secondary sends
+  you down the page (↓). **The icon spans are hidden above 900px**, so the
+  approved desktop hero is untouched.
+- **The ghost carries its own ground** (`rgba(8,7,6,0.34)` + 3px backdrop
+  blur) rather than the scrim being extended. The scrim clears to zero by
+  48% so the phone keeps its own light, and the calls to action sit at
+  36-45% — right where it is thinnest, over open water. Darkening that band
+  would have dimmed the product; giving one button a fill does not.
+- **The three-line headline is gated at `min-height:801px`.** It costs ~40px
+  over two lines and below 800 the band does not have 40px to give —
+  measured, applying it unconditionally printed the CTAs 10-35px into the
+  photograph at 375x667, 390x659 and 360x740. The measure is `max-width:
+  6.4em`, in em so it scales with the clamp: Cormorant Light runs ~0.365em
+  per lowercase character here, so "A healthier tomorrow," is 7.7em and
+  "A healthier" is 4.0em, and any measure between the two breaks in the same
+  place. `em{display:block}` puts `together` on its own line — **on desktop
+  it stays inline**, where a wide column makes continuing the line stronger.
+- **A new 700-800 tier**, which is where most Android handsets live
+  (360x740, 360x780, 393x786). Everything steps down one notch; both actions
+  and the sub-copy survive.
+- **The eyebrow was the first four words of the sub-copy beneath it** — the
+  same phrase twice in one glance, 32 characters wide, running the full
+  column on a handset. It is now Tagline 2. An older note argued against the
+  four movements here because they also appeared as a strip under the calls
+  to action; **that strip was removed on 13 September, so the objection is
+  spent.** This is the one change that reaches desktop. To revert, put
+  "A behavioural wellness ecosystem" back in `.kicker`.
+
+#### Tablet portrait was broken before this and is fixed in passing
+At 768 the portrait plate renders **1364px tall**, so the phone's top edge
+landed at y=210 in a 1024 viewport with 126px of band for a stack needing
+374 — the type printed 234px into the photograph on the pre-session build
+too. The plate is now anchored to the TOP between 601 and 900px wide, so the
+products run off the bottom of the fold rather than climbing into the type,
+which is how the reference crops them anyway. Clearance 26px.
+
+> Still open there: `hero-mobile.jpg` is 941px wide and a 768 viewport at
+> 2x asks for 1536, so the tablet hero is upscaled ~1.6x and reads soft. A
+> wider render would fix it; no other size is affected.
+
+#### Verified
+- **8 viewport sizes** (320x640, 360x740, 375x667, 390x659, 390x844,
+  412x915, 430x932, 768x1024): clearance above the product **+23 to +67px**,
+  product base clears the viewport floor by 25-38px, 0 horizontal overflow.
+  The pre-session build collided at three of the eight.
+- **Desktop hero identical** at 1280/1440/1920 — 1 diff, the hidden span.
+- **36 sitewide checks clean**, why-now mobile still **18/18** on the failure
+  matrix, ecosystem plates still reach 1.00 on every part.
+
 ### Upload
 `index.html` only. No image, no JS file and no other page changed.
