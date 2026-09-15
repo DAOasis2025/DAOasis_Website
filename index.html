@@ -422,6 +422,73 @@
     .nav-brand img{height:27px;}
     .nav-cta{padding:8px 13px;font-size:var(--t-note);}
   }
+
+  /* ── MOBILE HEADER — 15 September 2026 ──────────────────────────────────
+     MOBILE ONLY (≤600px). The bar above read as a compressed desktop strip
+     rather than a deliberate mobile header — a 30-34px mark and a ~70px
+     bar, sized by padding plus a small logo rather than composed on
+     purpose. Nothing else changes: no hero edit was needed because
+     --nav-h is measured live off the rendered bar (see the script by
+     #siteNav below) and the hero already reads that variable, so a taller
+     bar simply pushes the photograph down by exactly its own height.
+
+     FIVE TIERS, EACH DROPPING PADDING FASTER THAN IT DROPS THE LOGO.
+     Every tier sets `min-height` rather than relying on padding alone to
+     reach it — padding plus the logo's own height falls short of the
+     target at the narrow end (70-82px against a 86-96px target), so
+     `min-height` is what actually guarantees the bar's presence; the
+     flex centring above places the logo and the burger inside whatever
+     that height turns out to be.
+        ≤600  28px→22px pad · 96px · logo 162px
+        ≤480  26px→20px pad · 94px · logo 155px
+        ≤390  24px→18px pad · 90px · logo 150px
+        ≤360  20px→16px pad · 88px · logo 142px
+        ≤320  18px→14px pad · 86px · logo 140px   (the stated minimum)
+     Logo width never drops below 140px in any tier — the brand floor is
+     120px, so there is 20px of margin even at the narrowest phone this
+     targets. `height:auto` keeps the mark's true 1400:429 proportions;
+     only the width is ever set, so it is never stretched.
+
+     THE BURGER IS RESIZED ONCE, NOT PER TIER. A 40x40 touch box comfortably
+     inside every width down to 320, with 27px bars centred in it — the
+     visible icon does not need to shrink for the target to stay flush
+     with WCAG's 44px area, and keeping it one size (rather than another
+     five-tier ladder) is what stops the icon and the logo drifting out of
+     visual proportion with each other at the narrow end.
+     The open-state X is retuned to match: the offset a bar travels to
+     close the gap is its own height plus the gap above it (2px + 7px),
+     so it has to move with the new bar geometry or the two outer bars
+     land short of the centre and draw a broken X instead of one. */
+  @media(max-width:600px){
+    .nav{padding:22px 28px;min-height:96px;}
+    .nav-brand img{width:162px;height:auto;}
+    .nav-burger{width:40px;height:40px;padding:0;display:flex;align-items:center;justify-content:center;}
+    .nav-burger-bars{gap:7px;}
+    .nav-burger-bars i{width:27px;height:2px;}
+    .nav-burger.open .nav-burger-bars i:nth-child(1){transform:translateY(9px) rotate(45deg);}
+    .nav-burger.open .nav-burger-bars i:nth-child(3){transform:translateY(-9px) rotate(-45deg);}
+    /* icon-only from here up — a text label beside a 40px touch box reads
+       as UI chrome next to a 162px brand mark, the opposite of the calm
+       two-element [ burger ] [ logo ] composition this is built around. */
+    .nav-burger-label{display:none;}
+  }
+  @media(max-width:480px){
+    .nav{padding:20px 26px;min-height:94px;}
+    .nav-brand img{width:155px;}
+  }
+  @media(max-width:390px){
+    .nav{padding:18px 24px;min-height:90px;}
+    .nav-brand img{width:150px;}
+  }
+  @media(max-width:360px){
+    .nav{padding:16px 20px;min-height:88px;}
+    .nav-brand img{width:142px;}
+  }
+  @media(max-width:320px){
+    .nav{padding:14px 18px;min-height:86px;}
+    .nav-brand img{width:140px;}
+  }
+
   .nav-drawer-backdrop{position:fixed;inset:0;z-index:88;background:rgba(9,8,7,0.55);
     opacity:0;pointer-events:none;transition:opacity 0.4s;}
   .nav-drawer-backdrop.open{opacity:1;pointer-events:auto;}
