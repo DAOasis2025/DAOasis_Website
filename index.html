@@ -810,7 +810,7 @@
      have 40px to give. Measured, applying it unconditionally printed the
      calls to action 10-35px into the photograph at 375x667, 390x659 and
      360x740. Those sizes keep the two-line form. */
-  @media (max-width:900px) and (min-height:801px){
+  @media (min-width:481px) and (max-width:900px) and (min-height:801px){
     .h1{max-width:6.4em;}
     .h1 em{display:block;}
   }
@@ -823,12 +823,235 @@
      Everything steps down one notch rather than anything being dropped:
      both actions survive, and so does the sub-copy. Below 700 the sub does
      have to go, and that block is further down the sheet so it wins. */
-  @media (max-width:900px) and (max-height:800px){
+  @media (min-width:481px) and (max-width:900px) and (max-height:800px){
     .h1{font-size:clamp(29px,8.8vw,38px);margin-top:0.7vh;}
     .sub{font-size:var(--t-note);line-height:1.45;max-width:36ch;margin-top:0.9vh;}
     .ctas{margin-top:1.5vh;gap:8px;width:min(80%,286px);}
     .ctas .btn{padding:13px 20px;font-size:var(--t-micro);letter-spacing:0.1em;}
     .ctas .btn-i{width:20px;height:20px;font-size:11px;}
+  }
+
+  /* ── MOBILE HERO v3 — 15 September 2026 ───────────────────────────────
+     Asked for: the calls to action BELOW the photograph, a larger headline,
+     and REST · LEARN · EARN · RETURN under the headline instead of above
+     it. The frame now reads headline → the four movements → the
+     photograph → the two actions, and the buttons have a ground of their
+     own for the first time instead of floating on open water.
+
+     WHY THIS IS A GRID AND NOT REORDERED FLEX. The three things that move
+     are not siblings: .hero-plate is a child of .hero, while the kicker,
+     the headline and the buttons are grandchildren two wrappers down
+     (.content > .hero-type). `order` cannot lift a grandchild past its own
+     parent, so the choice was to duplicate the buttons in the markup or to
+     stop the two wrappers generating boxes. `display:contents` on .content
+     and .hero-type is the second: each of those elements becomes a direct
+     grid item of .hero and can be placed by row. NOT ONE LINE OF MARKUP
+     CHANGED, which is the point — the desktop hero is signed off and is
+     untouched above 480px. 480 is the ceiling because the composition
+     needs a viewport taller than about 1.8x its width to hold 0.938vw of
+     product, three lines of display type AND a button band: measured, a
+     540x720 (1.33) or 600x900 (1.5) frame pushes the buttons 119-159px
+     below the fold. No phone in portrait is wider than 430, so the band
+     from 481 up keeps the composition it already had.
+
+     THE ROWS
+       1  nav clearance
+       2  headline
+       3  kicker
+       4  the photograph's own room  (the 1fr)
+       5  the two buttons
+     The plate spans rows 1-4, so ITS BOTTOM EDGE IS THE TOP OF THE BUTTON
+     BAND BY CONSTRUCTION. No constant holds the two in step, so there is
+     no viewport at which they can drift apart. All the slack lands in row
+     4, which is the photograph — the products get whatever the type does
+     not need, never the other way round.
+
+     ROW 4 HAS A FLOOR, AND IT IS THE LOAD-BEARING PART.
+     The photograph is painted to the WIDTH and anchored on its own bottom,
+     so the products are 0.938 x 100vw tall at every width — the source is
+     941x1672 with the phone, the band and the watch occupying y 35.5% to
+     88.3%, and 0.528 x 1.7768 = 0.938. Giving row 4 a minimum of 93.8vw
+     plus the ground and the clearance means the phone's top edge can never
+     climb into the kicker: if the viewport cannot pay for it the HERO
+     GROWS instead. That is why .hero is height:auto with min-height:100vh
+     here and not height:100vh — a fixed height with a 1fr row would have
+     collapsed row 4 on a short screen and slid the photograph straight up
+     through the type. Growing is safe and bounded: the button band is
+     ~130-180px and the melt is the last 22-30px of it, so even the worst
+     case measured — 375x667, 11px over — keeps BOTH buttons above the
+     fold with 15px to spare. Only the tail of the melt goes under.
+
+     FOUR NUMBERS, ONE SET PER TIER, AND THEY ARE ALL TIED TOGETHER
+       --hero-top     extra clearance under the navigation
+       --hero-ground  stone left showing below the watch
+       --hero-clear   minimum sky between the kicker and the phone
+       --hero-melt    the ramp to the ivory the next section opens on
+     The photograph's anchor is `bottom calc(--hero-ground - 20.8vw)`:
+     20.8vw is 0.117 x 1.7768 x 100vw, the source's OWN headroom below the
+     products, so that offset alone puts the watch base exactly on the
+     plate's bottom edge and the ground is what is handed back. Re-measure
+     20.8vw and 93.8vw together if the photograph is ever replaced.
+
+     TWO THINGS display:contents TAKES AWAY. Both are restored below and
+     must stay:
+       · .content's padding — the side gutters are grid COLUMNS now
+         (7% 1fr 7%), which is what lets the plate run edge to edge while
+         the type stays in the measure;
+       · .content's z-index:10, the single thing lifting all the type above
+         .hero-grain (z-index 3) and the vignette (z-index 2). Each item
+         carries its own now.
+
+     .hero::before / ::after are inset:0 on .hero, so with a button band at
+     the bottom they printed the bloom and the vignette over the buttons.
+     ::after (the vignette) and the warm bloom move to .hero-plate's own
+     pseudos, which end exactly where the photograph does. ::before is
+     repurposed entirely — it is now the type scrim; see the note on it
+     below for why that has to be a grid item and not a percentage. */
+  @media (max-width:480px){
+    .hero{height:auto;min-height:100vh;
+      --hero-top:1.6vh; --hero-ground:30px; --hero-clear:24px; --hero-melt:30px; --hero-feather:64px;
+      display:grid;grid-template-columns:7% 1fr 7%;
+      grid-template-rows:
+        calc(var(--nav-h) + var(--hero-top))                                  /* 1 nav        */
+        auto                                                                  /* 2 headline   */
+        auto                                                                  /* 3 kicker     */
+        minmax(calc(93.8vw + var(--hero-ground) + var(--hero-clear)), 1fr)    /* 4 photograph */
+        auto;                                                                 /* 5 buttons    */
+      /* Only the button band ever shows this — the plate covers everything
+         above it. The tail ramps to the ivory the next section opens on, so
+         the hero closes on a graded edge and not on a rule. */
+      background:linear-gradient(180deg,
+        var(--mineral) 0%,
+        var(--mineral) calc(100% - var(--hero-melt)),
+        #F7F6F2 100%);}
+    .content{display:contents;}
+    .hero-type{display:contents;}
+    .hero-plate{grid-column:1 / -1;grid-row:1 / 5;
+      position:relative;inset:auto;top:auto;z-index:0;}
+    .h1{grid-column:2;grid-row:2;position:relative;z-index:10;
+      font-size:clamp(35px,11.1vw,49px);line-height:1.03;letter-spacing:-0.03em;
+      margin-top:0;
+      /* THREE SHORT LINES, AND THE MEASURE IS WHAT GUARANTEES IT. Leaving
+         the column to make the break is one font-metric estimate away from
+         two lines and an orphan. At 390 the line measures 333px inside a
+         335px column, so it would NOT have broken at all — the shape was
+         two pixels of font metric away from flipping. 6.6em is comfortably
+         inside the 7.7em the line runs to at every width in this band, so
+         it breaks in the same place on every device. */
+      max-width:6.6em;}
+    .h1 em{display:block;margin-top:0.1em;}
+    /* UNDER the headline now, and it reads as a footing rather than a
+       label: the rule leads into it from the same left edge the headline
+       starts on. */
+    .kicker{grid-column:2;grid-row:3;position:relative;z-index:10;
+      margin-top:clamp(14px,1.9vh,20px);font-size:var(--t-micro);
+      letter-spacing:0.2em;gap:11px;color:rgba(247,246,242,0.9);}
+    .kicker::before{width:24px;}
+    /* The sub restated the headline, and with the buttons off the
+       photograph there is no band left that does not belong to either the
+       type or the product. It is untouched on desktop. */
+    .sub{display:none;}
+    /* THE BUTTON BAND. Full measure and equal — one action per row on a
+       ground of their own, with nothing behind them to compete with. */
+    .ctas{grid-column:2;grid-row:5;position:relative;z-index:10;
+      flex-direction:column;align-items:stretch;width:100%;
+      margin:clamp(14px,2vh,20px) 0 calc(var(--hero-melt) + 6px);gap:10px;}
+    .ctas .btn{display:flex;align-items:center;justify-content:space-between;
+      gap:12px;padding:16px 24px;border-radius:999px;
+      font-size:var(--t-small);letter-spacing:0.12em;white-space:nowrap;}
+    /* On a solid ground the ghost no longer needs a plate of its own — the
+       backdrop-filter was there to lift it off open water, and it is a real
+       compositing cost on a handset for nothing. */
+    .ctas .btn-ghost{background:transparent;border-color:rgba(247,246,242,0.42);
+      backdrop-filter:none;}
+    .ctas .btn-i{width:22px;height:22px;font-size:12px;opacity:0.6;}
+    /* The photograph is a BAND now, not the whole frame, so its tail melts
+       into the button band's own ground rather than into the ivory of the
+       next section — that melt belongs to the hero's bottom edge and is set
+       on .hero above. This stop is short and lands on the stone below the
+       watch, not on the watch. */
+    .hero-plate{
+      background-image:
+        linear-gradient(180deg,
+          rgba(8,7,6,0.42) 0%,
+          rgba(8,7,6,0.24) 18%,
+          rgba(8,7,6,0.08) 34%,
+          rgba(8,7,6,0.00) 46%,
+          rgba(8,7,6,0.00) 82%,
+          rgba(23,20,18,0.00) 89%,
+          rgba(23,20,18,0.50) 96.5%,
+          var(--mineral) 100%),
+        url('images/hero-mobile.jpg'),
+        url('images/hero-mobile.jpg');
+      background-size:cover,100% auto,cover;
+      background-position:center, center bottom calc(var(--hero-ground) - 20.8vw), center top;
+      background-repeat:no-repeat,no-repeat,no-repeat;}
+    /* THE TYPE SCRIM, AND WHY IT IS A GRID ITEM RATHER THAN A PERCENTAGE.
+       A veil written as a percentage of the plate cannot know where the
+       type ends — and the type moved: with the buttons gone from the
+       photograph the headline is half again bigger and now reaches 38% of
+       the plate, where the old ramp had already cleared to 0.10. Measured
+       against the real frame the kicker fell from 6.7:1 to 1.8:1 and the
+       gold italic to 1.36:1, which is the sun on the water printing
+       straight through the word.
+       .hero::before is a pseudo of the grid container, so it IS a grid
+       item: placed on rows 1-3 it is exactly as deep as the nav clearance,
+       the headline and the kicker, at every viewport, with no number to
+       keep in step. The negative bottom margin stretches its box past its
+       own area so the fade lands in the gap above the phone rather than on
+       the phone. z-index 5 sits between the plate (0) and the type (10).
+       Deep at the top where there is only sky, gone before the product —
+       which is the one thing a flat veil over this photograph cannot do,
+       and the reason the flat one was rejected in the first place. */
+    .hero::before{display:block;position:relative;inset:auto;z-index:5;
+      grid-column:1 / -1;grid-row:1 / 4;pointer-events:none;animation:none;
+      margin-bottom:calc(-1 * var(--hero-feather));
+      background:linear-gradient(180deg,
+        rgba(8,7,6,0.60) 0%,
+        rgba(8,7,6,0.62) 32%,
+        rgba(8,7,6,0.60) 72%,
+        rgba(8,7,6,0.50) 84%,
+        rgba(8,7,6,0.00) 100%);}
+    .hero::after{display:none;}
+    .hero-plate::before{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;
+      background:radial-gradient(ellipse at 50% 44%, rgba(196,138,90,0.16) 0%, transparent 58%);
+      animation:heroAtmos 15s ease-in-out infinite;}
+    .hero-plate::after{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;
+      background:
+        radial-gradient(ellipse at 50% 46%, transparent 32%, rgba(0,0,0,0.66) 100%),
+        linear-gradient(180deg, rgba(0,0,0,0.40) 0%, rgba(0,0,0,0) 26%);}
+  }
+  /* 701-800 TALL — where most Android handsets live (360x740, 360x780,
+     393x786). The sky above the phone is `viewport height - 93.8vw - the
+     button band`, so height alone decides what the type can be: at 740
+     there are about 208px of it against the 284 an 844-tall screen gets.
+     Everything steps down one notch and the three-line headline survives,
+     because that shape is what the composition is built on. */
+  @media (max-width:480px) and (max-height:800px){
+    .hero{--hero-ground:26px; --hero-clear:22px; --hero-melt:26px; --hero-feather:52px;}
+    .h1{font-size:clamp(29px,8.8vw,34px);}
+    .kicker{margin-top:clamp(11px,1.5vh,15px);}
+    .ctas{margin:clamp(11px,1.6vh,15px) 0 calc(var(--hero-melt) + 8px);gap:8px;}
+    .ctas .btn{padding:14px 22px;font-size:var(--t-micro);letter-spacing:0.11em;}
+    .ctas .btn-i{width:20px;height:20px;font-size:11px;}
+  }
+  /* 700 AND UNDER — iPhone SE, and the 320x640 floor. 93.8vw of product
+     plus a button band leaves about 170px of sky at 375x667, and three
+     lines of a headline worth reading do not fit in it. This tier takes
+     the headline to TWO lines rather than taking it back down to a
+     caption: `together` rejoins the sentence and the italic still closes
+     it. The measure goes to 9.2em, which is wider than the 7.7em first
+     line and narrower than the 10.9em whole — so it breaks in exactly one
+     place. 33px at 375, against the 29px this size used to render, is the
+     larger headline the rebuild was asked for, on the screen that had the
+     least room to give it. */
+  @media (max-width:480px) and (max-height:700px){
+    .hero{--hero-top:0.8vh; --hero-ground:20px; --hero-clear:18px; --hero-melt:22px; --hero-feather:42px;}
+    .h1{font-size:clamp(28px,8.8vw,34px);line-height:1.02;max-width:9.2em;}
+    .h1 em{display:inline;margin-top:0;}
+    .kicker{margin-top:8px;letter-spacing:0.18em;}
+    .ctas{margin:10px 0 calc(var(--hero-melt) + 4px);gap:7px;}
+    .ctas .btn{padding:12px 20px;}
   }
 
   /* ── THE ECOSYSTEM SEQUENCE ────────────────────────────────────────────
@@ -1461,7 +1684,7 @@
      stack finished flush against the phone at both ends — 2px at the top and
      2px at the foot. Everything tightens rather than anything being dropped;
      both calls to action survive. */
-  @media (max-width:900px) and (max-height:700px){
+  @media (min-width:481px) and (max-width:900px) and (max-height:700px){
     .kicker{font-size:var(--t-micro);letter-spacing:0.16em;gap:9px;}
     .kicker::before{width:16px;}
     /* 30px, not 26. Pushing the plate down 6.5vh handed this band 38-48px
