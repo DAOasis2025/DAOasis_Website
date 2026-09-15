@@ -1113,11 +1113,11 @@
      larger headline the rebuild was asked for, on the screen that had the
      least room to give it. */
   @media (max-width:480px) and (max-height:700px){
-    .hero{--hero-top:0.8vh; --hero-ground:20px; --hero-clear:18px; --hero-melt:22px; --hero-feather:42px;}
-    .h1{font-size:clamp(28px,8.8vw,34px);line-height:1.02;max-width:9.2em;}
+    .hero{--hero-top:0.3vh; --hero-ground:16px; --hero-clear:12px; --hero-melt:22px; --hero-feather:42px;}
+    .h1{font-size:clamp(28px,8.4vw,33px);line-height:1.02;max-width:9.2em;}
     .h1 em{display:inline;margin-top:0;}
     .kicker{margin-top:8px;letter-spacing:0.18em;}
-    .ctas{margin:10px 0 calc(var(--hero-melt) + 4px);gap:7px;}
+    .ctas{margin:8px 0 calc(var(--hero-melt) + 6px);gap:7px;}
     .ctas .btn{padding:12px 20px;}
   }
 
@@ -1342,7 +1342,20 @@
   .eco-sub{text-align:center;color:#5c554c;font-size:var(--t-body);line-height:1.9;max-width:620px;margin:34px auto 0;
     opacity:0;transform:translateY(14px);transition:opacity 0.9s ease 0.2s, transform 0.9s ease 0.2s;}
 
-  .section.in-view .eco-kicker,.section.in-view .eco-sub,.section.in-view .click-cue{opacity:1;transform:translateY(0);}
+  /* The audience line. Set apart from .eco-sub above it rather than added
+     to it: a rule, then the sentence, so it reads as an aside to the claim
+     rather than a third clause of it. --clay-ink because #B8A58D itself is
+     only 2.2:1 on ivory; this carry is 6.1:1 and is the site's own answer
+     to exactly this problem. It rides .section.in-view with its siblings,
+     so it needs no observer of its own. */
+  .eco-for{text-align:center;max-width:560px;margin:26px auto 0;
+    font-size:var(--t-meta);line-height:1.75;color:var(--clay-ink);
+    opacity:0;transform:translateY(14px);transition:opacity 0.9s ease 0.32s, transform 0.9s ease 0.32s;}
+  .eco-for::before{content:'';display:block;width:26px;height:1px;
+    background:currentColor;opacity:0.45;margin:0 auto 20px;}
+  @media (max-width:800px){.eco-for{font-size:var(--t-note);margin-top:22px;}}
+
+  .section.in-view .eco-kicker,.section.in-view .eco-sub,.section.in-view .eco-for,.section.in-view .click-cue{opacity:1;transform:translateY(0);}
 
   .click-cue{text-align:center;font-size:10.5px;letter-spacing:0.22em;text-transform:uppercase;
     color:#a89a83;margin-top:36px;
@@ -1769,7 +1782,16 @@
   }
 
   @media (max-width:900px){
-    .overlay{padding:calc(var(--nav-h) + 3.5vh) 8% 0;align-items:flex-start;justify-content:flex-start;text-align:left;}
+    /* NOT calc(var(--nav-h) + 3.5vh) any more. That was written when this
+       stage was a sticky 100vh frame whose top edge really did sit under the
+       fixed bar; here .stage is position:static and the section opens
+       several hundred pixels down the page, so the nav's height was buying
+       dead space at the top of a section that is nowhere near the nav. It
+       was also live: the 15 September header rebuild took --nav-h from 61px
+       to 90px, and this gap silently grew by 29px with it. 8vh is the
+       section's own opening, and the hero divider above now carries the
+       breath between the two. */
+    .overlay{padding:8vh 8% 0;align-items:flex-start;justify-content:flex-start;text-align:left;}
     .why-kicker::before{width:18px;}
     .why-headline{font-size:clamp(28px,7.4vw,38px);margin-top:18px;max-width:11ch;}
     .lede{font-size:16px;line-height:1.4;margin-top:18px;max-width:100%;}
@@ -2697,10 +2719,56 @@
     color:var(--gold);margin-bottom:30px;line-height:1.3;}
   .wl-headline{font-family:'Cormorant Garamond',serif;font-weight:300;color:var(--charcoal);
     font-size:clamp(40px,6.4vw,92px);line-height:1.02;letter-spacing:-0.012em;margin-bottom:32px;}
-  .wl-sub{font-size:var(--t-body);color:#5c554c;max-width:500px;margin:0 auto 56px;line-height:1.9;}
+  .wl-sub{font-size:var(--t-body);color:#5c554c;max-width:500px;margin:0 auto 40px;line-height:1.9;}
   /* #635c52 on --warm-stone is 5.0:1 — this line has to stay readable, it is
      the one that stops the button being a false promise */
   .wl-note{font-size:var(--t-note);color:#635c52;max-width:440px;margin:26px auto 0;line-height:1.7;}
+
+  /* WHAT ACTUALLY HAPPENS WHEN YOU JOIN — 15 September 2026.
+     The page argued for eleven screens and then asked for an email without
+     ever saying what the email gets you or when. These three steps sit
+     BEFORE the button, because that is the question a reader has at the
+     moment they are deciding, not after.
+     Step two absorbs what .wl-note used to carry on its own ("the list is
+     not automated, we add you by hand") — it is the same disclosure, moved
+     to where it reads as part of the process rather than as a footnote
+     apologising for the button. .wl-note is therefore gone from the markup;
+     the rule above stays because nothing else should regress if it returns. */
+  .wl-next{list-style:none;counter-reset:wl;max-width:430px;margin:0 auto 44px;
+    padding:0;text-align:left;}
+  .wl-next li{counter-increment:wl;position:relative;padding:0 0 0 34px;
+    font-size:var(--t-meta);color:#5c554c;line-height:1.65;}
+  .wl-next li + li{margin-top:14px;}
+  .wl-next li::before{content:counter(wl,decimal-leading-zero);position:absolute;left:0;top:0.12em;
+    font-size:var(--t-nano);letter-spacing:0.14em;color:var(--clay-ink);}
+
+  /* WHAT IS REAL TODAY. Every other page on this site is scrupulous about
+     this — investors.html and the trust layer both state plainly that there
+     are no users and no revenue — and the home page was the one place a
+     reader could come away assuming all three experiences exist now.
+     Facts only, each one already published elsewhere on the site: nothing
+     here is new information and nothing is a forecast. Keep it that way. */
+  /* 780px, and it stacks below 900 rather than 700. The three facts measure
+     157 + 249 + 265 = 671px plus two 26px gaps = 723px, so anything narrower
+     than that wraps — and when this row wraps, the separator belongs to the
+     item it precedes, so it lands at the START of the second line as an
+     orphaned rule. Measured at 1440 with a 640px cap, which is exactly what
+     it did. The row now only exists at widths that can hold it in one line
+     (a 900px viewport gives 756px of content width against the 723 needed)
+     and everything below stacks. */
+  .wl-status{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;
+    gap:10px 26px;max-width:780px;margin:34px auto 0;}
+  .wl-status span{font-size:var(--t-note);color:#635c52;line-height:1.6;}
+  .wl-status span + span{position:relative;}
+  .wl-status span + span::before{content:'';position:absolute;left:-14px;top:0.45em;
+    width:1px;height:0.9em;background:currentColor;opacity:0.35;}
+  @media (max-width:900px){
+    /* stacked, and the rules between them go — a vertical list of three
+       facts does not need separators, and at this width they fell between
+       lines rather than between items */
+    .wl-status{flex-direction:column;gap:8px;margin-top:28px;}
+    .wl-status span + span::before{display:none;}
+  }
   @media (max-width:800px){.waitlist-section{padding:16vh 8%;}}
 
   /* FOOTER */
@@ -2791,6 +2859,167 @@
   html[data-theme="light"] .community-section {background: #F7F4EE;}
   html[data-theme="light"] .cm-headline,html[data-theme="light"] .cm-who-title,
   html[data-theme="light"] .cm-body-headline,html[data-theme="light"] .cm-pillar-title {color: #171412;}
+
+  /* ══ MOBILE POLISH — 15 September 2026 ═════════════════════════════════
+     index.html only. Three things, all of them spacing or weight: the hero
+     join, the seams between the three ecosystem plates, and how much the
+     divider marks actually carry on a handset. No copy, no photograph, no
+     crop, no type size and no desktop rule is touched by any of it. */
+
+  /* ── 1. THE HERO DIVIDER ───────────────────────────────────────────────
+     THIS IS THE ONE DIVIDER ON THE PAGE THAT TAKES REAL FLOW HEIGHT, and
+     that is not a style choice. Every other divider is transparent with
+     `margin-top: calc(-1 * var(--divider-h))`, so it takes no height at all
+     and overlays the tail of the section above, borrowing that section's
+     own background. Here the section above is the hero, and its tail is the
+     button band: measured at 390x844 the overlay would put the palm mark at
+     y=814 with the buttons occupying 688-808 — the mark prints on the
+     "Explore the ecosystem" bar. So the negative margin is cancelled and
+     this one occupies its own band between the two sections.
+
+     It paints the join rather than borrowing it, for the same reason. The
+     hero's last stop is --warm-white and the "Why now" stage opens on
+     #FDFCF9, so the band runs between exactly those two values and the
+     three grounds read as one continuous sheet. If either end's colour ever
+     changes, change it here too — this is the only place they are bridged.
+
+     Height is 15vh (127px at 844, 100px at 667) against the 144px the
+     overlay dividers occupy, so it reads as the same interval without
+     costing the page a screen. */
+  .divider-hero{display:none;}
+  @media (max-width:600px){
+    /* THE PLINTH ENDS ON AN EDGE, NOT A DISSOLVE, and the divider band is
+       ivory from its first pixel. The hero used to ramp its last 30px from
+       #171412 to ivory: over that distance a dark-to-light ramp does not
+       read as a dissolve, it reads as a grey stripe sitting under the
+       button — which is exactly what was reported. The melt was right when
+       the hero ENDED ON THE PHOTOGRAPH (a photograph cannot have an edge
+       drawn across it), but it now ends on a flat dark band that exists to
+       hold the two buttons. That band is a built element, and built
+       elements are allowed edges. Lengthening the ramp instead was tried:
+       any dark-to-light ramp passes through mid-grey, so it only makes the
+       stripe taller. */
+    .hero{background:var(--mineral);}
+    /* the buttons get the space the ramp was using, so the plinth has a
+       floor rather than the lower button sitting on its edge */
+    .ctas{margin-bottom:calc(var(--hero-melt) + 14px);}
+    .divider-hero{display:block;
+      margin-top:0;padding:7.5vh 8%;
+      background:linear-gradient(180deg,var(--warm-white) 0%,#FDFCF9 100%);}
+  }
+
+  /* ── 2. THE ECOSYSTEM PLATE SEAMS ──────────────────────────────────────
+     Unpinned, the three plates are three separate photographs stacked in a
+     column, and they met on hard horizontal lines — the page read as three
+     cards rather than one sequence. Two different joins, two treatments,
+     because the edges are not the same kind of edge:
+
+       ivory → plate 1      the section above is warm-white
+       plate 1 → plate 2    photograph meets photograph
+       plate 2 → plate 3    photograph meets photograph
+       plate 3 → ivory      the section below is warm-white
+
+     PHOTOGRAPH TO PHOTOGRAPH is folded through darkness: the outgoing plate
+     fades down into rgba(8,7,6,0.88) over its last 6vh and the incoming one
+     rises out of the same value over its first 6vh, so the two frames share
+     one dark fold instead of butting. 6vh (51px at 844) and not more: the
+     copy on plates two and three sits at bottom:9% (67px up), so a longer
+     tail would start eating the panel.
+
+     IVORY TO PHOTOGRAPH reuses the melt .eco-outer already carries on
+     desktop, which was switched off wholesale on mobile. It is back, but
+     shorter and BEHIND the copy: at the desktop 14vh it washed plate one's
+     panel, which sits at top:6% here rather than centred, and the pseudo is
+     z-index 4 — above .eco-panel's 3. Dropped to z-index 2 it sits above
+     the plate and the veil and below the type, which is where it belongs,
+     and 5vh/6vh clears both panels with room. */
+  @media (max-width:900px){
+    .eco-item{overflow:hidden;}
+    .eco-item::before,.eco-item::after{content:'';position:absolute;
+      left:0;right:0;height:6vh;z-index:2;pointer-events:none;}
+    .eco-item::before{top:0;background:linear-gradient(180deg,
+      rgba(8,7,6,0.88) 0%, rgba(8,7,6,0.46) 38%, rgba(8,7,6,0) 100%);}
+    .eco-item::after{bottom:0;background:linear-gradient(0deg,
+      rgba(8,7,6,0.88) 0%, rgba(8,7,6,0.46) 38%, rgba(8,7,6,0) 100%);}
+    /* THE RUN'S TWO OUTER EDGES ARE NOT THE SAME EDGE, AND ON MOBILE THEY
+       ARE NOT WHAT DESKTOP'S ARE. .eco-outer carries an ivory melt at each
+       end for desktop, where the sections above and below are both
+       warm-white. On a handset .pin3 — the section that follows on desktop
+       — is display:none, so the run's real neighbours are:
+           above   .section.on-light        #F7F6F2   ivory
+           below   .track-mobile-section    #171412   dark
+       Re-enabling both melts wholesale therefore painted a warm-white
+       stripe across the top of a dark section. Measured, not guessed: the
+       neighbours were read off the rendered page.
+       ONLY DARK JOINS ARE FOLDED. The bottom uses the same dark fold as
+       the seams between plates, resolved to --mineral so it lands exactly
+       on the next section's own colour. The TOP is left as a clean edge:
+       an ivory melt was tried there and it is the same failure as the
+       hero's — a warm-white-to-dark ramp passes through mid-grey, so over
+       42px it painted a band of fog across the top of the photograph
+       rather than softening anything. Light meeting dark is an EDGE;
+       dark meeting dark is a FOLD. The two joins are not the same join and
+       do not get the same treatment. */
+    .eco-item:first-child::before{display:none;}
+    .eco-outer::before,.eco-outer::after{display:none;}
+    .eco-item:last-child::after{height:7vh;background:linear-gradient(0deg,
+      var(--mineral) 0%, rgba(23,20,18,0.55) 40%, rgba(23,20,18,0) 100%);}
+  }
+
+  /* ── 3. DIVIDER WEIGHT ON A HANDSET ────────────────────────────────────
+     The marks were tuned on desktop, where a 26px mark on a 1440px frame is
+     a quiet punctuation inside a wide rule. On a 390px frame the rule is a
+     quarter of the length and the same alphas simply disappear — the mark
+     above "The Journey", sitting on a dark photograph, was effectively
+     invisible. Weight only: no divider is added, removed, resized or moved,
+     and --divider-h is untouched, so none of the overlay geometry or the
+     measured clearances shift. */
+  @media (max-width:600px){
+    .divider.dark .divider-line{background:rgba(247,244,238,0.26);}
+    .divider.shown.dark .divider-mark{opacity:0.95;}
+    .divider.light .divider-line{background:rgba(43,38,35,0.28);}
+    .divider.shown.light .divider-mark{opacity:0.72;}
+  }
+
+  /* ── 4. TWO PALM MARKS IN A ROW ───────────────────────────────────────
+     Below 900px the 'Why now' section closes on the palm mark assembling
+     out of sand at ~250px — and the very next thing on the page was the
+     divider that follows .pin, whose own 26px mark is the same palm. Two
+     of the same mark inside ~100px, the second a twentieth the size of the
+     first, which reads as a mistake rather than as punctuation.
+     The divider goes, not the mark: the assembled mark IS the punctuation
+     at that join, and it is the better one. Nothing else changes — that
+     divider is transparent and takes no flow height, so removing it moves
+     no geometry, and the grounds either side of it are both #F7F6F2 in any
+     case, so it was never marking a change of ground. Desktop keeps it;
+     .why-mark is display:none there and the doubling does not exist. */
+  @media (max-width:900px){
+    .pin + .divider{display:none;}
+  }
+
+  /* ── 5. ONE DIVIDER IS CLASSED FOR A SECTION THAT IS NOT THERE ─────────
+     A DEFECT, NOT A TASTE CALL, AND IT IS NOT MOBILE-SPECIFIC.
+     A divider overlays the tail of the section ABOVE it and borrows that
+     section's background, so its class has to match whatever is above it.
+     Below 1100px .pin3 is display:none and .track-mobile-section takes its
+     place — and that section is --mineral, where pin3's tail is ivory. The
+     divider between them is classed , i.e. the BLACK palm mark, so
+     from 1100px down it has been painting a black mark on a near-black
+     ground. Measured against the rendered page: ground rgb(26,24,21),
+     contrast 1.03:1. Not faint — invisible, at every width from 1100 down,
+     including 1024 and 768.
+     Fixed at 1100px, which is the exact width where the ground changes,
+     rather than at a mobile breakpoint that would leave 601-1100 broken.
+     The next-sibling selector is the honest way to say it: this is the
+     divider that follows the mobile track section, and it only exists when
+     that section does. The mark is inverted rather than swapped for
+     img-09-white.png so no markup and no second asset is involved. */
+  @media (max-width:1100px){
+    .track-mobile-section + .divider .divider-mark{filter:invert(1) brightness(1.9);}
+    .track-mobile-section + .divider.shown .divider-mark{opacity:0.92;}
+    .track-mobile-section + .divider .divider-line{background:rgba(247,244,238,0.24);}
+  }
+
   html[data-theme="light"] .cm-sub,html[data-theme="light"] .cm-body-para,
   html[data-theme="light"] .cm-pillar-text {color: #5c554c;}
 </style>
@@ -2803,7 +3032,7 @@
   .divider .divider-line { transform: scaleX(1) !important; }
   .divider .divider-mark { opacity: 0.7 !important; }
   .cm-header, .cm-who-item, .cm-body-image, .cm-body-text, .cm-pillars,
-  .eco-kicker, .eco-headline, .eco-sub, .click-cue, .card,
+  .eco-kicker, .eco-headline, .eco-sub, .eco-for, .click-cue, .card,
   .closing-eyebrow, .closing-headline, .closing-body, .closing-tagline,
   .tm-dash, .tm-item, .pr-para,
   /* the mobile statistic cards start hidden and are revealed by an observer */
@@ -2908,11 +3137,29 @@
     </div>
   </div>
 
-  <!-- The hero→"Why DAOasis" divider was removed on 13 September. The hero
-       photograph now runs full bleed to the bottom of the viewport and melts
-       into the next section's own ground, so a rule-and-mark between them
-       drew exactly the hard horizontal line the transition is meant not to
-       have. Every other divider on the page is untouched. -->
+  <!-- The hero→"Why DAOasis" divider was removed on 13 September because the
+       hero photograph then ran full bleed to the bottom of the viewport, and
+       a rule across a photograph drew exactly the hard horizontal line the
+       transition exists to avoid.
+
+       It is back on MOBILE ONLY (15 September). That objection is spent
+       there: the mobile hero now ends on a flat dark band carrying the two
+       buttons, not on the photograph, so there is nothing for a rule to cut
+       across — and the gap between the last button and "Why now" was ~190px
+       of empty ivory doing no work. DESKTOP IS UNCHANGED: .divider-hero is
+       display:none above 600px, where the hero still ends on the photograph
+       and the original objection still holds.
+
+       It is also the one divider on the page that does NOT overlay the
+       section above it — see .divider-hero in the stylesheet for why the
+       overlay geometry cannot be used here. -->
+  <div class="divider light divider-hero" aria-hidden="true">
+    <div class="divider-inner">
+      <div class="divider-line"></div>
+      <img src="images/img-09.png" alt="" class="divider-mark" />
+      <div class="divider-line"></div>
+    </div>
+  </div>
 
   <div class="pin">
   <div class="stage grain" id="stage">
@@ -2982,6 +3229,15 @@
   <div class="eco-kicker">The DAOasis ecosystem</div>
   <h2 class="eco-headline rv"><span class="ln"><i>One ecosystem.</i></span><span class="ln"><i><em>Three connected experiences.</em></i></span></h2>
   <div class="eco-sub">DAOasis combines a daily wellness app, an optional real-world Sanctuary and digital ownership into one ongoing ecosystem. Every habit moves the same Journey — Bangkok to Phuket is the launch Journey, and completing one opens the next.</div>
+  <!-- WHO IT IS FOR. The page named its audience for the first time in the
+       Principle section, fifteen screens down and in the quietest type on
+       the page — a reader had to commit most of the page before finding out
+       whether it was for them. This is that same sentence, shortened, at
+       the first point where the reader knows what DAOasis actually is.
+       It is deliberately NOT inside .eco-sub: three long sentences in a
+       centred 620px column at 1.9 line-height is a wall, and this is a
+       different kind of statement from the two above it. -->
+  <div class="eco-for">Built for founders, operators, creators and people working location-independently — demanding work, and little structure around it.</div>
 </div>
 
 <!-- The three experiences, as full-bleed photographic plates on a pinned
@@ -3347,6 +3603,16 @@
     <div class="wl-tagline">Small actions. Consistent practice. Lasting change.</div>
     <h2 class="wl-headline rv"><span class="ln"><i>Be among the first.</i></span></h2>
     <div class="wl-sub">Join a community building a more intentional way to live, learn and grow.</div>
+    <!-- WHAT HAPPENS NEXT. Step two is the honesty note that used to sit
+         under the button as .wl-note — same words, same disclosure, moved
+         into the sequence where it reads as part of the process. There is
+         still no form backend anywhere in this project, and no date is
+         given here because none is settled. Do not add one. -->
+    <ol class="wl-next">
+      <li>Tell us you want in — the button opens your email client.</li>
+      <li>We add you by hand. There is no automated list yet.</li>
+      <li>You hear from us when the Companion App opens to its first cohort.</li>
+    </ol>
     <!-- Was `href="#"` — a dead link that every nav, drawer and hero CTA
          pointed at, and the Business Plan's Annex A7 launch blocker.
          There is still no form backend anywhere in this project, so this
@@ -3357,7 +3623,19 @@
          updated in the same commit — both currently state as fact that the
          site collects nothing and sets no cookies. -->
     <div class="btn-row" style="justify-content:center;"><a class="btn btn-dark" href="mailto:info@daoasis.xyz?subject=Early%20access%20%E2%80%94%20DAOasis%20waitlist">Join the Waitlist</a></div>
-    <div class="wl-note">The list is not automated yet. This opens your email client, and we add you by hand.</div>
+    <!-- WHERE THINGS ACTUALLY STAND. Three facts, every one of them already
+         published elsewhere on this site — the UK company on privacy.html
+         §01/§19 and terms.html §01/§24, the build status and the 2027 pilot
+         on investors.html and sanctuary.html. Nothing here is new and
+         nothing is a forecast.
+         The Sanctuary line must keep the word "planned": it is not
+         operational, not bookable, and no property is contracted. See the
+         Sanctuary content rules. -->
+    <div class="wl-status">
+      <span>Companion App — in build</span>
+      <span>The Sanctuary — planned for Phuket, 2027</span>
+      <span>DAOasis Global Ltd — incorporated in the UK</span>
+    </div>
   </div>
 </section>
 
@@ -4985,14 +5263,17 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
      resolved mark was measurably correct — ring, trunk and horizon all in
      the right places — and still read as a scatter of dots rather than as
      the mark, because the mean spacing was 5.2px against a 2.3px grain. */
-  const GRAINS = 3400;
+  const GRAINS = 6800;
 
   function sample(image){
-    /* 160 rather than 132: the sample grid is what quantises every grain's
-       resting position, and at 132 that is 1.8px of error on a 234px badge
-       — visible on the fine gap between the frond tips and the inner ring,
-       which is the detail the eye reads as "that is the logo". */
-    const R = 160;
+    /* 320, NOT 160. The sample grid is what quantises every grain's resting
+       position, and the mark is drawn at ~500 device px — so at 160 the mask
+       was being upscaled 3.1x and every fine feature of the logo was thrown
+       away BEFORE a single grain was placed. THAT is what read as dithering:
+       not the grain size, the source resolution. 320 puts the grid at or
+       above the drawn size at every band height this page uses, so the frond
+       tips and the gap to the inner ring survive sampling. */
+    const R = 320;
     const off = document.createElement('canvas');
     off.width = R; off.height = R;
     const octx = off.getContext('2d');
@@ -5040,13 +5321,58 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
          settles first and the frond tips last — the shape becomes legible
          early and then sharpens, instead of appearing all at once. */
       const d = Math.min(1, Math.sqrt(h[0] * h[0] + h[1] * h[1]) / 0.5);
-      const st = clamp01(d * 0.6 + (hash01(i * 5.3 + 4.4) - 0.5) * 0.16);
-      const len = 0.26 + hash01(i * 7.7 + 2.2) * 0.24;
+      /* Landing by ~0.95 rather than trailing past 1.0, because the last
+         beat of this animation is no longer the grains arriving — it is the
+         sharpen below, and a sharpen has nothing to sharpen if the sand is
+         still in the air underneath it. */
+      const st = clamp01(d * 0.55 + (hash01(i * 5.3 + 4.4) - 0.5) * 0.14);
+      const len = 0.22 + hash01(i * 7.7 + 2.2) * 0.18;
       pts[i] = { ox: h[0], oy: h[1],
                  cx: Math.cos(ang) * rad, cy: Math.sin(ang) * rad * 0.78,
                  s: st, e: Math.min(1, st + len) };
     }
     return pts;
+  }
+
+  /* ── THE SHARPEN ──────────────────────────────────────────────────────
+     WHY THE ANIMATION NOW ENDS ON THE ARTWORK ITSELF.
+     A point cloud can only ever approximate the mark — at 6800 grains the
+     silhouette is right but the frond tips and the inner ring are still
+     rendered as a spray of squares, and next to a logo the reader has just
+     seen at full crispness in the navigation it reads as a low-resolution
+     copy. So the sand does not finish the job: across the last fifth of the
+     scrub the real PNG is cross-faded in over the settled field, and what
+     the mark RESTS as is the artwork, pixel for pixel.
+
+     It is tinted rather than drawn black. The grains are rgb(58,50,38), a
+     warm dark that belongs to the sand, and img-09.png is a near-black
+     silhouette — cross-fading straight to it shifts colour as well as
+     sharpness, which reads as the mark changing rather than resolving.
+     `source-in` keeps the PNG's alpha and replaces its colour, so the two
+     are the same ink and only the resolution changes.
+
+     Built once and cached against its own pixel size: this is a
+     compositing operation, not something to redo per frame. */
+  const MARK_INK = 'rgb(58,50,38)';
+  let tinted = null, tintedFor = 0;
+  function tintedMark(px){
+    if(!img) return null;
+    const want = Math.max(16, Math.round(px));
+    if(tinted && tintedFor === want) return tinted;
+    try {
+      const c = document.createElement('canvas');
+      const ar = img.width / img.height;
+      c.width = Math.round(want * (ar >= 1 ? 1 : ar));
+      c.height = Math.round(want * (ar >= 1 ? 1 / ar : 1));
+      const x = c.getContext('2d');
+      if(!x) return null;
+      x.drawImage(img, 0, 0, c.width, c.height);
+      x.globalCompositeOperation = 'source-in';
+      x.fillStyle = MARK_INK;
+      x.fillRect(0, 0, c.width, c.height);
+      tinted = c; tintedFor = want;
+      return tinted;
+    } catch(e){ return null; }
   }
 
   let cw = 0, ch = 0, dpr = 1;
@@ -5065,7 +5391,7 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
     if(!ctx || !sizeCanvas()) return;
     ctx.clearRect(0, 0, cw, ch);
     /* sized off the band, not the viewport — the band is the frame */
-    const size = Math.min(cw * 0.60, ch * 0.94);
+    const size = Math.min(cw * 0.66, ch * 0.92);
     if(!grains){
       if(!img) return;
       const ar = img.width / img.height;
@@ -5094,6 +5420,19 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
        outer 14% makes the field dissolve into the paper instead, and it is
        what hides the band's edges entirely. */
     const fadeX = cw * 0.14, fadeY = ch * 0.14;
+    /* THE SAND LEAVES AS THE ARTWORK ARRIVES. Drawing the crisp mark over a
+       field still at full strength leaves a ~1px fringe of grain around the
+       silhouette — each grain carries up to half a sample cell of jitter, so
+       the ones on the edge settle just outside the artwork's own ink and are
+       never covered by it. Measured, that fringe is the whole of the
+       difference between this and the logo: 3.98 against the artwork's own
+       2.57 on the same window at the same resolution.
+       Squared, so the sand holds its density through most of the cross-fade
+       and only clears at the end — a linear pair would thin the mark in the
+       middle of the hand-over, which is the one moment it must not. */
+    const shA = clamp01((t - 0.80) / 0.20);
+    const sharpen = shA * shA * (3 - 2 * shA);
+    const grainK = 1 - sharpen * sharpen;
     for(let i = 0; i < grains.length; i++){
       const p = grains[i];
       const k = p.e > p.s ? clamp01((t - p.s) / (p.e - p.s)) : (t >= p.e ? 1 : 0);
@@ -5102,10 +5441,26 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
       const y = ch / 2 + (p.cy + (p.oy - p.cy) * e) * size;
       const edge = Math.min(1, Math.min(x, cw - x) / fadeX, Math.min(y, ch - y) / fadeY);
       if(edge <= 0) continue;
-      ctx.globalAlpha = (0.22 + 0.72 * clamp01(k)) * edge;
+      ctx.globalAlpha = (0.22 + 0.72 * clamp01(k)) * edge * grainK;
+      if(ctx.globalAlpha <= 0.004) continue;
       ctx.fillRect(x - g / 2, y - g / 2, g, g);
     }
     ctx.globalAlpha = 1;
+
+    /* the last beat: the sand resolves into the artwork. Eased, so it
+       arrives rather than switches — a linear cross-fade of a silhouette
+       over its own point cloud reads as a dissolve, which is the one thing
+       this must not look like. */
+    if(sharpen > 0){
+      const tm = tintedMark(size);
+      if(tm){
+        const a = sharpen;
+        const dw = tm.width, dh = tm.height;
+        ctx.globalAlpha = a;
+        ctx.drawImage(tm, cw / 2 - dw / 2, ch / 2 - dh / 2, dw, dh);
+        ctx.globalAlpha = 1;
+      }
+    }
     live = true;
   }
 
@@ -5160,10 +5515,15 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
     }
     if(mark){
       const mr = mark.getBoundingClientRect();
-      /* 0 as the band crosses 0.95vh, 1 by the time its top reaches
-         0.24vh — the band is fully in frame for the whole assembly, which
-         is the part the 172px version never managed */
-      const t = clamp01((vh * 0.95 - mr.top) / (vh * 0.71));
+      /* 0 the moment the band's top crosses the fold, 1 when that top
+         reaches 0.08vh — 776px of scroll at 390x844 against the 600px this
+         ran in before, which is the 'completes too quick' report. It cannot
+         simply be widened further: the band is 330px in an 844px viewport,
+         so a window longer than ~0.92vh finishes the assembly after the
+         mark has already left the top of the screen. The rest of the extra
+         duration comes from the sharpen, which is a second beat rather than
+         a longer first one. */
+      const t = clamp01((vh * 1.00 - mr.top) / (vh * 0.92));
       if(mr.bottom > -vh * 0.4 && mr.top < vh * 1.4) drawMark(t);
       if(live && !mark.classList.contains('live')) mark.classList.add('live');
     }
