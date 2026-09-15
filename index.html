@@ -460,8 +460,8 @@
      so it has to move with the new bar geometry or the two outer bars
      land short of the centre and draw a broken X instead of one. */
   @media(max-width:600px){
-    .nav{padding:22px 28px;min-height:96px;}
-    .nav-brand img{width:162px;height:auto;}
+    .nav{padding:18px 26px;min-height:74px;}
+    .nav-brand img{width:113px;height:auto;}
     .nav-burger{width:40px;height:40px;padding:0;display:flex;align-items:center;justify-content:center;}
     .nav-burger-bars{gap:7px;}
     .nav-burger-bars i{width:27px;height:2px;}
@@ -473,20 +473,20 @@
     .nav-burger-label{display:none;}
   }
   @media(max-width:480px){
-    .nav{padding:20px 26px;min-height:94px;}
-    .nav-brand img{width:155px;}
+    .nav{padding:17px 24px;min-height:72px;}
+    .nav-brand img{width:108px;}
   }
   @media(max-width:390px){
-    .nav{padding:18px 24px;min-height:90px;}
-    .nav-brand img{width:150px;}
+    .nav{padding:16px 22px;min-height:70px;}
+    .nav-brand img{width:105px;}
   }
   @media(max-width:360px){
-    .nav{padding:16px 20px;min-height:88px;}
-    .nav-brand img{width:142px;}
+    .nav{padding:15px 20px;min-height:68px;}
+    .nav-brand img{width:99px;}
   }
   @media(max-width:320px){
-    .nav{padding:14px 18px;min-height:86px;}
-    .nav-brand img{width:140px;}
+    .nav{padding:14px 18px;min-height:66px;}
+    .nav-brand img{width:98px;}
   }
 
   .nav-drawer-backdrop{position:fixed;inset:0;z-index:88;background:rgba(9,8,7,0.55);
@@ -976,7 +976,7 @@
      below for why that has to be a grid item and not a percentage. */
   @media (max-width:480px){
     .hero{height:auto;min-height:100vh;
-      --hero-top:1.6vh; --hero-ground:30px; --hero-clear:24px; --hero-melt:30px; --hero-feather:64px;
+      --hero-top:4.2vh; --hero-ground:30px; --hero-clear:21px; --hero-melt:30px; --hero-feather:64px;
       display:grid;grid-template-columns:7% 1fr 7%;
       grid-template-rows:
         calc(var(--nav-h) + var(--hero-top))                                  /* 1 nav        */
@@ -1095,7 +1095,7 @@
      Everything steps down one notch and the three-line headline survives,
      because that shape is what the composition is built on. */
   @media (max-width:480px) and (max-height:800px){
-    .hero{--hero-ground:26px; --hero-clear:22px; --hero-melt:26px; --hero-feather:52px;}
+    .hero{--hero-top:4vh; --hero-ground:26px; --hero-clear:22px; --hero-melt:26px; --hero-feather:52px;}
     .h1{font-size:clamp(29px,8.8vw,34px);}
     .kicker{margin-top:clamp(11px,1.5vh,15px);}
     .ctas{margin:clamp(11px,1.6vh,15px) 0 calc(var(--hero-melt) + 8px);gap:8px;}
@@ -1113,7 +1113,7 @@
      larger headline the rebuild was asked for, on the screen that had the
      least room to give it. */
   @media (max-width:480px) and (max-height:700px){
-    .hero{--hero-top:0.3vh; --hero-ground:16px; --hero-clear:12px; --hero-melt:22px; --hero-feather:42px;}
+    .hero{--hero-top:2.6vh; --hero-ground:16px; --hero-clear:12px; --hero-melt:22px; --hero-feather:42px;}
     .h1{font-size:clamp(28px,8.4vw,33px);line-height:1.02;max-width:9.2em;}
     .h1 em{display:inline;margin-top:0;}
     .kicker{margin-top:8px;letter-spacing:0.18em;}
@@ -1623,8 +1623,13 @@
        assembled mark — one palm printed on another. The fixed 34px is what
        carries the short viewports: 6vh alone is 38px at 640 tall and 56px
        at 932, and the divider's own geometry does not scale with vh. */
+    /* 0, not calc(6vh + 34px). That tail existed to clear the palm mark of
+       the divider below, and that divider is display:none on mobile now (see
+       "two palm marks in a row"). The section closes on the mark filling the
+       screen and hands straight to the Ecosystem section, which is the same
+       ground — so any tail here is a gap in the middle of the hand-over. */
     .stage{position:static;height:auto;display:flex;flex-direction:column;
-      overflow:visible;padding-bottom:calc(6vh + 34px);
+      overflow:visible;padding-bottom:0;
       background:linear-gradient(180deg,#FDFCF9 0%,#F6F2EA 34%,#EFE9DD 72%,#F1ECE1 88%,#F7F6F2 100%);}
     .overlay{position:static;order:1;}
     /* The WebGL scene does not run below 900px AT ALL — initPalm returns
@@ -1656,7 +1661,7 @@
        ~0.27 of a screen — a breath, with the spine running through it — and
        the beat is still tall enough that only one statistic is ever
        properly in frame. */
-    .panel{position:relative;width:auto;min-height:66vh;
+    .panel{position:relative;width:auto;min-height:106vh;
       display:flex;flex-direction:column;justify-content:center;
       background:none;border:0;border-radius:0;box-shadow:none;
       padding:3.5vh 0;margin:0;opacity:1;transform:none;transition:none;will-change:auto;}
@@ -1731,12 +1736,27 @@
        The PNG is the RESTING state and the canvas is the enhancement, so
        the band can never be empty paper. The script adds .live only once it
        has actually drawn a frame, and that is what swaps the two over. */
+    /* THE MARK IS A PINNED STAGE, NOT A BAND (15 September). It used to be
+       a 330px band in the flow: the assembly therefore started the moment
+       the band's top edge crossed the fold — while it was still 330px of
+       dust at the very bottom of the screen — and it was over before the
+       band reached the middle. Reported as starting too early and finishing
+       too fast, and both were the same cause: the animation was keyed to a
+       small element travelling past, not to a frame the reader is held in.
+       .why-mark is now the RUNWAY (300vh) and the canvas is the STAGE: it
+       sticks to the top at a full 100vh, so nothing moves until the mark is
+       the whole screen, and then it has two viewport-heights of scroll to
+       spend. See drawMark for how that runway is divided.
+       The resting PNG moves onto the CANVAS's own background rather than
+       the wrapper's — on a 300vh wrapper a centred background would sit a
+       viewport and a half down the page. A canvas paints its background
+       behind its drawn content, so this keeps the fail-visible guarantee
+       exactly as it was: no script, no frame drawn, the mark still shows. */
     .why-mark{order:3;position:relative;display:block;width:100%;
-      height:40vh;max-height:330px;margin:2.4vh 0 0;
-      background:url('images/img-09.png') center center / auto 76% no-repeat;}
-    .why-mark.live{background-image:none;}
-    .why-mark canvas{display:block;width:100%;height:100%;opacity:0;}
-    .why-mark.live canvas{opacity:1;}
+      height:300vh;margin:2.4vh 0 0;background:none;}
+    .why-mark canvas{position:sticky;top:0;display:block;width:100%;height:100vh;
+      background:url('images/img-09.png') center center / auto 30% no-repeat;}
+    .why-mark.live canvas{background-image:none;}
   }
   /* SHORT HANDSETS (iPhone SE, and any window under 740px tall). A beat is
      sized as a fraction of the viewport, so it scales on its own — what has
@@ -1752,12 +1772,15 @@
        clearance to the divider below all but disappears. Measured, ink to
        divider mark was 35px at 390x659 against the site's 49px floor; the
        extra tail here takes it to 53. */
-    .stage{padding-bottom:calc(6vh + 52px);}
-    .panel{min-height:74vh;padding:3vh 0;}
+    .stage{padding-bottom:0;}
+    .panel{min-height:118vh;padding:3vh 0;}
     .panel .stat{font-size:clamp(32px,9.4vw,42px);}
     .panel .desc{line-height:1.56;margin-top:13px;}
     .panel .source{margin-top:15px;padding-top:10px;}
-    .why-mark{height:34vh;max-height:238px;}
+    /* the runway is already in vh, so it scales on its own — only the
+       resting PNG needs to come down on a short screen */
+    .why-mark{height:270vh;}
+    .why-mark canvas{background-size:auto 26%;}
   }
   /* Short handsets (iPhone SE and similar, 667px tall). The clear band above
      the product is only 142px there rather than 198px, and measured the
@@ -2036,28 +2059,183 @@
     .tm-label{font-size:10px;letter-spacing:0.24em;color:var(--gold);text-transform:uppercase;}
     .tm-text{font-size:14px;color:#a49d90;line-height:1.85;margin-top:12px;}
 
-    .jm-list{max-width:520px;margin:9vh auto 0;position:relative;padding-left:34px;}
-    .jm-line-base{position:absolute;left:9px;top:6px;bottom:6px;width:1px;background:rgba(247,244,238,0.14);}
-    .jm-line-fill{position:absolute;left:9px;top:6px;width:1px;height:0%;
-      background:linear-gradient(180deg, var(--gold), #e0b083);box-shadow:0 0 10px rgba(196,138,90,0.5);
-      transition:height 0.4s ease-out;}
-    .jm-item{position:relative;padding:0 0 38px;opacity:0.4;transition:opacity 0.6s ease;}
-    .jm-item:last-child{padding-bottom:2px;}
-    .jm-dot{position:absolute;left:-34px;top:1px;width:19px;height:19px;border-radius:50%;
-      border:1.5px solid rgba(247,244,238,0.28);background:rgba(30,26,22,0.4);
-      transition:transform 0.5s var(--ease),opacity 0.5s var(--ease),background 0.5s var(--ease),border-color 0.5s var(--ease);}
-    .jm-item.done .jm-dot{border-color:transparent;background:radial-gradient(circle at 35% 30%, #e0b083, #a8703f);}
-    .jm-item.active{opacity:1;}
-    .jm-item.active .jm-dot{border-color:transparent;background:radial-gradient(circle at 35% 30%, #f0c39a, #c48a5a);
-      box-shadow:0 0 0 4px rgba(196,138,90,0.18);transform:scale(1.1);}
-    .jm-item.done .jm-label,.jm-item.active .jm-label{color:var(--gold);}
-    .jm-item.done .jm-text,.jm-item.active .jm-text{opacity:1;}
-    .jm-label{font-size:10px;letter-spacing:0.24em;color:#8a8377;text-transform:uppercase;transition:color 0.5s ease;}
-    .jm-text{font-size:14px;color:#a49d90;line-height:1.85;margin-top:10px;opacity:0.65;transition:opacity 0.5s ease;}
+    /* ══ THE JOURNEY, REBUILT FOR MOBILE — 15 September 2026 ═══════════
+       It was a static checklist: seven rows stacked in flow, each one
+       fading up as it crossed 55% of the screen, with a one-way `done`
+       latch. Seven stages of the product's central story delivered as a
+       to-do list, all of it readable at once, none of it given a moment.
 
-    @media (prefers-reduced-motion: reduce){
-      .jm-item, .jm-dot, .jm-line-fill{transition:opacity 0.2s ease, background 0.2s ease !important;}
+       It is now a PINNED, SCRUBBED SEQUENCE — one stage per screen, the
+       reader's own scroll moving through it:
+
+         .journey-mobile-section   the runway (7 x 78vh + 100vh)
+         .jm-list                  the stage, stuck at top:0, 100vh
+
+       The kicker and headline stay in normal flow ABOVE the stage, so the
+       title scrolls away and hands the whole screen to the sequence — the
+       reader is not asked to read a heading and a stage at the same time.
+
+       FOUR THINGS CARRY IT, and each is the site's own vocabulary:
+       1. a giant ghost numeral, from a CSS counter — no markup, no number
+          repeated in two places (the "01 — " prefixes came OUT of the
+          labels, which is the only markup change here);
+       2. the title and its line, one stage at a time;
+       3. the photograph as a band at the top, pushing in very slowly
+          across the whole section — the one thing that does NOT reset per
+          stage, so the section reads as one move rather than seven;
+       4. the rail: .jm-line-base / .jm-line-fill turned on their side into
+          a progress bar, with the seven .jm-dot marks as its stops. Every
+          one of those elements already existed.
+
+       TEXT CANNOT CROSS-FADE WITH ITS SUCCESSOR — it double-exposes. This
+       is the rule the Sanctuary's Rhythm section was rebuilt around and it
+       applies exactly here: a stage is full within 0.30 of its own stop
+       and gone by 0.44, so there is a clear frame between two stages and
+       never two legible at once. The rail and the photograph carry the
+       continuity across that gap, which is why they are continuous and
+       the type is not.
+
+       NO CSS TRANSITION ON ANYTHING SCRUBBED. --w and --p are written per
+       frame; a transition on them is a second clock running against the
+       reader's scroll. Only the discrete states keep theirs. */
+    .journey-mobile-section{
+      /* the runway. 78vh a stage is deliberately generous — the brief was
+         to slow everything down, and this is the section that had least
+         room per beat of anything on the page. */
+      min-height:calc(7 * 78vh + 100vh);
+      /* .section gives this 16vh 8%. The stage must be full bleed, so the
+         side padding comes off the section and goes onto the two elements
+         that still want it — measured, with it left on, the rail ran 275px
+         inside a 327px box and the photograph band was inset by 31px. */
+      padding:16vh 0 0;
+      /* flat ground: the photograph moves onto the stage itself, because a
+         band painted on a 6.5-screen section would only ever be visible in
+         its first screen */
+      background:var(--mineral);}
+
+    .jm-list{position:sticky;top:0;height:100vh;max-width:none;margin:0;
+      padding:0;overflow:hidden;counter-reset:jm;
+      /* the band is the IMAGE height, not a round vh number: the source is
+         1:1 painted at 100% width, so it renders exactly 100vw tall and any
+         band taller than that ends on a strip of bare gradient */
+      --jm-band:min(52vh, 100vw);
+      /* the section's own top padding is spent before the stage pins */
+      margin-top:6vh;}
+
+    /* THE PHOTOGRAPH. The documented `100% auto` treatment is kept exactly
+       — the source is 1:1 and `cover` into a phone frame shows a bright
+       sliver of stone that no veil can make type legible over. Scaled to
+       the WIDTH it renders the full square uncropped, and here it occupies
+       the top of the stage with the type below it on clean ground.
+       --p is the section's own 0-1 progress, so the push-in runs once
+       across all seven stages rather than resetting at each. */
+    .jm-list::before{content:'';position:absolute;left:0;right:0;top:0;
+      height:var(--jm-band);z-index:0;pointer-events:none;
+      background-image:
+        linear-gradient(180deg,
+          rgba(23,20,18,0.42) 0%,
+          rgba(23,20,18,0.30) 26%,
+          rgba(23,20,18,0.52) 62%,
+          rgba(23,20,18,0.92) 86%,
+          var(--mineral) 100%),
+        url('images/journey-image-mobile.jpg');
+      background-size:100% 100%, 100% auto;
+      background-position:center top, center top;
+      background-repeat:no-repeat;
+      transform:scale(calc(1 + 0.085 * var(--p,0)));
+      transform-origin:52% 22%;}
+
+    /* every stage occupies the same box, below the photograph */
+    /* THE STAGE ITSELF IS NEVER FADED — its three pieces of type are.
+       opacity on the .jm-item would take its .jm-dot with it (opacity always
+       applies to the whole subtree), and the dot is a stop on the rail that
+       has to stay visible whether its stage is the live one or not. Measured
+       with the fade on the item: one dot on screen instead of seven. */
+    .jm-item{position:absolute;left:8%;right:8%;top:var(--jm-band);bottom:13vh;z-index:2;
+      display:flex;flex-direction:column;justify-content:center;
+      counter-increment:jm;padding:0;opacity:1;pointer-events:none;}
+    .jm-item .jm-label,.jm-item .jm-text{opacity:var(--w,0);
+      transform:translateY(calc(var(--dy,0) * 1px));}
+    .jm-item:last-child{padding-bottom:0;}
+
+    /* THE GHOST NUMERAL. A counter, so the number lives in exactly one
+       place and the labels carry only their own words. It sits behind the
+       type at low strength — the stage you are on, stated once, large. */
+    /* IN FLOW, NOT BEHIND. .jm-item is a flex column, so ::before is simply
+       its first item — absolutely positioned behind the title it collided
+       with it (measured: the numeral ran 42-77px into the first line of
+       every stage). It is a chapter number above the title now, tucked in by
+       a negative margin so the two read as one block rather than two. */
+    .jm-item::before{content:counter(jm,decimal-leading-zero);
+      font-family:'Cormorant Garamond',serif;font-weight:300;
+      font-size:clamp(58px,16.5vw,88px);line-height:0.86;
+      color:var(--warm-white);letter-spacing:-0.03em;
+      margin-bottom:0.06em;
+      opacity:calc(var(--w,0) * 0.2);
+      transform:translateY(calc(var(--dy,0) * 1px));}
+
+    .jm-label{font-family:'Cormorant Garamond',serif;font-weight:300;
+      font-size:clamp(30px,8.6vw,42px);line-height:1.08;letter-spacing:-0.02em;
+      color:var(--warm-white);text-transform:none;}
+    .jm-text{font-size:var(--t-body-s);color:#b3aa9c;line-height:1.72;
+      margin-top:14px;max-width:30ch;opacity:1;}
+    /* the dot is the rail's stop, not a bullet beside the row */
+    /* bottom is NEGATIVE on purpose: the dot is positioned against its own
+       .jm-item, whose box ends at 13vh, and the rail is at 6vh — so it has to
+       reach 7vh BELOW its parent to land on the line. Measured before this:
+       93px adrift, floating in the middle of the frame. */
+    .jm-dot{position:absolute;top:auto;bottom:calc(-7vh - 3px);width:7px;height:7px;
+      border-radius:50%;border:none;
+      background:rgba(247,244,238,0.26);
+      transform:translateX(-50%) scale(calc(1 + 0.75 * var(--w,0)));
+      z-index:4;opacity:1;}
+    .jm-item.on .jm-dot{background:var(--gold);box-shadow:0 0 12px rgba(196,138,90,0.75);}
+
+    /* THE RAIL. The same two elements that used to be a vertical spine,
+       turned on their side. .jm-line-fill is scrubbed continuously, so it
+       is what carries the reader across the blank frame between stages. */
+    .jm-line-base{position:absolute;left:8%;right:8%;top:auto;bottom:6vh;
+      width:auto;height:1px;background:rgba(247,244,238,0.14);z-index:3;}
+    .jm-line-fill{position:absolute;left:8%;top:auto;bottom:6vh;
+      width:calc(var(--p,0) * (100% - 16%));height:1px;
+      background:linear-gradient(90deg,rgba(196,138,90,0.5),var(--gold));z-index:4;}
+
+    /* seven stops, spaced across the rail. They are children of their own
+       .jm-item, which is inset 8% — so they are positioned against that
+       box, and 0%..100% of it is exactly the rail. */
+    .jm-item:nth-child(3) .jm-dot{left:0%;}
+    .jm-item:nth-child(4) .jm-dot{left:16.667%;}
+    .jm-item:nth-child(5) .jm-dot{left:33.333%;}
+    .jm-item:nth-child(6) .jm-dot{left:50%;}
+    .jm-item:nth-child(7) .jm-dot{left:66.667%;}
+    .jm-item:nth-child(8) .jm-dot{left:83.333%;}
+    .jm-item:nth-child(9) .jm-dot{left:100%;}
+
+    /* FAIL VISIBLE — AS A VARIABLE DEFAULT, NOT A RULE. Without script --w
+       is never written and every stage would be invisible, so stage one
+       falls back to 1. It has to be done as a var() default and not as a
+       rule: a selector on nth-child is (0,2,0) against .jm-item's (0,1,0),
+       so an `opacity:1` there wins the cascade outright and held stage one
+       at full strength for the entire section —
+       measured, two stages legible at once at every crossover. A default
+       inside var() is overridden by the value the moment it is written. */
+    .jm-item:nth-child(3)::before{opacity:calc(var(--w,1) * 0.2);}
+    .jm-item:nth-child(3) .jm-label,.jm-item:nth-child(3) .jm-text{opacity:var(--w,1);}
+
+    @media (max-height:700px){
+      .jm-list::before{height:46vh;}
+      .jm-item{top:46vh;bottom:12vh;}
+      .jm-item::before{font-size:clamp(48px,13vw,68px);}
+      .jm-label{font-size:clamp(26px,7.4vw,34px);}
     }
+
+    /* The reduced-motion rule that lived here put a transition on .jm-item,
+       .jm-dot and .jm-line-fill. All three are scrubbed per frame now, so a
+       transition on them is a second clock running against the scroll — the
+       exact fault the 1 September pass removed everywhere else. This motion
+       is scroll-LINKED: it moves only while the reader moves and stops when
+       they stop, so it is kept under reduced motion, the same position
+       js/cine.js takes. */
   }
 
   /* THE JOURNEY */
@@ -2441,6 +2619,8 @@
       background-size:100% 100%, 100% 100%, 100% auto;
       background-position:center top;
       background-repeat:no-repeat;background-attachment:scroll;}
+    .journey-mobile-section .eco-kicker,
+    .journey-mobile-section .eco-headline{padding-left:8%;padding-right:8%;}
     .journey-mobile-section .eco-kicker{color:var(--gold);}
     .journey-mobile-section .eco-headline{color:var(--warm-white);}
     .journey-mobile-section .eco-sub{color:#a49d90;}
@@ -3428,13 +3608,13 @@
   <div class="jm-list" id="jmList">
     <div class="jm-line-base"></div>
     <div class="jm-line-fill" id="jmLineFill"></div>
-    <div class="jm-item"><div class="jm-dot"></div><div class="jm-label">01 — Download the App</div><div class="jm-text">Your journey starts with a single tap.</div></div>
-    <div class="jm-item"><div class="jm-dot"></div><div class="jm-label">02 — Build Healthy Habits</div><div class="jm-text">Steps, sleep, hydration, breathing — every one moves you forward.</div></div>
-    <div class="jm-item"><div class="jm-dot"></div><div class="jm-label">03 — Join the Community</div><div class="jm-text">Connect with others building the same habits.</div></div>
-    <div class="jm-item"><div class="jm-dot"></div><div class="jm-label">04 — Earn DRC</div><div class="jm-text">Quests, learning and referrals turn effort into Reward Credits.</div></div>
-    <div class="jm-item"><div class="jm-dot"></div><div class="jm-label">05 — Convert to $DVT (Optional)</div><div class="jm-text">Go deeper — convert DRC into the on-chain layer.</div></div>
-    <div class="jm-item"><div class="jm-dot"></div><div class="jm-label">06 — Help Shape DAOasis</div><div class="jm-text">Propose and steer where DAOasis goes, as governance develops.</div></div>
-    <div class="jm-item"><div class="jm-dot"></div><div class="jm-label">07 — Visit the Sanctuary</div><div class="jm-text">For the few who go all the way: a real-world retreat, earned.</div></div>
+    <div class="jm-item"><div class="jm-dot"></div><div class="jm-label">Download the App</div><div class="jm-text">Your journey starts with a single tap.</div></div>
+    <div class="jm-item"><div class="jm-dot"></div><div class="jm-label">Build Healthy Habits</div><div class="jm-text">Steps, sleep, hydration, breathing — every one moves you forward.</div></div>
+    <div class="jm-item"><div class="jm-dot"></div><div class="jm-label">Join the Community</div><div class="jm-text">Connect with others building the same habits.</div></div>
+    <div class="jm-item"><div class="jm-dot"></div><div class="jm-label">Earn DRC</div><div class="jm-text">Quests, learning and referrals turn effort into Reward Credits.</div></div>
+    <div class="jm-item"><div class="jm-dot"></div><div class="jm-label">Convert to $DVT (Optional)</div><div class="jm-text">Go deeper — convert DRC into the on-chain layer.</div></div>
+    <div class="jm-item"><div class="jm-dot"></div><div class="jm-label">Help Shape DAOasis</div><div class="jm-text">Propose and steer where DAOasis goes, as governance develops.</div></div>
+    <div class="jm-item"><div class="jm-dot"></div><div class="jm-label">Visit the Sanctuary</div><div class="jm-text">For the few who go all the way: a real-world retreat, earned.</div></div>
   </div>
 </div>
 
@@ -5387,17 +5567,46 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
     return true;
   }
 
+  /* ── HOW THE RUNWAY IS DIVIDED ────────────────────────────────────────
+     `t` is the reader's progress through .why-mark's 300vh, so 0 is the
+     moment the stage pins and 1 is the moment it releases. Two viewport
+     heights of scroll, spent in three beats:
+
+        0.00 - 0.42   ASSEMBLE   the sand gathers and resolves into the mark
+        0.42 - 0.62   HOLD       nothing moves. The mark simply is.
+        0.62 - 1.00   POP        it comes forward and fills the screen
+
+     The HOLD is the point. An animation that resolves and is immediately
+     taken away never gets looked at — the reader is still catching up with
+     it when it leaves. Twenty per cent of the runway is ~40vh of scroll at
+     390x844, which is a real pause rather than a frame or two.
+     The POP then hands the frame to the Ecosystem section at full size,
+     rather than the mark shrinking away to nothing first. */
+  const ASSEMBLE_END = 0.42, POP_FROM = 0.62;
+
   function drawMark(t){
     if(!ctx || !sizeCanvas()) return;
     ctx.clearRect(0, 0, cw, ch);
-    /* sized off the band, not the viewport — the band is the frame */
-    const size = Math.min(cw * 0.66, ch * 0.92);
+    /* the assembly runs on its own clock inside the first beat, so every
+       window below (the per-grain stagger, the sharpen) keeps meaning what
+       it meant when the whole scrub was the assembly */
+    const aT = clamp01(t / ASSEMBLE_END);
+    const pop = clamp01((t - POP_FROM) / (1 - POP_FROM));
+    const popE = pop * pop * (3 - 2 * pop);
+    /* Resting size is unchanged — ch is the viewport now rather than a
+       330px band, so the cap moves from 0.92 to 0.32 to land on the same
+       number. Full size takes the mark's WIDTH just past the frame
+       (0.945 is its own aspect), which is what makes it read as coming
+       forward rather than merely growing. */
+    const base = Math.min(cw * 0.66, ch * 0.32);
+    const full = Math.min(cw * 1.12, ch * 0.92);
+    const size = base + (full - base) * popE;
     if(!grains){
       if(!img) return;
       const ar = img.width / img.height;
-      const sc = 0.88 + 0.12 * t;
+      const sc = 0.88 + 0.12 * aT;
       const dh = size * sc, dw = dh * ar;
-      ctx.globalAlpha = 0.12 + 0.88 * t;
+      ctx.globalAlpha = 0.12 + 0.88 * aT;
       ctx.drawImage(img, cw / 2 - dw / 2, ch / 2 - dh / 2, dw, dh);
       ctx.globalAlpha = 1;
       live = true;
@@ -5430,12 +5639,12 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
        Squared, so the sand holds its density through most of the cross-fade
        and only clears at the end — a linear pair would thin the mark in the
        middle of the hand-over, which is the one moment it must not. */
-    const shA = clamp01((t - 0.80) / 0.20);
+    const shA = clamp01((aT - 0.80) / 0.20);
     const sharpen = shA * shA * (3 - 2 * shA);
     const grainK = 1 - sharpen * sharpen;
     for(let i = 0; i < grains.length; i++){
       const p = grains[i];
-      const k = p.e > p.s ? clamp01((t - p.s) / (p.e - p.s)) : (t >= p.e ? 1 : 0);
+      const k = p.e > p.s ? clamp01((aT - p.s) / (p.e - p.s)) : (aT >= p.e ? 1 : 0);
       const e = settle(k);
       const x = cw / 2 + (p.cx + (p.ox - p.cx) * e) * size;
       const y = ch / 2 + (p.cy + (p.oy - p.cy) * e) * size;
@@ -5452,10 +5661,15 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
        over its own point cloud reads as a dissolve, which is the one thing
        this must not look like. */
     if(sharpen > 0){
-      const tm = tintedMark(size);
+      /* Cached at the POPPED size, which is stable per viewport, and drawn
+         DOWN to the current one. Keyed on the live size it would rebuild a
+         whole canvas on every frame of the pop; built at the resting size
+         and scaled UP it would soften as it grew, which is the opposite of
+         coming forward. */
+      const tm = tintedMark(full);
       if(tm){
         const a = sharpen;
-        const dw = tm.width, dh = tm.height;
+        const dh = size, dw = size * (tm.width / tm.height);
         ctx.globalAlpha = a;
         ctx.drawImage(tm, cw / 2 - dw / 2, ch / 2 - dh / 2, dw, dh);
         ctx.globalAlpha = 1;
@@ -5523,7 +5737,12 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
          mark has already left the top of the screen. The rest of the extra
          duration comes from the sharpen, which is a second beat rather than
          a longer first one. */
-      const t = clamp01((vh * 1.00 - mr.top) / (vh * 0.92));
+      /* progress through the RUNWAY: 0 the moment the stage pins, 1 the
+         moment it releases. Before it pins mr.top is positive, so t is 0 and
+         the reader sees the scattered field arrive — the assembly itself
+         cannot begin until the mark has the whole screen. */
+      const run = mr.height - vh;
+      const t = run > 0 ? clamp01(-mr.top / run) : (mr.top <= 0 ? 1 : 0);
       if(mr.bottom > -vh * 0.4 && mr.top < vh * 1.4) drawMark(t);
       if(live && !mark.classList.contains('live')) mark.classList.add('live');
     }
@@ -5712,36 +5931,67 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
   const obs = new IntersectionObserver((entries) => { entries.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add('in-view'); }); }, { threshold: 0, rootMargin: '0px 0px -15% 0px' });
   obs.observe(section);
 
+  /* ── THE SCRUB ─────────────────────────────────────────────────────
+     One value, --p, is the reader's progress through the runway, and
+     everything in the stage is a pure function of it: the rail's fill,
+     the photograph's push-in, and each stage's own --w and --dy.
+
+     THE STAGE WINDOW IS THE SITE'S OWN TEXT RULE. Full within 0.34 of a
+     stage's stop and gone by 0.50 — which is the midpoint exactly, so the
+     two neighbours hand over on a single frame rather than leaving a dead
+     window. At 0.44 there was 12% of a stage (about 9vh of scroll) with no
+     type on screen at all. There is still a clear frame between two
+     stages and never two legible at once — type cannot cross-fade with
+     its successor, it double-exposes. The rail and the photograph are
+     continuous and carry the reader across that blank frame.
+
+     NOT ONE-WAY. The old version latched furthestActive and could only
+     ever go forwards, so scrolling back up left the section showing its
+     finished state — the same fault that was removed from js/cine.js on
+     20 August. This reverses exactly. */
   const items = [...section.querySelectorAll('.jm-item')];
   const lineFill = document.getElementById('jmLineFill');
   const list = document.getElementById('jmList');
-  if(!items.length || !lineFill || !list) return;
-  let furthestActive = -1;
-  function evaluate(){
+  if(!items.length || !list) return;
+  const mqJ = window.matchMedia('(max-width:1100px)');
+  const c01 = v => v < 0 ? 0 : v > 1 ? 1 : v;
+  let jWrote = false, jTick = false, jDead = false;
+
+  function jFrame(){
+    jTick = false;
+    if(!mqJ.matches){ if(jWrote) jClear(); return; }
     const vh = window.innerHeight || 1;
-    const triggerY = vh * 0.55;
-    let activeIdx = furthestActive;
-    items.forEach((el, i) => {
-      const r = el.getBoundingClientRect();
-      if(r.top < triggerY){
-        el.classList.add('done');
-        if(i > activeIdx) activeIdx = i;
-      }
-    });
-    if(activeIdx > furthestActive) furthestActive = activeIdx;
-    items.forEach((el, i) => { el.classList.toggle('active', i === furthestActive); });
-    if(furthestActive >= 0){
-      const last = items[furthestActive];
-      const listRect = list.getBoundingClientRect();
-      const lastRect = last.getBoundingClientRect();
-      const fillPx = Math.max(0, (lastRect.top + lastRect.height * 0.15) - listRect.top);
-      lineFill.style.height = fillPx + 'px';
+    const r = section.getBoundingClientRect();
+    /* the stage is stuck for (section height - one viewport); progress is
+       measured from the moment it pins, so nothing moves before then */
+    const run = r.height - vh;
+    const p = run > 0 ? c01(-r.top / run) : (r.top <= 0 ? 1 : 0);
+    list.style.setProperty('--p', p.toFixed(4));
+    const sp = p * (items.length - 1);
+    for(let i = 0; i < items.length; i++){
+      const d = Math.abs(sp - i);
+      const w = d <= 0.34 ? 1 : d >= 0.50 ? 0 : 1 - (d - 0.34) / 0.16;
+      const e = w * w * (3 - 2 * w);
+      items[i].style.setProperty('--w', e.toFixed(4));
+      /* a short drift through the stage's own window, so the sequence
+         reads as pages moving rather than lights switching */
+      items[i].style.setProperty('--dy', (c01(sp - i + 0.5) * -22 + 11).toFixed(2));
+      items[i].classList.toggle('on', d < 0.5);
     }
+    jWrote = true;
   }
-  let ticking = false;
-  window.addEventListener('scroll', () => { if(!ticking){ ticking = true; requestAnimationFrame(() => { evaluate(); ticking = false; }); } }, { passive:true });
-  window.addEventListener('resize', evaluate);
-  evaluate();
+  function jClear(){
+    jWrote = false;
+    list.style.removeProperty('--p');
+    items.forEach(el => { el.style.removeProperty('--w'); el.style.removeProperty('--dy'); el.classList.remove('on'); });
+  }
+  const jraf = window.requestAnimationFrame || function(f){ return setTimeout(f, 16); };
+  function jSafe(){ if(jDead){ jTick = false; return; } try { jFrame(); } catch(err){ jDead = true; jTick = false; try { jClear(); } catch(e){} } }
+  function jReq(){ if(jDead || jTick) return; jTick = true; jraf(jSafe); }
+  window.addEventListener('scroll', jReq, { passive:true });
+  window.addEventListener('resize', jReq);
+  window.addEventListener('load', jReq);
+  jReq();
 })();
 
 (function(){
