@@ -1486,7 +1486,12 @@
      copy receding — and at 55vh per transition those phases ran into one
      another and the whole thing skimmed past. 92vh per transition is the
      site median and is what this one actually needs. */
-  .pin{position:relative;height:560vh;}
+  /* HEIGHT SET BY BEATS. 6 beats x 83.33vh + 100vh of sticky, so each
+     beat gets ~0.70 screens of scroll AFTER the 8% settle pad at each end of
+     the track takes its share. Below about 0.6 screens a beat is 3-4 wheel
+     notches and the sequence reads as flashing past. See the pacing table in
+     CLAUDE.md before changing this. */
+  .pin{position:relative;height:600vh;}
   .pin.reduced-static{height:auto;}
   /* SAND, NOT SPACE.
      This was a deep-space radial with a starfield canvas over it and warm
@@ -1838,7 +1843,12 @@
      mid-arrival while the Journey below was already fully revealed. The
      sixth state is a closing hold: all four callouts and the dashboard sit
      finished and alone before anything else begins. */
-  .pin3{position:relative;height:375vh;}
+  /* HEIGHT SET BY BEATS. 6 beats x 83.33vh + 100vh of sticky, so each
+     beat gets ~0.70 screens of scroll AFTER the 8% settle pad at each end of
+     the track takes its share. Below about 0.6 screens a beat is 3-4 wheel
+     notches and the sequence reads as flashing past. See the pacing table in
+     CLAUDE.md before changing this. */
+  .pin3{position:relative;height:600vh;}
   /* Callouts must escape the dashboard vertically, but the right-hand card
      used to hang past the viewport and give the whole page a horizontal
      scroll. `overflow-x:clip` with `overflow-y:visible` is the one legal
@@ -1912,14 +1922,44 @@
      so phase 2 is a centred, annotated frame rather than the same off-centre
      one with a hole in it. --shift is measured from the real column and gap
      on resize, so this is exact at every width instead of a guessed number. */
-  .dash-wrap{position:relative;z-index:10;width:min(560px,40vw,62vh);aspect-ratio:1004/901;flex-shrink:0;
+  /* WAS A 1000x897 LANDSCAPE DASHBOARD. `img-10.jpg` was the last banned
+     mockup in live use on the site — "Reward Credits $0.100", a 24-hour
+     change, "Earnings $140", a cartoon avatar and a Level/Streak panel —
+     and the 2026 app has no landscape dashboard at all to replace it with.
+     So the box is a phone now, and all four callouts were re-anchored to
+     features that actually exist on the Home screen. See the note by .co1.
+
+     Height-bound, not width-bound: a portrait screen in a 100vh stage runs
+     out of height long before it runs out of width. 70vh x the screen's own
+     0.4738 ratio is the cap that matters.
+
+     NO box-shadow and NO ::after border. The screens carry the device frame
+     with genuinely transparent corners, so a box-shadow draws a rectangle
+     around a rounded phone and the inset hairline draws a second one. The
+     shadow is a drop-shadow filter, which follows the alpha.
+
+     `height:auto` is load-bearing — the <img> carries width/height
+     attributes, and those are presentational hints that set a real height,
+     not just a ratio. Without it the picture stretches. */
+  /* THE RUNNING HEAD SITS ABOVE THIS, AND IT WINS THE Z-ORDER.
+     .track-runhead is z-index 14 against this box's 10, centred at left:50%
+     and top:5% - so a tall portrait screen does not slide behind it, it gets
+     printed across. Measured before the cap: 26px of overlap at 1440x900,
+     30px at 1280x720, 21px at 1101x800 (1920 was clear, which is exactly how
+     a bug like this survives a spot check).
+
+     Two things fix it together. The height cap comes down to 64vh, and the
+     box is pushed clear of the runhead - .stage3 carries padding-bottom:11vh,
+     so a flex-centred item sits ~5.5vh HIGH of the true centre, and this
+     margin puts it back. Both are needed: the cap alone still collided at
+     1280, and the margin alone ran the phone into the progress dots. */
+  .dash-wrap{position:relative;z-index:10;width:min(310px,23vw,64vh * 0.4738);aspect-ratio:758/1600;flex-shrink:0;
+    margin-top:8vh;
     opacity:var(--enter,1);
     transform:translateX(calc(var(--recede,0) * var(--shift,0px) * -1))
               translateY(calc((1 - var(--enter,1)) * 28px));}
-  .dash-img{width:100%;height:100%;object-fit:cover;border-radius:4px;display:block;
-    box-shadow:0 34px 88px rgba(60,50,35,0.20);}
-  .dash-wrap::after{content:'';position:absolute;inset:0;pointer-events:none;border-radius:4px;
-    box-shadow:inset 0 0 0 1px rgba(23,21,15,0.10);}
+  .dash-img{width:100%;height:auto;display:block;
+    filter:drop-shadow(0 30px 70px rgba(60,50,35,0.30)) drop-shadow(0 4px 14px rgba(60,50,35,0.18));}
 
   /* SCRUBBED off the paced scroll value (--w), not transitioned. A 0.6s
      opacity transition fired by a class flip is a second clock running
@@ -1993,14 +2033,32 @@
      off-screen at every width from 1101 to 1920. It now joins co2 on the
      left flank, anchored on the same top band it always named (that band
      spans the full width of the frame, so 16% reads as well as 58% did). */
-  .co1{left:16%;top:12%;transform:translate(-100%,-50%);}
-  .co2{left:17%;top:62%;transform:translate(-100%,-50%);}
-  .co3{left:66%;top:47%;transform:translate(0,-50%);}
+  /* RE-ANCHORED for the phone. The four dots sit on the four things the
+     Home screen actually shows, measured down the screen:
+
+       20%  the greeting and the statement under it
+       40%  the journey card — 186 km of 900, next stop Hua Hin
+       62%  the six habit tiles
+       82%  the closing band — "One small step today"
+
+     Two a side, 42 percentage points apart, which at a 631px-tall phone
+     is 265px between dots against a ~170px card — so same-side cards
+     cannot touch. The connector is 90px, enough to carry a 380px card
+     clear of a 330px phone with ~28px to spare on both flanks.
+
+     The old set had a "Reward Credits" callout. There is no credits
+     figure on the new Home screen — credits are their own screen now —
+     and the journey section further down this page already introduces
+     DRC ("Earn DRC · Quests, learning and referrals turn effort into
+     Reward Credits"), so nothing was lost by re-pointing it. */
+  .co1{left:22%;top:40%;transform:translate(-100%,-50%);}
+  .co2{left:22%;top:82%;transform:translate(-100%,-50%);}
+  .co3{left:78%;top:20%;transform:translate(0,-50%);}
+  .co4{left:78%;top:62%;transform:translate(0,-50%);}
+  .callout.co1 .co-line,.callout.co2 .co-line,
+  .callout.co3 .co-line,.callout.co4 .co-line{width:90px;}
   /* co4 is NOT in this list — it already clears the image via its own tuned
      block further down (dot moved to top:99%, the image's own foot). */
-  .callout.co1 .co-line{width:100px;}
-  .callout.co2 .co-line{width:104px;}
-  .callout.co3 .co-line{width:200px;}
   /* mid-desktop widths leave little room to the right of the dashboard */
   @media (max-width:1560px){
     .co-card{width:340px;padding:23px 26px;}
@@ -2012,22 +2070,9 @@
     .co-text{font-size:var(--t-body-s);line-height:1.66;margin-top:11px;}
     .co-label{font-size:var(--t-micro);}
   }
-  .co4{left:50%;top:92%;transform:translate(-50%,0);}
-  /* co4 is the only callout that hangs BELOW the dashboard, and the space
-     between the image's foot and the bottom of the stage is the tightest
-     budget on the page. Two failure modes sit either side of it: too short a
-     connector and the card touches the image; too long and the card runs out
-     of the stage and collides with the section divider underneath.
-
-     So the card is widened to pull its copy onto fewer lines, the dot moves
-     to the image's bottom edge (the keep-it-up band ends there anyway) and
-     the connector stays modest. Measured, not guessed — see the fit check.
-     Written as `.callout.co4` deliberately: `.co4 .co-line` is two classes
-     and loses to `.callout.co-dir-down .co-line`, which is three. */
-  .callout.co4{top:99%;}
-  .callout.co4 .co-line{height:30px;}
-  @media (max-height:780px){ .callout.co4 .co-line{height:20px;} }
-  .callout.co4 .co-card{width:min(440px,44vw);}
+  /* co4 no longer hangs below the image — it is a right-flank callout
+     like co3 now, so the tight budget between the image foot and the
+     stage floor that the old block was tuned for no longer exists. */
 
   .track-dots{position:absolute;bottom:6%;left:8%;z-index:16;display:flex;gap:10px;opacity:0;transition:opacity 0.5s ease;}
   .track-dots.show{opacity:1;}
@@ -2042,12 +2087,12 @@
     .track-mobile-section .eco-kicker{color:var(--gold);}
     .track-mobile-section .eco-headline{color:var(--warm-white);}
     .track-mobile-section .eco-sub{color:#a49d90;}
-    .tm-dash{width:min(340px,82vw);aspect-ratio:1004/901;margin:9vh auto 0;border-radius:4px;overflow:hidden;
+    .tm-dash{width:min(250px,60vw);aspect-ratio:758/1600;margin:9vh auto 0;
       position:relative;box-shadow:0 34px 80px rgba(0,0,0,0.55);
       opacity:0;transform:translateY(24px);transition:opacity 0.9s var(--ease), transform 0.9s var(--ease);}
     .track-mobile-section.in-view .tm-dash{opacity:1;transform:translateY(0);}
-    .tm-dash::after{content:'';position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 0 1px rgba(23,21,15,0.10);}
-    .tm-dash img{width:100%;height:100%;object-fit:cover;display:block;}
+    .tm-dash img{width:100%;height:auto;display:block;
+      filter:drop-shadow(0 22px 50px rgba(60,50,35,0.30));}
     .tm-list{max-width:520px;margin:9vh auto 0;display:flex;flex-direction:column;gap:0;}
     .tm-item{padding:26px 0;border-top:1px solid rgba(247,244,238,0.1);
       opacity:0;transform:translateY(16px);transition:opacity 0.8s var(--ease), transform 0.8s var(--ease);}
@@ -2242,7 +2287,12 @@
   /* 7 stages of one short line each. 760vh gave 94vh per stage — by far the
      slowest beat on the page, and the section that most read as dragging. */
   /* 7 states = 6 transitions -> 100 + 6*55 = 430vh (was 576 at 79vh). */
-  .pin4{position:relative;height:430vh;}
+  /* HEIGHT SET BY BEATS. 7 beats x 83.33vh + 100vh of sticky, so each
+     beat gets ~0.70 screens of scroll AFTER the 8% settle pad at each end of
+     the track takes its share. Below about 0.6 screens a beat is 3-4 wheel
+     notches and the sequence reads as flashing past. See the pacing table in
+     CLAUDE.md before changing this. */
+  .pin4{position:relative;height:685vh;}
   /* NO SEAM ELEMENT. Two attempts at one (34vh, then 10vh) both read as a
      white hole rather than as a beat, and the reason is worth recording:
      an empty band between two sections is not stillness, it is absence.
@@ -2365,14 +2415,10 @@
     filter:blur(0.5px);pointer-events:none;}
 
   .j-node{position:absolute;top:0;padding-top:var(--numh);
-    transform:translateX(-50%);text-align:center;width:min(15.2%,196px);cursor:pointer;}
-  /* hover preview affordance — extra to the scroll-driven .active/.done
-     states, never replacing them; skipped on touch, which has no hover */
-  @media (hover:hover){
-    .j-node:not(.active):hover .j-dot{border-color:rgba(196,138,90,0.60);transform:scale(1.06);}
-    .j-node:not(.active):hover .j-ico{stroke:rgba(247,244,238,0.78);}
-    .j-node:not(.active):hover .j-title{color:var(--warm-white);}
-  }
+    transform:translateX(-50%);text-align:center;width:min(15.2%,196px);}
+  /* No hover state. These are not controls — the sequence is driven by
+     scroll alone now, so a node that lights under the pointer promises an
+     interaction that no longer exists. */
 
   /* The medallion. Resting state is an engraved ring, not a filled disc —
      the old one filled with solid gold the moment it was reached, which
@@ -2499,28 +2545,38 @@
      animation ending on a bare transform replaces the centring and drops the
      element half its own size off-position. There is nothing left to lose. */
   .j-popcard{grid-row:2;align-self:start;justify-self:center;
-    margin-top:clamp(30px,5.4vh,64px);width:min(700px,80vw);
+    margin-top:clamp(30px,5.4vh,64px);width:min(780px,82vw);
     /* Resting state is scale(1). It used to rest at 0.965 with the pop
        keyframes ending at 1 and fill-mode:none — so every stage change
        popped the card up to full size and then eased it 3.5% back down
        again. The entry scale belongs in the keyframes, not the base rule. */
-    transform:none;text-align:center;
-    /* Was a flat ivory card (#FAF8F4->#EFEAE0) — read as a generic white UI
-       tooltip dropped onto the scene rather than part of it. This is the
-       same dark-glass treatment the "why DAOasis matters" stat panels
-       already use (.panel, further up this sheet): a translucent warm-dark
-       fill over the stage's own backdrop, blurred rather than opaque, so
-       the card reads as glass suspended in the scene instead of a card
-       pasted on top of it. */
-    background:linear-gradient(158deg, rgba(37,32,28,0.82), rgba(19,16,14,0.74));
-    backdrop-filter:blur(22px) saturate(150%); -webkit-backdrop-filter:blur(22px) saturate(150%);
-    border:1px solid rgba(196,138,90,0.20);
-    border-radius:4px;padding:clamp(32px,3.9vh,46px) clamp(36px,3.4vw,54px) clamp(34px,4.1vh,48px);
+    text-align:center;
+    /* LIGHT, AND COMING FORWARD.
+
+       This was dark glass — a translucent warm-dark fill over a warm-dark
+       photograph. The reasoning was that it should sit IN the scene rather
+       than on it, and the result was a card almost exactly the value of its
+       own background: at a glance there was no card, just text floating on
+       the picture. The one element the whole section exists to deliver was
+       the hardest thing in the frame to see.
+
+       Near-opaque warm white instead. On a dark photograph that is the
+       strongest separation available, and it is the same card the callouts
+       on the daily-experience section use, so it is not a new idiom.
+
+       NO backdrop-filter: the fill is opaque, so it would blur nothing and
+       cost a compositing pass on every frame of a pinned section. */
+    background:#FDFCF9;
+    border:1px solid rgba(23,21,15,0.08);
+    border-radius:6px;padding:clamp(40px,5vh,60px) clamp(44px,4.2vw,68px) clamp(42px,5.2vh,62px);
     z-index:60;opacity:0;
-    box-shadow:0 30px 80px rgba(0,0,0,0.5), 0 8px 24px rgba(0,0,0,0.35),
-               0 0 70px -28px rgba(196,138,90,0.30),
-               inset 0 1px 0 rgba(247,244,238,0.07);
-    transition:opacity 0.42s ease, transform 0.6s var(--ease), box-shadow 0.5s ease, border-color 0.5s ease;
+    box-shadow:0 46px 110px rgba(0,0,0,0.58), 0 12px 30px rgba(0,0,0,0.34);
+    /* SCRUBBED, NOT TRANSITIONED. --pc is written every frame off the paced
+       scroll value, so a transition here would be a second clock — the same
+       fault the .pop keyframe had. The card lifts and grows into place as
+       its stage arrives and settles back as it leaves. */
+    transform:translateY(calc((1 - var(--pc,1)) * 30px))
+              scale(calc(0.935 + 0.065 * var(--pc,1)));
     pointer-events:none;}
   /* One gold accent, straddling the top edge. The previous version boxed the
      whole card in an inset gold hairline, which is the visual grammar of a
@@ -2528,31 +2584,31 @@
      round reads as a frame. */
   .j-popcard::before{content:'';position:absolute;top:-1px;left:50%;
     transform:translateX(-50%);width:72px;height:2px;
-    background:linear-gradient(90deg,transparent,var(--gold),transparent);
+    background:linear-gradient(90deg,transparent,#B07B45,transparent);
     pointer-events:none;}
-  /* Scale only — opacity was removed. A CSS animation beats an inline style
-     in the cascade, so animating opacity here overrode the scrubbed swap
-     fade for 0.62s on every card change: a second clock against the paced
-     value, the same fault being removed from the medallions.
-     The card's fade is now entirely --pc (set per frame); this is only the
-     arrival accent, and it is fired on HOVER alone — a scroll-driven swap
-     already happens while the card is invisible, so it had nothing to show. */
-  .j-popcard.pop{animation:jPop 0.62s var(--ease);}
-  @keyframes jPop{
-    0%{transform:scale(0.955);}
-    55%{transform:scale(1.008);}
-    100%{transform:scale(1);}}
+  /* The .pop keyframe is gone with the hover that fired it. The arrival
+     accent is scrubbed on .j-popcard's transform instead, so there is no
+     CSS animation competing with the paced value. */
   /* #8A5A2B was the AA-safe carry of --gold for the old ivory card — the
      card is dark now, so the ordinary --gold (already tuned for dark
      grounds everywhere else on the site) applies directly. */
-  .j-pop-eyebrow{font-size:var(--t-nano);letter-spacing:0.3em;color:var(--gold);text-transform:uppercase;
-    padding-left:0.3em;margin-bottom:clamp(16px,2vh,22px);}
+  /* #8A5A2B is the AA-safe carry of --gold on a warm-white ground; plain
+     --gold measures about 2.9:1 here. The card went light, so the carry
+     comes back with it. */
+  .j-pop-eyebrow{font-size:var(--t-micro);letter-spacing:0.3em;color:#8A5A2B;text-transform:uppercase;
+    padding-left:0.3em;margin-bottom:clamp(18px,2.4vh,26px);}
   /* max-width in ch, and balanced: the seven texts run 62–118 characters, so
      an unconstrained centred paragraph produced everything from one long line
      to a two-line block with three orphaned words. */
-  .j-pop-text{font-family:'Cormorant Garamond',serif;font-weight:300;
-    font-size:clamp(20px,1.75vw,27px);color:rgba(247,244,238,0.92);line-height:1.45;letter-spacing:-0.005em;
-    max-width:46ch;margin:0 auto;text-wrap:balance;}
+  /* BIG AND BOLD. 20-27px at weight 300 was a caption under a 64px
+     headline; this is the sentence the stage exists to say. Weight 400
+     because Cormorant Light at display size on a light ground goes thin
+     and grey. The measure stays in ch and balanced — the seven texts run
+     62-118 characters, so an unconstrained centred paragraph gives
+     everything from one long line to a block with three orphans. */
+  .j-pop-text{font-family:'Cormorant Garamond',serif;font-weight:400;
+    font-size:clamp(26px,2.5vw,40px);color:var(--charcoal);line-height:1.26;letter-spacing:-0.012em;
+    max-width:30ch;margin:0 auto;text-wrap:balance;}
   /* the arrow pointed at the node the card used to sit above; a centred card
      has nothing to point at, so it is retired rather than left dangling */
   .j-pop-arrow{display:none;}
@@ -2747,7 +2803,12 @@
   /* 4 states = 3 transitions -> 100 + 3*55 = 265vh (was 372 at 91vh).
      The four states are headline + three statements and map 1:1 onto the
      content, so the BEAT COUNT is not reduced here — only the rate. */
-  .pin5{position:relative;height:265vh;}
+  /* HEIGHT SET BY BEATS. 4 beats x 83.33vh + 100vh of sticky, so each
+     beat gets ~0.70 screens of scroll AFTER the 8% settle pad at each end of
+     the track takes its share. Below about 0.6 screens a beat is 3-4 wheel
+     notches and the sequence reads as flashing past. See the pacing table in
+     CLAUDE.md before changing this. */
+  .pin5{position:relative;height:435vh;}
   .stage5{position:sticky;top:0;height:100vh;overflow:hidden;
     background:linear-gradient(135deg,#FDFCF9 0%,#F4F0E7 58%,#E9E2D6 100%);
     display:flex;align-items:center;gap:6vw;padding:0 8%;}
@@ -3495,38 +3556,38 @@
     <div class="track-overlay">
       <div class="track-kicker" id="tKicker">The daily experience</div>
       <div class="track-headline" id="tHeadline">Track what matters. <em>Thrive every day.</em></div>
-      <div class="track-lede" id="tLede">Your daily wellness, at a glance. Every ring, streak and credit here also moves your journey forward — see how, as you scroll.</div>
+      <div class="track-lede" id="tLede">Your whole day on one screen. Every habit here moves the same marker down the same road — see how, as you scroll.</div>
     </div>
 
     <div class="dash-wrap" id="dashWrap">
-      <img class="dash-img" src="images/img-10.jpg" alt="DAOasis Companion App daily dashboard" />
+      <img class="dash-img" src="images/app-home-morning.webp" width="758" height="1600" alt="The DAOasis Companion App home screen: the day's journey, and six habits as tiles." />
 
       <div class="callout co-dir-left co1" id="co1">
         <div class="co-dot"></div><div class="co-line"></div>
         <div class="co-card">
-          <div class="co-label">Reward Credits</div>
-          <div class="co-text">Every ritual you complete earns DAOasis Reward Credits — DRC — recognition that compounds with your consistency, not just a points tally.</div>
+          <div class="co-label">Your journey</div>
+          <div class="co-text">One marker, nine hundred kilometres. Every habit you complete today moves it forward — and the screen tells you how far you have come, not how well you scored.</div>
         </div>
       </div>
       <div class="callout co-dir-left co2" id="co2">
         <div class="co-dot"></div><div class="co-line"></div>
         <div class="co-card">
-          <div class="co-label">Daily Wellness Metrics</div>
-          <div class="co-text">Steps, hydration, calories and sleep, read into one ring without you logging a thing — and every one of them moves the same journey forward.</div>
+          <div class="co-label">One small step</div>
+          <div class="co-text">The day closes on the smallest possible next action. Nothing here is a streak: a day missed costs the day, never the journey.</div>
         </div>
       </div>
       <div class="callout co-dir-right co3" id="co3">
         <div class="co-dot"></div><div class="co-line"></div>
         <div class="co-card">
-          <div class="co-label">Progress</div>
-          <div class="co-text">Earnings, streak, level and quests completed — the tangible record of your consistency, so effort turns into visible status, not just good intentions.</div>
+          <div class="co-label">Where you are</div>
+          <div class="co-text">It opens on the day and the road ahead rather than a number — the point is the direction you are going, not yesterday's total.</div>
         </div>
       </div>
-      <div class="callout co-dir-down co4" id="co4">
+      <div class="callout co-dir-right co4" id="co4">
         <div class="co-dot"></div><div class="co-line"></div>
         <div class="co-card">
-          <div class="co-label">Keep It Up</div>
-          <div class="co-text">The weekly goal keeps you honest and the streak keeps you accountable — small daily wins are the whole design, not a side effect.</div>
+          <div class="co-label">Today's actions</div>
+          <div class="co-text">Move, Rest, Breathe, Hydrate, Nourish and Learn. Six habits on one screen, and every one of them feeds the same journey.</div>
         </div>
       </div>
     </div>
@@ -3541,13 +3602,13 @@
 <div class="section track-mobile-section on-dark grain" id="trackMobileSection">
   <div class="eco-kicker">The daily experience</div>
   <div class="eco-headline">Track what matters. <em>Thrive every day.</em></div>
-  <div class="eco-sub">Your daily wellness, at a glance. Every ring, streak and credit here also moves your journey forward.</div>
-  <div class="tm-dash"><img src="images/img-10.jpg" alt="DAOasis Companion App daily dashboard" /></div>
+  <div class="eco-sub">Your whole day on one screen. Every habit here moves the same marker down the same road.</div>
+  <div class="tm-dash"><img src="images/app-home-morning.webp" width="758" height="1600" alt="The DAOasis Companion App home screen: the day's journey, and six habits as tiles." /></div>
   <div class="tm-list">
-    <div class="tm-item"><div class="tm-label">Reward Credits</div><div class="tm-text">Every ritual you complete earns DAOasis Reward Credits — DRC — recognition that compounds with your consistency.</div></div>
-    <div class="tm-item"><div class="tm-label">Daily Wellness Metrics</div><div class="tm-text">Steps, hydration, calories and sleep, read into one ring — and every one of them moves the same journey forward.</div></div>
-    <div class="tm-item"><div class="tm-label">Progress</div><div class="tm-text">Earnings, streak, level and quests completed — effort turns into visible status, not just good intentions.</div></div>
-    <div class="tm-item"><div class="tm-label">Keep It Up</div><div class="tm-text">The weekly goal keeps you honest and the streak keeps you accountable — small daily wins are the whole design.</div></div>
+    <div class="tm-item"><div class="tm-label">Where you are</div><div class="tm-text">It opens on the day and the road ahead rather than a number — the direction you are going, not yesterday's total.</div></div>
+    <div class="tm-item"><div class="tm-label">Your journey</div><div class="tm-text">One marker, nine hundred kilometres. Every habit you complete today moves it forward.</div></div>
+    <div class="tm-item"><div class="tm-label">Today's actions</div><div class="tm-text">Move, Rest, Breathe, Hydrate, Nourish and Learn. Six habits on one screen, all feeding the same journey.</div></div>
+    <div class="tm-item"><div class="tm-label">One small step</div><div class="tm-text">The day closes on the smallest possible next action. Nothing here is a streak — a day missed costs the day, never the journey.</div></div>
   </div>
 </div>
 
@@ -3788,11 +3849,6 @@
          into the sequence where it reads as part of the process. There is
          still no form backend anywhere in this project, and no date is
          given here because none is settled. Do not add one. -->
-    <ol class="wl-next">
-      <li>Tell us you want in — the button opens your email client.</li>
-      <li>We add you by hand. There is no automated list yet.</li>
-      <li>You hear from us when the Companion App opens to its first cohort.</li>
-    </ol>
     <!-- Was `href="#"` — a dead link that every nav, drawer and hero CTA
          pointed at, and the Business Plan's Annex A7 launch blocker.
          There is still no form backend anywhere in this project, so this
@@ -3858,6 +3914,7 @@
 </footer>
 
 <!-- Controlled Cinematic Scroll — shared pacing controller, see js/cine.js -->
+<script src="js/smooth.js"></script>
 <script src="js/cine.js"></script>
 <script>
   /* ── HERO ────────────────────────────────────────────────────────────
@@ -6097,8 +6154,16 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
        It fades out across the midpoint between two nodes — where the
        position never rests — and swaps while invisible. */
     const half = Math.abs(sp - Math.round(sp));
-    popcard.style.setProperty('--pc', Math.max(0, Math.min(1, (0.42 - half) / 0.12)).toFixed(3));
-    currentActiveIndex = activeIndex;
+    /* THE CARD WAS RAISING IN 76px OF SCROLL. --pc drove both the fade and
+       the lift, over a window of 0.12 of a half-segment — about a tenth of a
+       beat, which at 630px per beat is 76 pixels for the whole arrival. That
+       is the "boxes raising too fast" — it was never the pacing engine, it
+       was this one constant.
+
+       0.30 gives the card roughly 190px to come forward and the same to
+       leave, and it still finishes before the midpoint (0.46) where the text
+       swap happens behind an invisible card. */
+    popcard.style.setProperty('--pc', Math.max(0, Math.min(1, (0.46 - half) / 0.30)).toFixed(3));
     if(activeIndex !== lastActive){
       lastActive = activeIndex;
       /* only follow the scroll-driven stage into the card while nothing is
@@ -6118,22 +6183,21 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
     requestAnimationFrame(tick);
   }
 
-  /* Hover-to-preview, additive to the scroll-driven reveal above: resting a
-     pointer on any numbered node shows that stage's card without touching
-     scroll position, and leaving the node hands the card back to whatever
-     stage scroll actually has active. */
-  let hoverIndex = -1, currentActiveIndex = 0;
-  function renderCard(i, pop){
+  /* HOVER NO LONGER DRIVES THE CARD. Resting a pointer on a numbered node
+     used to take the card over and show that stage instead, then hand it
+     back on mouseleave. Two things were wrong with it: the card is the
+     scroll sequence's own output, so a pointer overriding it puts two
+     controllers on one element — and because the swap fired a 0.62s CSS
+     keyframe, it was also a second clock running against the paced value,
+     which is the exact fault removed everywhere else on this site.
+
+     The card is now scroll-driven only. `hoverIndex` is kept as a constant
+     -1 rather than deleted, because the tick above reads it. */
+  const hoverIndex = -1;
+  function renderCard(i){
     popEyebrow.textContent = 'Stage 0' + (i + 1);
     popText.textContent = DETAILS[i];
-    /* no `left` any more — the card is fixed to the centre of the viewport
-       and the active node on the track below is what marks the position */
-    if(pop){ popcard.classList.remove('pop'); void popcard.offsetWidth; popcard.classList.add('pop'); }
   }
-  nodes.forEach((el, i) => {
-    el.addEventListener('mouseenter', () => { hoverIndex = i; renderCard(i, true); });
-    el.addEventListener('mouseleave', () => { hoverIndex = -1; renderCard(currentActiveIndex, true); });
-  });
   /* Called directly for the same reason as the "why" section and the quest
      map above: rAF can be delayed on a tab that hasn't been composited yet,
      and this section's route/nodes/popcard have no visible state until this
