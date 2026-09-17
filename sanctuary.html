@@ -589,7 +589,12 @@ img { max-width: 100%; }
    1280x720 laptop and quietly clips the difference — which is how the
    list's last row and the closing note came to be cut in half. The
    clamp()s below hold the whole stage inside 100vh from 600px tall up. */
-.found-outer { position: relative; height: 360vh; background: var(--sanctuary); }
+  /* HEIGHT SET BY BEATS. 4 beats x 83.33vh + 100vh of sticky, so each
+     beat gets ~0.70 screens of scroll AFTER the 8% settle pad at each end of
+     the track takes its share. Below about 0.6 screens a beat is 3-4 wheel
+     notches and the sequence reads as flashing past. See the pacing table in
+     CLAUDE.md before changing this. */
+.found-outer { position: relative; height: 435vh; background: var(--sanctuary); }
 .found-sticky {
   position: sticky; top: 0; height: 100vh; overflow: hidden;
   display: flex; flex-direction: column; justify-content: center;
@@ -826,7 +831,12 @@ img { max-width: 100%; }
 /* ══════════════════════════════════════════════
    SECTION 5 — SEVEN DAYS
 ══════════════════════════════════════════════ */
-.seven-outer { position: relative; height: 580vh; background: var(--warm-white); }
+  /* HEIGHT SET BY BEATS. 7 beats x 83.33vh + 100vh of sticky, so each
+     beat gets ~0.70 screens of scroll AFTER the 8% settle pad at each end of
+     the track takes its share. Below about 0.6 screens a beat is 3-4 wheel
+     notches and the sequence reads as flashing past. See the pacing table in
+     CLAUDE.md before changing this. */
+.seven-outer { position: relative; height: 685vh; background: var(--warm-white); }
 .seven-sticky {
   position: sticky; top: 0; height: 100vh; overflow: hidden;
   display: flex; flex-direction: column; justify-content: center;
@@ -983,7 +993,12 @@ img { max-width: 100%; }
    full desktop 460vh, 4.6 screens of first-person WebGL on a phone.
    370vh puts it at 80% of desktop, in line with the two heroes, and still
    leaves ~53vh per lantern across the seven days. */
-#loopOuter { height: 460vh; background: #05080b; }
+  /* HEIGHT SET BY BEATS. 7 beats x 83.33vh + 100vh of sticky, so each
+     beat gets ~0.70 screens of scroll AFTER the 8% settle pad at each end of
+     the track takes its share. Below about 0.6 screens a beat is 3-4 wheel
+     notches and the sequence reads as flashing past. See the pacing table in
+     CLAUDE.md before changing this. */
+#loopOuter { height: 685vh; background: #05080b; }
 @media(max-width:900px){ #loopOuter { height: 592vh; } }
 .three-sticky { position: sticky; top: 0; height: 100vh; overflow: hidden; }
 .three-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
@@ -1031,7 +1046,13 @@ img { max-width: 100%; }
 .immersion-copy { margin-top: 32px; max-width: 520px; font-size:var(--t-body); line-height: 1.9; color: rgba(247,244,238,0.8); }
 .immersion-triplet { display: flex; flex-wrap: wrap; gap: 14px 44px; margin-top: 38px; }
 .immersion-triplet span { font-size:var(--t-micro); letter-spacing: 0.24em; text-transform: uppercase; color: rgba(247,244,238,0.62); }
-@media(max-width:900px){ .immersion { min-height: 92vh; } .immersion-inner { padding-bottom: 11vh; } }
+/* .immersion is not a .sect, so `.sect:has(+ .divider)` never granted it the
+   tail its divider overlays — the third instance of the same fault already
+   recorded for #theSanctuary and .day-outer, and the only one that survived
+   on a handset. Measured before: the palm mark sat 24px off "Less distraction"
+   at 390 and 1px at 430, against this project's 49px floor. It takes --dv-tail
+   like every other section that precedes a divider. Desktop is untouched. */
+@media(max-width:900px){ .immersion { min-height: 92vh; } .immersion-inner { padding-bottom: var(--dv-tail); } }
 
 /* ══════════════════════════════════════════════
    SECTION 8 — THE EXPERIENCE
@@ -1801,6 +1822,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
 
 
 <!-- Controlled Cinematic Scroll — shared pacing controller, see js/cine.js -->
+<script src="js/smooth.js"></script>
 <script src="js/cine.js"></script>
 <script>
 /* ════════════════════════════════════════════

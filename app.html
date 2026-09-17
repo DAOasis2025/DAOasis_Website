@@ -14,7 +14,7 @@
 <meta name="description" content="The Companion App is the core operating environment of DAOasis — daily quests, learning and community turned into one Journey. Bangkok to Phuket is the launch Journey; completing one opens the next. Earn DAOasis Reward Credits (DRC), with a designed one-way conversion to $DVT." />
 <meta property="og:title" content="The Companion App — DAOasis" />
 <meta property="og:description" content="Daily quests, learning and community, turned into one Journey. Bangkok to Phuket is the launch Journey — complete it and the next one opens. Rest. Learn. Earn. Return." />
-<meta property="og:image" content="images/img-10.jpg" />
+<meta property="og:image" content="images/app-home-morning.webp" />
 <meta property="og:type" content="website" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -322,7 +322,21 @@ body { overflow-x: clip; }
 
 /* Phone shots — the dominant hero object, emerging from depth */
 .hero-phone-shot {
-  position: absolute; z-index: 5; width: 260px; top: 50%; left: 50%; max-height: 78vh;
+  position: absolute; z-index: 5; width: 260px; top: 50%; left: 50%;
+  /* HEIGHT:AUTO IS LOAD-BEARING, and its absence stretched all three phones.
+
+     The <img> tags carry width="758" height="1600" (added for CLS). Those
+     attributes are PRESENTATIONAL HINTS: they set height:1600px, not just an
+     aspect ratio. So the element was 1600px tall, max-height clamped it to
+     78vh, and because the width was set independently by the script the
+     clamp squashed it - measured 307x702 against a true 307x648, i.e. the
+     centre phone 7.7% too tall and the sides worse. Every viewport, always.
+
+     height:auto overrides the attribute and lets the intrinsic ratio drive.
+     object-fit:contain is the backstop: if max-height ever does bind, the
+     screen letterboxes instead of distorting. The script already caps width
+     at 72vh of height, so it cannot bind in practice. */
+  height: auto; object-fit: contain; max-height: 78vh;
   transform: translate(-50%,-50%) perspective(1000px) rotateY(0deg) rotateX(0deg) rotateZ(0deg) scale(0.86);
   filter: drop-shadow(0 30px 70px rgba(0,0,0,0.65)) blur(0px);
   border-radius: 26px; opacity: 0; pointer-events: none;
@@ -447,28 +461,63 @@ body { overflow-x: clip; }
   color: rgba(196,138,90,0.18); line-height: 1; margin-bottom: 20px;
   text-shadow: 3px 3px 0 rgba(196,138,90,0.06);
 }
+/* THE OLD MOCKUPS WERE SQUARE — this box was shaped around that, and it is
+   why the phones here read as thumbnails. 18/11/06.png were 1800x1800
+   transparent canvases in which the phone occupied about 39% of the width,
+   so `width: 100%` in a 320px box drew a ~125px phone floating in dead
+   space, with the rounded rectangle and the box-shadow drawn around the
+   CANVAS rather than around the device. (The same trap is documented for
+   web3's `.dev` and for the Living Ecosystem; this was the third instance
+   and the only one never fixed.)
+
+   The 2026 screens are true phone shape, frame baked in, corners
+   transparent. So the box no longer draws its own rounded rectangle or its
+   own shadow — both would sit outside the device. The shadow is a
+   drop-shadow on the image, which follows the alpha and therefore the
+   phone's real silhouette.
+
+   A whole 1600px-tall screen at card width would be ~530px of phone in a
+   three-up row, and at a width that fits, the screen content is mush. So
+   the box shows the TOP of the screen — where every one of these three
+   screens carries its title — and the mask fades the rest out rather than
+   cutting it. `aspect-ratio` sets how much is shown; the mask must end
+   before the box does or the crop reads as a hard edge. */
+/* SHOW THE WHOLE PHONE, SQUARE ON.
+
+   The first version of this cropped to the top of the screen and dissolved
+   the rest, on the reasoning that a full 1600px screen at card width would
+   be ~530px of phone in a three-up row. The reasoning was right and the
+   answer was wrong: a device whose bottom fades out does not read as a crop,
+   it reads as a phone cut in half - and the 5deg/3deg tilt underneath it made
+   the whole thing look accidental rather than composed. Card 02 was the tell,
+   because its screen is a dark map and the visible band was a near-empty
+   rectangle with a notch on top.
+
+   The height problem is solved by making the phone SMALLER instead, which
+   costs nothing: these three cards carry a title and a paragraph, so the
+   phone is the card's ornament, not its subject. 200px of phone is 422px
+   tall. Do not reintroduce a mask here.
+
+   No tilt at rest. A 3D rotation on a device mockup has to be committed to
+   (web3's .dev does it at full size, alone in a column) or left off; at
+   190px in a row of three it just reads as skew. Hover lifts instead, which
+   is the one move that says "this is a card" without deforming the product. */
 .how-phone-wrap {
-  width: 200px;
-  margin: 0 auto 28px;
-  border-radius: 32px; overflow: hidden;
-  box-shadow:
-    0 30px 70px rgba(0,0,0,0.6),
-    0 2px 12px rgba(0,0,0,0.3),
-    inset 0 1px 0 rgba(255,255,255,0.04);
-  transform: perspective(900px) rotateY(-5deg) rotateX(3deg);
-  transition: transform 0.5s ease, box-shadow 0.5s ease, width 0.3s ease;
+  width: 168px;
+  margin: 0 auto 30px;
+  transition: transform 0.55s var(--ease);
 }
-@media(min-width:769px){ .how-phone-wrap { width: min(320px, 92%); } }
-.how-card:hover .how-phone-wrap {
-  transform: perspective(900px) rotateY(0deg) rotateX(0deg);
-  box-shadow: 0 40px 90px rgba(0,0,0,0.7), 0 4px 16px rgba(0,0,0,0.4);
+@media(min-width:769px){ .how-phone-wrap { width: min(200px, 58%); } }
+.how-card:hover .how-phone-wrap { transform: translateY(-7px); }
+.how-phone-wrap img {
+  width: 100%; height: auto; display: block;
+  filter: drop-shadow(0 30px 64px rgba(0,0,0,0.62)) drop-shadow(0 4px 14px rgba(0,0,0,0.4));
 }
-.how-phone-wrap img { width: 100%; display: block; }
 .how-title {
   font-family: 'Cormorant Garamond', serif; font-size: 24px;
   color: var(--warm-white); margin-bottom: 12px; font-weight: 400;
 }
-.how-text { font-size:var(--t-meta); color: #7a746a; line-height: 1.75; }
+.how-text { font-size:var(--t-meta); color: #9b9488; line-height: 1.75; }
 .how-tag {
   display: inline-block; margin-top: 20px; padding: 6px 14px;
   border: 1px solid rgba(196,138,90,0.3); border-radius: 20px;
@@ -477,185 +526,234 @@ body { overflow-x: clip; }
 @media(max-width:768px) { .how-grid { grid-template-columns: 1fr; } .how-orbit-bg { display:none; } }
 
 /* ══════════════════════════════════════════════
-   SECTION 3 — LIVING ECOSYSTEM (interactive tabs)
+   SECTION 3 — THE LIVING ECOSYSTEM (one day, accumulating)
+
+   REBUILT 16 September 2026. What was here was a six-tile switcher on a
+   2,800ms wall-clock timer beside a phone that never changed. Three faults,
+   and they compounded:
+
+     1. The phone was inert. 19.png sat there through all six states, so the
+        one object that looked like the subject of the section did nothing
+        when you picked a habit. (It was also on this project's do-not-use
+        list — "DVT Price $0.100 · 24H change up 24% · Buy DVT · DRT earned".)
+     2. It ran on a timer, the only wall-clock animation on the site. The
+        reader arrived mid-cycle with no idea what state they were in, and it
+        moved while they were reading.
+     3. Structurally it was a TAB SWITCHER — six things shown one at a time,
+        each replacing the last. That is precisely what the section's own copy
+        says other apps get wrong ("track your metrics in isolation"). The
+        interaction argued against the headline.
+
+   It is now one day, accumulating. The phone carries the app's three real
+   home states — morning, midday, evening close — and the six habits arrive
+   one at a time and STAY. Watching the list fill while the same marker
+   advances is the claim; nothing has to assert it.
+
+   Two rules this section is built on:
+
+   * EVERY NUMBER LIVES ON THE PHONE. An earlier draft ran a kilometre
+     readout in the right-hand column. The screens state 0.0 / 4.1 / 6.4 km
+     and hold each figure for as long as they are shown, so a continuously
+     ticking counter beside them disagreed with the product for most of the
+     section. The column carries no figures at all, and every habit line is
+     verbatim from the screen it sits next to.
+
+   * THE PHONE HARD-SWAPS, IT DOES NOT CROSS-FADE. The three home states are
+     near-identical layouts differing mainly in their numerals, so dissolving
+     one into another ghosts the digits — the same failure fixed in
+     sanctuary's Rhythm section. Instead the frame dips to 0.42 and the swap
+     happens at the bottom of the dip, so two states are never both visible.
+     It reads as the screen refreshing, which is what it is.
 ══════════════════════════════════════════════ */
 .eco-outer {
   background: var(--mineral); padding: 12vh 0 0;
 }
-.eco-header { text-align: center; padding: 0 8%; margin-bottom: 8vh; }
-/* The phone column is now the LARGER of the two (1.15fr vs 1fr). This is the
-   only place on the site that shows the product actually running, and at a
-   straight 1fr/1fr split beside a six-tile grid and a detail panel it read as
-   a supporting illustration rather than the subject. */
-.eco-layout {
-  display: grid; grid-template-columns: 1.15fr 1fr;
-  min-height: 80vh; max-width: 1400px; margin: 0 auto;
-  background: radial-gradient(ellipse at 22% 55%, #1e1a14 0%, var(--mineral) 65%);
-  /* The phone mockup's transparent canvas is 2.58x the width of the phone
-     inside it, so it overhangs its wrap by ~79% on each side. Harmless on a
-     wide column, but on a handset it pushed the document 113-121px wider
-     than the viewport. `clip` rather than `hidden`: it contains the overhang
-     without creating a scroll container, so nothing vertical is affected —
-     the drop-shadow below the phone survives intact. Same device index.html
-     already uses on .stage3. */
-  overflow-x: clip;
+.eco-header { text-align: center; padding: 0 8%; margin-bottom: 7vh; }
+
+/* Seven stops: the day opens, then one per habit. Height is this section's
+   own property — do not normalise it to a site-wide per-beat rate. */
+  /* HEIGHT SET BY BEATS. 7 beats x 83.33vh + 100vh of sticky, so each
+     beat gets ~0.70 screens of scroll AFTER the 8% settle pad at each end of
+     the track takes its share. Below about 0.6 screens a beat is 3-4 wheel
+     notches and the sequence reads as flashing past. See the pacing table in
+     CLAUDE.md before changing this. */
+.edy-outer { height: 685vh; position: relative; }
+.edy-stage {
+  position: sticky; top: 0; height: 100vh;
+  display: flex; align-items: center; overflow: hidden;
+}
+.edy-grid {
+  width: 100%; max-width: 1340px; margin: 0 auto; padding: 0 6%;
+  display: grid; grid-template-columns: 0.8fr 1fr;
+  gap: clamp(28px, 5vw, 78px); align-items: center;
 }
 
-/* Left: phone */
-.eco-left {
-  position: relative; display: flex; align-items: center; justify-content: center;
-  padding: 6vh 4% 6vh 8%; min-height: 60vh;
+/* ── left: the phone, three states stacked in one box ── */
+.edy-phone {
+  position: relative; justify-self: center;
+  width: min(380px, 31vw, 84vh * 0.4738);
+  aspect-ratio: 758 / 1600;
 }
-/* THE MOCKUP IS NOT WHAT IT LOOKS LIKE — the same trap already documented
-   for web3's `.dev`. `19.png` is an 1800x1800 transparent canvas in which
-   the phone occupies only x 30.56-69.33%, y 9.89-90.11% (measured, not
-   assumed). So `width: 100%` on the image rendered the phone at just 39% of
-   the box — 122px wide inside a 315px container. That, not the container
-   size, is why it read as a thumbnail.
-
-   The wrap is now sized to the PHONE, and the image is scaled and offset so
-   the phone fills it exactly. No overflow:hidden: the surplus canvas is
-   fully transparent, so letting it overhang costs nothing and keeps the
-   drop-shadow — which follows the alpha, and therefore the phone's real
-   silhouette — from being clipped to a rectangle.
-
-   Height is the binding dimension here (the row is 80vh), so the cap is a
-   vh term multiplied by the phone's own aspect ratio. */
-.eco-phone-wrap-lg {
-  width: min(360px, 30vw, 66vh * 0.4834);
-  aspect-ratio: 698 / 1444;
-  position: relative; z-index: 2;
-}
-.eco-phone-wrap-lg img {
-  position: absolute; display: block; max-width: none;
-  width: 257.88%; left: -78.80%; top: -12.33%;
+.edy-shot {
+  position: absolute; inset: 0; width: 100%; height: 100%; display: block;
+  opacity: 0;
   filter: drop-shadow(0 40px 100px rgba(0,0,0,0.85));
 }
-/* Habit colour glow behind phone */
-.eco-phone-glow {
-  position: absolute; top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  width: 60%; height: 60%; border-radius: 50%;
-  background: radial-gradient(ellipse, var(--eco-glow, rgba(196,138,90,0.12)) 0%, transparent 70%);
-  transition: background 0.6s ease; z-index: 1; pointer-events: none;
+.edy-glow {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+  width: 160%; height: 78%; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(ellipse, var(--edy-glow, rgba(196,138,90,0.14)) 0%, transparent 70%);
+  transition: background 0.6s var(--ease);
 }
 
-/* Right: tiles + detail */
-.eco-right {
-  display: flex; flex-direction: column; justify-content: center;
-  padding: 6vh 8% 6vh 4%; gap: 0;
+/* ── right: the day filling in ── */
+.edy-panel { max-width: 580px; }
+.edy-cue {
+  font-size: var(--t-nano); letter-spacing: 0.2em; text-transform: uppercase;
+  color: #8f887d; margin-bottom: clamp(14px, 2vh, 22px);
 }
-.eco-intro { margin-bottom: 36px; }
+.edy-clock {
+  display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;
+  margin-bottom: clamp(14px, 2.2vh, 26px);
+  border-bottom: 1px solid rgba(196,138,90,0.22); padding-bottom: clamp(10px, 1.6vh, 16px);
+}
+.edy-clock-t {
+  font-family: 'Cormorant Garamond', serif; font-weight: 400;
+  font-size: clamp(24px, 2.5vw, 34px); line-height: 1; color: var(--warm-white);
+}
+.edy-clock-s { font-size: var(--t-note); color: #8a8377; font-style: italic; }
 
-/* Habit tile grid */
-/* Label for the tile grid. Baseline-aligned pair: the name on the left, the
-   invitation on the right, separated by a hairline that runs to the grid's
-   own width so it reads as the grid's header rather than a floating caption.
-   Colours measured against --mineral: #C48A5A is 6.1:1, #8a8377 is 4.6:1. */
-.eco-tiles-head {
-  display: flex; align-items: baseline; justify-content: space-between;
-  gap: 18px; flex-wrap: wrap;
-  padding-bottom: 12px; margin-bottom: 14px;
-  border-bottom: 1px solid rgba(247,244,238,0.10);
+.edy-rows { list-style: none; margin: 0; padding: 0; }
+.edy-row {
+  display: grid; grid-template-columns: 29px 1fr; column-gap: 16px; align-items: start;
+  padding: clamp(7px, 1.35vh, 14px) 0;
+  border-top: 1px solid rgba(247,244,238,0.07);
+  /* No CSS transition on anything scrubbed — a transition here is a second
+     clock running against the paced scroll value. */
+  opacity: calc(0.13 + 0.87 * var(--w, 1));
 }
-.eco-tiles-title {
-  font-family: 'Cormorant Garamond', serif; font-weight: 300; font-style: italic;
-  font-size: clamp(21px, 2.1vw, 29px); color: var(--warm-white); line-height: 1;
+.edy-row:first-of-type { border-top: 0; padding-top: 0; }
+.edy-row-i { width: 25px; height: 25px; margin-top: 4px; }
+.edy-row-i svg { width: 100%; height: 100%; display: block; }
+.edy-row-n {
+  font-family: 'Cormorant Garamond', serif; font-weight: 400;
+  font-size: clamp(20px, 2vw, 27px); line-height: 1.1; color: var(--warm-white);
 }
-.eco-tiles-hint {
-  font-size:var(--t-nano); letter-spacing: 0.22em; text-transform: uppercase;
-  color: #8a8377; white-space: nowrap;
+.edy-row-t {
+  display: block; font-size: var(--t-note); line-height: 1.55;
+  color: #8a8377; margin-top: 3px;
 }
-.eco-tile-grid {
-  display: grid; grid-template-columns: 1fr 1fr 1fr;
-  gap: 3px; margin-bottom: 3px;
+.edy-row-r {
+  grid-column: 2; width: 46px; height: 2px; margin-top: 10px;
+  background: var(--edy-c, var(--gold)); opacity: 0.7;
+  transform: scaleX(var(--w, 1)); transform-origin: left;
 }
-.eco-tile {
-  display: flex; align-items: center; gap: 12px;
-  padding: 16px 18px; cursor: pointer;
-  background: rgba(247,244,238,0.02);
-  border: 1px solid rgba(247,244,238,0.06);
-  transition: background 0.25s, border-color 0.25s;
-  position: relative; overflow: hidden;
+.edy-close {
+  margin-top: clamp(20px, 3.2vh, 36px);
+  padding-top: clamp(14px, 2vh, 22px);
+  border-top: 1px solid rgba(196,138,90,0.22);
+  font-size: var(--t-meta); line-height: 1.7; color: #8a8377;
+  opacity: var(--cw, 1);
 }
-.eco-tile::after {
-  content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
-  background: var(--tile-color, var(--gold)); transform: scaleX(0);
-  transform-origin: left; transition: transform 0.35s ease, height 0.25s ease;
-}
-.eco-tile.active::after { transform: scaleX(1); height: 3px; }
-/* Previously a near-invisible 0.02 -> 0.05 background bump — the only real
-   "active" signal was a 2px underline, easy to miss at a glance. The active
-   tile now carries its own habit colour as a genuine tint + glow + coloured
-   border, not a flat neutral state shared by every habit. color-mix() with
-   var(--tile-color) means each of the six tiles pops in its own colour
-   automatically; unsupported browsers just drop this declaration and keep
-   the plain hover/resting look below rather than breaking. */
-.eco-tile.active {
-  background: color-mix(in srgb, var(--tile-color, var(--gold)) 16%, rgba(247,244,238,0.03));
-  border-color: color-mix(in srgb, var(--tile-color, var(--gold)) 55%, transparent);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tile-color, var(--gold)) 25%, transparent),
-              0 10px 24px -8px color-mix(in srgb, var(--tile-color, var(--gold)) 45%, transparent);
-}
-.eco-tile:hover { background: rgba(247,244,238,0.04); }
-.eco-tile-icon { width: 20px; height: 20px; flex-shrink: 0; transition: opacity 0.25s, transform 0.25s ease; opacity: 0.5; }
-.eco-tile.active .eco-tile-icon { opacity: 1; transform: scale(1.08); }
-.eco-tile-name { font-size:var(--t-note); color: #8a8377; letter-spacing: 0.04em; transition: color 0.25s; }
-.eco-tile.active .eco-tile-name { color: var(--tile-color, var(--warm-white)); font-weight: 600; }
+.edy-close strong { color: var(--warm-white); font-weight: 400; }
 
-/* Detail panel */
-.eco-detail {
-  background: var(--dark-surface); border: 1px solid rgba(247,244,238,0.07);
-  padding: 32px 36px; min-height: 200px;
-  position: relative; overflow: hidden;
-}
-.eco-detail-inner {
-  opacity: 0; transform: translateY(12px);
-  transition: opacity 0.35s ease, transform 0.35s ease;
-}
-.eco-detail-inner.show { opacity: 1; transform: translateY(0); }
-.eco-detail-tag {
-  display: inline-block; padding: 4px 14px; border-radius: 24px;
-  font-size:var(--t-nano); letter-spacing: 0.14em; text-transform: uppercase;
-  border: 1px solid; margin-bottom: 14px;
-}
-.eco-detail-name {
-  font-family: 'Cormorant Garamond', serif; font-size: clamp(26px,2.8vw,40px);
-  font-weight: 300; color: var(--warm-white); line-height: 1.05; margin-bottom: 16px;
-}
-.eco-detail-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 16px; }
-.eco-detail-label {
-  font-size:var(--t-nano); letter-spacing: 0.18em; text-transform: uppercase;
-  color: var(--gold); margin-bottom: 6px;
-}
-.eco-detail-text { font-size:var(--t-note); color: #8a8377; line-height: 1.7; }
-
-/* Auto-cycle bar */
-.eco-cycle-bar {
-  height: 2px; background: rgba(247,244,238,0.06);
-  margin-bottom: 3px; position: relative; overflow: hidden;
-}
-.eco-cycle-progress {
-  position: absolute; left: 0; top: 0; height: 100%;
-  background: var(--gold); width: 0%;
-  transition: width linear;
+/* Mobile only: the evening screen arrives with no preceding day to explain
+   it, so it is captioned. Desktop scrubs through all three states and needs
+   no caption. */
+.edy-mob-cap {
+  display: none; margin: -2vh auto 0; max-width: 30ch; text-align: center;
+  font-size: var(--t-note); line-height: 1.6; color: #8f887d;
 }
 
+/* ── mobile: a different composition, not the desktop one shrunk ──
+   No pin, no scrub, no state machine. The six habits are simply a list —
+   scrolling a list already IS accumulation — and the day's payoff is the
+   evening screen at the end, which is the one screen that states the whole
+   argument on its own ("Credits earned today · 26", from four different
+   things). The morning and midday states are desktop-only: three phones
+   stacked in a 390px column is three viewports of near-identical screens.
+
+   Everything is forced visible here. The resting state of this section is
+   fully legible and the scrub only ever takes strength away — so a broken
+   observer, a missing cine.js or a thrown error cannot leave the reader
+   with an empty section. */
 @media(max-width:900px) {
-  .eco-layout { grid-template-columns: 1fr; }
-  .eco-left { min-height: 50vw; padding: 4vh 8%; }
-  /* mobile: same crop, sized off width only — the section is not height
-     constrained once the two columns stack */
-  .eco-phone-wrap-lg { width: min(260px, 62vw); }
-  .eco-tile-grid { grid-template-columns: 1fr 1fr; }
-  .eco-detail-row { grid-template-columns: 1fr; }
+  .edy-outer { height: auto; }
+  .edy-stage { position: static; height: auto; overflow: visible; }
+  /* The mobile composition ends on the evening screen and its caption, and
+     the section had no tail of its own - so the divider that follows put its
+     palm mark 27px off the caption, against the 49px floor and against
+     124-155px on every other divider on this page. Desktop does not need it
+     (the stage is a 100vh pin and the caption is display:none there). */
+  .edy-grid { grid-template-columns: 1fr; gap: 5vh; padding: 0 8% clamp(80px, 12vh, 140px); }
+  .edy-panel { max-width: none; order: 1; }
+  .edy-phone {
+    order: 2; justify-self: center;
+    width: min(250px, 62vw); aspect-ratio: auto; height: auto;
+  }
+  .edy-shot { position: static; height: auto; opacity: 1 !important; }
+  /* Home is the mobile frame: it carries all six habits as tiles, which is
+     exactly the list beside it. The six individual habit screens are the
+     desktop scrub only - six phones stacked in a 390px column would be six
+     viewports of near-identical device frames. */
+  .edy-shot:not([data-s="0"]) { display: none; }
+  .edy-glow { display: none; }
+  .edy-cue, .edy-clock { display: none; }
+  .edy-rows { border-top: 1px solid rgba(196,138,90,0.22); padding-top: 1vh; }
+  .edy-mob-cap { display: block; order: 3; }
+  .edy-row { padding: 2vh 0; opacity: 1 !important; }
+  .edy-row-r { transform: none !important; }
+  .edy-close { opacity: 1 !important; }
 }
-/* The hint is a sentence, and `nowrap` on a 10px tracked line needs ~278px
-   — inside 3px of the column at 320. It is there so the hint does not break
-   awkwardly BESIDE the title; once the pair has wrapped onto two lines that
-   reason is gone, so let it break rather than run off the screen. */
-@media(max-width:520px) {
-  .eco-tiles-hint { white-space: normal; }
+
+/* ══════════════════════════════════════════════
+   SCREEN STRIP — one component, used by Learning and by the Reward System
+
+   Both sections explained a mechanic in words and then showed nothing, while
+   the 2026 screen set has four good screens for each of them. The strip is
+   deliberately NOT a third card grid: the cards above it carry the argument,
+   and this carries the evidence — so it is a figure with a caption, centred,
+   in a narrower measure than the section above it.
+
+   Screens are true phone shape with the frame baked in and transparent
+   corners, so the shadow is a drop-shadow on the image (it follows the
+   alpha, and therefore the device silhouette) and the box draws nothing of
+   its own. Do not put a border-radius or a box-shadow on the wrapper.
+══════════════════════════════════════════════ */
+.scr-strip {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: clamp(26px, 4vw, 66px);
+  max-width: 940px; margin: 0 auto;
+  /* Both host sections carry padding-bottom:0, so without a tail here the
+     strip ends flush against the divider that follows and its palm mark
+     lands 7-19px off the last caption - against this project's 49px floor,
+     and against 124-152px on every neighbouring divider. The tail is the
+     strip's own, not the section's, so it travels with the component. */
+  padding: 9vh 8% clamp(90px, 13vh, 150px);
+}
+.scr { margin: 0; text-align: center; }
+.scr img {
+  width: min(268px, 100%); height: auto; display: block; margin: 0 auto 22px;
+  filter: drop-shadow(0 30px 70px rgba(0,0,0,0.7));
+}
+.scr figcaption {
+  font-size: var(--t-note); line-height: 1.7; color: #8a8377;
+  max-width: 34ch; margin: 0 auto;
+}
+.scr figcaption b {
+  display: block; font-family: 'Cormorant Garamond', serif; font-weight: 400;
+  font-size: clamp(19px, 1.7vw, 23px); line-height: 1.2;
+  color: var(--warm-white); margin-bottom: 7px;
+}
+/* One column well before the captions get narrow: at two-up below ~700px the
+   measure falls under 24 characters and the caption reads as a column of
+   fragments. */
+@media(min-width:701px) {
+  .scr figcaption b { min-height: 2.4em; }
+}
+@media(max-width:700px) {
+  .scr-strip { grid-template-columns: 1fr; gap: 6vh; padding-top: 6vh; }
+  .scr img { width: min(232px, 62vw); }
 }
 
 /* ══════════════════════════════════════════════
@@ -664,35 +762,93 @@ body { overflow-x: clip; }
 .quest-intro-wrap { background: var(--dark-surface); padding: 10vh 8% 0; }
 
 .quest-map-outer { height: 600vh; position: relative; background: var(--dark-surface); }
+/* THE STAGE IS A PLACE NOW, NOT A CHART.
+
+   This section read as a diagram on flat brown — a thin teal line and six
+   small flat discs — directly above a section whose whole look is a warm
+   misty landscape with a glowing gold route. Same journey, two different
+   documents.
+
+   `img-11.jpg`, NOT `quest-map.jpg`. The Journey Map's own photograph
+   already carries a gold route and glowing waypoints baked into it, and
+   putting the scroll-driven SVG route on top would draw two routes at once
+   — the same trap recorded against that section ("the photograph already
+   carries the route, so nothing in CSS or SVG draws one"). `img-map.jpg`
+   was the other candidate and is worse: it is real relief geography of
+   Thailand, and this route is an abstract wave, so the two would invite a
+   comparison the drawing loses. A shoreline at sunset carries the warmth
+   with no competing geometry.
+
+   The veil resolves to --dark-surface at both ends rather than to black, so
+   the pinned stage joins the flat sections above and below it without a
+   seam. It opens in the middle band, which is where the route runs. */
+.quest-map-outer {
+  --qm2-bg:
+    linear-gradient(180deg, rgba(33,29,26,0.93) 0%,  rgba(33,29,26,0.72) 18%,
+                            rgba(33,29,26,0.60) 44%, rgba(33,29,26,0.74) 70%,
+                            rgba(33,29,26,0.95) 100%),
+    linear-gradient(90deg,  rgba(33,29,26,0.55) 0%,  rgba(33,29,26,0.28) 38%,
+                            rgba(33,29,26,0.18) 100%),
+    url('images/img-11.jpg');
+}
 .quest-map-sticky {
   position: sticky; top: 0; height: 100vh;
   display: flex; flex-direction: column; justify-content: center;
   overflow: hidden;
+  background-color: var(--dark-surface);
+  background-image: var(--qm2-bg);
+  background-size: cover; background-position: center 42%; background-repeat: no-repeat;
 }
 .quest-hd-wrap { padding: 0 8%; position: relative; z-index: 2; }
 .quest-hd-kicker { font-size:var(--t-nano); letter-spacing: 0.22em; text-transform: uppercase; color: #8f887d; margin-bottom: 10px; }
 .quest-hd-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(28px,3.5vw,46px); color: var(--warm-white); font-weight: 300; }
 .quest-hd-title em { font-style: italic; color: var(--gold); }
-.quest-hd-desc { font-size:var(--t-note); color: #5f5a52; margin-top: 8px; }
+.quest-hd-desc { font-size:var(--t-note); color: #9b9488; margin-top: 8px; }
 
 .quest-svg-wrap { padding: 3vh 8% 0; position: relative; z-index: 2; }
 .quest-svg { width: 100%; overflow: visible; }
-.path-track { stroke: rgba(247,244,238,0.08); stroke-width: 1.5; fill: none; stroke-dasharray: 5,6; }
+/* The unwalked road: warm and faint, but visible over a photograph -
+   0.08 white disappeared entirely once there was a ground behind it. */
+.path-track { stroke: rgba(233,192,138,0.26); stroke-width: 1.6; fill: none; stroke-dasharray: 4,7; stroke-linecap: round; }
+/* Teal was the one cool accent in a warm section and it is what made the
+   route read as a data line. Gold, and glowing, is what the Journey Map
+   photograph does two sections down. */
 .path-fill {
-  stroke: #7DB8B3; stroke-width: 2.5; fill: none; stroke-linecap: round;
-  filter: drop-shadow(0 0 6px rgba(125,184,179,0.5));
+  stroke: #F0CE99; stroke-width: 3; fill: none; stroke-linecap: round;
+  filter: drop-shadow(0 0 5px rgba(233,192,138,0.75)) drop-shadow(0 0 16px rgba(196,138,90,0.45));
 }
-.wp-circle { fill: rgba(196,138,90,0.12); stroke: rgba(196,138,90,0.25); stroke-width: 1.5; transition: fill 0.4s var(--ease), stroke 0.4s var(--ease), r 0.4s var(--ease); }
-.wp-circle-reached { fill: rgba(125,184,179,0.3); stroke: #7DB8B3; }
+/* `r` is set in CSS, not just in the markup: it is an SVG geometry
+   property and animatable, which is what lets a waypoint grow as it is
+   reached. The r attributes on the circles remain as the fallback. */
+.wp-circle {
+  r: 6.5; fill: rgba(247,244,238,0.16); stroke: rgba(233,192,138,0.55); stroke-width: 1.5;
+  transition: fill 0.45s var(--ease), stroke 0.45s var(--ease), r 0.45s var(--ease), filter 0.45s var(--ease);
+}
+.wp-circle-reached {
+  r: 7; fill: rgba(233,192,138,0.9); stroke: #F3D9AE; stroke-width: 1.5;
+  filter: drop-shadow(0 0 7px rgba(233,192,138,0.55));
+}
 .wp-circle-active {
-  fill: var(--gold); stroke: #fff; stroke-width: 2;
-  filter: drop-shadow(0 0 10px var(--gold));
-  animation: wpGlow 2s ease-in-out infinite;
+  r: 9.5; fill: #F7E3BE; stroke: #fff; stroke-width: 2;
+  animation: wpGlow 2.6s ease-in-out infinite;
 }
-@keyframes wpGlow { 0%,100%{filter:drop-shadow(0 0 6px var(--gold));} 50%{filter:drop-shadow(0 0 18px var(--gold));} }
-.wp-label-city { font-size:10px; letter-spacing: 0.08em; fill: rgba(247,244,238,0.3); text-transform: uppercase; transition: fill 0.4s; }
-.wp-label-city.wp-label-active { fill: rgba(247,244,238,0.85); }
-.wp-label-km { font-size:9px; fill: rgba(196,138,90,0.5); }
+@keyframes wpGlow {
+  0%,100%{ filter: drop-shadow(0 0 8px rgba(243,217,174,0.85)) drop-shadow(0 0 20px rgba(196,138,90,0.5)); }
+  50%    { filter: drop-shadow(0 0 16px rgba(243,217,174,1))   drop-shadow(0 0 34px rgba(196,138,90,0.7)); }
+}
+/* 0.3 white and 0.5 gold were set against flat brown; over a photograph
+   they read as smudges. Raised, and given a shadow so they hold wherever
+   the plate happens to be bright. */
+.wp-label-city {
+  font-size:10px; letter-spacing: 0.08em; fill: rgba(247,244,238,0.52);
+  text-transform: uppercase; transition: fill 0.4s var(--ease);
+  paint-order: stroke; stroke: rgba(12,10,9,0.55); stroke-width: 2.5px; stroke-linejoin: round;
+}
+.wp-label-city.wp-label-active { fill: #FFFDF8; }
+.wp-label-km {
+  font-size:9px; fill: rgba(233,192,138,0.78);
+  paint-order: stroke; stroke: rgba(12,10,9,0.55); stroke-width: 2.5px; stroke-linejoin: round;
+}
 
 .quest-wp-info {
   position: absolute; bottom: 48px; left: 8%;
@@ -713,9 +869,9 @@ body { overflow-x: clip; }
   position: absolute; top: 40px; right: 8%;
   text-align: right; z-index: 5;
 }
-.quest-prog-label { font-size:var(--t-nano); letter-spacing: 0.22em; text-transform: uppercase; color: #4a4540; margin-bottom: 4px; }
-.quest-prog-num { font-family: 'Cormorant Garamond', serif; font-size: 30px; color: var(--warm-white); line-height: 1; }
-.quest-prog-num em { font-style: normal; color: #3a3530; }
+.quest-prog-label { font-size:var(--t-nano); letter-spacing: 0.22em; text-transform: uppercase; color: rgba(247,244,238,0.55); margin-bottom: 4px; text-shadow: 0 1px 6px rgba(12,10,9,0.8); }
+.quest-prog-num { font-family: 'Cormorant Garamond', serif; font-size: 30px; color: var(--warm-white); line-height: 1; text-shadow: 0 1px 8px rgba(12,10,9,0.85); }
+.quest-prog-num em { font-style: normal; color: rgba(247,244,238,0.42); }
 
 /* Post-map content */
 .quest-post-map { background: var(--dark-surface); padding: 10vh 8% 10vh; }
@@ -1012,6 +1168,30 @@ body { overflow-x: clip; }
   will-change: transform, opacity;
 }
 .market-scene-0 .market-scene-bg { background: radial-gradient(ellipse at 60% 42%, #221c16 0%, #0c0a08 60%, #060504 100%); }
+/* Scene 0 is the only marketplace scene with no photograph behind it — just
+   a radial plate — and its copy is capped at 620px on the left, so the right
+   half of the frame was empty. The screen goes there. The other three scenes
+   are full-bleed photography and a device would fight them; this is the one
+   place it does not. It is a sibling of .market-scene-content, so the scroll
+   controller (which only writes translateY on that element) never touches it,
+   and the scene's own opacity carries it in and out.
+
+   Hidden below 1000px, where .market-scene-content drops its max-width and
+   spans the frame — the phone would sit underneath the copy. */
+.market-phone {
+  /* The right edge belongs to .market-nav (right:6%, flex-end, widest label
+     SANCTUARY at ~90px), so the phone has to clear 6% + the label column or
+     the scene list prints straight across the screen - which is exactly what
+     right:7% did. The band the phone lives in is bounded on the left by
+     .market-scene-content (max-width 620px inside 8% padding) and on the
+     right by that nav; below 1200px the two close up and there is no band
+     left, so it goes rather than overlaps either. */
+  position: absolute; right: calc(6% + 120px); top: 50%; transform: translateY(-50%);
+  width: min(300px, 20vw, 74vh * 0.4738); height: auto; z-index: 2;
+  filter: drop-shadow(0 40px 90px rgba(0,0,0,0.8));
+  pointer-events: none;
+}
+@media(max-width:1200px) { .market-phone { display: none; } }
 .market-scene-veil {
   position: absolute; inset: 0; z-index: 1;
   background: linear-gradient(90deg, rgba(6,5,4,0.88) 0%, rgba(6,5,4,0.62) 42%, rgba(6,5,4,0.30) 75%, rgba(6,5,4,0.12) 100%);
@@ -1145,6 +1325,7 @@ body { overflow-x: clip; }
 }
 .int-card.show { opacity: 1; transform: translateY(0); }
 .int-card:hover { border-color: rgba(247,244,238,0.18); }
+.int-logo text { display: none; }
 .int-logo { height: 28px; width: auto; margin-bottom: 24px; display: block; }
 .int-card-name {
   font-family: 'Cormorant Garamond', serif; font-size: 22px;
@@ -1344,6 +1525,14 @@ body { overflow-x: clip; }
     background-color: var(--mineral);
     background-image: var(--qm-bg);
     background-size: cover; background-position: center; background-repeat: no-repeat;
+  }
+  /* Same reason as the section above: the light-theme `background`
+     SHORTHAND clears background-image, so the photograph would vanish.
+     Custom properties survive it. */
+  html[data-theme="light"] .quest-map-sticky {
+    background-color: var(--dark-surface);
+    background-image: var(--qm2-bg);
+    background-size: cover; background-position: center 42%; background-repeat: no-repeat;
   }
   html[data-theme="light"] .quest-map-section .s-kicker  { color: var(--gold); }
   html[data-theme="light"] .quest-map-section .s-headline{ color: var(--warm-white); }
@@ -1620,10 +1809,15 @@ body { overflow-x: clip; }
       <div class="hero-title-scroll-cue" id="heroTitleScrollCue">Scroll to continue ↓</div>
     </div>
 
-    <!-- Three phone mockup PNGs — device frame baked in, same as homepage -->
-    <img class="hero-phone-shot" id="heroPhoneLeft"  src="images/img-03.png" alt="DAOasis learning screen" />
-    <img class="hero-phone-shot" id="heroPhone"       src="images/img-04.png" alt="DAOasis daily dashboard" />
-    <img class="hero-phone-shot" id="heroPhoneRight" src="images/img-05.png" alt="DAOasis wallet screen" />
+    <!-- The three screens are the 2026 design set, exported from the MVP
+         Design Blueprint at true device resolution with the frame baked in.
+         They replace img-03/04/05, two of which carried a DVT unit price and
+         a 24-hour change and were on this project's own do-not-use list.
+         Centre is the home screen — the app's real face; the flanks are the
+         two things it is for, a session and the route. -->
+    <img class="hero-phone-shot" id="heroPhoneLeft"  src="images/app-breathing.webp" alt="DAOasis breathing session screen" width="758" height="1600" />
+    <img class="hero-phone-shot" id="heroPhone"      src="images/app-home-morning.webp" alt="DAOasis home screen, morning" width="758" height="1600" />
+    <img class="hero-phone-shot" id="heroPhoneRight" src="images/app-journey-map.webp" alt="DAOasis journey map, Bangkok to Phuket" width="758" height="1600" />
 
   </section>
 
@@ -1667,7 +1861,7 @@ body { overflow-x: clip; }
     <div class="how-card">
       <div class="how-step">01</div>
       <div class="how-phone-wrap">
-        <img src="images/18.png" alt="Quests screen" />
+        <img src="images/app-quests.webp" alt="Today's quests screen" width="758" height="1600" />
       </div>
       <div class="how-title">Complete daily quests</div>
       <div class="how-text">Breathe, move, hydrate, sleep, learn. Each day brings a fresh set of quests across wellness and education. Complete them and your progress advances — on the map and in the world.</div>
@@ -1676,7 +1870,7 @@ body { overflow-x: clip; }
     <div class="how-card">
       <div class="how-step">02</div>
       <div class="how-phone-wrap">
-        <img src="images/11.png" alt="App onboarding" />
+        <img src="images/app-approaching.webp" alt="Approaching the Hua Hin waypoint on the journey map." width="758" height="1600" />
       </div>
       <div class="how-title">Walk a real-world journey</div>
       <div class="how-text">Your daily habits fuel a Journey across a real route — starting with Bangkok to Phuket, 900km of Thailand. Every step, every completed quest, every boost moves your marker forward.</div>
@@ -1685,7 +1879,7 @@ body { overflow-x: clip; }
     <div class="how-card">
       <div class="how-step">03</div>
       <div class="how-phone-wrap">
-        <img src="images/06.png" alt="Wallet screen" />
+        <img src="images/app-credits.webp" alt="Reward Credits screen" width="758" height="1600" />
       </div>
       <div class="how-title">Earn DRC → $DVT</div>
       <div class="how-text">Consistency earns DAOasis Reward Credits — DRC. DRC is designed to convert, one way and by choice, to $DVT — the on-chain layer. $DVT is designed to carry premium access, the marketplace and Sanctuary stays in Phuket, each introduced in stages as it is built.</div>
@@ -1721,29 +1915,29 @@ body { overflow-x: clip; }
 
     <div class="quest-svg-wrap">
       <svg class="quest-svg" viewBox="0 0 1100 260" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
-        <path d="M 60,145 C 105,145 165,172 225,162 C 292,150 342,78 422,78 C 502,78 572,158 662,158 C 752,158 822,112 882,112 C 942,112 1002,88 1045,88"
+        <path d="M 60,145 C 87.7,128.3 111.9,95.7 143.2,95.0 C 182.5,94.1 219.6,159.0 277.8,168.0 C 370.1,182.2 541.7,90.3 655.4,95.0 C 750.8,98.9 844.5,171.0 915.9,168.0 C 966.8,165.9 1002.0,136.0 1045.0,120.0"
               class="path-track"/>
         <path id="questPathFill"
-              d="M 60,145 C 105,145 165,172 225,162 C 292,150 342,78 422,78 C 502,78 572,158 662,158 C 752,158 822,112 882,112 C 942,112 1002,88 1045,88"
+              d="M 60,145 C 87.7,128.3 111.9,95.7 143.2,95.0 C 182.5,94.1 219.6,159.0 277.8,168.0 C 370.1,182.2 541.7,90.3 655.4,95.0 C 750.8,98.9 844.5,171.0 915.9,168.0 C 966.8,165.9 1002.0,136.0 1045.0,120.0"
               class="path-fill"/>
-        <circle cx="60"   cy="145" r="7"  class="wp-circle" id="wpC0"/>
-        <circle cx="225"  cy="162" r="6"  class="wp-circle" id="wpC1"/>
-        <circle cx="422"  cy="78"  r="6"  class="wp-circle" id="wpC2"/>
-        <circle cx="662"  cy="158" r="6"  class="wp-circle" id="wpC3"/>
-        <circle cx="882"  cy="112" r="6"  class="wp-circle" id="wpC4"/>
-        <circle cx="1045" cy="88"  r="7"  class="wp-circle" id="wpC5"/>
-        <text x="60"   y="172" class="wp-label-city" id="wpL0" text-anchor="middle">BANGKOK</text>
-        <text x="60"   y="184" class="wp-label-km"   text-anchor="middle">0 km</text>
-        <text x="225"  y="198" class="wp-label-city" id="wpL1" text-anchor="middle">AYUTTHAYA</text>
-        <text x="225"  y="210" class="wp-label-km"   text-anchor="middle">76 km</text>
-        <text x="422"  y="56"  class="wp-label-city" id="wpL2" text-anchor="middle">HUA HIN</text>
-        <text x="422"  y="68"  class="wp-label-km"   text-anchor="middle">199 km</text>
-        <text x="662"  y="195" class="wp-label-city" id="wpL3" text-anchor="middle">SURAT THANI</text>
-        <text x="662"  y="207" class="wp-label-km"   text-anchor="middle">544 km</text>
-        <text x="882"  y="90"  class="wp-label-city" id="wpL4" text-anchor="middle">KHAO LAK</text>
-        <text x="882"  y="102" class="wp-label-km"   text-anchor="middle">782 km</text>
-        <text x="1045" y="66"  class="wp-label-city" id="wpL5" text-anchor="middle">PHUKET ✦</text>
-        <text x="1045" y="78"  class="wp-label-km"   text-anchor="middle">900 km</text>
+        <circle cx="60"    cy="145" r="7"  class="wp-circle" id="wpC0"/>
+        <circle cx="143.2" cy="95"  r="6"  class="wp-circle" id="wpC1"/>
+        <circle cx="277.8" cy="168" r="6"  class="wp-circle" id="wpC2"/>
+        <circle cx="655.4" cy="95"  r="6"  class="wp-circle" id="wpC3"/>
+        <circle cx="915.9" cy="168" r="6"  class="wp-circle" id="wpC4"/>
+        <circle cx="1045"  cy="120" r="7"  class="wp-circle" id="wpC5"/>
+        <text x="60"    y="196" class="wp-label-city" id="wpL0" text-anchor="middle">BANGKOK</text>
+        <text x="60"    y="208" class="wp-label-km"   text-anchor="middle">0 km</text>
+        <text x="143.2" y="56"  class="wp-label-city" id="wpL1" text-anchor="middle">AYUTTHAYA</text>
+        <text x="143.2" y="70"  class="wp-label-km"   text-anchor="middle">76 km</text>
+        <text x="277.8" y="196" class="wp-label-city" id="wpL2" text-anchor="middle">HUA HIN</text>
+        <text x="277.8" y="208" class="wp-label-km"   text-anchor="middle">199 km</text>
+        <text x="655.4" y="56"  class="wp-label-city" id="wpL3" text-anchor="middle">SURAT THANI</text>
+        <text x="655.4" y="70"  class="wp-label-km"   text-anchor="middle">544 km</text>
+        <text x="915.9" y="196" class="wp-label-city" id="wpL4" text-anchor="middle">KHAO LAK</text>
+        <text x="915.9" y="208" class="wp-label-km"   text-anchor="middle">782 km</text>
+        <text x="1045"  y="56"  class="wp-label-city" id="wpL5" text-anchor="middle">PHUKET ✦</text>
+        <text x="1045"  y="70"  class="wp-label-km"   text-anchor="middle">900 km</text>
       </svg>
     </div>
 
@@ -1826,76 +2020,74 @@ body { overflow-x: clip; }
     <p class="s-body" style="margin:0 auto;text-align:center;">Most wellness apps track your metrics in isolation. DAOasis connects them. Every habit feeds the same journey — together they move you further, faster.</p>
   </div>
 
-  <!-- Auto-cycle progress bar -->
-  <div class="eco-cycle-bar" style="max-width:1400px;margin:0 auto;">
-    <div class="eco-cycle-progress" id="ecoCycleBar"></div>
-  </div>
+  <!-- One day in the app, scrubbed. Every line in the right-hand column is
+       verbatim from the screen beside it, so the page and the product cannot
+       drift apart. All figures live on the phone — see the CSS note. -->
+  <div class="edy-outer" id="edyOuter">
+    <div class="edy-stage">
+      <div class="edy-grid">
 
-  <div class="eco-layout">
+        <div class="edy-phone">
+          <div class="edy-glow" id="edyGlow"></div>
+          <img class="edy-shot" data-s="0" src="images/app-home-morning.webp" width="758" height="1600" alt="The DAOasis home screen: all six habits as tiles, and 186 km walked toward Hua Hin." />
+          <img class="edy-shot" data-s="1" src="images/app-steps.webp"        width="758" height="1600" alt="The Move screen: 6,412 of 8,000 steps, four point one of six kilometres toward Hua Hin." />
+          <img class="edy-shot" data-s="2" src="images/app-sleep.webp"        width="758" height="1600" alt="The Rest screen: seven hours twenty of eight, and the distance boost it buys tomorrow." />
+          <img class="edy-shot" data-s="3" src="images/app-breathing.webp"    width="758" height="1600" alt="The Breathe screen: two minutes fourteen remaining, opening a rest stop at Hua Hin." />
+          <img class="edy-shot" data-s="4" src="images/app-hydration.webp"    width="758" height="1600" alt="The Hydrate screen: one point four of two litres, two more days opening the coastal route." />
+          <img class="edy-shot" data-s="5" src="images/app-quests.webp"       width="758" height="1600" alt="Today's quests, where Nourish is counted: two meals logged, unlocking local food experiences." />
+          <img class="edy-shot" data-s="6" src="images/app-lesson.webp"       width="758" height="1600" alt="A lesson in progress, the Learn habit: one idea at a time, building toward the journey." />
+        </div>
 
-    <!-- Left: phone + glow -->
-    <div class="eco-left">
-      <div class="eco-phone-glow" id="ecoGlow"></div>
-      <div class="eco-phone-wrap-lg">
-        <img src="images/19.png" alt="DAOasis daily wellness dashboard" id="ecoPhone" />
-      </div>
-    </div>
-
-    <!-- Right: tiles + detail -->
-    <div class="eco-right">
-
-      <!-- The tiles cycle on a timer and are also clickable, and nothing said
-           so. This is the label for that: it names what the six are, and the
-           second line invites the reader to take over from the auto-cycle. -->
-      <div class="eco-tiles-head">
-        <span class="eco-tiles-title">The six habits</span>
-        <span class="eco-tiles-hint">Select one &mdash; or watch them cycle</span>
-      </div>
-
-      <div class="eco-tile-grid" id="ecoTileGrid">
-        <div class="eco-tile active" data-idx="0" style="--tile-color:#C48A5A;">
-          <svg class="eco-tile-icon" viewBox="0 0 24 24" fill="none" stroke="#C48A5A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2z"/><path d="M8 8.5L6.5 15l3 1L11 20h2l1.5-4 2.5 1L18 9l-4-1-.5-1.5H10L8 8.5z"/></svg>
-          <span class="eco-tile-name">Steps</span>
-        </div>
-        <div class="eco-tile" data-idx="1" style="--tile-color:#7F97A2;">
-          <svg class="eco-tile-icon" viewBox="0 0 24 24" fill="none" stroke="#7F97A2" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v4M8 6c-2 0-4 1.5-4 4s2 4 4 4h8c2 0 4-1.5 4-4s-2-4-4-4"/><path d="M12 14v6M9 17h6"/></svg>
-          <span class="eco-tile-name">Breathing</span>
-        </div>
-        <div class="eco-tile" data-idx="2" style="--tile-color:#5a8aad;">
-          <svg class="eco-tile-icon" viewBox="0 0 24 24" fill="none" stroke="#5a8aad" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L6 10a6 6 0 1 0 12 0L12 2z"/></svg>
-          <span class="eco-tile-name">Hydration</span>
-        </div>
-        <div class="eco-tile" data-idx="3" style="--tile-color:#9B8CA8;">
-          <svg class="eco-tile-icon" viewBox="0 0 24 24" fill="none" stroke="#9B8CA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-          <span class="eco-tile-name">Sleep</span>
-        </div>
-        <div class="eco-tile" data-idx="4" style="--tile-color:#A8B7A2;">
-          <svg class="eco-tile-icon" viewBox="0 0 24 24" fill="none" stroke="#A8B7A2" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a5 5 0 0 1 5 5c0 3-2 5-5 8-3-3-5-5-5-8a5 5 0 0 1 5-5z"/><circle cx="12" cy="7" r="1.5"/></svg>
-          <span class="eco-tile-name">Nutrition</span>
-        </div>
-        <div class="eco-tile" data-idx="5" style="--tile-color:#DDD1C2;">
-          <svg class="eco-tile-icon" viewBox="0 0 24 24" fill="none" stroke="#DDD1C2" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-          <span class="eco-tile-name">Learning</span>
-        </div>
-      </div>
-
-      <div class="eco-detail" id="ecoDetail">
-        <div class="eco-detail-inner show" id="ecoDetailInner">
-          <div class="eco-detail-tag" id="ecoDetailTag"></div>
-          <div class="eco-detail-name" id="ecoDetailName"></div>
-          <div class="eco-detail-row">
-            <div>
-              <div class="eco-detail-label">In the app</div>
-              <div class="eco-detail-text" id="ecoDetailWhat"></div>
-            </div>
-            <div>
-              <div class="eco-detail-label">Quest bonus</div>
-              <div class="eco-detail-text" id="ecoDetailQuest"></div>
-            </div>
+        <div class="edy-panel">
+          <div class="edy-cue">Six habits, six screens · scroll</div>
+          <!-- Static. The header used to track the phone and name the time of
+               day; now the phone shows the habit the row beside it names, so a
+               changing header would only repeat the row. These two lines are
+               the app's own label above its six tiles. -->
+          <div class="edy-clock">
+            <span class="edy-clock-t">Today&rsquo;s actions</span>
+            <span class="edy-clock-s">everything counts</span>
           </div>
-        </div>
-      </div>
 
+          <ol class="edy-rows" id="edyRows">
+          <li class="edy-row" style="--edy-c:#8FB08A;">
+            <span class="edy-row-i"><svg viewBox="0 0 24 24" fill="none" stroke="#8FB08A" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2z"/><path d="M8 8.5L6.5 15l3 1L11 20h2l1.5-4 2.5 1L18 9l-4-1-.5-1.5H10L8 8.5z"/></svg></span>
+            <span><span class="edy-row-n">Move</span><span class="edy-row-t">Every step is proportional distance</span></span>
+            <i class="edy-row-r"></i>
+          </li>
+          <li class="edy-row" style="--edy-c:#C9A2AE;">
+            <span class="edy-row-i"><svg viewBox="0 0 24 24" fill="none" stroke="#C9A2AE" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></span>
+            <span><span class="edy-row-n">Rest</span><span class="edy-row-t">A distance boost on tomorrow morning</span></span>
+            <i class="edy-row-r"></i>
+          </li>
+          <li class="edy-row" style="--edy-c:#7FB2B8;">
+            <span class="edy-row-i"><svg viewBox="0 0 24 24" fill="none" stroke="#7FB2B8" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v4M8 6c-2 0-4 1.5-4 4s2 4 4 4h8c2 0 4-1.5 4-4s-2-4-4-4"/><path d="M12 14v6M9 17h6"/></svg></span>
+            <span><span class="edy-row-n">Breathe</span><span class="edy-row-t">A rest stop at Hua Hin, not a passing place</span></span>
+            <i class="edy-row-r"></i>
+          </li>
+          <li class="edy-row" style="--edy-c:#6E9CC9;">
+            <span class="edy-row-i"><svg viewBox="0 0 24 24" fill="none" stroke="#6E9CC9" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2L6 10a6 6 0 1 0 12 0L12 2z"/></svg></span>
+            <span><span class="edy-row-n">Hydrate</span><span class="edy-row-t">Two more days opens the coastal route</span></span>
+            <i class="edy-row-r"></i>
+          </li>
+          <li class="edy-row" style="--edy-c:#A8B7A2;">
+            <span class="edy-row-i"><svg viewBox="0 0 24 24" fill="none" stroke="#A8B7A2" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 4.5c0 8.6-5.9 14-13.5 14H4.5V17C4.5 9.3 10 4.5 17.5 4.5H20z"/><path d="M4.5 20.5C7.7 14.2 11.7 10.3 16.5 7.8"/></svg></span>
+            <span><span class="edy-row-n">Nourish</span><span class="edy-row-t">Unlocks local food experiences</span></span>
+            <i class="edy-row-r"></i>
+          </li>
+          <li class="edy-row" style="--edy-c:#A98CB8;">
+            <span class="edy-row-i"><svg viewBox="0 0 24 24" fill="none" stroke="#A98CB8" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>
+            <span><span class="edy-row-n">Learn</span><span class="edy-row-t">Builds a stronger you for the journey</span></span>
+            <i class="edy-row-r"></i>
+          </li>
+          </ol>
+
+          <p class="edy-close" id="edyClose">Not one of those was a separate app, a separate score or a separate streak. <strong>Every one of them moved the same marker.</strong></p>
+        </div>
+
+        <p class="edy-mob-cap">All six on one screen. Each has its own inside the app — and each one ends in the same place.</p>
+
+      </div>
     </div>
   </div>
 </div>
@@ -2024,6 +2216,19 @@ body { overflow-x: clip; }
     <div class="learn-stat"><div class="learn-stat-num">100%</div><div class="learn-stat-label">Credit-earning</div></div>
     <div class="learn-stat"><div class="learn-stat-num">0</div><div class="learn-stat-label">Jargon required</div></div>
   </div>
+
+  <!-- The cards above make the argument; these show the thing itself. Both
+       captions are drawn from the screens' own copy. -->
+  <div class="scr-strip reveal">
+    <figure class="scr">
+      <img src="images/app-module.webp" width="758" height="1600" alt="A learning module in the DAOasis app, showing four lessons with two completed." />
+      <figcaption><b>A module, opened</b>Four short lessons, a few minutes each, and the credits are attached to finishing — not to turning up every day.</figcaption>
+    </figure>
+    <figure class="scr">
+      <img src="images/app-lesson.webp" width="758" height="1600" alt="A lesson in the DAOasis app: Light, temperature, timing." />
+      <figcaption><b>A lesson inside it</b>One idea at a time, in plain language, closing with a short check that is a way of making the idea stick rather than a test.</figcaption>
+    </figure>
+  </div>
 </section>
 
 <div class="divider-dark"><div class="divider-inner">
@@ -2083,6 +2288,20 @@ body { overflow-x: clip; }
       <div class="reward-use-tag">Tiered access · Community first</div>
     </div>
   </div>
+
+  <!-- Earned, and opened — the pipeline above, made concrete. The first
+       caption is the screen's own footnote, and it is the clearest
+       statement anywhere on the site that credits are not an instrument. -->
+  <div class="scr-strip reveal">
+    <figure class="scr">
+      <img src="images/app-credits-source.webp" width="758" height="1600" alt="A list of every Reward Credit earned, with what earned it and when." />
+      <figcaption><b>Where every credit came from</b>Every credit, when it was earned and why. They cannot be bought, sold or transferred, and they are never awarded retrospectively.</figcaption>
+    </figure>
+    <figure class="scr">
+      <img src="images/app-credits-open.webp" width="758" height="1600" alt="What Reward Credits open: waypoint stories, accountability pairing, a Sanctuary contribution." />
+      <figcaption><b>And what they open</b>Extended waypoint stories, accountability pairing, and a contribution toward a stay at the Sanctuary. Marketplace benefits are still in development, and the screen says so.</figcaption>
+    </figure>
+  </div>
 </section>
 
 <div class="divider-dark"><div class="divider-inner">
@@ -2108,6 +2327,7 @@ body { overflow-x: clip; }
         <p class="market-scene-copy">Your DRC and $DVT have a real home. Explore what the DAOasis Marketplace is being built to make possible.</p>
         <div class="market-scroll-cue" id="marketScrollCue">Scroll to explore ↓</div>
       </div>
+      <img class="market-phone" src="images/app-marketplace.webp" width="758" height="1600" alt="The DAOasis marketplace screen, listing courses, coaching and experiences published by members." />
     </div>
 
     <!-- Scene 1: Sanctuary Experiences -->
@@ -2346,6 +2566,7 @@ body { overflow-x: clip; }
 
 
 <!-- Controlled Cinematic Scroll — shared pacing controller, see js/cine.js -->
+<script src="js/smooth.js"></script>
 <script src="js/cine.js"></script>
 <script>
 /* ────────────────────────────────────────────
@@ -2485,12 +2706,24 @@ function cine(el, o){
   function applyFrame(raw){
     const isMobile = window.innerWidth <= 900;
 
-    /* Mobile runs a shorter pin, so the beats land at different fractions:
-       the phones finish settling earlier and then hold still while the
-       bridge panel slides up over them. */
+    /* THE HOLD IS THE POINT, and it did not exist. The zoom used to finish
+       at raw 0.636 and the bridge began at 0.68 — four per cent of the pin,
+       about twenty vertical pixels of scroll, between the phones arriving at
+       full size and being taken away again. They were never still.
+
+       Rebalanced so the title clears earlier, the arrival owns a much longer
+       stretch, and the three screens then sit at rest for roughly a fifth of
+       the pin before the bridge begins:
+
+         desktop   title 0 - 0.22 · arrive 0.20 - 0.62 · HOLD 0.62 - 0.80 · bridge 0.80 - 1
+         mobile    title 0 - 0.20 · arrive 0.20 - 0.57 · HOLD 0.57 - 0.74 · bridge 0.74 - 1
+
+       At 515vh the desktop hold is ~95vh — a full screen of scrolling with
+       nothing moving. If this section is ever shortened, take it out of the
+       ARRIVAL, never out of the hold. */
     const P = isMobile
-      ? { outStart: 0.16, outLen: 0.08, phase: 0.24, appear: 0.34, zoom: 0.42, bridge: 0.62, bridgeLen: 0.34 }
-      : { outStart: 0.20, outLen: 0.10, phase: 0.30, appear: 0.38, zoom: 0.48, bridge: 0.68, bridgeLen: 0.32 };
+      ? { outStart: 0.12, outLen: 0.08, phase: 0.20, appear: 0.32, zoom: 0.46, bridge: 0.74, bridgeLen: 0.26 }
+      : { outStart: 0.13, outLen: 0.09, phase: 0.20, appear: 0.34, zoom: 0.52, bridge: 0.80, bridgeLen: 0.20 };
 
     /* Phase 1: "Meet the App" title card — visible immediately on load */
     const titleIn  = raw <= 0.001 ? 1 : ease(clamp01((raw-0.001)/0.05));
@@ -2512,11 +2745,19 @@ function cine(el, o){
     const startW = isMobile ? 150 : 220;
     /* Cap width so the phone's height (portrait, ~1:2.05) always fits within the viewport with breathing room */
     const heightBudget = window.innerHeight * (isMobile ? 0.62 : 0.72);
-    const widthFromHeight = heightBudget / 2.05;
+    /* The screens are 758x1600, i.e. 2.111 — 2.05 let the phone run about
+       four per cent taller than the budget it was being fitted to. */
+    const widthFromHeight = heightBudget / 2.111;
     const endW = Math.min(window.innerWidth*(isMobile?0.46:0.30), isMobile?420:460, widthFromHeight);
     const widthC = lerp(startW, endW, zoomT);
     const centerScale = lerp(0.86, 1, zoomT);
-    const blurC = lerp(6, 0, Math.min(1, zoomT*1.6));
+    /* Two passes either side of this: 1.6 cleared the blur at zoomT 0.63
+       (sharp for most of its own push, so the focus never read), and 1.12
+       held it to 0.89 — which put a soft frame inside the hold, where the
+       screens are meant to be looked at. 1.35 clears by zoomT 0.74: the
+       lens settles during the move and everything is sharp before the
+       phones come to rest. */
+    const blurC = lerp(7, 0, Math.min(1, zoomT*1.35));
 
     /* Centre phone — the dominant object, centred in the scene */
     const centerLeft = '50%';
@@ -2534,11 +2775,21 @@ function cine(el, o){
     /* no post-settle drift on mobile — the phones hold still while the
        bridge slides up over them */
     const parallax   = (reducedMotion || isMobile) ? 0 : (clamp01((r-0.5)/0.5)) * 14;
-    const sideOffsetBase = isMobile ? widthC*0.62 : endW*0.74;
+    /* 0.74 hid nearly a quarter of each outer screen behind the middle one;
+       0.88 still left them touching. At 1.02 the inner edges clear by about
+       24px, so the three read as three objects rather than a stack. The
+       spread is 896px inside 1440 and scales off endW, so it stays clear at
+       1280 and 1024 too. Mobile keeps its own tighter value — the
+       composition there is a narrow column, not a spread. */
+    const sideOffsetBase = isMobile ? widthC*0.62 : endW*1.02;
     const sideOffset = lerp(sideOffsetBase*0.4, sideOffsetBase, sideEase) - parallax;
     const sideW      = widthC * (isMobile ? 0.82 : 0.88);
     const sideRot    = lerp(2, 10, 1-sideEase);
-    const sideBlur   = lerp(6, 0.4, sideEase);
+    /* This rested at 0.4px as a depth-of-field cue. On a device mockup it
+       does not read as depth, it reads as a screen that failed to load —
+       these are the product, and the product should be sharp. The blur is
+       now purely an arrival effect and clears completely. */
+    const sideBlur   = lerp(6, 0, sideEase);
 
     phoneLeft.style.opacity        = appearT*sideEase;
     phoneLeft.style.width          = sideW+'px';
@@ -2552,8 +2803,13 @@ function cine(el, o){
     phoneRight.style.opacity        = appearT*sideEase;
     phoneRight.style.width          = sideW+'px';
     phoneRight.style.top            = '50%';
-    phoneRight.style.left           = `calc(${centerLeft} + ${sideOffset + (isMobile?0:sideOffsetBase*0.18)}px)`;
-    phoneRight.style.transform      = `translate(-50%,-50%) perspective(1000px) rotateY(${-sideRot}deg) scale(${lerp(0.82,0.9,sideEase)})`;
+    /* The right phone used to carry an extra 0.18 of the base offset that
+       the left did not, so the resting fan sat noticeably off centre: the
+       left screen overlapped the centre one while the right stood clear.
+       Symmetric now — the composition is three of a kind, and the eye
+       reads any imbalance in it as a mistake rather than as style. */
+    phoneRight.style.left           = `calc(${centerLeft} + ${sideOffset}px)`;
+    phoneRight.style.transform      = `translate(-50%,-50%) perspective(1000px) rotateY(${-sideRot}deg) scale(${lerp(0.82,0.94,sideEase)})`;
     phoneRight.style.filter         = `drop-shadow(0 26px 60px rgba(0,0,0,0.6)) blur(${sideBlur}px)`;
     phoneRight.style.pointerEvents  = sideEase>0.6 ? 'auto' : 'none';
     phoneRight.style.cursor         = 'pointer';
@@ -2597,7 +2853,13 @@ function cine(el, o){
      crushed the wrapper to its height. Auto-release was removed outright
      on 20 Aug (see the note at the top of js/cine.js), so no per-section
      opt-out is needed any more. */
-  const track = cine(outer, { mode: 'guided', pace: 'epic', states: 3 });
+  /* `epic` is 1500/1150ms, which is the fastest cap on the site's slowest
+     section. Overridden here rather than globally: this is the one place
+     three product screens are asked to be looked at, and the cap is what
+     sets how quickly the scene answers a scroll. 2400/1850 keeps the same
+     damping (TIMING.follow) but lets the move arrive noticeably more
+     slowly. `times()` reads o.step/o.back, so this works in guided mode. */
+  const track = cine(outer, { mode: 'guided', pace: 'epic', states: 3, step: 2400, back: 1850 });
 
   function tick(){
     applyFrame(track.get());
@@ -2645,84 +2907,103 @@ function cine(el, o){
 })();
 
 /* ────────────────────────────────────────────
-   ECOSYSTEM — auto-cycling interactive tabs
+   THE LIVING ECOSYSTEM — one day, accumulating
+
+   A pure function of the paced scroll value: reads nothing but pos(),
+   writes nothing but inline custom properties and one opacity per screen.
+   No timer, no latched class, no state that can be stranded — scrolling
+   back up reverses the day exactly.
+
+   pos() runs 0..6 over seven stops: 0 is the day opening with nothing
+   logged, 1..6 bring the six habits in. Consumers scrub pos(); nothing
+   here floors it.
 ──────────────────────────────────────────── */
 (function(){
-  const ECO_HABITS = [
-    { svg:'<path d="M12 4c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2z"/><path d="M8 8.5L6.5 15l3 1L11 20h2l1.5-4 2.5 1L18 9l-4-1-.5-1.5H10L8 8.5z"/>', name:'Steps', color:'#C48A5A', glow:'rgba(196,138,90,0.15)', tag:'Primary Driver', tagBg:'rgba(196,138,90,0.15)', what:'Every step converts directly into kilometres on your quest. Steps are the core engine — the single most important daily action.', quest:'10,000 steps ≈ 5km on Bangkok → Phuket. More steps every day means more ground covered.' },
-    { svg:'<path d="M12 4v4M8 6c-2 0-4 1.5-4 4s2 4 4 4h8c2 0 4-1.5 4-4s-2-4-4-4"/><path d="M12 14v6M9 17h6"/>', name:'Breathing', color:'#7F97A2', glow:'rgba(127,151,162,0.12)', tag:'Booster', tagBg:'rgba(127,151,162,0.15)', what:'Complete a daily guided breathwork session to keep your streak multiplier active and earn bonus distance.', quest:'+1 km every completed session. Miss a day and the multiplier resets.' },
-    { svg:'<path d="M12 2L6 10a6 6 0 1 0 12 0L12 2z"/>', name:'Hydration', color:'#5a8aad', glow:'rgba(90,138,173,0.12)', tag:'Booster', tagBg:'rgba(90,138,173,0.15)', what:'Log your daily water intake and hit your 3L target to earn a bonus kilometre on your quest.', quest:'+1 km every day you hit your hydration goal. The river in your world rises with every bottle logged.' },
-    { svg:'<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>', name:'Sleep', color:'#9B8CA8', glow:'rgba(155,140,168,0.12)', tag:'Booster', tagBg:'rgba(155,140,168,0.15)', what:'Quality sleep earns a nightly distance bonus. The app reads your sleep score from connected health devices.', quest:'+2 km for 7+ hours of quality sleep. Streak constellations grow in your app sky.' },
-    { svg:'<path d="M12 2a5 5 0 0 1 5 5c0 3-2 5-5 8-3-3-5-5-5-8a5 5 0 0 1 5-5z"/><circle cx="12" cy="7" r="1.5"/>', name:'Nutrition', color:'#A8B7A2', glow:'rgba(168,183,162,0.10)', tag:'Booster', tagBg:'rgba(168,183,162,0.15)', what:'Log meals and earn Reward Credits. The app rewards dietary variety, consistency, and nutritional balance.', quest:'Logging varied meals earns credits and grows a garden inside your world. One of the most direct routes to $DVT.' },
-    { svg:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>', name:'Learning', color:'#DDD1C2', glow:'rgba(221,209,194,0.10)', tag:'Earner', tagBg:'rgba(221,209,194,0.15)', what:'Complete wellness and Web3 lessons to earn DAOasis Reward Credits directly. Knowledge is treated as a habit, and recognised like one.', quest:'Every lesson earns credits, and credits are designed to convert to $DVT. Twenty lessons at pilot launch across Wellness and Web3 — all rewarded.' }
+  const outer = document.getElementById('edyOuter');
+  if (!outer) return;
+  const rows   = [...outer.querySelectorAll('.edy-row')];
+  const shots  = [...outer.querySelectorAll('.edy-shot')];
+  const glow   = document.getElementById('edyGlow');
+  const close  = document.getElementById('edyClose');
+  if (!rows.length || shots.length !== 7) return;
+
+  const cl01 = v => v < 0 ? 0 : v > 1 ? 1 : v;
+
+  /* SEVEN SCREENS, ONE PER BEAT. The phone shows the habit the column is
+     naming: Home first, with all six as tiles, then each habit's own screen
+     as its row arrives. An earlier version ran the four Home states through
+     one day instead - it was a nice sequence, but it showed the same screen
+     four times while the column claimed six different things.
+
+     Boundaries sit at i + 0.4, i.e. as a row STARTS arriving (a row is full
+     at i + 0.8), so the screen leads the sentence by a fraction rather than
+     landing on the same frame as it. */
+  const GLOW = [
+    'rgba(214,158,96,0.15)',  /* home    */
+    'rgba(143,176,138,0.15)', /* move    */
+    'rgba(201,162,174,0.14)', /* rest    */
+    'rgba(127,178,184,0.14)', /* breathe */
+    'rgba(110,156,201,0.14)', /* hydrate */
+    'rgba(168,183,162,0.14)', /* nourish */
+    'rgba(169,140,184,0.14)', /* learn   */
   ];
+  const BOUND = [0.4, 1.4, 2.4, 3.4, 4.4, 5.4];
+  const DIP_W = 0.16;   /* beats either side of a boundary that the dip covers */
+  /* Narrower than the three-state version: there are six swaps now and they
+     are one beat apart, so a 0.22 window left the frame dipping almost
+     continuously through the middle of the section. */
+  const DIP_L = 0.42;   /* how far the frame drops at the moment of the swap  */
 
-  const tiles    = document.querySelectorAll('.eco-tile');
-  const glow     = document.getElementById('ecoGlow');
-  const tagEl    = document.getElementById('ecoDetailTag');
-  const nameEl   = document.getElementById('ecoDetailName');
-  const whatEl   = document.getElementById('ecoDetailWhat');
-  const questEl  = document.getElementById('ecoDetailQuest');
-  const inner    = document.getElementById('ecoDetailInner');
-  const cycleBar = document.getElementById('ecoCycleBar');
-  if (!tiles.length) return;
+  let lastState = -1;
 
-  /* 30% faster (was 4000ms). The progress bar reads from this same
-     constant, so the bar and the advance stay in step automatically. */
-  const CYCLE_MS = 2800;
-  let current = 0, timer = null, barAnim = null;
-
-  function show(idx, resetCycle) {
-    current = idx;
-    const h = ECO_HABITS[idx];
-
-    // Tiles
-    tiles.forEach((t, i) => t.classList.toggle('active', i === idx));
-
-    // Glow
-    if (glow) glow.style.setProperty('--eco-glow', h.glow);
-    if (glow) glow.style.background = `radial-gradient(ellipse, ${h.glow} 0%, transparent 70%)`;
-
-    // Detail panel — fade out, swap, fade in
-    inner.classList.remove('show');
-    setTimeout(() => {
-      tagEl.textContent = h.tag;
-      tagEl.style.color = h.color; tagEl.style.borderColor = h.color; tagEl.style.background = h.tagBg;
-      nameEl.textContent = h.name;
-      whatEl.textContent  = h.what;
-      questEl.textContent = h.quest;
-      inner.classList.add('show');
-    }, 200);
-
-    if (resetCycle !== false) startCycle();
-  }
-
-  function startCycle() {
-    clearTimeout(timer);
-    if (cycleBar) {
-      cycleBar.style.transition = 'none';
-      cycleBar.style.width = '0%';
-      void cycleBar.offsetWidth;
-      cycleBar.style.transition = `width ${CYCLE_MS}ms linear`;
-      cycleBar.style.width = '100%';
+  function render(pos){
+    /* rows: arrive over four fifths of a beat, then stay put */
+    for (let i = 0; i < rows.length; i++){
+      rows[i].style.setProperty('--w', cl01((pos - i) / 0.8).toFixed(3));
     }
-    timer = setTimeout(() => {
-      show((current + 1) % ECO_HABITS.length, false);
-      startCycle();
-    }, CYCLE_MS);
+
+    /* screen: hard swap at the bottom of a dip — see the CSS note on why
+       this is not a cross-fade */
+    let st = 0;
+    for (let i = 0; i < BOUND.length; i++) if (pos >= BOUND[i]) st = i + 1;
+    let dip = 1;
+    for (const b of BOUND){
+      const d = Math.abs(pos - b);
+      if (d < DIP_W) dip = Math.min(dip, DIP_L + (1 - DIP_L) * (d / DIP_W));
+    }
+    for (let i = 0; i < 7; i++) shots[i].style.opacity = (i === st ? dip.toFixed(3) : '0');
+
+    /* The header is static now, so only the glow tracks the screen. */
+    if (st !== lastState){
+      lastState = st;
+      if (glow) glow.style.setProperty('--edy-glow', GLOW[st]);
+    }
+
+    /* the close lands after the last habit has settled */
+    close.style.setProperty('--cw', cl01((pos - 5.35) / 0.6).toFixed(3));
   }
 
-  tiles.forEach(t => {
-    t.addEventListener('click', () => show(parseInt(t.dataset.idx)));
-  });
+  /* Desktop only. Below 900px the section is a plain list plus the evening
+     screen, forced visible in CSS, so the scrub must not run at all — it
+     would write opacities the media query then has to fight with. */
+  const mq = window.matchMedia('(min-width:901px)');
+  let track = null;
 
-  // Init on intersect
-  const obs = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting) { show(0); obs.disconnect(); }
-    });
-  }, { threshold: 0, rootMargin: '0px 0px -15% 0px' });
-  obs.observe(document.getElementById('ecoOuter'));
+  function arm(){
+    if (mq.matches && !track){
+      track = cine(outer, { mode:'sticky', pace:'major', states: 7 });
+      track.on(() => render(track.pos()));
+    } else if (!mq.matches && track){
+      /* hand back to the CSS resting state */
+      rows.forEach(r => r.style.removeProperty('--w'));
+      shots.forEach(sh => sh.style.removeProperty('opacity'));
+      close.style.removeProperty('--cw');
+      lastState = -1;
+      track = null;
+    }
+  }
+  arm();
+  mq.addEventListener ? mq.addEventListener('change', arm) : mq.addListener(arm);
 })();
 
 /* ────────────────────────────────────────────
@@ -2733,13 +3014,23 @@ function cine(el, o){
   const pathFill = document.getElementById('questPathFill');
   if (!outer || !pathFill) return;
 
+  /* THE CANONICAL SIX. The Companion App blueprint carried a seventh stop
+     (Chumphon at 380km) until 16 September 2026, when it was dropped in
+     favour of these figures - the ones this site and investors.html have
+     always published. Chumphon is still a bend in the road on the app's own
+     map; it is simply not one of the six milestones the journey ticks.
+
+     `threshold` is the waypoint kilometres as a fraction of 900, and the SVG
+     x coordinates are derived from the same figure - so the marker, the
+     labels and the paced stops cannot disagree with one another. Regenerate
+     the geometry with scratchpad/route6.js rather than nudging by hand. */
   const WPS = [
-    { num:'01', label:'START',          name:'Bangkok',     tag:'JOURNEY BEGINS',      desc:'Set your intention. The trail opens.',               threshold:0     },
-    { num:'02', label:'ANCIENT CAPITAL',name:'Ayutthaya',   tag:'76 KM WALKED',      desc:'The first milestone. History beneath your feet.',    threshold:0.084 },
-    { num:'03', label:'COAST BEGINS',   name:'Hua Hin',     tag:'199 KM WALKED',     desc:'The gulf appears. Sea air and open road.',           threshold:0.221 },
-    { num:'04', label:'GATEWAY SOUTH',  name:'Surat Thani', tag:'544 KM WALKED',     desc:'Halfway. Community stories unlock here.',            threshold:0.604 },
-    { num:'05', label:'PENINSULA',      name:'Khao Lak',    tag:'782 KM WALKED',     desc:'The end is in sight. The jungle thins to shore.',    threshold:0.869 },
-    { num:'06', label:'DESTINATION',    name:'Phuket',      tag:'900 KM COMPLETE',   desc:'The Sanctuary awaits. You walked here.',             threshold:1.0   }
+    { num:'01', label:'START',           name:'Bangkok',     tag:'JOURNEY BEGINS',    desc:'Set your intention. The trail opens.',               threshold:0      },
+    { num:'02', label:'ANCIENT CAPITAL', name:'Ayutthaya',   tag:'76 KM WALKED',      desc:'The first milestone. History beneath your feet.',    threshold:0.0844 },
+    { num:'03', label:'COAST BEGINS',    name:'Hua Hin',     tag:'199 KM WALKED',     desc:'The royal coast. Where the country came to rest.',   threshold:0.2211 },
+    { num:'04', label:'GATEWAY SOUTH',   name:'Surat Thani', tag:'544 KM WALKED',     desc:'Halfway. Community stories unlock here.',            threshold:0.6044 },
+    { num:'05', label:'PENINSULA',       name:'Khao Lak',    tag:'782 KM WALKED',     desc:'The end is in sight. The jungle thins to shore.',    threshold:0.8689 },
+    { num:'06', label:'DESTINATION',     name:'Phuket',      tag:'900 KM COMPLETE',   desc:'The Sanctuary awaits. You walked here.',             threshold:1.0    }
   ];
 
   let pathLen = 0, lastWp = -1;

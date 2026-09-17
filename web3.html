@@ -292,7 +292,7 @@ img { max-width: 100%; }
    occupying a fixed window (x 30.5%–69.5%, y 9.9%–90%). This frame
    crops to exactly that window, so the phone fills its container at
    any size and never floats inside dead space. */
-.dev { position: relative; width: 100%; max-width: 300px; margin: 0 auto; aspect-ratio: 873 / 1803; }
+.dev { position: relative; width: 100%; max-width: 300px; margin: 0 auto; aspect-ratio: 758 / 1600; }
 /* Inside a 100vh sticky the device has to be sized off the viewport
    height, not the column width, or a 720px-tall screen gets a 620px
    phone and the section clips its own headline. */
@@ -301,11 +301,17 @@ img { max-width: 100%; }
    rows point at this shot, then sharpened by the controller so the blend
    band is narrow — two device mockups half-dissolved into each other for a
    long stretch reads as a rendering fault rather than as a transition. */
-.dev-shot { position: absolute; inset: 0; overflow: hidden;
+.dev-shot { position: absolute; inset: 0;
   opacity: var(--w, 0); transform: scale(calc(0.97 + 0.03 * var(--w, 0))); }
 .dev-shot.on { opacity: 1; transform: scale(1); }
-.dev-shot img { position: absolute; display: block; width: 257.73%; max-width: none; left: -78.69%; top: -12.31%; filter: drop-shadow(0 40px 70px rgba(0,0,0,0.45)); }
-.dev-single .dev-shot { opacity: 1; transform: none; position: relative; }
+.dev-shot img { position: absolute; display: block; width: 100%; height: 100%; max-width: none; left: 0; top: 0; filter: drop-shadow(0 40px 70px rgba(0,0,0,0.45)); }
+/* THE MARKETPLACE DEVICE HAD NEVER RENDERED. `position:relative` put the
+   shot back in flow, and its only child is absolutely positioned - so the
+   box measured 300x0 and the image was clipped away by the .dev-shot
+   overflow. Measured identical on the pre-change build, so this was live,
+   not introduced by the 2026 screen swap. There is only one shot here and
+   it carries .on, so it can simply fill .dev like the animated ones do. */
+.dev-single .dev-shot { opacity: 1; transform: none; }
 
 /* ══════════════════════════════════════════════
    SECTION 1 — HERO
@@ -397,7 +403,12 @@ img { max-width: 100%; }
 /* ══════════════════════════════════════════════
    SECTION 2 — PARTICIPATION
 ══════════════════════════════════════════════ */
-.part-outer { position: relative; height: 560vh; background: var(--warm-white); }
+  /* HEIGHT SET BY BEATS. 6 beats x 83.33vh + 100vh of sticky, so each
+     beat gets ~0.70 screens of scroll AFTER the 8% settle pad at each end of
+     the track takes its share. Below about 0.6 screens a beat is 3-4 wheel
+     notches and the sequence reads as flashing past. See the pacing table in
+     CLAUDE.md before changing this. */
+.part-outer { position: relative; height: 600vh; background: var(--warm-white); }
 .part-sticky {
   position: sticky; top: 0; height: 100vh; overflow: hidden;
   display: flex; flex-direction: column; justify-content: center; padding: 13vh 8% 8vh;
@@ -484,7 +495,12 @@ img { max-width: 100%; }
    Many separate recognitions converge and resolve
    into one. No arrows, no swap interface.
 ══════════════════════════════════════════════ */
-.bridge-outer { position: relative; height: 460vh; background: var(--mineral); }
+  /* HEIGHT SET BY BEATS. 5 beats x 83.33vh + 100vh of sticky, so each
+     beat gets ~0.70 screens of scroll AFTER the 8% settle pad at each end of
+     the track takes its share. Below about 0.6 screens a beat is 3-4 wheel
+     notches and the sequence reads as flashing past. See the pacing table in
+     CLAUDE.md before changing this. */
+.bridge-outer { position: relative; height: 520vh; background: var(--mineral); }
 .bridge-sticky {
   position: sticky; top: 0; height: 100vh; overflow: hidden;
   display: flex; flex-direction: column; justify-content: space-between; padding: 13vh 8% 8vh;
@@ -578,6 +594,15 @@ img { max-width: 100%; }
 .util-b { font-size:var(--t-body-s); line-height: 1.9; color: #5c554c; }
 .util-q { display: inline-block; margin-top: 18px; font-size:var(--t-micro); letter-spacing: 0.16em; text-transform: uppercase; color: #8a7f6d; border: 1px solid rgba(43,38,35,0.16); border-radius: 30px; padding: 7px 16px; }
 @media(max-width:900px){
+  /* A divider overlays the tail of the section above it by its own full
+     height, and here --divider-h is calc(14vh + 26px) against .sect's 16vh
+     bottom padding — so on any viewport shorter than ~1300px the mark eats
+     INTO the closing paragraph rather than sitting below it. Measured at
+     390x844 the mark cleared .two-close by 8px, against a 49px floor.
+     Sanctuary solves this with a --dv-tail token; web3 has no such system,
+     so the sections that actually precede a divider get the tail directly.
+     Desktop is unaffected — 2vh exceeds 26px above 1300px tall. */
+  .sect:has(+ .divider) { padding-bottom: calc(16vh + 60px); }
   .two-grid { grid-template-columns: 1fr; gap: 18px; margin-top: 7vh; }
   .two-card { padding: 34px 28px; }
   .util-list { margin-top: 9vh; }
@@ -693,7 +718,12 @@ img { max-width: 100%; }
 /* ══════════════════════════════════════════════
    SECTION 11 — THE COMPLETE LOOP
 ══════════════════════════════════════════════ */
-.loop-outer { position: relative; height: 420vh; background: #0b0f12; }
+  /* HEIGHT SET BY BEATS. 10 beats x 83.33vh + 100vh of sticky, so each
+     beat gets ~0.70 screens of scroll AFTER the 8% settle pad at each end of
+     the track takes its share. Below about 0.6 screens a beat is 3-4 wheel
+     notches and the sequence reads as flashing past. See the pacing table in
+     CLAUDE.md before changing this. */
+.loop-outer { position: relative; height: 935vh; background: #0b0f12; }
 /* The ring is a discrete object, not a full-bleed scene, so the copy
    gets its own column. Floating it over the stage collided with the
    labels on the ring's left-hand side. */
@@ -939,9 +969,9 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
 
     <div class="part-grid">
       <div class="dev" id="partDev">
-        <div class="dev-shot on" data-shot="0"><img src="images/18.png" alt="The DAOasis Companion App quests screen" /></div>
-        <div class="dev-shot" data-shot="1"><img src="images/17.png" alt="The DAOasis Companion App learning screen" /></div>
-        <div class="dev-shot" data-shot="2"><img src="images/11.png" alt="The DAOasis Companion App onboarding screen" /></div>
+        <div class="dev-shot on" data-shot="0"><img src="images/app-quests.webp" width="758" height="1600" alt="The DAOasis Companion App quests screen" /></div>
+        <div class="dev-shot" data-shot="1"><img src="images/app-module.webp" width="758" height="1600" alt="The DAOasis Companion App learning module screen" /></div>
+        <div class="dev-shot" data-shot="2"><img src="images/app-community.webp" width="758" height="1600" alt="The DAOasis Companion App community screen" /></div>
       </div>
 
       <div class="part-list" id="partList">
@@ -1228,7 +1258,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
       </div>
 
       <div class="dev dev-single rv">
-        <div class="dev-shot on"><img src="images/14.png" alt="The DAOasis marketplace and creator entry point in the Companion App" /></div>
+        <div class="dev-shot on"><img src="images/app-marketplace.webp" width="758" height="1600" alt="The DAOasis marketplace and creator entry point in the Companion App" /></div>
       </div>
     </div>
   </div>
@@ -1567,6 +1597,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
 
 
 <!-- Controlled Cinematic Scroll — shared pacing controller, see js/cine.js -->
+<script src="js/smooth.js"></script>
 <script src="js/cine.js"></script>
 <script>
 /* ════════════════════════════════════════════
