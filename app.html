@@ -78,9 +78,16 @@ body { overflow-x: clip; }
   padding: 18px 5%;
   background: rgba(23,20,18,0.88); backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(247,244,238,0.07);
-  transition: transform 0.35s ease;
+  transition:transform 0.35s var(--ease);
 }
 .nav.nav-hidden { transform: translateY(-100%); }
+/* THE READ-PROGRESS RULE. Every other page on the site has carried this
+   since August; app.html was the only one without it, which is why this
+   page in particular had to write "· SCROLL" into two of its own section
+   kickers. A page that shows you how far through you are does not need to
+   tell you to keep going. */
+.scroll-prog{position:fixed;top:0;left:0;height:2px;width:0;
+  background:linear-gradient(90deg, rgba(196,138,90,0.4), var(--gold));z-index:95;pointer-events:none;}
 /* absolutely centred, not a grid 1fr split — a grid track stops being
    equal once one side's content is wider than its proportional share. */
 .nav-brand { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); display: flex; align-items: center; gap: 10px; text-decoration: none; }
@@ -89,13 +96,13 @@ body { overflow-x: clip; }
 .nav-cta {
   background: var(--warm-white); color: var(--charcoal); font-size:var(--t-note);
   padding: 10px 24px; border-radius: 24px; text-decoration: none;
-  letter-spacing: 0.03em; transition: opacity 0.2s; white-space: nowrap;
+  letter-spacing: 0.03em; transition:opacity 0.2s var(--ease); white-space: nowrap;
 }
 .nav-cta:hover { opacity: 0.88; }
 @media(max-width:768px){.nav>.nav-cta{display:none;}}
 .nav-burger { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 4px; background: none; border: none; }
 .nav-burger-bars { display: flex; flex-direction: column; gap: 5px; }
-.nav-burger-bars i { display: block; width: 20px; height: 1.5px; background: var(--warm-white); transition: transform 0.3s var(--ease), opacity 0.3s var(--ease); font-style: normal; }
+.nav-burger-bars i { display: block; width: 20px; height: 1.5px; background: var(--warm-white); transition:transform 0.3s var(--ease), opacity 0.3s var(--ease); font-style: normal; }
 .nav-burger.open .nav-burger-bars i:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
 .nav-burger.open .nav-burger-bars i:nth-child(2) { opacity: 0; }
 .nav-burger.open .nav-burger-bars i:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
@@ -112,14 +119,14 @@ body { overflow-x: clip; }
 }
 .nav-drawer-backdrop {
   position: fixed; inset: 0; z-index: 88; background: rgba(9,8,7,0.55);
-  opacity: 0; pointer-events: none; transition: opacity 0.4s;
+  opacity: 0; pointer-events: none; transition:opacity 0.4s var(--ease);
 }
 .nav-drawer-backdrop.open { opacity: 1; pointer-events: auto; }
 .nav-drawer {
   position: fixed; top: 0; left: 0; bottom: 0; z-index: 89; width: min(420px,88vw);
   background: rgba(23,20,18,0.98); backdrop-filter: blur(16px);
   display: flex; flex-direction: column;
-  transform: translateX(-100%); transition: transform 0.4s var(--ease);
+  transform: translateX(-100%); transition:transform 0.4s var(--ease);
   border-right: 1px solid rgba(247,244,238,0.08); overflow-y: auto;
 }
 .nav-drawer.open { transform: translateX(0); }
@@ -128,11 +135,11 @@ body { overflow-x: clip; }
   padding: 22px 28px; border-bottom: 1px solid rgba(247,244,238,0.08); flex-shrink: 0;
 }
 .nav-drawer-head img { height: 22px; width: auto; opacity: 0.92; }
-.nav-drawer-close { background: none; border: none; color: #8a8377; font-size: 28px; line-height: 1; cursor: pointer; padding: 2px 6px; transition: color 0.2s; }
+.nav-drawer-close { background: none; border: none; color: #8a8377; font-size: 28px; line-height: 1; cursor: pointer; padding: 2px 6px; transition:color 0.2s var(--ease); }
 .nav-drawer-close:hover { color: var(--warm-white); }
 .nav-drawer-list { display: flex; flex-direction: column; padding: 6px 28px 28px; }
 .nav-drawer a, .nav-drawer span.drawer-dead {
-  font-family: 'Cormorant Garamond', serif; font-size: 22px; color: #8a8377; text-decoration: none; transition: color 0.2s;
+  font-family: 'Cormorant Garamond', serif; font-size: 22px; color: #8a8377; text-decoration: none; transition:color 0.2s var(--ease);
   padding: 16px 0; border-bottom: 1px solid rgba(247,244,238,0.08);
 }
 .nav-drawer a:hover, .nav-drawer a.active { color: var(--warm-white); }
@@ -176,7 +183,7 @@ body { overflow-x: clip; }
 .divider-mark   { width: 24px; height: 24px; object-fit: contain; flex-shrink: 0; }
 
 /* ── REVEAL ── */
-.reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal { opacity: 0; transform: translateY(20px); transition:opacity 0.7s var(--ease), transform 0.7s var(--ease); }
 .reveal.show { opacity: 1; transform: translateY(0); }
 .reveal-delay-1 { transition-delay: 0.1s; }
 .reveal-delay-2 { transition-delay: 0.2s; }
@@ -186,19 +193,19 @@ body { overflow-x: clip; }
 .btn-primary {
   background: var(--warm-white); color: var(--charcoal);
   padding: 15px 36px; border-radius: 40px; text-decoration: none;
-  font-size:var(--t-meta); letter-spacing: 0.03em; transition: opacity 0.2s; display: inline-block;
+  font-size:var(--t-meta); letter-spacing: 0.03em; transition:opacity 0.2s var(--ease); display: inline-block;
 }
 .btn-primary:hover { opacity: 0.88; }
 .btn-secondary {
   border: 1px solid rgba(247,244,238,0.3); color: var(--warm-white);
   padding: 15px 36px; border-radius: 40px; text-decoration: none;
-  font-size:var(--t-meta); letter-spacing: 0.03em; transition: border-color 0.2s; display: inline-block;
+  font-size:var(--t-meta); letter-spacing: 0.03em; transition:border-color 0.2s var(--ease); display: inline-block;
 }
 .btn-secondary:hover { border-color: rgba(247,244,238,0.7); }
 .btn-gold {
   background: var(--gold); color: #fff;
   padding: 15px 36px; border-radius: 40px; text-decoration: none;
-  font-size: 14px; letter-spacing: 0.03em; transition: opacity 0.2s; display: inline-block;
+  font-size: 14px; letter-spacing: 0.03em; transition:opacity 0.2s var(--ease); display: inline-block;
 }
 .btn-gold:hover { opacity: 0.88; }
 
@@ -208,7 +215,7 @@ body { overflow-x: clip; }
   background: rgba(12,10,8,0.82); backdrop-filter: blur(14px);
   display: flex; align-items: center; justify-content: center;
   opacity: 0; pointer-events: none;
-  transition: opacity 0.3s ease;
+  transition:opacity 0.3s var(--ease);
 }
 .phone-modal-overlay.open { opacity: 1; pointer-events: auto; }
 .phone-modal {
@@ -219,14 +226,14 @@ body { overflow-x: clip; }
   padding: 48px 44px;
   position: relative;
   transform: translateY(16px) scale(0.97);
-  transition: transform 0.3s ease;
+  transition:transform 0.3s var(--ease);
 }
 .phone-modal-overlay.open .phone-modal { transform: translateY(0) scale(1); }
 .phone-modal-close {
   position: absolute; top: 18px; right: 22px;
   background: none; border: none; color: #5f5a52;
   font-size: 22px; cursor: pointer; line-height: 1;
-  transition: color 0.2s;
+  transition:color 0.2s var(--ease);
 }
 .phone-modal-close:hover { color: var(--warm-white); }
 .phone-modal-icon { font-size: 40px; margin-bottom: 16px; line-height: 1; }
@@ -263,7 +270,7 @@ body { overflow-x: clip; }
 .footer-tagline strong { display: block; color: #b8b1a4; font-weight: 500; }
 .footer-tagline em { font-style: italic; }
 .footer-col-label { font-size:var(--t-nano); letter-spacing: 0.12em; text-transform: uppercase; color: #8f887d; margin-bottom: 18px; }
-.footer-col a { display: block; font-size:var(--t-note); color: #8a8377; text-decoration: none; margin-bottom: 11px; transition: color 0.2s; }
+.footer-col a { display: block; font-size:var(--t-note); color: #8a8377; text-decoration: none; margin-bottom: 11px; transition:color 0.2s var(--ease); }
 .footer-col a:hover { color: var(--warm-white); }
 .footer-bottom { display: flex; justify-content: space-between; padding-top: 4vh; font-size:var(--t-small); color: #8a8377; }
 @media(max-width:768px) {
@@ -316,7 +323,7 @@ body { overflow-x: clip; }
 .hero-title-scroll-cue {
   position: absolute; bottom: 8vh; left: 50%; transform: translateX(-50%);
   font-size:var(--t-micro); letter-spacing: 0.12em; text-transform: uppercase;
-  color: rgba(247,244,238,0.55); opacity: 0; transition: opacity 0.8s ease;
+  color: rgba(247,244,238,0.55); opacity: 0; transition:opacity 0.8s var(--ease);
 }
 .hero-title-scroll-cue.show { opacity: 1; }
 
@@ -444,14 +451,14 @@ body { overflow-x: clip; }
   padding: 32px 20px; background: rgba(43,38,35,0.4);
   border: 1px solid rgba(247,244,238,0.08);
   opacity: 0; transform: translateY(24px);
-  transition: opacity 0.7s ease, transform 0.7s ease, box-shadow 0.4s ease;
+  transition:opacity 0.7s var(--ease), transform 0.7s var(--ease), box-shadow 0.4s var(--ease);
   cursor: default; position: relative; overflow: hidden;
 }
 @media(min-width:769px){ .how-card { padding: 32px 20px 40px; } }
 .how-card::after {
   content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
   background: linear-gradient(to right, transparent, rgba(196,138,90,0.3), transparent);
-  opacity: 0; transition: opacity 0.4s;
+  opacity: 0; transition:opacity 0.4s var(--ease);
 }
 .how-card:hover::after { opacity: 1; }
 .how-card:hover { box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
@@ -505,7 +512,7 @@ body { overflow-x: clip; }
 .how-phone-wrap {
   width: 168px;
   margin: 0 auto 30px;
-  transition: transform 0.55s var(--ease);
+  transition:transform 0.55s var(--ease);
 }
 @media(min-width:769px){ .how-phone-wrap { width: min(200px, 58%); } }
 .how-card:hover .how-phone-wrap { transform: translateY(-7px); }
@@ -603,7 +610,7 @@ body { overflow-x: clip; }
   position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
   width: 160%; height: 78%; border-radius: 50%; pointer-events: none;
   background: radial-gradient(ellipse, var(--edy-glow, rgba(196,138,90,0.14)) 0%, transparent 70%);
-  transition: background 0.6s var(--ease);
+  transition:background 0.6s var(--ease);
 }
 
 /* ── right: the day filling in ── */
@@ -822,7 +829,7 @@ body { overflow-x: clip; }
    reached. The r attributes on the circles remain as the fallback. */
 .wp-circle {
   r: 6.5; fill: rgba(247,244,238,0.16); stroke: rgba(233,192,138,0.55); stroke-width: 1.5;
-  transition: fill 0.45s var(--ease), stroke 0.45s var(--ease), r 0.45s var(--ease), filter 0.45s var(--ease);
+  transition:fill 0.45s var(--ease), stroke 0.45s var(--ease), r 0.45s var(--ease), filter 0.45s var(--ease);
 }
 .wp-circle-reached {
   r: 7; fill: rgba(233,192,138,0.9); stroke: #F3D9AE; stroke-width: 1.5;
@@ -841,7 +848,7 @@ body { overflow-x: clip; }
    the plate happens to be bright. */
 .wp-label-city {
   font-size:10px; letter-spacing: 0.08em; fill: rgba(247,244,238,0.52);
-  text-transform: uppercase; transition: fill 0.4s var(--ease);
+  text-transform: uppercase; transition:fill 0.4s var(--ease);
   paint-order: stroke; stroke: rgba(12,10,9,0.55); stroke-width: 2.5px; stroke-linejoin: round;
 }
 .wp-label-city.wp-label-active { fill: #FFFDF8; }
@@ -862,7 +869,7 @@ body { overflow-x: clip; }
 .wp-info-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
 .wp-info-tag { font-size:var(--t-nano); letter-spacing: 0.1em; color: #5f5a52; text-transform: uppercase; }
 .wp-info-desc { font-size:var(--t-note); color: #8a8377; line-height: 1.55; }
-.wp-info-bar { height: 1px; background: var(--gold); margin-top: 14px; transform: scaleX(0); transform-origin: left; transition: transform 0.6s ease 0.15s; }
+.wp-info-bar { height: 1px; background: var(--gold); margin-top: 14px; transform: scaleX(0); transform-origin: left; transition:transform 0.6s var(--ease) 0.15s; }
 .wp-info-bar.animate { transform: scaleX(1); }
 
 .quest-prog-indicator {
@@ -910,7 +917,7 @@ body { overflow-x: clip; }
   border: 1px solid rgba(247,244,238,0.07);
   opacity: 0;
   transform: perspective(800px) rotateX(38deg) translateY(60px) translateZ(-60px);
-  transition: opacity 0.7s ease, transform 0.7s var(--ease-soft), box-shadow 0.3s ease;
+  transition:opacity 0.7s var(--ease), transform 0.7s var(--ease-soft), box-shadow 0.3s var(--ease);
 }
 .booster-card.show { opacity: 1; transform: perspective(800px) rotateX(0deg) translateY(0) translateZ(0); }
 .booster-card:hover { box-shadow: 0 20px 60px rgba(0,0,0,0.5); transform: perspective(800px) rotateX(-2deg) translateY(-4px) translateZ(8px); border-color: rgba(247,244,238,0.14); }
@@ -1013,14 +1020,14 @@ body { overflow-x: clip; }
   box-shadow: 0 24px 60px -26px rgba(0,0,0,0.9);
   position: relative; overflow: hidden;
   opacity: 0; transform: translateY(20px);
-  transition: opacity 0.6s ease, transform 0.6s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+  transition:opacity 0.6s var(--ease), transform 0.6s var(--ease), border-color 0.4s var(--ease), box-shadow 0.4s var(--ease);
 }
 .quest-card.show { opacity: 1; transform: translateY(0); }
 /* the existing hover animation — unchanged */
 .quest-card::before {
   content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
   background: var(--gold); transform: scaleX(0); transform-origin: left;
-  transition: transform 0.4s ease; z-index: 3;
+  transition:transform 0.4s var(--ease); z-index: 3;
 }
 .quest-card:hover::before { transform: scaleX(1); }
 .quest-card:hover { border-color: rgba(247,244,238,0.18); }
@@ -1038,10 +1045,10 @@ body { overflow-x: clip; }
   display:flex; align-items:center; justify-content:center;
   border:1px solid rgba(196,138,90,0.26);
   background:radial-gradient(circle at 38% 30%, rgba(62,52,42,0.85), rgba(20,17,14,0.92));
-  transition:border-color 0.4s ease; }
+  transition:border-color 0.4s var(--ease); }
 .qc-icon svg{ width:26px; height:26px; display:block; fill:none;
   stroke:rgba(216,164,116,0.82); stroke-width:1.3;
-  stroke-linecap:round; stroke-linejoin:round; transition:stroke 0.4s ease; }
+  stroke-linecap:round; stroke-linejoin:round; transition:stroke 0.4s var(--ease); }
 .quest-card.active-quest .qc-icon{ border-color:rgba(232,195,156,0.55); }
 .quest-card.active-quest .qc-icon svg{ stroke:#f2cba4; }
 
@@ -1090,7 +1097,7 @@ body { overflow-x: clip; }
   background: var(--dark-surface); border: 1px solid rgba(247,244,238,0.07);
   padding: 56px 52px; opacity: 0;
   transform: perspective(700px) rotateX(22deg) translateY(40px);
-  transition: opacity 0.7s ease, transform 0.7s var(--ease-soft);
+  transition:opacity 0.7s var(--ease), transform 0.7s var(--ease-soft);
   position: relative; overflow: hidden;
 }
 .learn-track-card::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at 0% 0%, rgba(196,138,90,0.05) 0%, transparent 60%); pointer-events:none; }
@@ -1125,7 +1132,7 @@ body { overflow-x: clip; }
    SECTION 7 — REWARDS
 ══════════════════════════════════════════════ */
 .reward-pipeline { display:flex; align-items:stretch; max-width:1200px; margin:8vh auto 10vh; gap:3px; }
-.reward-pipe-node { flex:1; background:var(--dark-surface); border:1px solid rgba(247,244,238,0.07); padding:44px 40px; opacity:0; transform:perspective(600px) rotateX(20deg) translateY(30px); transition:opacity 0.65s ease, transform 0.65s var(--ease-soft); }
+.reward-pipe-node { flex:1; background:var(--dark-surface); border:1px solid rgba(247,244,238,0.07); padding:44px 40px; opacity:0; transform:perspective(600px) rotateX(20deg) translateY(30px); transition:opacity 0.65s var(--ease), transform 0.65s var(--ease-soft); }
 .reward-pipe-node.show { opacity:1; transform:perspective(600px) rotateX(0deg) translateY(0); }
 .reward-pipe-icon { width:40px; height:40px; margin-bottom:24px; display:block; }
 .reward-pipe-label { font-size:var(--t-nano); letter-spacing:0.18em; text-transform:uppercase; color:var(--gold); margin-bottom:10px; }
@@ -1133,7 +1140,7 @@ body { overflow-x: clip; }
 .reward-pipe-desc { font-size:var(--t-meta); color:#7a736a; line-height:1.72; }
 .reward-pipe-arrow { display:flex; align-items:center; padding:0 4px; flex-shrink:0; color:rgba(196,138,90,0.4); font-size:22px; align-self:center; }
 .reward-uses { display:grid; grid-template-columns:repeat(3,1fr); gap:3px; max-width:1200px; margin:0 auto; }
-.reward-use { padding:44px 40px; background:var(--dark-surface); border:1px solid rgba(247,244,238,0.07); opacity:0; transform:perspective(700px) rotateX(22deg) translateY(40px); transition:opacity 0.7s ease, transform 0.7s var(--ease-soft); position:relative; overflow:hidden; }
+.reward-use { padding:44px 40px; background:var(--dark-surface); border:1px solid rgba(247,244,238,0.07); opacity:0; transform:perspective(700px) rotateX(22deg) translateY(40px); transition:opacity 0.7s var(--ease), transform 0.7s var(--ease-soft); position:relative; overflow:hidden; }
 .reward-use::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at 0% 0%, rgba(196,138,90,0.04) 0%, transparent 55%); pointer-events:none; }
 .reward-use.show { opacity:1; transform:perspective(700px) rotateX(0deg) translateY(0); }
 .reward-use:hover { border-color:rgba(247,244,238,0.14); }
@@ -1204,7 +1211,7 @@ body { overflow-x: clip; }
 
 .market-scene-content {
   position: relative; z-index: 2; padding: 0 8% 0 8%; max-width: 620px;
-  transform: translateY(16px); transition: transform 0.15s linear;
+  transform: translateY(16px); transition:transform 0.15s linear;
 }
 .market-eyebrow {
   font-size:var(--t-micro); letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold);
@@ -1231,7 +1238,7 @@ body { overflow-x: clip; }
 .market-loop-line {
   position: absolute; left: 8%; bottom: 6%; z-index: 3;
   font-size:var(--t-nano); letter-spacing: 0.16em; text-transform: uppercase; color: rgba(247,244,238,0.35);
-  opacity: 0; transition: opacity 0.6s ease;
+  opacity: 0; transition:opacity 0.6s var(--ease);
 }
 .market-loop-line.show { opacity: 1; }
 
@@ -1241,7 +1248,11 @@ body { overflow-x: clip; }
 }
 .market-nav-item {
   font-size:var(--t-nano); letter-spacing: 0.16em; color: rgba(247,244,238,0.3);
-  transition: color 0.4s ease, letter-spacing 0.4s ease;
+  /* colour only. letter-spacing was also in this list and animates LAYOUT —
+     a reflow of the nav on every frame of the transition — while .active
+     changes nothing but the colour, so it was driving no visual result at
+     all. Do not put a layout property back in here. */
+  transition:color 0.4s var(--ease);
 }
 .market-nav-item.active { color: var(--gold); }
 
@@ -1255,7 +1266,7 @@ body { overflow-x: clip; }
   .market-nav { right: 3%; gap: 12px; }
   .market-nav-item {
     font-size:var(--t-nano); width: 14px; height: 1px; background: rgba(247,244,238,0.28);
-    transition: background 0.4s ease, width 0.4s ease;
+    transition:background 0.4s var(--ease), width 0.4s var(--ease);
   }
   .market-nav-item.active { background: var(--gold); width: 24px; }
   .market-loop-line { left: 7%; font-size:var(--t-nano); max-width: 70%; }
@@ -1263,7 +1274,7 @@ body { overflow-x: clip; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .market-scene-bg { transition: none !important; }
+  .market-scene-bg { transition:none !important; }
 }
 
 /* ══════════════════════════════════════════════
@@ -1321,7 +1332,7 @@ body { overflow-x: clip; }
   background: var(--dark-surface); border: 1px solid rgba(247,244,238,0.07);
   padding: 40px 36px; display: flex; flex-direction: column; align-items: flex-start;
   opacity: 0; transform: translateY(20px);
-  transition: opacity 0.6s ease, transform 0.6s ease, border-color 0.3s;
+  transition:opacity 0.6s var(--ease), transform 0.6s var(--ease), border-color 0.3s var(--ease);
 }
 .int-card.show { opacity: 1; transform: translateY(0); }
 .int-card:hover { border-color: rgba(247,244,238,0.18); }
@@ -1709,7 +1720,7 @@ body { overflow-x: clip; }
   .footer-toggle button {
     background: none; border: none; color: #9a9285; font-size:var(--t-small);
     padding: 6px 14px; border-radius: 16px; cursor: pointer;
-    transition: background 0.2s var(--ease), border-color 0.2s var(--ease), color 0.2s var(--ease), transform 0.2s var(--ease); letter-spacing: 0.04em; text-transform: uppercase;
+    transition:background 0.2s var(--ease), border-color 0.2s var(--ease), color 0.2s var(--ease), transform 0.2s var(--ease); letter-spacing: 0.04em; text-transform: uppercase;
   }
   .footer-toggle button.active {
     background: rgba(247,244,238,0.14); color: var(--warm-white);
@@ -1767,6 +1778,7 @@ body { overflow-x: clip; }
 <body>
 
 <!-- NAV -->
+<div class="scroll-prog" id="scrollProg"></div>
 <nav class="nav">
   <button class="nav-burger" id="navBurger" aria-label="Menu" aria-expanded="false" aria-controls="navDrawer">
     <span class="nav-burger-bars"><i></i><i></i><i></i></span>
@@ -1806,7 +1818,7 @@ body { overflow-x: clip; }
     <!-- "Meet the App" title card -->
     <div class="hero-title-card" id="heroTitleCard">
       <div class="hero-title-text" id="heroTitleText"></div>
-      <div class="hero-title-scroll-cue" id="heroTitleScrollCue">Scroll to continue ↓</div>
+      <div class="hero-title-scroll-cue" id="heroTitleScrollCue" aria-hidden="true">↓</div>
     </div>
 
     <!-- The three screens are the 2026 design set, exported from the MVP
@@ -1908,7 +1920,7 @@ body { overflow-x: clip; }
   <div class="quest-map-sticky" id="questMapSticky">
 
     <div class="quest-hd-wrap">
-      <div class="quest-hd-kicker">LAUNCH JOURNEY · SCROLL</div>
+      <div class="quest-hd-kicker">LAUNCH JOURNEY</div>
       <div class="quest-hd-title">Bangkok <em>to</em> Phuket</div>
       <div class="quest-hd-desc">Six waypoints. 900km of Thai peninsula. Every step moves the dot forward.</div>
     </div>
@@ -2034,12 +2046,12 @@ body { overflow-x: clip; }
           <img class="edy-shot" data-s="2" src="images/app-sleep.webp"        width="758" height="1600" alt="The Rest screen: seven hours twenty of eight, and the distance boost it buys tomorrow." />
           <img class="edy-shot" data-s="3" src="images/app-breathing.webp"    width="758" height="1600" alt="The Breathe screen: two minutes fourteen remaining, opening a rest stop at Hua Hin." />
           <img class="edy-shot" data-s="4" src="images/app-hydration.webp"    width="758" height="1600" alt="The Hydrate screen: one point four of two litres, two more days opening the coastal route." />
-          <img class="edy-shot" data-s="5" src="images/app-quests.webp"       width="758" height="1600" alt="Today's quests, where Nourish is counted: two meals logged, unlocking local food experiences." />
+          <img class="edy-shot" data-s="5" src="images/app-quests.webp"       width="758" height="1600" alt="Today's quests. Beneath them, ALSO COUNTING TODAY: Nourish, two meals logged, unlocking local food experiences." />
           <img class="edy-shot" data-s="6" src="images/app-lesson.webp"       width="758" height="1600" alt="A lesson in progress, the Learn habit: one idea at a time, building toward the journey." />
         </div>
 
         <div class="edy-panel">
-          <div class="edy-cue">Six habits, six screens · scroll</div>
+          <div class="edy-cue">One day, habit by habit</div>
           <!-- Static. The header used to track the phone and name the time of
                day; now the phone shows the habit the row beside it names, so a
                changing header would only repeat the row. These two lines are
@@ -2072,7 +2084,7 @@ body { overflow-x: clip; }
           </li>
           <li class="edy-row" style="--edy-c:#A8B7A2;">
             <span class="edy-row-i"><svg viewBox="0 0 24 24" fill="none" stroke="#A8B7A2" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 4.5c0 8.6-5.9 14-13.5 14H4.5V17C4.5 9.3 10 4.5 17.5 4.5H20z"/><path d="M4.5 20.5C7.7 14.2 11.7 10.3 16.5 7.8"/></svg></span>
-            <span><span class="edy-row-n">Nourish</span><span class="edy-row-t">Unlocks local food experiences</span></span>
+            <span><span class="edy-row-n">Nourish</span><span class="edy-row-t">Counted with the day &mdash; two meals, no tracker needed</span></span>
             <i class="edy-row-r"></i>
           </li>
           <li class="edy-row" style="--edy-c:#A98CB8;">
@@ -2899,7 +2911,7 @@ function cine(el, o){
       card.style.transform = `perspective(900px) rotateX(${rX}deg) rotateY(${rY}deg) translateZ(6px)`;
     });
     card.addEventListener('mouseleave', () => {
-      card.style.transition = 'transform 0.6s ease, box-shadow 0.4s ease, opacity 0.7s ease';
+      card.style.transition = 'transform 0.6s var(--ease), box-shadow 0.4s var(--ease), opacity 0.7s var(--ease)';
       card.style.transform  = '';
       setTimeout(() => { card.style.transition = ''; }, 600);
     });
@@ -3272,6 +3284,7 @@ function cine(el, o){
 ──────────────────────────────────────────── */
 (function(){
   const nav = document.querySelector('.nav');
+  const prog = document.getElementById('scrollProg');
   if (!nav) return;
   let lastY = 0, ticking = false;
   window.addEventListener('scroll', () => {
@@ -3280,6 +3293,10 @@ function cine(el, o){
         const y = window.scrollY;
         if (y > lastY && y > 80) nav.classList.add('nav-hidden');
         else nav.classList.remove('nav-hidden');
+        if (prog) {
+          const max = document.documentElement.scrollHeight - window.innerHeight;
+          prog.style.width = (max > 0 ? (y / max) * 100 : 0) + '%';
+        }
         lastY = y; ticking = false;
       });
       ticking = true;
