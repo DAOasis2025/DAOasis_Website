@@ -62,7 +62,13 @@ DAO.cine = (function(){
     /* Touch already carries its own momentum, and a phone is held closer
        to the eye — the same durations that read as cinematic on a desktop
        read as lag on a handset. */
-    mobileScale: 0.70,
+    /* Was 0.70 - every duration on a handset ran 30% FASTER than desktop.
+       The original reasoning (touch carries its own momentum, a phone is
+       held closer) is not wrong, but mobile is this product's MVP and the
+       brief is that it should feel the most considered surface, not the
+       most hurried. 0.9 keeps a slight concession to touch without making
+       the phone the fastest place the story is told. */
+    mobileScale: 0.9,
     mobileAt: 900,
 
     /* A jump is never allowed to take longer than step * maxSpan, so a
@@ -75,7 +81,30 @@ DAO.cine = (function(){
        85% of a small gap in ten frames, so short moves — the ones the cap
        never touches — arrived almost instantly and read as snappy against
        the long ones. 0.11 keeps the same shape and takes the edge off. */
-    follow: 0.11
+    /* THIS, NOT `step`, IS WHAT MAKES THE SITE FEEL FAST.
+
+       `step` is per BEAT (span = 1/N below), and the speed cap it drives
+       only binds on a flick. During ordinary reading the gap between scroll
+       and scene is small, the cap never engages, and this damping constant
+       is the only thing setting the pace. At 0.11 a gap closes 90% in about
+       twenty frames - roughly 330ms - which is a snap, not a settle. Every
+       previous attempt to slow the site down adjusted heights and durations
+       and left this alone, which is why none of them moved the needle much.
+
+       0.05 settles in ~750ms. Paired with the plateau, near a stop there is
+       nothing left to chase, so the longer tail costs no responsiveness
+       where it would be felt. */
+    /* 0.06, not 0.05, BECAUSE js/smooth.js NOW EXISTS. 0.05 was measured
+       and chosen when native scroll was instant and this was the only
+       damping in the chain: it put one wheel notch at ~1.7s to rest. The
+       scroll damper then added ~350ms of its own glide in front of it and
+       the same constant measured 2.06s end to end, which is past the point
+       where the scene visibly trails the page. 0.06 puts it back to the
+       ~1.7s that was actually signed off.
+
+       THE TWO ARE A PAIR. If js/smooth.js is ever removed, this wants to go
+       back to ~0.05 or the site returns to feeling snappy. */
+    follow: 0.06
   };
 
   var mqReduce = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -267,8 +296,12 @@ DAO.cine = (function(){
   Track.prototype.tick = function(now, dt){
     if(!this.near) return;
     /* Bidirectional, straight off true scroll position. Scrolling back up
-       unwinds a section exactly the way it played. */
-    var raw = this.rawV;
+       unwinds a section exactly the way it played.
+
+       `padded` is applied HERE, once, so every consumer — sticky, guided,
+       get(), pos(), and the o.off passthrough below — sees the same value
+       and the settle cannot be bypassed by one of them. */
+    var raw = padded(this.rawV);
 
     /* Explicitly opted out (o.off): the value IS the scroll position.
        That is a per-section decision made in the page, and it stands.
@@ -343,17 +376,51 @@ DAO.cine = (function(){
     this.emit(this.value);
   };
 
-  /* The magnet curve. Within each segment between two stops, scroll is
-     remapped so that motion concentrates in the middle of the segment:
-     over the middle half of a segment the value covers ~84% of the
-     transition, and near a stop a large scroll produces a small change.
-     That is what makes a state read as a state without freezing.
-     Written per segment, so unevenly spaced stops (the quest map) keep
-     their proportions. */
-  var MAGNET = 2.6;
+  /* THE CURVE: A REAL PLATEAU, NOT A SLOW DRIFT.
+
+     This used to be a pure power curve — motion concentrated in the middle
+     of a segment, slow near each stop. It never actually stopped, and that
+     is what was reported as "no pause before or after": measured, 14.5% of
+     a segment's scroll produced the first 2% of the move. A drift of a few
+     per cent is not a held frame; the eye reads it as still-moving.
+
+     Now each segment is HOLD / move / HOLD. The first and last 15% are
+     exactly 0 and exactly 1 — nothing changes, at all, while the reader
+     keeps scrolling — and the middle 70% is a plain smoothstep. So 30% of
+     every segment is a genuine pause and a state lands and SITS there.
+
+     The ramp is smoothstep and NOT the old 2.6 power. Stacking a plateau
+     on top of a curve that is already near-still at its ends would give a
+     hold of roughly half the segment and a lurch through the middle. With
+     the plateau doing the holding, the ramp only has to be smooth.
+
+     A plateau was tried once before, on 1 September, and rejected because
+     it "put web3 participation back to 50% static". That was the right
+     call THEN: the sections were 288-690px per beat, so a plateau spent
+     scroll the transitions could not spare. It only works paired with
+     enough height, which is why both landed together — see the pin-height
+     table in CLAUDE.md. Do not reintroduce one without the other. */
+  var HOLD = 0.15;
   function magnet(u){
-    return u < 0.5 ? 0.5 * Math.pow(2 * u, MAGNET)
-                   : 1 - 0.5 * Math.pow(2 * (1 - u), MAGNET);
+    if(u <= HOLD) return 0;
+    if(u >= 1 - HOLD) return 1;
+    var t = (u - HOLD) / (1 - 2 * HOLD);
+    return t * t * (3 - 2 * t);
+  }
+
+  /* THE SETTLE PAD. Stops sit at 0 and 1, so every pinned section used to
+     be already moving on the frame it pinned and still moving on the frame
+     it released — the reader never saw the opening or closing state at
+     rest. The first and last 8% of every track now hold at the endpoint.
+     Applied to BOTH modes: a guided hero settles the same way a sticky
+     list does. This is what index's three-plate ecosystem section was
+     missing — at 1,020px per beat it was never short of distance, it just
+     started animating the instant it arrived. */
+  var PAD = 0.08;
+  function padded(v){
+    if(v <= PAD) return 0;
+    if(v >= 1 - PAD) return 1;
+    return (v - PAD) / (1 - 2 * PAD);
   }
   Track.prototype.snap = function(raw){
     var st = this.stops, i;
