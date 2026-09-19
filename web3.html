@@ -103,7 +103,7 @@ img { max-width: 100%; }
   padding: 18px 5%;
   background: rgba(23,20,18,0.88); backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(247,244,238,0.07);
-  transition: transform 0.35s ease;
+  transition:transform 0.35s var(--ease);
 }
 .nav.nav-hidden { transform: translateY(-100%); }
 /* absolutely centred, not a grid 1fr split — a grid track stops being
@@ -114,13 +114,13 @@ img { max-width: 100%; }
 .nav-cta {
   background: var(--warm-white); color: var(--charcoal); font-size:var(--t-note);
   padding: 10px 24px; border-radius: 24px; text-decoration: none;
-  letter-spacing: 0.03em; transition: opacity 0.2s; white-space: nowrap;
+  letter-spacing: 0.03em; transition:opacity 0.2s var(--ease); white-space: nowrap;
 }
 .nav-cta:hover { opacity: 0.88; }
 @media(max-width:768px){.nav>.nav-cta{display:none;}}
 .nav-burger { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 4px; background: none; border: none; }
 .nav-burger-bars { display: flex; flex-direction: column; gap: 5px; }
-.nav-burger-bars i { display: block; width: 20px; height: 1.5px; background: var(--warm-white); transition: transform 0.3s var(--ease), opacity 0.3s var(--ease); font-style: normal; }
+.nav-burger-bars i { display: block; width: 20px; height: 1.5px; background: var(--warm-white); transition:transform 0.3s var(--ease), opacity 0.3s var(--ease); font-style: normal; }
 .nav-burger.open .nav-burger-bars i:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
 .nav-burger.open .nav-burger-bars i:nth-child(2) { opacity: 0; }
 .nav-burger.open .nav-burger-bars i:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
@@ -137,14 +137,14 @@ img { max-width: 100%; }
 }
 .nav-drawer-backdrop {
   position: fixed; inset: 0; z-index: 88; background: rgba(9,8,7,0.55);
-  opacity: 0; pointer-events: none; transition: opacity 0.4s;
+  opacity: 0; pointer-events: none; transition:opacity 0.4s var(--ease);
 }
 .nav-drawer-backdrop.open { opacity: 1; pointer-events: auto; }
 .nav-drawer {
   position: fixed; top: 0; left: 0; bottom: 0; z-index: 89; width: min(420px,88vw);
   background: rgba(23,20,18,0.98); backdrop-filter: blur(16px);
   display: flex; flex-direction: column;
-  transform: translateX(-100%); transition: transform 0.4s var(--ease);
+  transform: translateX(-100%); transition:transform 0.4s var(--ease);
   border-right: 1px solid rgba(247,244,238,0.08); overflow-y: auto;
 }
 .nav-drawer.open { transform: translateX(0); }
@@ -153,11 +153,11 @@ img { max-width: 100%; }
   padding: 22px 28px; border-bottom: 1px solid rgba(247,244,238,0.08); flex-shrink: 0;
 }
 .nav-drawer-head img { height: 22px; width: auto; opacity: 0.92; }
-.nav-drawer-close { background: none; border: none; color: #8a8377; font-size: 28px; line-height: 1; cursor: pointer; padding: 2px 6px; transition: color 0.2s; }
+.nav-drawer-close { background: none; border: none; color: #8a8377; font-size: 28px; line-height: 1; cursor: pointer; padding: 2px 6px; transition:color 0.2s var(--ease); }
 .nav-drawer-close:hover { color: var(--warm-white); }
 .nav-drawer-list { display: flex; flex-direction: column; padding: 6px 28px 28px; }
 .nav-drawer a, .nav-drawer span.drawer-dead {
-  font-family: 'Cormorant Garamond', serif; font-size: 22px; color: #8a8377; text-decoration: none; transition: color 0.2s;
+  font-family: 'Cormorant Garamond', serif; font-size: 22px; color: #8a8377; text-decoration: none; transition:color 0.2s var(--ease);
   padding: 16px 0; border-bottom: 1px solid rgba(247,244,238,0.08);
 }
 .nav-drawer a:hover, .nav-drawer a.active { color: var(--warm-white); }
@@ -185,11 +185,11 @@ img { max-width: 100%; }
 .divider.dark  .divider-line { background: rgba(247,244,238,0.16); }
 .divider.light .divider-line { background: rgba(43,38,35,0.2); }
 .divider.green .divider-line { background: rgba(247,244,238,0.22); }
-.divider .divider-line { transform: scaleX(0); transition: transform 1.4s var(--ease); }
+.divider .divider-line { transform: scaleX(0); transition:transform 1.4s var(--ease); }
 .divider.shown .divider-line { transform: scaleX(1); }
 .divider .divider-line:first-child { transform-origin: right; }
 .divider .divider-line:last-child  { transform-origin: left; }
-.divider .divider-mark { opacity: 0; transition: opacity 0.9s ease; }
+.divider .divider-mark { opacity: 0; transition:opacity 0.9s var(--ease); }
 .divider.shown.dark  .divider-mark { opacity: 0.8; }
 .divider.shown.light .divider-mark { opacity: 0.55; }
 .divider.shown.green .divider-mark { opacity: 0.7; }
@@ -209,7 +209,7 @@ img { max-width: 100%; }
   font-size:var(--t-micro); letter-spacing: 0.22em; text-transform: uppercase;
   display: flex; align-items: center; gap: 14px; margin-bottom: 26px;
 }
-.eyebrow::before { content: ''; display: block; width: 0; height: 1px; background: currentColor; opacity: 0.55; transition: width 1.1s var(--ease) 0.15s; }
+.eyebrow::before { content: ''; display: block; width: 0; height: 1px; background: currentColor; opacity: 0.55; transition:width 1.1s var(--ease) 0.15s; }
 .rv.show .eyebrow::before, .eyebrow.show::before { width: 28px; }
 .eyebrow.centered { justify-content: center; }
 .on-light .eyebrow { color: #8a7f6d; }
@@ -248,7 +248,7 @@ img { max-width: 100%; }
 .ln > i {
   display: block; font-style: inherit; color: inherit;
   transform: translateY(108%);
-  transition: transform 1.15s var(--ease);
+  transition:transform 1.15s var(--ease);
 }
 .rv.show .ln > i { transform: translateY(0); }
 .rv .ln:nth-child(2) > i { transition-delay: 0.09s; }
@@ -257,7 +257,7 @@ img { max-width: 100%; }
 
 /* ── SOFT REVEAL ── */
 .rv { opacity: 1; }
-.rv .soft { opacity: 0; transform: translateY(20px); transition: opacity 1s var(--ease), transform 1s var(--ease); }
+.rv .soft { opacity: 0; transform: translateY(20px); transition:opacity 1s var(--ease), transform 1s var(--ease); }
 .rv.show .soft { opacity: 1; transform: translateY(0); }
 .rv.show .soft.d1 { transition-delay: 0.14s; }
 .rv.show .soft.d2 { transition-delay: 0.26s; }
@@ -272,7 +272,7 @@ img { max-width: 100%; }
 /* ── BUTTONS ── */
 .btn { display: inline-block; padding: 16px 36px; border-radius: 40px; text-decoration: none;
        font-size:var(--t-small); letter-spacing: 0.16em; text-transform: uppercase;
-       transition: opacity 0.3s, border-color 0.3s, background 0.3s, color 0.3s; }
+       transition:opacity 0.3s var(--ease), border-color 0.3s var(--ease), background 0.3s var(--ease), color 0.3s var(--ease); }
 .btn-light { background: var(--warm-white); color: var(--charcoal); }
 .btn-light:hover { opacity: 0.86; }
 .btn-ghost { border: 1px solid rgba(247,244,238,0.3); color: var(--warm-white); }
@@ -351,7 +351,7 @@ img { max-width: 100%; }
 .hero-cue {
   position: absolute; bottom: 7vh; left: 50%; transform: translateX(-50%);
   font-size:var(--t-nano); letter-spacing: 0.28em; text-transform: uppercase;
-  color: rgba(247,244,238,0.42); opacity: 0; transition: opacity 1.2s ease 0.9s;
+  color: rgba(247,244,238,0.42); opacity: 0; transition:opacity 1.2s var(--ease) 0.9s;
 }
 .hero-title.lit .hero-cue { opacity: 1; }
 
@@ -359,7 +359,7 @@ img { max-width: 100%; }
   position: absolute; left: 50%; transform: translateX(-50%);
   bottom: 11vh; z-index: 12; text-align: center;
   font-size:var(--t-nano); letter-spacing: 0.28em; text-transform: uppercase;
-  color: rgba(247,244,238,0.5); opacity: 0; transition: opacity 0.9s ease;
+  color: rgba(247,244,238,0.5); opacity: 0; transition:opacity 0.9s var(--ease);
   pointer-events: none; text-shadow: 0 2px 18px rgba(0,0,0,0.95);
   /* left:50% leaves only half the stage to shrink-to-fit into, which
      wrapped this onto two lines on a phone */
@@ -475,7 +475,7 @@ img { max-width: 100%; }
 }
 .drc-k { font-family: 'Cormorant Garamond', serif; font-size: clamp(21px,2.1vw,30px); font-weight: 300; color: var(--warm-white); }
 .drc-marks { display: flex; align-items: flex-end; gap: 7px; height: 26px; }
-.drc-marks i { display: block; width: 1.5px; height: 24px; background: var(--gold); opacity: 0; transform: scaleY(0.25); transform-origin: bottom; transition: opacity 0.5s ease, transform 0.7s var(--ease); }
+.drc-marks i { display: block; width: 1.5px; height: 24px; background: var(--gold); opacity: 0; transform: scaleY(0.25); transform-origin: bottom; transition:opacity 0.5s var(--ease), transform 0.7s var(--ease); }
 .rv.show .drc-marks i { opacity: 0.9; transform: scaleY(1); }
 .rv.show .drc-marks i.faint { opacity: 0.3; }
 .drc-d { font-size:var(--t-note); line-height: 1.75; color: #8a8377; }
@@ -626,7 +626,7 @@ img { max-width: 100%; }
 /* 0.62 not 0.44 — at 0.44 over the sanctuary green these ~10px caps
    measured about 3.1:1, which is decorative rather than readable */
 .eco-sub { font-family: 'Frank Ruhl Libre', serif; font-size:10px; letter-spacing: 0.18em; fill: rgba(247,244,238,0.62); text-transform: uppercase; }
-.eco-g { opacity: 0; transition: opacity 0.9s var(--ease); }
+.eco-g { opacity: 0; transition:opacity 0.9s var(--ease); }
 .eco-stage.shown .eco-g { opacity: 1; }
 .eco-list { display: none; }
 .eco-foot { margin-top: 8vh; font-size:var(--t-meta); line-height: 1.9; color: rgba(247,244,238,0.7); max-width: 640px; }
@@ -691,8 +691,13 @@ img { max-width: 100%; }
 .sanct-inner { position: relative; z-index: 3; padding: 0 8% 14vh; max-width: 1360px; margin: 0 auto; width: 100%; }
 .sanct .display { max-width: 15ch; }
 .sanct-copy { margin-top: 32px; max-width: 520px; font-size:var(--t-body); line-height: 1.9; color: rgba(247,244,238,0.8); }
-.sanct-verbs { display: flex; flex-wrap: wrap; gap: 14px 40px; margin-top: 38px; }
+/* Middot separators set in the gap — see the .final-verbs note on
+   sanctuary.html. Column gap is 0 because the dot is the gap. */
+.sanct-verbs { display: flex; flex-wrap: wrap; gap: 14px 0; margin-top: 38px; }
 .sanct-verbs span { font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300; font-size: clamp(20px,2.3vw,32px); color: rgba(247,244,238,0.72); }
+/* Narrows with the viewport so the four words stay one line on a 320px
+   phone — see the .final-verbs note on sanctuary.html for the measurement. */
+.sanct-verbs span:not(:last-child)::after { content: '·'; display: inline-block; width: clamp(20px, 3.6vw, 40px); text-align: center; font-style: normal; color: rgba(196,138,90,0.7); }
 .sanct .btn-row { margin-top: 44px; }
 @media(max-width:900px){ .sanct { min-height: 92vh; } .sanct-inner { padding-bottom: 11vh; } }
 
@@ -789,18 +794,18 @@ img { max-width: 100%; }
   font-family: 'Cormorant Garamond', serif; font-weight: 300;
   font-size: clamp(21px,2.3vw,32px); color: var(--charcoal);
   padding: 30px 56px 30px 0; position: relative; line-height: 1.24;
-  transition: color 0.25s ease;
+  transition:color 0.25s var(--ease);
 }
 .faq-q:hover { color: #6b5133; }
 .faq-q::after,
 .faq-q::before {
   content: ''; position: absolute; right: 8px; top: 50%; background: var(--gold);
-  transition: transform 0.4s var(--ease), opacity 0.3s ease;
+  transition:transform 0.4s var(--ease), opacity 0.3s var(--ease);
 }
 .faq-q::before { width: 16px; height: 1px; margin-top: -0.5px; }
 .faq-q::after { width: 1px; height: 16px; margin-top: -8px; right: 15.5px; }
 .faq-item.open .faq-q::after { transform: rotate(90deg); opacity: 0; }
-.faq-a { overflow: hidden; max-height: 0; transition: max-height 0.55s var(--ease); }
+.faq-a { overflow: hidden; max-height: 0; transition:max-height 0.55s var(--ease); }
 .faq-a-inner { padding: 0 12% 34px 0; font-size:var(--t-body-s); line-height: 1.95; color: #5c554c; }
 .faq-a-inner p + p { margin-top: 16px; }
 .faq-foot { max-width: 900px; margin: 6vh auto 0; font-size:var(--t-note); line-height: 1.85; color: #8a7f6d; }
@@ -828,13 +833,13 @@ img { max-width: 100%; }
 .footer-tagline strong { display: block; color: #b8b1a4; font-weight: 500; }
 .footer-tagline em { font-style: italic; }
 .footer-col-label { font-size:var(--t-nano); letter-spacing: 0.12em; text-transform: uppercase; color: #8f887d; margin-bottom: 18px; }
-.footer-col a, .footer-col span { display: block; font-size:var(--t-note); color: #8a8377; text-decoration: none; margin-bottom: 11px; transition: color 0.2s; }
+.footer-col a, .footer-col span { display: block; font-size:var(--t-note); color: #8a8377; text-decoration: none; margin-bottom: 11px; transition:color 0.2s var(--ease); }
 .footer-col a:hover { color: var(--warm-white); }
 .footer-bottom { display: flex; justify-content: space-between; padding-top: 4vh; font-size:var(--t-small); color: #8a8377; }
 .footer-appearance { margin-top: 22px; }
 .footer-appearance-label { font-size:var(--t-nano); letter-spacing: 0.1em; text-transform: uppercase; color: #8f887d; margin-bottom: 8px; }
 .footer-toggle { display: inline-flex; background: rgba(247,244,238,0.08); border-radius: 20px; padding: 3px; }
-.footer-toggle button { background: none; border: none; color: #9a9285; font-size:var(--t-small); padding: 6px 14px; border-radius: 16px; cursor: pointer; transition: background 0.2s var(--ease), border-color 0.2s var(--ease), color 0.2s var(--ease), transform 0.2s var(--ease); letter-spacing: 0.04em; text-transform: uppercase; font-family: 'Frank Ruhl Libre', serif; }
+.footer-toggle button { background: none; border: none; color: #9a9285; font-size:var(--t-small); padding: 6px 14px; border-radius: 16px; cursor: pointer; transition:background 0.2s var(--ease), border-color 0.2s var(--ease), color 0.2s var(--ease), transform 0.2s var(--ease); letter-spacing: 0.04em; text-transform: uppercase; font-family: 'Frank Ruhl Libre', serif; }
 .footer-toggle button.active { background: rgba(247,244,238,0.14); color: var(--warm-white); }
 @media(max-width:768px) { .footer-top { grid-template-columns: 1fr 1fr; gap: 32px; } .footer-bottom { flex-direction: column; gap: 8px; } }
 
@@ -1349,7 +1354,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
       <span class="ln"><i>replace the real world.</i></span>
     </h2>
     <p class="sanct-copy soft d2">The Sanctuary is the optional physical expression of DAOasis — planned for Phuket in 2027, and somewhere a Journey can arrive rather than somewhere every member is expected to reach. The app carries the practice before and after it. The Web3 layer is the infrastructure underneath — participation, alignment and contribution, running the whole way through.</p>
-    <div class="sanct-verbs soft d3"><span>Rest.</span><span>Learn.</span><span>Earn.</span><span>Return.</span></div>
+    <div class="sanct-verbs soft d3"><span>Rest</span><span>Learn</span><span>Earn</span><span>Return</span></div>
     <div class="btn-row soft d3">
       <a class="btn btn-light" href="sanctuary.html">Explore the Sanctuary</a>
       <a class="btn btn-ghost" href="app.html">See the Companion App</a>
@@ -1563,7 +1568,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
       <a class="btn btn-light" href="index.html#waitlistSection">Join the Waitlist</a>
       <a class="btn btn-ghost" href="app.html">Explore the App</a>
     </div>
-    <div class="final-tag soft d3">Rest. Learn. Earn. Return.</div>
+    <div class="final-tag soft d3">Rest · Learn · Earn · Return</div>
   </div>
 </section>
 
@@ -1573,7 +1578,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
   <div class="footer-top">
     <div>
       <div class="footer-brand-logo"><img src="images/img-09-white.png" alt="DAOasis mark" /><span>DAOasis</span></div>
-      <div class="footer-tagline"><strong>Wellness meets Web3.</strong><em>Rest. Learn. Earn. Return.</em></div>
+      <div class="footer-tagline"><strong>Wellness meets Web3.</strong><em>Rest · Learn · Earn · Return</em></div>
       <div class="footer-appearance">
         <div class="footer-appearance-label">Appearance</div>
         <div class="footer-toggle"><button id="ftLight">Light</button><button id="ftDark" class="active">Dark</button></div>

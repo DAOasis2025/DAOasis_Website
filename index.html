@@ -25,10 +25,10 @@
 </script>
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>DAOasis — Rest. Learn. Earn. Return.</title>
+<title>DAOasis — Rest · Learn · Earn · Return</title>
 <meta name="description" content="Traditional wellness apps create users. DAOasis creates stakeholders. An ongoing wellness ecosystem built around the Companion App, where daily habits become a Journey — Bangkok to Phuket is the launch Journey, and completing one opens the next." />
-<meta property="og:title" content="DAOasis — Rest. Learn. Earn. Return." />
-<meta property="og:description" content="An ongoing wellness ecosystem that turns consistent habits, real learning and long-term community into one Journey — with an optional real-world Sanctuary planned for Phuket in 2027. Rest. Learn. Earn. Return." />
+<meta property="og:title" content="DAOasis — Rest · Learn · Earn · Return" />
+<meta property="og:description" content="An ongoing wellness ecosystem that turns consistent habits, real learning and long-term community into one Journey — with an optional real-world Sanctuary planned for Phuket in 2027. Rest · Learn · Earn · Return" />
 <meta property="og:image" content="images/img-01.jpg" />
 <meta property="og:type" content="website" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -360,34 +360,33 @@
   .bg.breathe{animation:heroBgBreathe 48s ease-in-out infinite;}
 
   /* ═══════════════════════════════════════════
-     NAV — fixed for the whole page (matches sanctuary.html / app.html).
-     It previously lived inside the sticky hero, so it scrolled away and
-     left the remaining ~40 screens of the page with no navigation at all.
+     NAV — THE SITE-WIDE BAR. Byte for byte the one in app.html, and
+     therefore the one in sanctuary / about / investors / web3 / the trust
+     pages, which all already carried it. The home page was the last holdout
+     and the only page where the menu looked like a different site's:
+
+       · brand was the img-02 LOCKUP at height:24px, everywhere else the
+         img-09 mark at width:26px beside a Cormorant "DAOasis" wordmark.
+       · brand then grew to 34px ≤768 and 30px ≤420 — an inverse ladder no
+         other page had, so the logo got BIGGER as the screen got smaller.
+       · a second, five-tier mobile header (≤600 → ≤320) pushed the bar to
+         74-96px tall with a 98-113px logo. On app.html the bar is 18px of
+         padding and a 26px mark at every width.
+       · .nav-solid flipped the whole bar to ivory past 72vh of scroll. No
+         other page inverts, and app.html holds one dark translucent bar
+         over its own ivory sections.
+
+     Two things are deliberately NOT from app.html, because they are the
+     home page's own and nothing to do with how the bar is drawn:
+       · .nav-waiting, which holds the bar until the intro hands over.
+       · --nav-h, measured live below, because the hero photograph starts
+         at top:var(--nav-h). It now resolves to app.html's height.
   ═══════════════════════════════════════════ */
-  /* Two states. Over the hero it is a DISTINCT DARK BAR with its own ground,
-     not type floating on the photograph: the hero image now begins below it
-     (see .hero-plate's `top`), so the bar is the lid of the composition
-     rather than something bleeding into it. Once the reader is past the hero
-     the sections below are paper, so it resolves to ivory with a hairline
-     and the type flips dark.
-     It used to be transparent with only a soft top-down scrim, which is what
-     let the photograph run up under the menu. */
   .nav{position:fixed;top:0;left:0;right:0;z-index:90;
     display:flex;align-items:center;justify-content:space-between;padding:18px 5%;
-    background:var(--mineral);border-bottom:1px solid rgba(247,244,238,0.09);
-    /* backdrop-filter is deliberately NOT in this list. Transitioning it
-       re-blurs the full width of the bar on every frame for half a second,
-       each time the nav crosses into or out of nav-solid — and the blur
-       radius changing is not something the eye reads anyway. The blur still
-       applies; it simply arrives with the background rather than ramping. */
-    transition:transform 0.35s var(--ease), opacity 0.6s var(--ease),
-               background 0.5s var(--ease), border-color 0.5s var(--ease);}
-  .nav.nav-solid{background:rgba(250,249,245,0.90);backdrop-filter:blur(14px);
-    border-bottom-color:rgba(23,21,15,0.09);}
-  .nav.nav-solid .nav-brand img{filter:invert(1) brightness(0.18);}
-  .nav.nav-solid .nav-burger-bars i{background:var(--charcoal);}
-  .nav.nav-solid .nav-burger-label{color:var(--charcoal);}
-  .nav.nav-solid .nav-cta{background:var(--charcoal);color:var(--warm-white);}
+    background:rgba(23,20,18,0.88);backdrop-filter:blur(12px);
+    border-bottom:1px solid rgba(247,244,238,0.07);
+    transition:transform 0.35s var(--ease), opacity 0.6s var(--ease);}
   .nav.nav-hidden{transform:translateY(-100%);}
   /* held back until the intro sequence hands over */
   .nav.nav-waiting{opacity:0;pointer-events:none;}
@@ -395,18 +394,8 @@
      burger and CTA differ in width — a grid's 1fr tracks stop being equal
      once one side's content is wider than its proportional share. */
   .nav-brand{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;align-items:center;gap:10px;text-decoration:none;}
-  /* the homepage brand is the full DAOasis lockup, not the mark + wordmark pair */
-  /* no transition on height: it animates LAYOUT, and the only thing that ever
-   changes it is a media query, so the transition fired on resize and never
-   anywhere a reader would see it. */
-  .nav-brand img{height:24px;width:auto;display:block;opacity:0.92;}
-  html[data-theme="light"] .nav-brand img{filter:invert(1) brightness(0.22);}
-  /* on mobile the CTA pill is hidden (see .nav>.nav-cta below) and the
-     burger loses its label, so the mark is the only branding on screen —
-     it earns more presence than the 24px desktop mark, which reads as an
-     afterthought once it is the sole thing up there. */
-  @media(max-width:768px){.nav-brand img{height:34px;}}
-  @media(max-width:420px){.nav-brand img{height:30px;}}
+  .nav-brand img{width:26px;opacity:0.9;}
+  .nav-brand span{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--warm-white);}
   .nav-cta{background:var(--warm-white);color:var(--charcoal);font-size:var(--t-note);
     padding:10px 24px;border-radius:24px;text-decoration:none;letter-spacing:0.03em;
     transition:opacity 0.2s var(--ease);white-space:nowrap;}
@@ -426,74 +415,8 @@
     .nav-cta{padding:9px 16px;font-size:var(--t-note);}
   }
   @media(max-width:360px){
-    .nav-brand img{height:27px;}
+    .nav-brand span{display:none;}
     .nav-cta{padding:8px 13px;font-size:var(--t-note);}
-  }
-
-  /* ── MOBILE HEADER — 15 September 2026 ──────────────────────────────────
-     MOBILE ONLY (≤600px). The bar above read as a compressed desktop strip
-     rather than a deliberate mobile header — a 30-34px mark and a ~70px
-     bar, sized by padding plus a small logo rather than composed on
-     purpose. Nothing else changes: no hero edit was needed because
-     --nav-h is measured live off the rendered bar (see the script by
-     #siteNav below) and the hero already reads that variable, so a taller
-     bar simply pushes the photograph down by exactly its own height.
-
-     FIVE TIERS, EACH DROPPING PADDING FASTER THAN IT DROPS THE LOGO.
-     Every tier sets `min-height` rather than relying on padding alone to
-     reach it — padding plus the logo's own height falls short of the
-     target at the narrow end (70-82px against a 86-96px target), so
-     `min-height` is what actually guarantees the bar's presence; the
-     flex centring above places the logo and the burger inside whatever
-     that height turns out to be.
-        ≤600  28px→22px pad · 96px · logo 162px
-        ≤480  26px→20px pad · 94px · logo 155px
-        ≤390  24px→18px pad · 90px · logo 150px
-        ≤360  20px→16px pad · 88px · logo 142px
-        ≤320  18px→14px pad · 86px · logo 140px   (the stated minimum)
-     Logo width never drops below 140px in any tier — the brand floor is
-     120px, so there is 20px of margin even at the narrowest phone this
-     targets. `height:auto` keeps the mark's true 1400:429 proportions;
-     only the width is ever set, so it is never stretched.
-
-     THE BURGER IS RESIZED ONCE, NOT PER TIER. A 40x40 touch box comfortably
-     inside every width down to 320, with 27px bars centred in it — the
-     visible icon does not need to shrink for the target to stay flush
-     with WCAG's 44px area, and keeping it one size (rather than another
-     five-tier ladder) is what stops the icon and the logo drifting out of
-     visual proportion with each other at the narrow end.
-     The open-state X is retuned to match: the offset a bar travels to
-     close the gap is its own height plus the gap above it (2px + 7px),
-     so it has to move with the new bar geometry or the two outer bars
-     land short of the centre and draw a broken X instead of one. */
-  @media(max-width:600px){
-    .nav{padding:18px 26px;min-height:74px;}
-    .nav-brand img{width:113px;height:auto;}
-    .nav-burger{width:40px;height:40px;padding:0;display:flex;align-items:center;justify-content:center;}
-    .nav-burger-bars{gap:7px;}
-    .nav-burger-bars i{width:27px;height:2px;}
-    .nav-burger.open .nav-burger-bars i:nth-child(1){transform:translateY(9px) rotate(45deg);}
-    .nav-burger.open .nav-burger-bars i:nth-child(3){transform:translateY(-9px) rotate(-45deg);}
-    /* icon-only from here up — a text label beside a 40px touch box reads
-       as UI chrome next to a 162px brand mark, the opposite of the calm
-       two-element [ burger ] [ logo ] composition this is built around. */
-    .nav-burger-label{display:none;}
-  }
-  @media(max-width:480px){
-    .nav{padding:17px 24px;min-height:72px;}
-    .nav-brand img{width:108px;}
-  }
-  @media(max-width:390px){
-    .nav{padding:16px 22px;min-height:70px;}
-    .nav-brand img{width:105px;}
-  }
-  @media(max-width:360px){
-    .nav{padding:15px 20px;min-height:68px;}
-    .nav-brand img{width:99px;}
-  }
-  @media(max-width:320px){
-    .nav{padding:14px 18px;min-height:66px;}
-    .nav-brand img{width:98px;}
   }
 
   .nav-drawer-backdrop{position:fixed;inset:0;z-index:88;background:rgba(9,8,7,0.55);
@@ -2293,173 +2216,119 @@
   /* THE JOURNEY */
   /* 7 stages of one short line each. 760vh gave 94vh per stage — by far the
      slowest beat on the page, and the section that most read as dragging. */
-  /* 7 states = 6 transitions -> 100 + 6*55 = 430vh (was 576 at 79vh). */
   /* HEIGHT SET BY BEATS. 7 beats x 83.33vh + 100vh of sticky, so each
      beat gets ~0.70 screens of scroll AFTER the 8% settle pad at each end of
      the track takes its share. Below about 0.6 screens a beat is 3-4 wheel
      notches and the sequence reads as flashing past. See the pacing table in
      CLAUDE.md before changing this. */
   .pin4{position:relative;height:685vh;}
-  /* NO SEAM ELEMENT. Two attempts at one (34vh, then 10vh) both read as a
-     white hole rather than as a beat, and the reason is worth recording:
-     an empty band between two sections is not stillness, it is absence.
-     Worse, it painted a THIRD tone — flat --warm-white between pin3's warm
-     gradient tail above and the photograph's hard dark edge below — so it
-     announced itself as a band rather than disappearing.
-     The stillness is already fully provided by pin3's closing hold, in
-     which the finished composition sits alone for ~1000px. The separation
-     the seam was trying to create is provided by the sticky handover
-     itself: pin3's stage rides up as pin4's photograph rises behind it.
-     What actually needed fixing was only the OVERLAP, and that is handled
-     by gating the Journey header on pin3's exit — see the tick() note. */
-  /* Three explicit bands, not "centre everything and overlay a card".
-     Row 1 header, row 2 the card, row 3 the track. The card used to be
-     absolutely centred on the stage, which put it straight on top of the
-     headline — the headline then had to dim to 0.22 to survive it, and a
-     half-erased headline behind a floating plate is exactly what read as
-     unfinished. With a real row per element nothing overlaps, so nothing has
-     to be hidden. */
-  /* The photograph, hazed to the section's own copy.
 
-     The scrim stops below are NOT eyeballed — they are the measured bands
-     the content actually occupies inside the 100vh stage (1440x900):
+  /* ══ REBUILT 19 September 2026 — LEFT ROUTE, RIGHT PANEL ══════════════
+     It was a horizontal row of seven medallions with a large near-white
+     card floating above it. Three things were wrong and all three came
+     from the same place — the section was laid out as a WIDGET rather
+     than as a spread:
 
-       kicker      8.5 - 10.2%      card        26.2 - 46.0%
-       headline   13.3 - 20.8%      medallions  60.1 - 68.2%
-                                    labels end       81.2%
+       · the card was #FDFCF9 with a 6px radius and a 110px drop shadow,
+         the only near-white filled box on the entire site. Every other
+         panel over a photograph — app.html's waypoint card, sanctuary's
+         pilot block — is warm-dark with a hairline. It read as pasted on
+         because it was the one element not drawn in the site's own hand.
+       · seven columns of 11.5px descriptions across the bottom of a
+         photograph, which is where the frame is busiest.
+       · a straight rule with seven discs on it: a progress bar, not a
+         journey.
 
-     So the veil opens where nothing is set (21-27%, 46-57%) and closes
-     over every band that carries type. It is heaviest across the bottom
-     third, which is where the seven 11.5px descriptions sit over the
-     busiest part of the frame — the pool, the stone and the foliage.
+     Now: the route runs DOWN the left as a drawn S-curve with the seven
+     stops on it, and the stage the reader has reached is a panel on the
+     right in app.html's waypoint grammar. The per-stop descriptions move
+     INTO that panel as its lede, so no copy is lost and nothing is set at
+     11.5px over foliage any more. */
 
-     Two layers, in paint order: a vertical veil on top, then a warm haze
-     beneath it. The haze matters — a flat dark veil alone reads as the
-     photo being switched off, whereas warming the middle first keeps the
-     sun's atmosphere and lets the veil read as fog over a real place.
-     Both are warm (#100D0B, not black) so the section still sits in the
-     site's palette.
-
-     background-color is the fallback: if the file is ever missing the
-     section paints --mineral and reads exactly as it did before. */
-  .stage4{position:sticky;top:0;height:100vh;overflow:visible;
+  /* The photograph, hazed to the section's own copy. TWO veils now, and
+     the horizontal one is the load-bearing change: the layout is a spread,
+     so the picture is wanted open on the left where the route is and shut
+     on the right where the panel has to hold body copy. The old single
+     vertical veil was measured against bands (kicker / card / medallions)
+     that no longer exist.
+     Combined alpha runs ~0.44 behind the route and ~0.80 behind the panel.
+     Both are warm (#100D0B, not black) so the section stays in the palette,
+     and background-color is the fallback if the file ever goes missing. */
+  .stage4{position:sticky;top:0;height:100vh;overflow:hidden;
     background-color:var(--mineral);
     background-image:
+      linear-gradient(90deg,
+        rgba(16,13,11,0)    0%,
+        rgba(16,13,11,0.06) 26%,
+        rgba(16,13,11,0.40) 52%,
+        rgba(16,13,11,0.62) 72%,
+        rgba(16,13,11,0.68) 100%),
       linear-gradient(180deg,
-        rgba(16,13,11,0.88) 0%,
-        rgba(16,13,11,0.87) 11%,
-        rgba(16,13,11,0.72) 21%,
-        rgba(16,13,11,0.50) 27%,
-        rgba(16,13,11,0.50) 46%,
-        rgba(16,13,11,0.70) 57%,
-        rgba(16,13,11,0.86) 62%,
-        rgba(16,13,11,0.92) 74%,
-        rgba(16,13,11,0.95) 84%,
-        rgba(16,13,11,0.97) 100%),
+        rgba(16,13,11,0.86) 0%,
+        rgba(16,13,11,0.55) 16%,
+        rgba(16,13,11,0.42) 40%,
+        rgba(16,13,11,0.42) 74%,
+        rgba(16,13,11,0.72) 100%),
       radial-gradient(ellipse 130% 62% at 50% 44%,
         rgba(78,60,44,0.42) 0%, rgba(46,36,28,0.20) 46%, rgba(23,20,18,0) 76%),
       url('images/journey-image.jpg');
     background-size:cover;background-position:center;background-repeat:no-repeat;
-    display:grid;grid-template-rows:auto auto minmax(0,1fr);justify-items:center;
-    padding:clamp(52px,8.5vh,86px) 5% clamp(40px,6vh,64px);}
+    display:grid;grid-template-rows:auto minmax(0,1fr);
+    padding:clamp(46px,7vh,76px) 5% clamp(34px,5vh,56px);}
 
-  .journey-header{text-align:center;position:relative;z-index:10;margin-bottom:0;}
+  .journey-header{text-align:center;position:relative;z-index:10;}
   .j-kicker{font-size:var(--t-micro);letter-spacing:0.22em;color:var(--gold);text-transform:uppercase;
     display:flex;justify-content:center;align-items:center;gap:14px;padding-left:0.22em;}
   .j-kicker::before,.j-kicker::after{content:'';display:block;width:28px;height:1px;background:currentColor;opacity:0.55;}
   .j-headline{font-family:'Cormorant Garamond',serif;font-weight:300;color:var(--warm-white);
-    font-size:clamp(32px,4.6vw,64px);line-height:1.06;letter-spacing:-0.008em;margin-top:28px;}
+    font-size:clamp(30px,3.9vw,56px);line-height:1.06;letter-spacing:-0.008em;margin-top:20px;}
   .j-headline em{font-style:italic;color:var(--gold);}
 
-  /* ── THE TRACK ──────────────────────────────────────────────────────
-     Redesigned 20 Aug. It was seven 52px numbered discs on a flat rule —
-     correct information, but it read as a progress widget rather than a
-     journey. It is now a row of engraved medallions: a large ring holding
-     the stage's own icon, its number set above as a small serif index, a
-     lit gold path running through them and hairline separators marking
-     each stage's column, so the seven read as one continuous route with
-     seven places on it.
+  /* ── THE SPREAD ── */
+  .j-body{grid-row:2;align-self:center;z-index:10;
+    width:min(1360px,90vw);margin:0 auto;
+    display:grid;grid-template-columns:minmax(360px,0.86fr) 1fr;
+    gap:clamp(36px,4.5vw,86px);align-items:center;}
 
-     Every geometry value below hangs off --medal and --numh so the whole
-     row rescales from two numbers. The rule and the comet are positioned
-     from the SAME expression as the medallion's centre — if --medal or
-     --numh changes and those three fall out of step, the path stops
-     running through the rings and floats above or below them.
-
-     Nothing here touches the scroll logic. The script still only toggles
-     .done/.active/.tease on .j-node, writes .j-line-fill's width, and
-     writes .j-comet's left/opacity — all of which still mean exactly what
-     they meant before. */
-  .j-track-wrap{position:relative;width:min(1360px,84vw);perspective:1400px;z-index:10;
-    --medal:clamp(58px,7.4vh,86px);   /* ring diameter          */
-    --numh:22px;}                     /* headroom for the index */
-  .j-track{position:relative;height:clamp(198px,24vh,252px);
-    transform-style:preserve-3d;transition:transform 0.15s ease-out;}
-
-  /* Column separators, at the midpoints between adjacent stages.
-     Drawn as one repeating gradient rather than seven elements: the
-     pseudo is shifted left by half a column (100%/12) so the gradient's
-     own periodic lines — which would otherwise land at 16.667%, 33.3% …,
-     i.e. directly ON each medallion — land at 8.33%, 25%, 41.67% … which
-     are exactly the midpoints. Starts below the rings so it separates the
-     labels without cutting the path. */
-  .j-track::before{content:'';position:absolute;pointer-events:none;
-    left:calc(-100% / 12);width:100%;
-    top:calc(var(--numh) + var(--medal) + 18px);bottom:0;
-    background:repeating-linear-gradient(90deg,
-      transparent 0, transparent calc(100% / 6 - 1px),
-      rgba(247,244,238,0.07) calc(100% / 6 - 1px), rgba(247,244,238,0.07) calc(100% / 6));}
-
-  .j-line-base{position:absolute;left:0;right:0;top:calc(var(--numh) + var(--medal) / 2);height:1px;
-    background:linear-gradient(90deg, rgba(247,244,238,0.03), rgba(247,244,238,0.15) 10%,
-      rgba(247,244,238,0.15) 90%, rgba(247,244,238,0.03));}
-  .j-line-fill{position:absolute;left:0;top:calc(var(--numh) + var(--medal) / 2);height:1px;width:0%;
-    background:linear-gradient(90deg, rgba(196,138,90,0.45), var(--gold) 40%, #e8c39c);
-    box-shadow:0 0 10px rgba(196,138,90,0.55), 0 0 28px rgba(196,138,90,0.26);}
-  .j-comet{position:absolute;top:calc(var(--numh) + var(--medal) / 2);width:12px;height:12px;
-    margin:-6px 0 0 -6px;border-radius:50%;
+  /* ── THE RAIL ────────────────────────────────────────────────────────
+     A fixed 100x600 coordinate space stretched to whatever height the
+     stage leaves. --snakeW is the strip on the right of the rail that the
+     route may wander in; every stop is placed from its own --x inside
+     that strip, which is why the medallions sit ON the line rather than
+     near it. The labels hang off each medallion's LEFT edge, so they form
+     one right-aligned column no matter where the route has wandered to. */
+  .j-rail{position:relative;height:min(600px,62vh);min-height:430px;
+    --snakeW:clamp(120px,11vw,172px);
+    --medal:clamp(38px,4.6vh,52px);}
+  .j-snake-wrap{position:absolute;top:0;bottom:0;right:0;width:var(--snakeW);}
+  .j-snake{width:100%;height:100%;display:block;overflow:visible;fill:none;}
+  .j-snake-base{stroke:rgba(247,244,238,0.16);stroke-width:1;stroke-linecap:round;}
+  .j-snake-fill{stroke:var(--gold);stroke-width:1.6;stroke-linecap:round;
+    filter:drop-shadow(0 0 5px rgba(196,138,90,0.55));}
+  .j-comet{position:absolute;width:11px;height:11px;margin:-5.5px 0 0 -5.5px;border-radius:50%;
     background:radial-gradient(circle, #fff1de 0%, #ffe4c2 30%, var(--gold) 58%, transparent 76%);
-    filter:blur(0.5px);pointer-events:none;}
+    filter:blur(0.4px);pointer-events:none;opacity:0;}
 
-  .j-node{position:absolute;top:0;padding-top:var(--numh);
-    transform:translateX(-50%);text-align:center;width:min(15.2%,196px);}
-  /* No hover state. These are not controls — the sequence is driven by
-     scroll alone now, so a node that lights under the pointer promises an
-     interaction that no longer exists. */
+  /* A zero-size anchor exactly at the stop's point on the route. */
+  .j-stop{position:absolute;top:var(--y);
+    left:calc(100% - var(--snakeW) + (var(--x) * var(--snakeW) / 100));
+    width:0;height:0;}
 
-  /* The medallion. Resting state is an engraved ring, not a filled disc —
-     the old one filled with solid gold the moment it was reached, which
-     made six "done" stages louder than the one being read. Weight now
-     goes UP with state (quiet ring -> warm ring -> lit ring) instead of
-     every reached stage shouting at once. */
-  /* SCRUBBED, not class-flipped. This medallion used to carry four separate
-     CSS transitions on discrete .done/.active/.tease flips — transform
-     0.55s, stroke 0.5s, colour 0.5s and opacity 0.7s, all on bare `ease`.
-     That is four independent clocks running against the paced scroll value
-     while the rule and the comet beneath moved continuously, which is
-     exactly what read as jolty: the line slid, the medallions stepped.
-     It is also the bug the 1 September pass removed everywhere else, and
-     the reason this section scored 38/41 distinct frames where the fully
-     scrubbed ones scored 41/41.
-
-     Two continuous inputs, written every frame by the section's own paced
-     value:  --w  how LIVE this node is (1 on it, 0 at its neighbours)
-             --p  how far PAST it the reader is (0 before, 1 after)
-     The ring is three stacked inset shadows rather than a border, because
-     a border-color cannot be cross-faded between three states — first
-     shadow paints on top, so they run active / done / resting. */
-  .j-dot{width:var(--medal);height:var(--medal);border-radius:50%;margin:0 auto;position:relative;
+  /* The medallion, unchanged in grammar from the horizontal version: an
+     engraved ring that gains weight with state rather than filling solid.
+     Two continuous inputs written every frame by the section's paced
+     value — --w (how live) and --p (how far past) — so nothing steps.
+     The ring is stacked inset shadows, not a border, because a
+     border-color cannot cross-fade between three states. */
+  .j-dot{position:absolute;left:0;top:0;transform:translate(-50%,-50%) scale(calc(1 + 0.10 * var(--w,0)));
+    width:var(--medal);height:var(--medal);border-radius:50%;
     display:flex;align-items:center;justify-content:center;
     border:1px solid transparent;
-    /* the warm "live" fill sits OVER the resting fill with its own alpha
-       scrubbed by --w, so the two genuinely cross-fade. Two opaque
-       gradients would simply have covered one another. */
     background:
       radial-gradient(circle at 38% 28%,
         rgba(112,84,56, calc(0.97 * var(--w,0))),
         rgba(38,29,22,  calc(0.96 * var(--w,0)))),
       radial-gradient(circle at 38% 30%, rgba(64,55,46,0.92), rgba(22,19,16,0.94));
-    transform:scale(calc(1 + 0.10 * var(--w,0)));
     box-shadow:
       inset 0 0 0 1px rgba(242,203,164, calc(0.95 * var(--w,0))),
       inset 0 0 0 1px rgba(196,138,90, calc(0.58 * var(--p,0))),
@@ -2467,175 +2336,108 @@
       0 0 54px -10px rgba(196,138,90, calc(0.75 * var(--w,0))),
       0 12px 30px -14px rgba(0,0,0,0.85),
       inset 0 1px 0 rgba(247,244,238,0.07);}
-  /* the "you are here" halo. Was an infinite 1.7s jPulse keyframe — a
-     wall-clock animation on a scroll-driven section, so it drifted while
-     the reader stood still. It is now simply a function of --w. */
-  .j-dot::after{content:'';position:absolute;inset:-9px;border-radius:50%;
+  /* the "you are here" halo, a function of --w rather than a wall-clock
+     keyframe, so it cannot drift while the reader stands still */
+  .j-dot::after{content:'';position:absolute;inset:-8px;border-radius:50%;
     border:1px solid rgba(196,138,90,0.5);
     opacity:calc(0.85 * var(--w,0));
     transform:scale(calc(0.78 + 0.22 * var(--w,0)));}
-
-  /* neutral -> gold -> pale gold, scrubbed. color-mix is the only way to
-     cross-fade a HUE from a custom property; the plain rgba() line above it
-     is the fallback, so anything without color-mix simply gets the resting
-     colour rather than nothing. Same pattern on .j-num and .j-title. */
-  .j-ico{width:calc(var(--medal) * 0.42);height:calc(var(--medal) * 0.42);display:block;
+  .j-ico{width:calc(var(--medal) * 0.44);height:calc(var(--medal) * 0.44);display:block;
     fill:none;stroke:rgba(247,244,238,0.52);stroke-width:calc(1.4 + 0.15 * var(--w,0));
     stroke-linecap:round;stroke-linejoin:round;}
+  /* color-mix is the only way to cross-fade a HUE from a custom property;
+     the plain line above each is the fallback. Same pattern on .j-num and
+     .j-title. */
   .j-ico{stroke:color-mix(in srgb,
     color-mix(in srgb, rgba(247,244,238,0.52), rgba(216,164,116,0.92) calc(var(--p,0) * 100%)),
     #ffdcb4 calc(var(--w,0) * 100%));}
-  /* The stage index, set above the ring as an editorial folio rather than
-     inside it — the ring belongs to the icon. --numh reserves its room, so
-     it never overlaps the ring however --medal is tuned. */
-  .j-num{position:absolute;top:0;left:50%;transform:translateX(-50%);
-    font-family:'Cormorant Garamond',serif;font-size:clamp(11px,1.05vw,13px);
+
+  /* Right-aligned against the medallion's left edge. 100% of a zero-width
+     anchor is its own left edge, so `right:100%` puts the label's right
+     edge on the ring's centre; the calc backs it off by the ring's radius
+     and a gutter. The label's own width is fixed, so the column is
+     straight even though the route it hangs from is not. */
+  .j-stop-label{position:absolute;top:0;
+    right:calc(100% + var(--medal) / 2 + clamp(14px,1.4vw,22px));
+    transform:translateY(-50%);
+    width:clamp(180px,17vw,250px);
+    display:flex;align-items:baseline;justify-content:flex-end;gap:12px;
+    text-align:right;white-space:nowrap;}
+  .j-num{font-family:'Cormorant Garamond',serif;font-size:clamp(11px,1.05vw,13px);
     letter-spacing:0.20em;line-height:1;color:#8a8177;}
   .j-num{color:color-mix(in srgb,
     color-mix(in srgb, #8a8177, rgba(196,138,90,0.85) calc(var(--p,0) * 100%)),
     #f2cba4 calc(var(--w,0) * 100%));}
-
-  /* The .done / .active / .tease visual rules are gone — every property
-     they set is now a continuous function of --w and --p above, so the
-     live stage still wins on all four axes (ring luminosity, warmer fill,
-     gold halo, 10% scale) but it arrives by scrubbing rather than by
-     flipping a class and waiting on a transition.
-     `.active` is still SET on the nearest node, because the hover rules
-     (.j-node:not(.active):hover) and renderCard depend on it — it simply
-     no longer carries any appearance of its own.
-     `.tease` is no longer set at all: --w on the next node already rises
-     before the reader reaches it, which is what tease was faking. */
-
-  /* Serif titles, to match the section headline and the stage card. At
-     12px sans with 0.1em tracking these read as UI labels under a 64px
-     Cormorant headline — the one thing that most made the row look like a
-     component rather than part of the page. */
   .j-title{font-family:'Cormorant Garamond',serif;font-weight:300;
-    font-size:clamp(15px,1.32vw,20px);letter-spacing:0.005em;line-height:1.18;
-    color:#8a8377;margin-top:clamp(14px,1.9vh,21px);}
+    font-size:clamp(16px,1.42vw,22px);letter-spacing:0.005em;line-height:1.15;
+    color:#8a8377;}
   .j-title{color:color-mix(in srgb,
     color-mix(in srgb, #8a8377, var(--warm-white) calc(var(--p,0) * 100%)),
     #f6efe4 calc(var(--w,0) * 100%));}
-  /* A rule that grows as the stage is reached — the accent is earned by
-     progress rather than painted on every card at once. Width and opacity
-     are scrubbed, so it draws WITH the reader rather than on a 0.6s timer
-     that started when a class was added. */
-  .j-title::after{content:'';display:block;height:1px;margin:10px auto 0;
-    background:var(--gold);
-    width:calc((14px * var(--p,0)) + (14px * var(--w,0)));
-    opacity:calc((0.35 * var(--p,0)) + (0.50 * var(--w,0)));}
-  .j-sub{font-size:var(--t-micro);line-height:1.65;margin-top:9px;
-    opacity:calc(0.7 + 0.3 * max(var(--p,0), var(--w,0)));
-    color:color-mix(in srgb, #5f5a52, #b8b1a4 calc(max(var(--p,0), var(--w,0)) * 100%));}
+
+  /* ── THE STAGE PANEL ─────────────────────────────────────────────────
+     app.html's waypoint card, in this section's proportions: warm-dark
+     ground, one 0.1 hairline, a 3px radius and a gold index line. The one
+     addition is the 2px gold left edge — the panel sits on a photograph
+     rather than inside a 100vh map stage, and that hard edge is what
+     stops a dark panel on a dark picture reading as a smudge. It is also
+     the side the route arrives from.
+
+     SCRUBBED, NOT TRANSITIONED. --pc is written every frame off the paced
+     scroll value; a transition here would be a second clock, which is the
+     fault removed everywhere else on this site. */
+  /* TOP-ANCHORED, not centred — the one rule carried over from the old
+     card and worth keeping. The seven texts are 1-3 lines, so a centred
+     panel grows and shrinks about its middle and each stage lands its
+     eyebrow on a different line. Anchored, the eyebrow never moves and the
+     panel grows downward into slack the row already holds; measured, the
+     tallest stage (02) still clears the rail's bottom at every height
+     tested. */
+  .j-panel{position:relative;justify-self:start;align-self:start;
+    margin-top:clamp(40px,12vh,120px);
+    width:min(620px,100%);
+    background:rgba(24,20,17,0.88);backdrop-filter:blur(14px);
+    border:1px solid rgba(247,244,238,0.10);
+    border-left:2px solid var(--gold);
+    border-radius:3px;
+    padding:clamp(28px,3.8vh,44px) clamp(28px,2.8vw,48px) clamp(26px,3.4vh,40px);
+    box-shadow:0 40px 90px rgba(0,0,0,0.5), 0 10px 26px rgba(0,0,0,0.3);
+    opacity:0;
+    transform:translateY(calc((1 - var(--pc,1)) * 22px));
+    pointer-events:none;z-index:20;}
+  .j-pop-eyebrow{font-size:var(--t-nano);letter-spacing:0.26em;color:var(--gold);
+    text-transform:uppercase;padding-left:0.26em;}
+  /* This is the stage's own name, which used to be set at 15-20px under a
+     medallion. It is the panel's headline now. */
+  .j-pop-title{font-family:'Cormorant Garamond',serif;font-weight:300;
+    font-size:clamp(28px,2.7vw,44px);line-height:1.08;letter-spacing:-0.010em;
+    color:var(--warm-white);margin-top:14px;}
+  /* The line that used to be the 11.5px caption under the medallion. */
+  .j-pop-lede{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;
+    font-size:clamp(17px,1.5vw,23px);line-height:1.4;color:var(--gold);
+    margin-top:16px;max-width:34ch;}
+  .j-pop-text{font-size:var(--t-body-s);line-height:1.85;
+    color:rgba(247,244,238,0.62);margin-top:20px;max-width:46ch;}
+  /* draws itself as the stage lands, the same gesture as .wp-info-bar */
+  .j-pop-rule{height:1px;background:var(--gold);margin-top:clamp(20px,2.6vh,30px);
+    transform-origin:left;transform:scaleX(var(--pc,0));opacity:0.75;}
 
   @media (prefers-reduced-motion: reduce){
-    .j-node{transition:opacity 0.2s var(--ease) !important;}
-    .j-node.active .j-dot::after{animation:none !important;}
-    .j-track{transition:none !important;}
+    .j-comet{display:none;}
   }
 
-  /* THE STAGE CARD.
-
-     A grid item in row 2, top-aligned — NOT absolutely centred any more. Two
-     things follow from that, both of which the old version got wrong:
-
-     1. It cannot collide with the headline or the track, because it has its
-        own row. The `.card-up` headline dimming existed only to survive that
-        collision and is gone with it.
-     2. Its top edge is fixed. The seven stage texts are 1–3 lines, so a
-        vertically centred card grew and shrank about its middle and shifted
-        on every stage change. Anchored at the top it grows downward into the
-        slack the row already holds, and the eyebrow never moves.
-
-     The transform is now scale() alone. The old one carried the -50%/-50%
-     centring inside it, which is the trap documented for `.scroll-hint`: an
-     animation ending on a bare transform replaces the centring and drops the
-     element half its own size off-position. There is nothing left to lose. */
-  .j-popcard{grid-row:2;align-self:start;justify-self:center;
-    margin-top:clamp(30px,5.4vh,64px);width:min(780px,82vw);
-    /* Resting state is scale(1). It used to rest at 0.965 with the pop
-       keyframes ending at 1 and fill-mode:none — so every stage change
-       popped the card up to full size and then eased it 3.5% back down
-       again. The entry scale belongs in the keyframes, not the base rule. */
-    text-align:center;
-    /* LIGHT, AND COMING FORWARD.
-
-       This was dark glass — a translucent warm-dark fill over a warm-dark
-       photograph. The reasoning was that it should sit IN the scene rather
-       than on it, and the result was a card almost exactly the value of its
-       own background: at a glance there was no card, just text floating on
-       the picture. The one element the whole section exists to deliver was
-       the hardest thing in the frame to see.
-
-       Near-opaque warm white instead. On a dark photograph that is the
-       strongest separation available, and it is the same card the callouts
-       on the daily-experience section use, so it is not a new idiom.
-
-       NO backdrop-filter: the fill is opaque, so it would blur nothing and
-       cost a compositing pass on every frame of a pinned section. */
-    background:#FDFCF9;
-    border:1px solid rgba(23,21,15,0.08);
-    border-radius:6px;padding:clamp(40px,5vh,60px) clamp(44px,4.2vw,68px) clamp(42px,5.2vh,62px);
-    z-index:60;opacity:0;
-    box-shadow:0 46px 110px rgba(0,0,0,0.58), 0 12px 30px rgba(0,0,0,0.34);
-    /* SCRUBBED, NOT TRANSITIONED. --pc is written every frame off the paced
-       scroll value, so a transition here would be a second clock — the same
-       fault the .pop keyframe had. The card lifts and grows into place as
-       its stage arrives and settles back as it leaves. */
-    transform:translateY(calc((1 - var(--pc,1)) * 30px))
-              scale(calc(0.935 + 0.065 * var(--pc,1)));
-    pointer-events:none;}
-  /* One gold accent, straddling the top edge. The previous version boxed the
-     whole card in an inset gold hairline, which is the visual grammar of a
-     dialog — a rule that stops reads as a mark, a rule that goes all the way
-     round reads as a frame. */
-  .j-popcard::before{content:'';position:absolute;top:-1px;left:50%;
-    transform:translateX(-50%);width:72px;height:2px;
-    background:linear-gradient(90deg,transparent,#B07B45,transparent);
-    pointer-events:none;}
-  /* The .pop keyframe is gone with the hover that fired it. The arrival
-     accent is scrubbed on .j-popcard's transform instead, so there is no
-     CSS animation competing with the paced value. */
-  /* #8A5A2B was the AA-safe carry of --gold for the old ivory card — the
-     card is dark now, so the ordinary --gold (already tuned for dark
-     grounds everywhere else on the site) applies directly. */
-  /* #8A5A2B is the AA-safe carry of --gold on a warm-white ground; plain
-     --gold measures about 2.9:1 here. The card went light, so the carry
-     comes back with it. */
-  .j-pop-eyebrow{font-size:var(--t-micro);letter-spacing:0.3em;color:#8A5A2B;text-transform:uppercase;
-    padding-left:0.3em;margin-bottom:clamp(18px,2.4vh,26px);}
-  /* max-width in ch, and balanced: the seven texts run 62–118 characters, so
-     an unconstrained centred paragraph produced everything from one long line
-     to a two-line block with three orphaned words. */
-  /* BIG AND BOLD. 20-27px at weight 300 was a caption under a 64px
-     headline; this is the sentence the stage exists to say. Weight 400
-     because Cormorant Light at display size on a light ground goes thin
-     and grey. The measure stays in ch and balanced — the seven texts run
-     62-118 characters, so an unconstrained centred paragraph gives
-     everything from one long line to a block with three orphans. */
-  .j-pop-text{font-family:'Cormorant Garamond',serif;font-weight:400;
-    font-size:clamp(26px,2.5vw,40px);color:var(--charcoal);line-height:1.26;letter-spacing:-0.012em;
-    max-width:30ch;margin:0 auto;text-wrap:balance;}
-  /* the arrow pointed at the node the card used to sit above; a centred card
-     has nothing to point at, so it is retired rather than left dangling */
-  .j-pop-arrow{display:none;}
-
-  /* Scrubbed by pin4's own paced value via --jh, NOT revealed on viewport
-     entry. It used to have no opacity gate at all, so "A path that unfolds
-     at your own pace." was at full strength while the Daily Experience
-     section was still on screen above it — the two ideas were simultaneous
-     and neither owned the frame. No transition here on purpose: a
-     transition would be a second clock running against the paced value,
-     which is the bug being removed, not a nicety. */
+  /* The header is scrubbed by pin4's own paced value via --jh, NOT revealed
+     on viewport entry: without the gate "A path that unfolds at your own
+     pace." was at full strength while the Daily Experience section was
+     still on screen above it. No transition here on purpose — a transition
+     would be a second clock running against the paced value. */
   .journey-header{opacity:var(--jh,0);transform:translateY(calc((1 - var(--jh,0)) * 16px));}
-  /* Centred in whatever the header and card leave, rather than pinned to the
-     bottom edge. Bottom-pinned it left a ~300px dead band under the card at
-     900px of stage — a void bigger than the card itself, which reads as a
-     hole rather than as air. Centring splits that slack either side of the
-     track, so the track floats in the lower half instead of sitting on the
-     floor. */
-  .j-track-wrap{grid-row:3;align-self:center;}
 
+  /* Still 1100, deliberately. The spread was checked at exactly 1101px,
+     which is the worst case it ever has to hold: the rail's label column
+     lands at 187px with 124px of clearance and the panel keeps its 46ch
+     measure. Below that the mobile list takes over and tells the whole
+     journey in full, so there is no gap to cover. */
   @media (max-width:1100px){.pin4{display:none;}}
   .journey-mobile-section{display:none;}
   @media (max-width:1100px){
@@ -3057,6 +2859,8 @@
   html[data-theme="light"] .type-cursor {background: #C48A5A;}
   html[data-theme="light"] .bg {background-image:linear-gradient(180deg,rgba(10,8,6,0.45) 0%,rgba(10,8,6,0.35) 30%,rgba(10,8,6,0.32) 55%,rgba(10,8,6,0.62) 100%), url('images/img-01.jpg');}
   html[data-theme="light"] .nav {background: rgba(247,244,238,0.94);border-bottom-color: rgba(43,38,35,0.1);}
+  html[data-theme="light"] .nav-brand span {color: #171412;}
+  html[data-theme="light"] .nav-brand img {filter: invert(1) brightness(0.3);}
   html[data-theme="light"] .nav-cta {background: #171412;color: #F7F4EE;}
   html[data-theme="light"] .nav-burger-bars i {background: #2B2623;}
   html[data-theme="light"] .nav-burger-label {color: #2B2623;}
@@ -3318,7 +3122,10 @@
       <span class="nav-burger-bars"><i></i><i></i><i></i></span>
       <span class="nav-burger-label">Menu</span>
     </button>
-    <a class="nav-brand" href="index.html" id="navBrand"><img src="images/img-02.png" alt="DAOasis" /></a>
+    <a class="nav-brand" href="index.html" id="navBrand">
+      <img src="images/img-09-white.png" alt="DAOasis" />
+      <span>DAOasis</span>
+    </a>
     <a class="nav-cta" href="#waitlistSection">Join the waitlist</a>
   </nav>
 
@@ -3635,36 +3442,84 @@
       <div class="j-kicker">The journey</div>
       <div class="j-headline">A path that unfolds <em>at your own pace.</em></div>
     </div>
-    <!-- The stage card is a direct child of .stage4, NOT of .j-track. The
-         track carries a JS-applied rotateX/rotateY, and a transformed
-         ancestor becomes the containing block for its positioned
-         descendants — inside the track the card could never centre on the
-         stage, and it would be tilted by the track's parallax as well. -->
-    <div class="j-popcard" id="jPopcard">
-      <div class="j-pop-eyebrow" id="jPopEyebrow">Stage 01</div>
-      <div class="j-pop-text" id="jPopText"></div>
-      <div class="j-pop-arrow"></div>
-    </div>
-    <div class="j-track-wrap">
-      <div class="j-track" id="jTrack">
-        <div class="j-line-base"></div>
-        <div class="j-line-fill" id="jLineFill"></div>
-        <div class="j-comet" id="jComet"></div>
-        <!-- The number moved out of .j-dot into its own .j-num folio so the
-             ring could carry an icon. .j-dot is deliberately still the ring's
-             class name: every state rule the script drives
-             (.j-node.done/.active/.tease .j-dot) keeps working untouched.
-             Icons are the site's existing 24-unit line set — the walking
-             figure on stage 02 is the same path app.html uses for Steps.
-             All seven titles and descriptions are verbatim. -->
-        <div class="j-node" id="jNode0" style="left:0%;"><div class="j-num">01</div><div class="j-dot"><svg class="j-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v11m0 0l-4-4m4 4l4-4"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg></div><div class="j-title">Download the App</div><div class="j-sub">Your journey starts with a single tap.</div></div>
-        <div class="j-node" id="jNode1" style="left:16.667%;"><div class="j-num">02</div><div class="j-dot"><svg class="j-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2z"/><path d="M8 8.5L6.5 15l3 1L11 20h2l1.5-4 2.5 1L18 9l-4-1-.5-1.5H10L8 8.5z"/></svg></div><div class="j-title">Build Healthy Habits</div><div class="j-sub">Steps, sleep, hydration, breathing — every one moves you forward.</div></div>
-        <div class="j-node" id="jNode2" style="left:33.333%;"><div class="j-num">03</div><div class="j-dot"><svg class="j-ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9.5" cy="8" r="3"/><path d="M15.5 5.3a3 3 0 0 1 0 5.4"/><path d="M15.5 19v-1.4a3 3 0 0 0-3-3h-6a3 3 0 0 0-3 3V19"/><path d="M21 19v-1.4a3 3 0 0 0-2.2-2.9"/></svg></div><div class="j-title">Join the Community</div><div class="j-sub">Connect with others building the same habits.</div></div>
-        <div class="j-node" id="jNode3" style="left:50%;"><div class="j-num">04</div><div class="j-dot"><svg class="j-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10h16v9a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-9z"/><path d="M3 7h18v3H3z"/><path d="M12 7v13"/><path d="M12 7S10.6 3 8.3 3a2.1 2.1 0 0 0 0 4"/><path d="M12 7s1.4-4 3.7-4a2.1 2.1 0 0 1 0 4"/></svg></div><div class="j-title">Earn DRC</div><div class="j-sub">Quests, learning and referrals turn effort into Reward Credits.</div></div>
-        <div class="j-node" id="jNode4" style="left:66.667%;"><div class="j-num">05</div><div class="j-dot"><svg class="j-ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="6.4" cy="12" r="3.1"/><circle cx="17.6" cy="12" r="3.1"/><path d="M10.3 12h3.4"/><path d="M12.5 10.7l1.3 1.3-1.3 1.3"/></svg></div><div class="j-title">Convert to $DVT (Optional)</div><div class="j-sub">Go deeper — convert DRC into the on-chain layer.</div></div>
-        <div class="j-node" id="jNode5" style="left:83.333%;"><div class="j-num">06</div><div class="j-dot"><svg class="j-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 4H4l8-4z"/><path d="M4 9h16"/><path d="M6.6 9v8M10.2 9v8M13.8 9v8M17.4 9v8"/><path d="M4 20h16"/></svg></div><div class="j-title">Help Shape DAOasis</div><div class="j-sub">Propose and steer where DAOasis goes, as governance develops.</div></div>
-        <div class="j-node" id="jNode6" style="left:100%;"><div class="j-num">07</div><div class="j-dot"><svg class="j-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21v-9.5"/><path d="M12 11.5c-2.9-1.5-5.4-.6-6.4.9"/><path d="M12 11.5c2.9-1.5 5.4-.6 6.4.9"/><path d="M12 11.5c-.9-2.6-2.9-4.1-4.9-4.1"/><path d="M12 11.5c.9-2.6 2.9-4.1 4.9-4.1"/><path d="M4.5 21h15"/></svg></div><div class="j-title">Visit the Sanctuary</div><div class="j-sub">For the few who go all the way: a real-world retreat, earned.</div></div>
+
+    <!-- Row 2 is the whole journey: the route down the left, the stage it
+         has reached on the right. The panel is a SIBLING of the rail, not a
+         child — the rail is the thing that gets positioned against the SVG,
+         and a panel inside it would inherit that coordinate space. -->
+    <div class="j-body">
+
+      <!-- THE RAIL. The seven stops sit on a drawn route rather than on a
+           straight rule: one S-curve, right lobe then left lobe. The path
+           and the medallions cannot drift apart because both are placed
+           from the same seven coordinates — the path is a Catmull-Rom
+           spline generated THROUGH the stop points (see the CSS note), and
+           each stop's --x/--y is its own point in the same 100x600 space.
+           Regenerate both together or not at all. -->
+      <div class="j-rail" id="jRail">
+        <div class="j-snake-wrap">
+          <!-- preserveAspectRatio="none" so the route stretches to whatever
+               height the stage leaves it, and the stops — placed in % of
+               the same box — stay on it. vector-effect keeps the hairline a
+               hairline while the box scales. -->
+          <svg class="j-snake" viewBox="0 0 100 600" preserveAspectRatio="none" aria-hidden="true">
+            <path class="j-snake-base" vector-effect="non-scaling-stroke"
+                  d="M 50,28.00 C 58.00,58.22 70.00,88.44 74.00,118.67 C 78.00,148.89 78.00,179.11 74.00,209.33 C 70.00,239.56 58.00,269.78 50.00,300.00 C 42.00,330.22 30.00,360.44 26.00,390.67 C 22.00,420.89 22.00,451.11 26.00,481.33 C 30.00,511.56 42.00,541.78 50.00,572.00"/>
+            <path class="j-snake-fill" id="jSnakeFill" vector-effect="non-scaling-stroke"
+                  d="M 50,28.00 C 58.00,58.22 70.00,88.44 74.00,118.67 C 78.00,148.89 78.00,179.11 74.00,209.33 C 70.00,239.56 58.00,269.78 50.00,300.00 C 42.00,330.22 30.00,360.44 26.00,390.67 C 22.00,420.89 22.00,451.11 26.00,481.33 C 30.00,511.56 42.00,541.78 50.00,572.00"/>
+          </svg>
+          <div class="j-comet" id="jComet"></div>
+        </div>
+
+        <!-- Each stop is a zero-size anchor AT its medallion's centre; the
+             label hangs off its left edge, so the type sits in one tidy
+             right-aligned column while the route wanders behind it. -->
+        <div class="j-stop" id="jNode0" style="--x:50;--y:4.667%;">
+          <div class="j-stop-label"><span class="j-num">01</span><span class="j-title">Download the App</span></div>
+          <div class="j-dot"><svg class="j-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v11m0 0l-4-4m4 4l4-4"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg></div>
+        </div>
+        <div class="j-stop" id="jNode1" style="--x:74;--y:19.778%;">
+          <div class="j-stop-label"><span class="j-num">02</span><span class="j-title">Build Healthy Habits</span></div>
+          <div class="j-dot"><svg class="j-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2z"/><path d="M8 8.5L6.5 15l3 1L11 20h2l1.5-4 2.5 1L18 9l-4-1-.5-1.5H10L8 8.5z"/></svg></div>
+        </div>
+        <div class="j-stop" id="jNode2" style="--x:74;--y:34.889%;">
+          <div class="j-stop-label"><span class="j-num">03</span><span class="j-title">Join the Community</span></div>
+          <div class="j-dot"><svg class="j-ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9.5" cy="8" r="3"/><path d="M15.5 5.3a3 3 0 0 1 0 5.4"/><path d="M15.5 19v-1.4a3 3 0 0 0-3-3h-6a3 3 0 0 0-3 3V19"/><path d="M21 19v-1.4a3 3 0 0 0-2.2-2.9"/></svg></div>
+        </div>
+        <div class="j-stop" id="jNode3" style="--x:50;--y:50.000%;">
+          <div class="j-stop-label"><span class="j-num">04</span><span class="j-title">Earn DRC</span></div>
+          <div class="j-dot"><svg class="j-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10h16v9a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-9z"/><path d="M3 7h18v3H3z"/><path d="M12 7v13"/><path d="M12 7S10.6 3 8.3 3a2.1 2.1 0 0 0 0 4"/><path d="M12 7s1.4-4 3.7-4a2.1 2.1 0 0 1 0 4"/></svg></div>
+        </div>
+        <div class="j-stop" id="jNode4" style="--x:26;--y:65.111%;">
+          <div class="j-stop-label"><span class="j-num">05</span><span class="j-title">Convert to $DVT</span></div>
+          <div class="j-dot"><svg class="j-ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="6.4" cy="12" r="3.1"/><circle cx="17.6" cy="12" r="3.1"/><path d="M10.3 12h3.4"/><path d="M12.5 10.7l1.3 1.3-1.3 1.3"/></svg></div>
+        </div>
+        <div class="j-stop" id="jNode5" style="--x:26;--y:80.222%;">
+          <div class="j-stop-label"><span class="j-num">06</span><span class="j-title">Help Shape DAOasis</span></div>
+          <div class="j-dot"><svg class="j-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 4H4l8-4z"/><path d="M4 9h16"/><path d="M6.6 9v8M10.2 9v8M13.8 9v8M17.4 9v8"/><path d="M4 20h16"/></svg></div>
+        </div>
+        <div class="j-stop" id="jNode6" style="--x:50;--y:95.333%;">
+          <div class="j-stop-label"><span class="j-num">07</span><span class="j-title">Visit the Sanctuary</span></div>
+          <div class="j-dot"><svg class="j-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21v-9.5"/><path d="M12 11.5c-2.9-1.5-5.4-.6-6.4.9"/><path d="M12 11.5c2.9-1.5 5.4-.6 6.4.9"/><path d="M12 11.5c-.9-2.6-2.9-4.1-4.9-4.1"/><path d="M12 11.5c.9-2.6 2.9-4.1 4.9-4.1"/><path d="M4.5 21h15"/></svg></div>
+        </div>
       </div>
+
+      <!-- THE STAGE PANEL. Same grammar as the waypoint card on app.html's
+           Bangkok-to-Phuket map, which is the site's other scroll-driven
+           route: warm-dark ground, one hairline, a gold index line and a
+           gold rule that draws itself as the stage lands. The two journeys
+           on this site now speak the same language. -->
+      <!-- No aria-live. The panel's text changes on every stage, which
+           would be seven announcements during one scroll; the rail beside
+           it already exposes all seven stage names as static text. -->
+      <div class="j-panel" id="jPopcard">
+        <div class="j-pop-eyebrow" id="jPopEyebrow">Stage 01</div>
+        <div class="j-pop-title" id="jPopTitle">Download the App</div>
+        <div class="j-pop-lede" id="jPopLede">Your journey starts with a single tap.</div>
+        <div class="j-pop-text" id="jPopText"></div>
+        <div class="j-pop-rule"></div>
+      </div>
+
     </div>
   </div>
 </div>
@@ -3832,7 +3687,7 @@
     <div class="closing-eyebrow">DAOasis</div>
     <h2 class="closing-headline rv"><span class="ln"><i>A life built on <em>intention</em></i></span><span class="ln"><i>is the only one worth living.</i></span></h2>
     <p class="closing-body">Wellness isn't a destination. It's a practice — one that compounds quietly, over time, when you have the right structure around you. DAOasis exists to give you that structure. Every habit tracked, every lesson completed, every credit earned is a small act of self-determination.</p>
-    <div class="closing-tagline">Rest. Learn. Earn. Return.</div>
+    <div class="closing-tagline">Rest · Learn · Earn · Return</div>
   </div>
 </section>
 
@@ -3891,7 +3746,7 @@
       </div>
       <div class="footer-tagline">
         <strong>Wellness meets Web3.</strong>
-        <em>Rest. Learn. Earn. Return.</em>
+        <em>Rest · Learn · Earn · Return</em>
       </div>
       <div class="footer-appearance">
         <div class="footer-appearance-label">Appearance</div>
@@ -3996,8 +3851,10 @@
       requestAnimationFrame(() => {
         const y = window.scrollY;
         if(y > lastY && y > 80) nav.classList.add('nav-hidden'); else nav.classList.remove('nav-hidden');
-        /* resolve to the paper bar once the hero photograph is behind us */
-        nav.classList.toggle('nav-solid', y > window.innerHeight * 0.72);
+        /* No nav-solid flip any more. This page used to resolve the bar to
+           ivory past the hero; the rest of the site holds one dark
+           translucent bar over its own light sections, and the menu is
+           shared now. */
         if(prog){
           const max = document.body.scrollHeight - window.innerHeight;
           prog.style.width = (max > 0 ? (y / max) * 100 : 0) + '%';
@@ -6061,16 +5918,53 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
 (function(){
   const pin4 = document.getElementById('pin4');
   if(!pin4) return;
-  const lineFill = document.getElementById('jLineFill');
+  /* The route is an SVG path now, not a 1px div whose width was a
+     percentage. Progress is stroke-dashoffset along that path, and the
+     comet is placed with getPointAtLength — so both follow the curve
+     instead of a straight line, and neither can drift off it. */
+  const snakeFill = document.getElementById('jSnakeFill');
   const comet = document.getElementById('jComet');
-  const jTrack = document.getElementById('jTrack');
   const journeyHeader = pin4.querySelector('.journey-header');
+  /* getTotalLength() is in viewBox units, which is also what dasharray
+     takes, so the two agree whatever size the rail is rendered at. It is
+     re-read on resize only because a browser may return 0 before layout. */
+  let snakeLen = 0;
+  function measureSnake(){
+    snakeLen = snakeFill.getTotalLength() || 0;
+    snakeFill.style.strokeDasharray = snakeLen;
+    snakeFill.style.strokeDashoffset = snakeLen;
+  }
+  measureSnake();
+  window.addEventListener('resize', measureSnake, { passive: true });
   /* the section above — the Journey header waits for it to leave */
   const pin3El = document.getElementById('pin3');
   const nodes = [0,1,2,3,4,5,6].map(i => document.getElementById('jNode'+i));
   const popcard = document.getElementById('jPopcard');
   const popEyebrow = document.getElementById('jPopEyebrow');
+  const popTitle = document.getElementById('jPopTitle');
+  const popLede = document.getElementById('jPopLede');
   const popText = document.getElementById('jPopText');
+  /* The stage names and their one-liners used to be set under each
+     medallion at 15-20px and 11.5px. They are the panel's headline and
+     lede now, which is where they can actually be read. */
+  const TITLES = [
+    'Download the App',
+    'Build Healthy Habits',
+    'Join the Community',
+    'Earn DRC',
+    'Convert to $DVT (Optional)',
+    'Help Shape DAOasis',
+    'Visit the Sanctuary'
+  ];
+  const LEDES = [
+    'Your journey starts with a single tap.',
+    'Steps, sleep, hydration, breathing — every one moves you forward.',
+    'Connect with others building the same habits.',
+    'Quests, learning and referrals turn effort into Reward Credits.',
+    'Go deeper — convert DRC into the on-chain layer.',
+    'Propose and steer where DAOasis goes, as governance develops.',
+    'For the few who go all the way: a real-world retreat, earned.'
+  ];
   const DETAILS = [
     'No paperwork, no onboarding friction — install and your first ritual is already waiting.',
     'Steps, water, sleep and mindful moments — logged automatically and reflected back in a ring you actually want to fill.',
@@ -6127,9 +6021,17 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
       : 1;
     journeyHeader.style.setProperty('--jh', (jh * jh * (3 - 2 * jh)).toFixed(4));
     const stageT = Math.min(1, cur / STAGE_END);
-    const fillPct = stageT * 100;
-    lineFill.style.width = fillPct + '%';
-    comet.style.left = fillPct + '%';
+    /* Draw the route to the reader's position, and put the comet at that
+       same point ON the curve. getPointAtLength returns viewBox units, and
+       the SVG is preserveAspectRatio="none" over a 100x600 box, so x/100
+       and y/600 are exactly the percentages of the wrap the comet needs —
+       no measuring of the rendered box, and correct at any stage height. */
+    if(snakeLen > 0){
+      snakeFill.style.strokeDashoffset = (snakeLen * (1 - stageT)).toFixed(2);
+      const pt = snakeFill.getPointAtLength(snakeLen * stageT);
+      comet.style.left = (pt.x / 100 * 100).toFixed(3) + '%';
+      comet.style.top  = (pt.y / 600 * 100).toFixed(3) + '%';
+    }
     comet.style.opacity = stageT > 0.005 && stageT < 0.999 ? 1 : 0;
     /* CONTINUOUS node position. `track.pos()` is the paced position along
        the seven stops, fractional between them — 2.4 means 40% of the way
@@ -6186,7 +6088,12 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
     popcard.style.opacity = stageT > 0.01
       ? popcard.style.getPropertyValue('--pc') || '1'
       : '0';
-    jTrack.style.transform = j4ReducedMotion ? 'none' : `rotateX(${mouseY * -3}deg) rotateY(${mouseX * 3}deg)`;
+    /* The pointer parallax is gone with the horizontal track. It tilted the
+       whole row on rotateX/rotateY, which is what made a row of medallions
+       read as a floating widget — the exact complaint this rebuild is
+       answering. The route is part of the spread now and sits still.
+       mouseX/mouseY are still smoothed above and simply unused; leaving the
+       listener costs nothing and keeps the reduced-motion branch intact. */
     requestAnimationFrame(tick);
   }
 
@@ -6203,6 +6110,8 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
   const hoverIndex = -1;
   function renderCard(i){
     popEyebrow.textContent = 'Stage 0' + (i + 1);
+    popTitle.textContent = TITLES[i];
+    popLede.textContent = LEDES[i];
     popText.textContent = DETAILS[i];
   }
   /* Called directly for the same reason as the "why" section and the quest

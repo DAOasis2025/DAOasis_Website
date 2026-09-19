@@ -64,10 +64,10 @@ same conclusion and reconciled it in text instead.
 ---
 
 ## 0B. Still open, lower priority
-- **The seven-day 3D ride on `sanctuary.html`** reads as synthetic
-  ("very fake, nothing there is real"). Options are: improve materials and
-  lighting, replace with photography, or leave it. Design decision, not a
-  defect.
+- ~~**The seven-day 3D ride on `sanctuary.html`** reads as synthetic
+  ("very fake, nothing there is real").~~ **Closed 19 September 2026** — the
+  section was removed outright, along with the three.js dependency. The page
+  now has no WebGL at all. See the note at the top of `CLAUDE.md`.
 - **Mobile pin heights have not been re-paced.** Every `@media` override still
   carries its pre-3-September value.
 - `about-hero-mobile.jpg` is still missing (documented, degrades gracefully).

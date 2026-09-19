@@ -37,6 +37,131 @@ There was also an older, unlinked copy one level up (outside `site/`) with extra
 - Browser tab title on the home page was a leftover dev label ("DAOasis Hero Prototype v5"). Fixed to a real title, and added meta description + Open Graph tags so shared links preview properly (Slack/email).
 - App page hero sub-copy tightened to state the core loop explicitly (track habits/learning → earn rewards).
 
+## The tagline is four words and one format — September 19
+
+**`Rest · Learn · Earn · Return`**, middot-separated, no trailing stop, on
+every page. Do not reintroduce the full-stop form.
+
+- `sanctuary.html` was the only place setting **five** words —
+  "Rest. Learn. Practise. Connect. Return." Practise and Connect are Day
+  Four and Day Six of the seven-day programme higher up that same page; they
+  had leaked into the brand line. Fixed.
+- 22 instances across 13 pages moved from full stops to middots: footers,
+  closing lines, `<title>`, `og:title`, `og:description`, and the loop
+  diagram on `investors.html`.
+- The two **verb rows** (`.final-verbs` on sanctuary, `.sanct-verbs` on
+  web3) set each word in its own span, so the separator is a `::after`
+  middot in a **fixed-width box with column-gap 0** — the dot *is* the gap,
+  which keeps the spacing either side of every dot equal. The box is
+  `clamp(20px, 3.4vw, 38px)`: at a fixed 38px the row measured 278px against
+  260px of container on a 320px phone, wrapped, and left the third dot
+  dangling at the end of line one. It is one line at 320px now.
+- The `investors.html` loop diagram sets it on two SVG lines — `Rest ·
+  Learn` / `Earn · Return`. The line break does the third separator's work;
+  a dot hanging at the end of line one would read as a typo.
+
+## The Sanctuary hero: why the plates were blurry — September 19
+
+It was never the JPEGs. The encode is 1024×1536 for a plate that renders
+~290px wide. **Four separate things were resampling the same photograph on
+the frame where it is supposed to be sitting still**, and all four are now
+resolved to exact values at the hold rather than merely small ones:
+
+1. **`rotateY`.** Every plate sat at 3.6–11° of 3D rotation for the whole
+   settled frame, and a perspective transform resamples the bitmap at any
+   angle. Tilt is an arrival-and-departure gesture now: full while the fan
+   opens, **exactly 0 across the hold**, back as they leave. The 3D part of
+   the transform string is omitted entirely when the angle rounds to
+   nothing.
+2. **`scale()`.** The outer pair rested at 0.84, permanently drawn 16% down
+   from its own layer raster. The size difference is baked into the *width*;
+   scale resolves to exactly 1 at the hold.
+3. **Fractional geometry.** Widths and offsets were written to one decimal,
+   landing the background on half pixels. Widths are rounded to **even**
+   numbers (so `-50%` is a whole pixel, and 2:3 stays integral) and offsets
+   to integers.
+4. **A 1.6px settle blur** on the outer pair — the thing the reader was
+   actually seeing. Gone; depth is carried by size and lift, which cost no
+   sharpness. Blur is now purely the emerge/depart gesture and resolves by
+   raw ≈ 0.43, well before the hold.
+
+`will-change` dropped `filter` and `width`, which were keeping a filter
+layer alive across the held frame too.
+
+**Verified**: across raw 0.50 → 0.74 every plate's transform is a plain 2D
+integer translate — no `perspective`, no `rotateY`, no `scale` — `filter` is
+`none`, and the values are byte-identical at 0.50, 0.60 and 0.74, so nothing
+moves.
+
+### And the hold itself
+Track 700 → **780vh** (mobile 880 → 980). Everything before the hold now
+finishes by raw 0.50 instead of 0.60, and departure starts at 0.74 instead
+of 0.70: **the fan is sharp and motionless for 0.24 of the track, ~187vh,
+against 70vh before.** The black beat between the plates reaching 0 (0.85)
+and the statement starting (0.88) widened too. The arrival is not the point;
+the held frame is.
+
+## The nav is finally one nav — September 19
+
+Every page except `index.html` already carried app.html's bar. The home page
+was the last holdout and the only one where the menu looked like a different
+site's. It now uses the identical block:
+
+| | index.html, before | everywhere, now |
+|---|---|---|
+| brand | `img-02` lockup, `height:24px` | `img-09-white` mark, `width:26px`, + "DAOasis" |
+| ≤768 | brand grew to **34px** | 26px |
+| ≤600 | second header: 74–96px bar, 98–113px logo, five tiers | 18px padding, 26px mark |
+| past 72vh | `.nav-solid` flipped the whole bar to ivory | one dark translucent bar |
+
+Measured after: 75px tall at 1280×860 on both pages, same padding, same
+`rgba(23,20,18,0.88)`, same 26×28 mark, same 18px wordmark; 60px on a phone,
+where it was 96px. Two things stay index-only because they are the page's
+own, not the bar's: `.nav-waiting` (holds the bar until the intro hands
+over) and the live `--nav-h` measurement the hero photograph is positioned
+from — that variable now simply resolves to app.html's height.
+
+## The Journey is a spread, not a widget — September 19
+
+`.pin4` on index.html was a horizontal row of seven medallions under a large
+near-white card. Rebuilt as **route down the left, stage panel on the right**.
+
+- **The card was the problem.** `#FDFCF9`, 6px radius, 110px drop shadow —
+  the only near-white filled box on the site. Every other panel over a
+  photograph (app.html's waypoint card, sanctuary's pilot block) is warm-dark
+  with a hairline. The panel is now app.html's waypoint grammar exactly,
+  plus a 2px gold left edge, which is what stops a dark panel on a dark
+  picture reading as a smudge. **The two scroll-driven journeys on this site
+  now speak the same language — keep it that way.**
+- **The route is an SVG S-curve**, not a rule with discs on it. The path is a
+  Catmull-Rom spline generated *through* the seven stop points in a 100×600
+  box at `preserveAspectRatio="none"`, and each stop is placed from its own
+  `--x`/`--y` in that same box — so the medallions sit **on** the line by
+  construction. Regenerate path and stops together or not at all (generator:
+  `scratchpad/snake.js`). Progress is `stroke-dashoffset`; the comet is
+  `getPointAtLength`, so both follow the curve. Verified: the comet lands on
+  the medallion centre to the pixel at t = 0, 0.5 and 1.
+- **The seven 11.5px descriptions are gone from under the medallions** — they
+  were set over the busiest part of the frame. Each stage's name is the
+  panel's headline and its one-liner is the panel's lede, so no copy was
+  lost and the rail carries only a number and a title.
+- **Two veils now.** The old single vertical veil was measured against bands
+  (kicker / card / medallions) that no longer exist. A 90° veil runs with the
+  layout: ~0.44 combined alpha behind the route, ~0.80 behind the panel.
+- **The panel's top edge is fixed** (`align-self:start` + a vh margin), which
+  is the one rule carried over from the old card: the texts are 1–3 lines, so
+  a centred panel puts each stage's eyebrow on a different line.
+- **The pointer parallax is gone.** `rotateX/rotateY` on the whole row is
+  most of what made it read as a floating widget.
+- Breakpoint stays 1100. Checked at exactly 1101×800, the worst case it has
+  to hold: label column 178–424 inside a rail of 54–490, panel 539–1045.
+  Also checked 1366×768, 1440×900, 1920×1080 — panel top stable across all
+  seven stages, every stage inside the 100vh stage, rail always clear of the
+  panel.
+- **Not seen rendered.** The Browser pane was hidden for this session, so
+  every screenshot came back blank and `requestAnimationFrame` was frozen;
+  the layout was verified by measurement, not by eye.
+
 ## Phuket 2027 is a real map now — September 19
 
 Section 9's plate was the `PHUKET.jpg` poster; it is the illustrated island

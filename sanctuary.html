@@ -409,11 +409,13 @@ img { max-width: 100%; }
 /* ══════════════════════════════════════════════
    SECTION 1 — HERO
 ══════════════════════════════════════════════ */
-/* 620 -> 700vh. Two things were added that need scroll to spend: a fourth
-   plate, and a beat of black between the plates leaving and the statement
-   arriving. Squeezing both into the old track would have bought the pause
-   by making everything before it faster. */
-.hero-outer { position: relative; height: 700vh; }
+/* 620 -> 700 -> 780vh. The fourth plate and the black beat before the
+   statement bought the first rise; the second is the HELD frame. The fan
+   now settles at raw 0.50 and does not move again until 0.74 — 0.24 of a
+   780vh track, about 187vh of scroll, against 70vh before. That hold is
+   the only place the four photographs are sharp AND still, so it is the
+   part of this sequence worth the most scroll. */
+.hero-outer { position: relative; height: 780vh; }
 .hero-stage {
   position: sticky; top: 0; height: 100vh; overflow: hidden;
   display: flex; align-items: center; justify-content: center;
@@ -476,7 +478,11 @@ img { max-width: 100%; }
   transform: translate(-50%,-50%) scale(0.7);
   opacity: 0; pointer-events: none;
   box-shadow: 0 50px 110px rgba(0,0,0,0.8);
-  will-change: transform, opacity, filter, width;
+  /* transform and opacity only. `filter` and `width` in this list kept a
+     filter layer alive for the whole sequence, including the held frame
+     where the filter is `none` — one more thing rasterising a photograph
+     that is supposed to be sitting still and sharp. */
+  will-change: transform, opacity;
 }
 .hero-plate::after {
   content: ''; position: absolute; inset: 0; pointer-events: none;
@@ -521,7 +527,7 @@ img { max-width: 100%; }
 .hero-bridge .btn-row { justify-content: center; margin-top: 46px; }
 
 @media(max-width:900px){
-  .hero-outer { height: 880vh; }
+  .hero-outer { height: 980vh; }
   .hero-title-eyebrow { letter-spacing: 0.3em; margin-bottom: 26px; }
   .hero-plate { box-shadow: 0 30px 60px rgba(0,0,0,0.78); }
   /* SPEND THE TRACKING, NOT THE TYPE SIZE.
@@ -1124,8 +1130,20 @@ img { max-width: 100%; }
 ══════════════════════════════════════════════ */
 .final { text-align: center; padding: var(--dv-head) 8% 22vh; background: radial-gradient(ellipse at 50% 40%, #221c16 0%, var(--mineral) 68%); position: relative; }
 .final .display { max-width: 16ch; margin: 0 auto; }
-.final-verbs { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px 38px; margin: 7vh 0 5vh; }
+/* The separator is a middot set in the gap, not a full stop after each word:
+   the tagline is one four-beat line site-wide and the dots are what make it
+   read as one line rather than four sentences. The column gap is 0 because
+   the dot IS the gap — a 38px box with the mark centred in it, so the
+   spacing either side of every dot is equal. The last word has no dot, so
+   the line cannot end on a separator when it wraps. */
+.final-verbs { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px 0; margin: 7vh 0 5vh; }
 .final-verbs span { font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300; font-size: var(--t-sub); color: rgba(247,244,238,0.55); }
+/* The dot box narrows with the viewport. At a fixed 38px the four words
+   plus three dots measured 278px against 260px of container on a 320px
+   phone, so the row wrapped and left the third dot dangling at the end of
+   line one — a separator with nothing after it reads as a typo. At 20px it
+   measures ~224px and the tagline stays the single line it is meant to be. */
+.final-verbs span:not(:last-child)::after { content: '·'; display: inline-block; width: clamp(20px, 3.4vw, 38px); text-align: center; font-style: normal; color: rgba(196,138,90,0.7); }
 .final .copy { margin: 0 auto 48px; text-align: center; }
 .final .btn-row { justify-content: center; }
 @media(max-width:900px){ .final { padding: 15vh 8%; } }
@@ -1722,7 +1740,12 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
       <span class="ln"><i>The journey continues</i></span>
       <span class="ln"><i>beyond the Sanctuary.</i></span>
     </h2>
-    <div class="final-verbs soft d2"><span>Rest.</span><span>Learn.</span><span>Practise.</span><span>Connect.</span><span>Return.</span></div>
+    <!-- THE TAGLINE IS FOUR WORDS. This was the only place on the site that
+         set five — "Practise" and "Connect" are Day Four and Day Six of the
+         seven-day programme higher up this page, and they had leaked into
+         the brand line. Every other instance, on every page, is
+         "Rest · Learn · Earn · Return" Match web3.html's .sanct-verbs row. -->
+    <div class="final-verbs soft d2"><span>Rest</span><span>Learn</span><span>Earn</span><span>Return</span></div>
     <p class="copy soft d3">The Sanctuary is one part of the DAOasis journey.</p>
     <div class="btn-row soft d3">
       <a class="btn btn-light" href="app.html">Explore the App</a>
@@ -1737,7 +1760,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
   <div class="footer-top">
     <div>
       <div class="footer-brand-logo"><img src="images/img-09-white.png" alt="DAOasis mark" /><span>DAOasis</span></div>
-      <div class="footer-tagline"><strong>Wellness meets Web3.</strong><em>Rest. Learn. Earn. Return.</em></div>
+      <div class="footer-tagline"><strong>Wellness meets Web3.</strong><em>Rest · Learn · Earn · Return</em></div>
       <div class="footer-appearance">
         <div class="footer-appearance-label">Appearance</div>
         <div class="footer-toggle"><button id="ftLight">Light</button><button id="ftDark" class="active">Dark</button></div>
@@ -1995,11 +2018,13 @@ const lead = (window.DAO && DAO.cine && DAO.cine.lead) ? DAO.cine.lead
     title.style.pointerEvents = tCard > 0.02 ? 'auto' : 'none';
 
     /* 2 — the Sanctuary emerges. The inner pair arrives first and the
-       outer pair follows it out, so the fan opens rather than appearing. */
-    const emIn  = ease(clamp01((raw - 0.24) / 0.18));
-    const emOut = ease(clamp01((raw - 0.30) / 0.20));
-    const spread = ease(clamp01((raw - 0.30) / 0.26));
-    const zoom   = ease(clamp01((raw - 0.26) / 0.34));
+       outer pair follows it out, so the fan opens rather than appearing.
+       Every one of these now finishes by raw 0.50, where the old set ran
+       to 0.60 — the arrival is not the point, the held frame after it is. */
+    const emIn  = ease(clamp01((raw - 0.24) / 0.16));
+    const emOut = ease(clamp01((raw - 0.29) / 0.17));
+    const spread = ease(clamp01((raw - 0.28) / 0.22));
+    const zoom   = ease(clamp01((raw - 0.25) / 0.25));
 
     /* Four PORTRAIT plates need width the old three landscape ones did not,
        so the cap is computed from the span of the whole fan rather than
@@ -2017,41 +2042,70 @@ const lead = (window.DAO && DAO.cine && DAO.cine.lead) ? DAO.cine.lead
        statement faded up THROUGH the photographs — the wording was legible
        while the plates were still on screen, which is the one thing this
        sequence must not do. */
-    const pT   = clamp01((raw - 0.70) / 0.14);
+    const pT   = clamp01((raw - 0.74) / 0.12);
     const pass = pT * pT;                       /* accelerating departure */
-    const gone = ease(clamp01((raw - 0.70) / 0.12));
-    const bp   = ease(clamp01((raw - 0.84) / 0.12));
+    const gone = ease(clamp01((raw - 0.74) / 0.11));
+    const bp   = ease(clamp01((raw - 0.88) / 0.12));
 
     const LANE = isMobile ? LANE_M : LANE_D;
-    const drift = REDUCED ? 0 : clamp01((raw - 0.52) / 0.18) * (isMobile ? 5 : 9);
+    /* The idle drift is a held-frame gesture, so it starts with the hold. */
+    const drift = REDUCED ? 0 : clamp01((raw - 0.50) / 0.16) * (isMobile ? 5 : 9);
 
+    /* ══ WHY THE PLATES LOOK SHARP AT REST ══════════════════════════════
+       They did not, and it was not the JPEGs — the encode is 1024x1536 for
+       a plate that renders ~290px wide. It was four separate things all
+       resampling the same photograph on the held frame, and all four are
+       resolved to exact values AT THE HOLD rather than merely small:
+
+         1. rotateY. Every plate sat at 3.6-11 degrees of 3D rotation for
+            the whole settled frame, and a perspective transform resamples
+            the bitmap whatever the angle is. The tilt is now an ARRIVAL
+            AND DEPARTURE gesture only: it is full while the fan opens,
+            exactly 0 across the hold, and returns as they leave. The 3D
+            part of the transform string is omitted entirely when the
+            angle rounds to nothing, so the held frame is a plain 2D
+            translate and the compositor has nothing to interpolate.
+         2. scale(). The outer pair rested at 0.84, so it was permanently
+            drawn 16% down from its own layer raster. The size difference
+            is baked into the WIDTH now and scale resolves to exactly 1 at
+            the hold — same composition, no resample.
+         3. Fractional geometry. Widths and offsets were written to one
+            decimal, which lands the background image on half pixels.
+            Widths are rounded to EVEN numbers (so the -50% centring is a
+            whole pixel too) and the offsets to integers.
+         4. A 1.6px settle blur on the outer pair, which was simply the
+            thing the reader was seeing and calling blurry. Gone: depth is
+            carried by size and lift, which cost no sharpness. The blur is
+            now purely the emerge/depart gesture and is fully resolved by
+            zoom 0.74 — that is raw ~0.43, well before the hold begins. */
     for(let i = 0; i < 4; i++){
       const outerPair = (i === 0 || i === 3);
       const em = outerPair ? emOut : emIn;
 
       /* they converge toward the centre line on the way in, part on the way out */
       const lane = LANE[i] * lerp(0.18, 1, spread) * (1 + pass * 1.25);
-      const x = lane * w;
-      const y = LIFT[i] * w * (1 + pass * 0.8)
-              + (outerPair ? drift : -drift * 0.5);
-      const sc = lerp(0.76, SETTLE[i], zoom) * (1 + pass * 0.66);
-      const tilt = lerp(TILT[i] * 1.8, TILT[i], spread);
-      /* Mobile gets no settle blur at all — a 168px plate behind a 1.6px
-         blur is just a smudge, and the phone is doing four of them. */
-      const blur = (isMobile ? 0 : lerp(10, outerPair ? 1.6 : 0, zoom)) + pass * 15;
+      const x = Math.round(lane * w);
+      const y = Math.round(LIFT[i] * w * (1 + pass * 0.8)
+              + (outerPair ? drift : -drift * 0.5));
+      /* even, so translate(-50%) is a whole pixel and 2:3 stays integral */
+      const wi = Math.round(w * SETTLE[i] / 2) * 2;
+      const sc = lerp(0.76, 1, zoom) * (1 + pass * 0.66);
+      const tilt = TILT[i] * ((1 - spread) + pass * 0.9);
+      const blur = (isMobile ? 0 : lerp(9, 0, Math.min(1, zoom * 1.35))) + pass * 15;
 
       const el = plates[i];
-      el.style.width = w.toFixed(1) + 'px';
+      el.style.width = wi + 'px';
       el.style.transform =
-        'translate(calc(-50% + ' + x.toFixed(1) + 'px), calc(-50% + ' + y.toFixed(1) + 'px))'
-        + ' perspective(1400px) rotateY(' + tilt.toFixed(2) + 'deg)'
-        + ' scale(' + sc.toFixed(3) + ')';
+        'translate(calc(-50% + ' + x + 'px), calc(-50% + ' + y + 'px))'
+        + (Math.abs(tilt) > 0.05
+            ? ' perspective(1400px) rotateY(' + tilt.toFixed(2) + 'deg)' : '')
+        + (Math.abs(sc - 1) > 0.0005 ? ' scale(' + sc.toFixed(4) + ')' : '');
       el.style.filter = blur > 0.05 ? 'blur(' + blur.toFixed(2) + 'px)' : 'none';
       el.style.opacity = em * (1 - gone);
     }
 
     /* the caption only exists while the fan is settled and still */
-    if(cap) cap.classList.toggle('show', raw > 0.56 && pT < 0.05);
+    if(cap) cap.classList.toggle('show', raw > 0.50 && pT < 0.05);
 
     bridge.style.opacity = bp;
     bridge.style.pointerEvents = bp > 0.06 ? 'auto' : 'none';
