@@ -6,8 +6,6 @@
   (function(){
     var t = localStorage.getItem('daoasis-theme') || 'dark';
     if(t === 'light') document.documentElement.setAttribute('data-theme','light');
-    /* test hook, see stage3D() — ?shot=1 turns on frame capture */
-    if(location.search.indexOf('shot=1') > -1 || localStorage.getItem('daoasis-shot') === '1') window.__SHOT = true;
   })();
 </script>
 
@@ -21,13 +19,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Frank+Ruhl+Libre:wght@300;400;500&display=swap" rel="stylesheet" />
-<!-- DEFERRED — same reasoning as index.html. This is ~600KB from a CDN and as
-     a blocking <head> script nothing on the page could paint until it landed,
-     which on a phone is seconds of blank screen while the reader scrolls on.
-     stage3D() already degrades to .no-webgl when THREE is missing, so the
-     call site MUST wait for the deferred script rather than run early and
-     silently fall back to the static text — see the whenTHREE gate below. -->
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
 <style>
 /* ══════════════════════════════════════════════════════════════
@@ -38,8 +29,8 @@
    change the path here only.
 
    --img-hero-01        Sanctuary architecture    (hero, centre plate)
-   --img-hero-02        Tropical environment      (hero, left plate)
-   --img-hero-03        Human experience          (hero, right plate)
+   --img-hero-02        Reset                     (hero, left plate)
+   --img-hero-03        Integrate                 (hero, right plate)
    --img-sanctuary-wide Wide establishing shot    (Section 2)
    --img-day-*          One plate per time slot   (Section 6)
    --img-immersion      Full-bleed cinematic still
@@ -49,8 +40,8 @@
 ══════════════════════════════════════════════════════════════ */
 :root {
   --img-hero-01:        url('images/img-07.jpg');
-  --img-hero-02:        url('images/img-11.jpg');
-  --img-hero-03:        url('images/img-01.jpg');
+  --img-hero-02:        url('images/Reset.jpg');
+  --img-hero-03:        url('images/Integrate.jpg');
 
   --img-sanctuary-wide: url('images/Sunrise.jpg');
 
@@ -176,7 +167,7 @@ img { max-width: 100%; }
   padding: 18px 5%;
   background: rgba(23,20,18,0.88); backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(247,244,238,0.07);
-  transition: transform 0.35s ease;
+  transition:transform 0.35s var(--ease);
 }
 .nav.nav-hidden { transform: translateY(-100%); }
 /* absolutely centred, not a grid 1fr split — a grid track stops being
@@ -187,13 +178,13 @@ img { max-width: 100%; }
 .nav-cta {
   background: var(--warm-white); color: var(--charcoal); font-size:var(--t-note);
   padding: 10px 24px; border-radius: 24px; text-decoration: none;
-  letter-spacing: 0.03em; transition: opacity 0.2s; white-space: nowrap;
+  letter-spacing: 0.03em; transition:opacity 0.2s var(--ease); white-space: nowrap;
 }
 .nav-cta:hover { opacity: 0.88; }
 @media(max-width:768px){.nav>.nav-cta{display:none;}}
 .nav-burger { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 4px; background: none; border: none; }
 .nav-burger-bars { display: flex; flex-direction: column; gap: 5px; }
-.nav-burger-bars i { display: block; width: 20px; height: 1.5px; background: var(--warm-white); transition: transform 0.3s var(--ease), opacity 0.3s var(--ease); font-style: normal; }
+.nav-burger-bars i { display: block; width: 20px; height: 1.5px; background: var(--warm-white); transition:transform 0.3s var(--ease), opacity 0.3s var(--ease); font-style: normal; }
 .nav-burger.open .nav-burger-bars i:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
 .nav-burger.open .nav-burger-bars i:nth-child(2) { opacity: 0; }
 .nav-burger.open .nav-burger-bars i:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
@@ -210,14 +201,14 @@ img { max-width: 100%; }
 }
 .nav-drawer-backdrop {
   position: fixed; inset: 0; z-index: 88; background: rgba(9,8,7,0.55);
-  opacity: 0; pointer-events: none; transition: opacity 0.4s;
+  opacity: 0; pointer-events: none; transition:opacity 0.4s var(--ease);
 }
 .nav-drawer-backdrop.open { opacity: 1; pointer-events: auto; }
 .nav-drawer {
   position: fixed; top: 0; left: 0; bottom: 0; z-index: 89; width: min(420px,88vw);
   background: rgba(23,20,18,0.98); backdrop-filter: blur(16px);
   display: flex; flex-direction: column;
-  transform: translateX(-100%); transition: transform 0.4s var(--ease);
+  transform: translateX(-100%); transition:transform 0.4s var(--ease);
   border-right: 1px solid rgba(247,244,238,0.08); overflow-y: auto;
 }
 .nav-drawer.open { transform: translateX(0); }
@@ -226,11 +217,11 @@ img { max-width: 100%; }
   padding: 22px 28px; border-bottom: 1px solid rgba(247,244,238,0.08); flex-shrink: 0;
 }
 .nav-drawer-head img { height: 22px; width: auto; opacity: 0.92; }
-.nav-drawer-close { background: none; border: none; color: #8a8377; font-size: 28px; line-height: 1; cursor: pointer; padding: 2px 6px; transition: color 0.2s; }
+.nav-drawer-close { background: none; border: none; color: #8a8377; font-size: 28px; line-height: 1; cursor: pointer; padding: 2px 6px; transition:color 0.2s var(--ease); }
 .nav-drawer-close:hover { color: var(--warm-white); }
 .nav-drawer-list { display: flex; flex-direction: column; padding: 6px 28px 28px; }
 .nav-drawer a, .nav-drawer span.drawer-dead {
-  font-family: 'Cormorant Garamond', serif; font-size: 22px; color: #8a8377; text-decoration: none; transition: color 0.2s;
+  font-family: 'Cormorant Garamond', serif; font-size: 22px; color: #8a8377; text-decoration: none; transition:color 0.2s var(--ease);
   padding: 16px 0; border-bottom: 1px solid rgba(247,244,238,0.08);
 }
 .nav-drawer a:hover, .nav-drawer a.active { color: var(--warm-white); }
@@ -305,11 +296,11 @@ img { max-width: 100%; }
 .divider.light .divider-line { background: rgba(43,38,35,0.2); }
 .divider.green .divider-line { background: rgba(247,244,238,0.22); }
 /* the rule draws outward from the mark when it enters view */
-.divider .divider-line { transform: scaleX(0); transition: transform 1.4s var(--ease); }
+.divider .divider-line { transform: scaleX(0); transition:transform 1.4s var(--ease); }
 .divider.shown .divider-line { transform: scaleX(1); }
 .divider .divider-line:first-child { transform-origin: right; }
 .divider .divider-line:last-child  { transform-origin: left; }
-.divider .divider-mark { opacity: 0; transition: opacity 0.9s ease; }
+.divider .divider-mark { opacity: 0; transition:opacity 0.9s var(--ease); }
 .divider.shown.dark  .divider-mark { opacity: 0.8; }
 .divider.shown.light .divider-mark { opacity: 0.55; }
 .divider.shown.green .divider-mark { opacity: 0.7; }
@@ -329,7 +320,7 @@ img { max-width: 100%; }
   font-size:var(--t-nano); letter-spacing: 0.24em; text-transform: uppercase;
   display: flex; align-items: center; gap: 14px; margin-bottom: 26px;
 }
-.eyebrow::before { content: ''; display: block; width: 0; height: 1px; background: currentColor; opacity: 0.55; transition: width 1.1s var(--ease) 0.15s; }
+.eyebrow::before { content: ''; display: block; width: 0; height: 1px; background: currentColor; opacity: 0.55; transition:width 1.1s var(--ease) 0.15s; }
 .rv.show .eyebrow::before, .eyebrow.show::before { width: 28px; }
 .eyebrow.centered { justify-content: center; }
 .on-light .eyebrow { color: #8a7f6d; }
@@ -370,7 +361,7 @@ img { max-width: 100%; }
 .ln > i {
   display: block; font-style: inherit; color: inherit;
   transform: translateY(108%);
-  transition: transform 1.15s var(--ease);
+  transition:transform 1.15s var(--ease);
 }
 .rv.show .ln > i { transform: translateY(0); }
 .rv .ln:nth-child(2) > i { transition-delay: 0.09s; }
@@ -379,7 +370,7 @@ img { max-width: 100%; }
 
 /* ── SOFT REVEAL for body copy and blocks ── */
 .rv { opacity: 1; }
-.rv .soft { opacity: 0; transform: translateY(20px); transition: opacity 1s var(--ease), transform 1s var(--ease); }
+.rv .soft { opacity: 0; transform: translateY(20px); transition:opacity 1s var(--ease), transform 1s var(--ease); }
 .rv.show .soft { opacity: 1; transform: translateY(0); }
 .rv.show .soft.d1 { transition-delay: 0.14s; }
 .rv.show .soft.d2 { transition-delay: 0.26s; }
@@ -393,7 +384,7 @@ img { max-width: 100%; }
 /* ── BUTTONS ── */
 .btn { display: inline-block; padding: 16px 36px; border-radius: 40px; text-decoration: none;
        font-size:var(--t-small); letter-spacing: 0.16em; text-transform: uppercase;
-       transition: opacity 0.3s, border-color 0.3s, background 0.3s, color 0.3s; }
+       transition:opacity 0.3s var(--ease), border-color 0.3s var(--ease), background 0.3s var(--ease), color 0.3s var(--ease); }
 .btn-light { background: var(--warm-white); color: var(--charcoal); }
 .btn-light:hover { opacity: 0.86; }
 .btn-ghost { border: 1px solid rgba(247,244,238,0.3); color: var(--warm-white); }
@@ -454,7 +445,7 @@ img { max-width: 100%; }
 .hero-cue {
   position: absolute; bottom: 7vh; left: 50%; transform: translateX(-50%);
   font-size:var(--t-nano); letter-spacing: 0.28em; text-transform: uppercase;
-  color: rgba(247,244,238,0.42); opacity: 0; transition: opacity 1.2s ease;
+  color: rgba(247,244,238,0.42); opacity: 0; transition:opacity 1.2s var(--ease);
 }
 .hero-cue.show { opacity: 1; }
 
@@ -472,15 +463,20 @@ img { max-width: 100%; }
   box-shadow: inset 0 0 0 1px rgba(247,244,238,0.16);
 }
 #heroPlate01 { background-image: var(--img-hero-01); z-index: 7; }
-#heroPlate02 { background-image: var(--img-hero-02); background-position: center 62%; z-index: 6; }
-#heroPlate03 { background-image: var(--img-hero-03); background-position: 58% 55%; z-index: 6; }
+/* Focal points belong to the photographs, so they moved with them. Reset is
+   an overhead frame with the swimmer dead centre — anything off centre crops
+   the one figure in it out of a canopy of palms. Integrate is a fire with the
+   group standing behind it; 46% keeps both the flame and their faces in a
+   portrait plate instead of filling it with sand. */
+#heroPlate02 { background-image: var(--img-hero-02); background-position: center center; z-index: 6; }
+#heroPlate03 { background-image: var(--img-hero-03); background-position: center 46%; z-index: 6; }
 
 /* a caption per plate — appears only when the trio has settled */
 .hero-plate-cap {
   position: absolute; left: 50%; transform: translateX(-50%);
   bottom: 11vh; z-index: 9; text-align: center;
   font-size:var(--t-nano); letter-spacing: 0.28em; text-transform: uppercase;
-  color: rgba(247,244,238,0.5); opacity: 0; transition: opacity 0.8s ease;
+  color: rgba(247,244,238,0.5); opacity: 0; transition:opacity 0.8s var(--ease);
 }
 .hero-plate-cap.show { opacity: 1; }
 
@@ -791,7 +787,7 @@ img { max-width: 100%; }
        because nothing scrubs on mobile: this is a one-shot reveal, which
        is the one case a CSS transition is the right clock. */
     opacity: 0; transform: translateY(18px) scale(1.015);
-    transition: opacity 1s var(--ease), transform 1.2s var(--ease);
+    transition:opacity 1s var(--ease), transform 1.2s var(--ease);
   }
   .found-item.in::before { opacity: 1; transform: none; }
   /* The wash rides as a second background layer, so the photographs sit IN
@@ -818,7 +814,7 @@ img { max-width: 100%; }
     background-image: var(--found-wash), var(--img-found-community);
     background-position: center 50%; }
   @media (prefers-reduced-motion: reduce){
-    .found-item::before { transition: opacity 0.3s ease; transform: none; }
+    .found-item::before { transition:opacity 0.3s var(--ease); transform: none; }
   }
   /* no scrubbing on mobile — the whole list is open, so the dot's live
      layer is forced on rather than left at whatever --w a desktop width
@@ -847,10 +843,7 @@ img { max-width: 100%; }
   height: clamp(168px, 30vh, 300px); }
 /* SCRUBBED — see the note on .found-item. --w is how live this day is.
    The seven days are stacked in one stage, so their cross-fade IS the
-   transition: it has to be the paced scroll value, not a 0.7s opacity
-   transition fired by a class flip. */
-.seven-day {
-  position: absolute; inset: 0;
+   transition:it has to be the paced scroll value, not a 0.7s var(--ease) opacity transition fired by a class flip. */ .seven-day { position: absolute; inset: 0;
   display: grid; grid-template-columns: auto 1fr; gap: 6%; align-items: center;
   opacity: var(--w, 0); pointer-events: none;
 }
@@ -948,7 +941,7 @@ img { max-width: 100%; }
 .day-entry {
   min-height: 88vh; display: flex; flex-direction: column; justify-content: center;
   padding: 8vh 0; border-bottom: 1px solid rgba(247,244,238,0.09);
-  opacity: 0.26; transition: opacity 0.9s var(--ease);
+  opacity: 0.26; transition:opacity 0.9s var(--ease);
 }
 .day-entry.on { opacity: 1; }
 .day-entry:first-child { padding-top: 0; }
@@ -964,7 +957,7 @@ img { max-width: 100%; }
   /* Mobile keeps the class-driven plate: the band is only 42vh and the
      entries are read one at a time, so there is no travel to scrub through.
      Desktop's scrubbed --w is bypassed here rather than fighting it. */
-  .day-media-layer { transition: opacity 0.9s var(--ease); transform: none; opacity: 0; }
+  .day-media-layer { transition:opacity 0.9s var(--ease); transform: none; opacity: 0; }
   .day-media-layer.on { opacity: 1; }
   .day-clock { font-size: 40px; left: 7%; bottom: 7%; }
   .day-list { padding: 7vh 8% 26vh; }
@@ -978,58 +971,6 @@ img { max-width: 100%; }
   .day-media-layer[data-media="move"]      { background-position: center 36%; }
   .day-media-layer[data-media="integrate"] { background-position: center 35%; }
   .day-media-veil { background: linear-gradient(180deg, rgba(11,9,8,0.32) 0%, rgba(11,9,8,0.08) 50%, rgba(11,9,8,0.62) 100%); }
-}
-
-/* ══════════════════════════════════════════════
-   3D STAGES
-══════════════════════════════════════════════ */
-.three-outer { position: relative; background: #07100f; }
-/* THE RIDE'S HEIGHT LIVES HERE, NOT ON THE ELEMENT.
-   It was an inline `style="height:460vh"`, which no media query can reach
-   without !important — and that is why this was the one pinned section on
-   the site with no mobile value at all. Every other pin is cut for a
-   handset (sanctuary hero 620->500, app hero 515->320, quest 600->420,
-   market 500->400, web3 hero 600->480); this one held a reader for the
-   full desktop 460vh, 4.6 screens of first-person WebGL on a phone.
-   370vh puts it at 80% of desktop, in line with the two heroes, and still
-   leaves ~53vh per lantern across the seven days. */
-  /* HEIGHT SET BY BEATS. 7 beats x 83.33vh + 100vh of sticky, so each
-     beat gets ~0.70 screens of scroll AFTER the 8% settle pad at each end of
-     the track takes its share. Below about 0.6 screens a beat is 3-4 wheel
-     notches and the sequence reads as flashing past. See the pacing table in
-     CLAUDE.md before changing this. */
-#loopOuter { height: 685vh; background: #05080b; }
-@media(max-width:900px){ #loopOuter { height: 592vh; } }
-.three-sticky { position: sticky; top: 0; height: 100vh; overflow: hidden; }
-.three-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-.three-vignette {
-  position: absolute; inset: 0; pointer-events: none; z-index: 2;
-  background: radial-gradient(ellipse at 50% 50%, transparent 45%, rgba(0,0,0,0.6) 100%);
-}
-.three-copy { position: absolute; left: 8%; top: 12vh; z-index: 4; max-width: 470px; pointer-events: none; }
-/* was clamp(30px,3.6vw,54px) — the only section headline on the page that
-   was not on the shared ladder, so the 3D sections read as a different
-   document from the rest of the page. */
-.three-copy .display { font-size: var(--t-display); }
-.three-copy .copy { font-size:var(--t-body-s); margin-top: 22px; max-width: 370px; }
-
-.three-fallback { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; color: rgba(247,244,238,0.35); font-size:var(--t-meta); line-height: 1.9; text-align: center; padding: 0 12%; z-index: 5; }
-.three-outer.no-webgl .three-fallback { display: flex; }
-.three-outer.no-webgl .three-canvas { display: none; }
-
-/* loop readout */
-.loop-readout { position: absolute; left: 50%; transform: translateX(-50%); bottom: 9vh; z-index: 4; text-align: center; pointer-events: none; }
-.loop-day { font-family: 'Cormorant Garamond', serif; font-size: var(--t-lead); font-weight: 300; color: var(--warm-white); line-height: 1.02; }
-.loop-day em { font-style: italic; color: var(--gold); }
-.loop-sub { font-size:var(--t-nano); letter-spacing: 0.26em; text-transform: uppercase; color: rgba(247,244,238,0.45); margin-top: 14px; }
-.loop-close { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); z-index: 4; text-align: center; opacity: 0; transition: opacity 1.4s ease; pointer-events: none; }
-.loop-close.show { opacity: 1; }
-.loop-close-text { font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300; font-size: var(--t-accent); color: var(--warm-white); line-height: 1.15; }
-
-@media(max-width:900px){
-  .three-copy { left: 7%; right: 7%; top: 11vh; max-width: none; }
-  .three-copy .copy { max-width: none; font-size:var(--t-body-s); }
-  .loop-readout { bottom: 7vh; }
 }
 
 /* ══════════════════════════════════════════════
@@ -1125,7 +1066,7 @@ img { max-width: 100%; }
   width: 100%; background: transparent; border: none;
   border-bottom: 1px solid rgba(43,38,35,0.24);
   padding: 13px 0; font-family: 'Frank Ruhl Libre', serif; font-size:var(--t-body);
-  color: var(--charcoal); border-radius: 0; transition: border-color 0.35s ease;
+  color: var(--charcoal); border-radius: 0; transition:border-color 0.35s var(--ease);
 }
 .ea-input:focus, .ea-select:focus, .ea-textarea:focus { outline: none; border-bottom-color: var(--gold); }
 .ea-input::placeholder, .ea-textarea::placeholder { color: rgba(43,38,35,0.3); }
@@ -1141,7 +1082,7 @@ img { max-width: 100%; }
   font-family: 'Frank Ruhl Libre', serif; border: none; cursor: pointer;
   background: var(--mineral); color: var(--warm-white);
   padding: 18px 46px; border-radius: 40px;
-  font-size:var(--t-small); letter-spacing: 0.16em; text-transform: uppercase; transition: opacity 0.3s ease;
+  font-size:var(--t-small); letter-spacing: 0.16em; text-transform: uppercase; transition:opacity 0.3s var(--ease);
 }
 .ea-button:hover { opacity: 0.86; }
 .ea-disclaimer { margin-top: 22px; font-size:var(--t-note); color: #8a7f6d; line-height: 1.8; max-width: 540px; }
@@ -1172,13 +1113,13 @@ img { max-width: 100%; }
 .footer-tagline strong { display: block; color: #b8b1a4; font-weight: 500; }
 .footer-tagline em { font-style: italic; }
 .footer-col-label { font-size:var(--t-nano); letter-spacing: 0.12em; text-transform: uppercase; color: #8f887d; margin-bottom: 18px; }
-.footer-col a, .footer-col span { display: block; font-size:var(--t-note); color: #8a8377; text-decoration: none; margin-bottom: 11px; transition: color 0.2s; }
+.footer-col a, .footer-col span { display: block; font-size:var(--t-note); color: #8a8377; text-decoration: none; margin-bottom: 11px; transition:color 0.2s var(--ease); }
 .footer-col a:hover { color: var(--warm-white); }
 .footer-bottom { display: flex; justify-content: space-between; padding-top: 4vh; font-size:var(--t-small); color: #8a8377; }
 .footer-appearance { margin-top: 22px; }
 .footer-appearance-label { font-size:var(--t-nano); letter-spacing: 0.1em; text-transform: uppercase; color: #8f887d; margin-bottom: 8px; }
 .footer-toggle { display: inline-flex; background: rgba(247,244,238,0.08); border-radius: 20px; padding: 3px; }
-.footer-toggle button { background: none; border: none; color: #9a9285; font-size:var(--t-small); padding: 6px 14px; border-radius: 16px; cursor: pointer; transition: background 0.2s var(--ease), border-color 0.2s var(--ease), color 0.2s var(--ease), transform 0.2s var(--ease); letter-spacing: 0.04em; text-transform: uppercase; font-family: 'Frank Ruhl Libre', serif; }
+.footer-toggle button { background: none; border: none; color: #9a9285; font-size:var(--t-small); padding: 6px 14px; border-radius: 16px; cursor: pointer; transition:background 0.2s var(--ease), border-color 0.2s var(--ease), color 0.2s var(--ease), transform 0.2s var(--ease); letter-spacing: 0.04em; text-transform: uppercase; font-family: 'Frank Ruhl Libre', serif; }
 .footer-toggle button.active { background: rgba(247,244,238,0.14); color: var(--warm-white); }
 @media(max-width:768px) { .footer-top { grid-template-columns: 1fr 1fr; gap: 32px; } .footer-bottom { flex-direction: column; gap: 8px; } }
 
@@ -1265,11 +1206,11 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
       <div class="hero-cue" id="heroCue">Scroll to enter ↓</div>
     </div>
 
-    <div class="hero-plate" id="heroPlate02" role="img" aria-label="The tropical environment surrounding the Sanctuary"></div>
-    <div class="hero-plate" id="heroPlate03" role="img" aria-label="A person at rest within the Sanctuary"></div>
+    <div class="hero-plate" id="heroPlate02" role="img" aria-label="Seen from above, one person floating alone in a pool set deep in a palm canopy"></div>
+    <div class="hero-plate" id="heroPlate03" role="img" aria-label="A group gathered around a beach fire at dusk"></div>
     <div class="hero-plate" id="heroPlate01" role="img" aria-label="Sanctuary architecture at first light"></div>
 
-    <div class="hero-plate-cap" id="heroPlateCap">Architecture · Environment · Experience</div>
+    <div class="hero-plate-cap" id="heroPlateCap">Architecture · Stillness · Community</div>
     <div class="hero-grain"></div>
   </section>
 
@@ -1610,47 +1551,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
   </div>
 </section>
 
-<div class="divider dark bg-mineral to-bleed">
-  <div class="divider-inner">
-    <div class="divider-line"></div>
-    <img src="images/img-09-white.png" alt="" class="divider-mark" />
-    <div class="divider-line"></div>
-  </div>
-</div>
-
-
-<!-- ══════════════════════════════════════════════
-     3D TWO — RIDE THE SEVEN DAY LOOP
-     You travel along the route in first person, passing
-     each day. At the end the camera pulls back and the
-     route is revealed as a closed loop — it never had a
-     start line or a finish line.
-══════════════════════════════════════════════ -->
-<div class="three-outer" id="loopOuter">
-  <div class="three-sticky grain">
-    <canvas class="three-canvas" id="loopCanvas"></canvas>
-    <div class="three-vignette"></div>
-
-    <div class="three-copy on-dark" id="loopCopy">
-      <div class="eyebrow show">The Seven Day Journey</div>
-      <h2 class="display">Travel it<br><em>from the inside.</em></h2>
-      <p class="copy">There is no start line and no finish line. You enter the rhythm wherever it currently is.</p>
-    </div>
-
-    <div class="loop-readout">
-      <div class="loop-day" id="loopDay">Day 01 — <em>Arrive</em></div>
-      <div class="loop-sub" id="loopSub">Entering the rhythm</div>
-    </div>
-
-    <div class="loop-close" id="loopClose">
-      <div class="loop-close-text">It was never a line.<br>It was always a loop.</div>
-    </div>
-
-    <div class="three-fallback">Seven days forming one continuous loop — arrive, recover, learn, practise, account, connect, integrate — with no start line and no finish line.</div>
-  </div>
-</div>
-
-<div class="divider dark solo" style="background:#05080b;">
+<div class="divider dark bg-mineral">
   <div class="divider-inner">
     <div class="divider-line"></div>
     <img src="images/img-09-white.png" alt="" class="divider-mark" />
@@ -2365,1103 +2266,6 @@ const lead = (window.DAO && DAO.cine && DAO.cine.lead) ? DAO.cine.lead
   window.addEventListener('resize', onScroll, { passive: true });
   paint();
 })();
-
-
-/* three.js is deferred in <head> so it cannot block first paint, which means
-   it has NOT executed when this inline script runs. Deferred scripts finish
-   before DOMContentLoaded, so re-arming there is sufficient. When the file is
-   warm in cache THREE is already defined and the callback runs synchronously,
-   exactly as it did when the tag was blocking.
-
-   This gate matters more here than on the home page: stage3D() treats a
-   missing THREE as "this device has no WebGL" and swaps in the static text
-   fallback permanently. Without the gate, deferring three.js would have made
-   every visitor get the fallback. */
-function whenTHREE(fn){
-  if(typeof THREE !== 'undefined') return fn();
-  if(document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', function(){ fn(); }, { once: true });
-  } else {
-    fn();   /* genuinely unavailable — let stage3D() show its fallback */
-  }
-}
-
-/* ════════════════════════════════════════════
-   3D — shared shell
-   Real meshes, real lights. Nothing here is a
-   particle system; that language belongs to the
-   home page and stays there.
-════════════════════════════════════════════ */
-function stage3D(canvasId, outerId, build){
-  const canvas = document.getElementById(canvasId);
-  const outer = document.getElementById(outerId);
-  if(!canvas || !outer) return null;
-  if(typeof THREE === 'undefined'){ outer.classList.add('no-webgl'); return null; }
-
-  let renderer;
-  try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false,
-        preserveDrawingBuffer: !!window.__SHOT }); }
-  catch(err){ outer.classList.add('no-webgl'); return null; }
-
-  const isMobile = window.innerWidth <= 900;
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1.6 : 2));
-
-  const scene = new THREE.Scene();
-  /* far plane is 1600, not 400. The pavilion's sky dome sits at radius 600
-     and its horizon islands at ~210: at the old far:400 the dome was
-     CLIPPED BY THE FAR PLANE, which drew a crisp circular arc across the
-     sky where the sphere ran out. It looked like a deliberate vignette and
-     was not — it was the frustum. Any scene added here must keep its
-     furthest geometry inside this number. */
-  const camera = new THREE.PerspectiveCamera(48, 1, 0.1, 1600);
-
-  function resize(){
-    const w = canvas.clientWidth || window.innerWidth;
-    const h = canvas.clientHeight || window.innerHeight;
-    if(!w || !h) return;
-    camera.aspect = w / h;
-    /* A portrait viewport is a NARROWER frame, not a smaller one: three.js
-       fov is vertical, so at aspect 0.46 the horizontal field is less than
-       a third of the desktop one and both scenes crop hard — the sala ran
-       to 77% of the screen width and the loop's lanterns fell off the
-       right edge. Widening the vertical fov as the frame narrows gives
-       back most of it. Holding the horizontal field exactly constant would
-       need a 114 degree fov, which distorts, so this only goes part way. */
-    camera.fov = camera.aspect >= 1 ? 48 : 48 * (1 + (1 - camera.aspect) * 0.55);
-    camera.updateProjectionMatrix();
-    renderer.setSize(w, h, false);
-  }
-
-  let visible = false;
-  new IntersectionObserver(l => l.forEach(e => { visible = e.isIntersecting; }), { threshold: 0 }).observe(outer);
-
-  let mx = 0, my = 0, tmx = 0, tmy = 0;
-  if(!REDUCED && !isMobile){
-    window.addEventListener('mousemove', e => {
-      tmx = (e.clientX / window.innerWidth - 0.5) * 2;
-      tmy = (e.clientY / window.innerHeight - 0.5) * 2;
-    }, { passive: true });
-  }
-
-  const api = { scene, camera, renderer, canvas, outer, isMobile };
-  const frame = build(api);
-  /* Test hook only: set window.__SHOT before the page scripts run and each
-     stage exposes a way to render one exact scroll value and read the pixels
-     back. It is how these scenes are judged by eye, because the Browser pane
-     composites only a fraction of a large viewport. Off by default, and it
-     costs nothing when off. */
-  if(window.__SHOT){
-    const shot = function(p){ frame(p, performance.now() * 0.001, 0, 0); renderer.render(scene, camera); return canvas.toDataURL('image/png'); };
-    shot.api = api;
-    (window.__STAGES = window.__STAGES || {})[canvasId] = shot;
-  }
-
-  resize();
-  window.addEventListener('resize', resize, { passive: true });
-
-  /* GUIDED — both 3D scenes are continuous camera moves (the sun crossing
-     the sky, the walk around the loop), so they are speed-capped, not
-     quantised. Seven waypoints each, matching their seven-key palettes. */
-  const track = cine(outer, { mode: 'guided', pace: 'epic', states: 7 });
-
-  /* WARM THE PIPELINE, off the critical path.
-     The scene is built at load but nothing is rendered until the section is
-     reached, so the FIRST render had to compile every shader program and
-     upload every texture in one frame. Measured on the loop scene, that was
-     a 901ms stall at the exact moment the reader arrived — the section
-     froze solid for most of a second as it came into view, which reads as
-     the page breaking rather than as loading.
-
-     renderer.compile() builds the programs for everything in the scene
-     regardless of what the camera can currently see, and one render at 2x2
-     forces the texture uploads. Both happen while the browser is idle and
-     the reader is still pages away. resize() puts the drawing buffer back. */
-  let warmed = false;
-  function warm(){
-    if(warmed) return;
-    warmed = true;
-    try {
-      frame(0, 0, 0, 0);
-      renderer.compile(scene, camera);
-      renderer.setSize(2, 2, false);
-      renderer.render(scene, camera);
-      resize();
-    } catch(err){ /* a warm-up must never be able to break the page */ }
-  }
-  const idle = window.requestIdleCallback || function(f){ return setTimeout(f, 220); };
-  if(document.readyState === 'complete') idle(warm);
-  else window.addEventListener('load', function(){ idle(warm); }, { once: true });
-
-  (function loop(){
-    requestAnimationFrame(loop);
-    if(!visible) return;
-    warm();                       /* if the reader beat the idle callback */
-    mx += (tmx - mx) * 0.045;
-    my += (tmy - my) * 0.045;
-    frame(track.get(), performance.now() * 0.001, mx, my);
-    renderer.render(scene, camera);
-  })();
-
-  return api;
-}
-
-
-/* ══════════════════════════════════════════════════════════════
-   TROPIC — the shared vocabulary of the two 3D scenes
-   ──────────────────────────────────────────────────────────────
-   Both scenes are the same place: the sala, the water, the palms,
-   the limestone horizon. One tells a day, the other tells a week.
-   They are built from these pieces so they cannot drift apart —
-   before this existed the page's two WebGL sections had nothing
-   in common but a canvas element, which is precisely how a page
-   ends up looking like two different documents.
-
-   Nothing here is a particle system. That language belongs to the
-   homepage palm assembly and neither scene on this page borrows it.
-══════════════════════════════════════════════════════════════ */
-const TROPIC = (function(){
-
-  /* ── a tiling ripple normal map ──
-     Summed sines whose wave numbers are integers, so every term
-     completes a whole number of cycles across the tile and wraps.
-
-     THE DIRECTIONS MATTER. A first pass summed three waves that all
-     ran roughly the same way and the sea came out as corduroy. The
-     set below spans six angles including near-perpendicular pairs.
-     TILE COUNT MATTERS TOO: at 26 tiles the sun broke into white
-     amoebas, at 64 it aliased into a visible grid; 300 with mipmaps
-     and full anisotropy gives fine, stable sparkle at every depth. */
-  function rippleNormals(renderer, size, repeat){
-    const cv = document.createElement('canvas'); cv.width = cv.height = size;
-    const ctx = cv.getContext('2d');
-    const img = ctx.createImageData(size, size);
-    const TAU = Math.PI * 2;
-    const W = [[1, 2, 0.52], [2, -1, 0.42], [3, 3, 0.24],
-               [5, -2, 0.15], [2, 6, 0.12], [7, 4, 0.07]];
-    function H(x, y){
-      let h = 0;
-      for(let i = 0; i < W.length; i++){
-        h += Math.sin((x * W[i][0] + y * W[i][1]) / size * TAU + i * 1.7) * W[i][2];
-      }
-      return h;
-    }
-    for(let y = 0; y < size; y++){
-      for(let x = 0; x < size; x++){
-        const dx = H(x + 1, y) - H(x - 1, y);
-        const dy = H(x, y + 1) - H(x, y - 1);
-        const nx = -dx * 14, ny = -dy * 14, nz = 1;
-        const l = Math.sqrt(nx * nx + ny * ny + nz * nz);
-        const i = (y * size + x) * 4;
-        img.data[i]     = ((nx / l) * 0.5 + 0.5) * 255;
-        img.data[i + 1] = ((ny / l) * 0.5 + 0.5) * 255;
-        img.data[i + 2] = ((nz / l) * 0.5 + 0.5) * 255;
-        img.data[i + 3] = 255;
-      }
-    }
-    ctx.putImageData(img, 0, 0);
-    const t = new THREE.CanvasTexture(cv);
-    t.wrapS = t.wrapT = THREE.RepeatWrapping;
-    t.repeat.set(repeat, repeat);
-    t.minFilter = THREE.LinearMipmapLinearFilter;
-    t.magFilter = THREE.LinearFilter;
-    t.generateMipmaps = true;
-    t.anisotropy = renderer.capabilities.getMaxAnisotropy();
-    return t;
-  }
-
-  /* ── still water ──
-     Returns { mesh, material, map }. The caller drives colour and
-     specular per frame; the map's offset is the only animation. */
-  function water(renderer, extent, repeat){
-    const map = rippleNormals(renderer, 256, repeat);
-    const material = new THREE.MeshPhongMaterial({
-      color: 0x0f2b31, shininess: 140, specular: 0x9db4bd,
-      normalMap: map, normalScale: new THREE.Vector2(0.10, 0.10),
-      transparent: true, opacity: 0.92, depthWrite: false
-    });
-    const mesh = new THREE.Mesh(new THREE.PlaneGeometry(extent, extent), material);
-    mesh.rotation.x = -Math.PI / 2;
-    mesh.renderOrder = 4;
-    return { mesh: mesh, material: material, map: map };
-  }
-
-  /* ── the sky ──
-     A back-side sphere with a two-stop vertical gradient, a horizon
-     band and a sun disc. Every colour comes from the caller's palette,
-     so the same dome carries a midday blue and a blue-hour violet.
-
-     RADIUS vs THE CAMERA'S FAR PLANE: this dome is large, and if the
-     camera's far plane is shorter than its radius the sphere is
-     clipped and draws a crisp circular arc across the sky. It looks
-     like a deliberate vignette and is not. stage3D()'s camera is set
-     to 1600 for exactly this reason. */
-  function skyDome(radius){
-    const uni = {
-      cZen:   { value: new THREE.Color(0x1d3350) },
-      cHor:   { value: new THREE.Color(0xd98a63) },
-      cSun:   { value: new THREE.Color(0xff9552) },
-      sunDir: { value: new THREE.Vector3(1, 0.2, 0) },
-      glow:   { value: 0.6 }
-    };
-    const mesh = new THREE.Mesh(
-      new THREE.SphereGeometry(radius, 40, 24),
-      new THREE.ShaderMaterial({
-        uniforms: uni, side: THREE.BackSide, depthWrite: false, fog: false,
-        vertexShader: [
-          'varying vec3 vDir;',
-          'void main(){',
-          '  vDir = normalize(position);',
-          '  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);',
-          '}'
-        ].join('\n'),
-        fragmentShader: [
-          'uniform vec3 cZen;',
-          'uniform vec3 cHor;',
-          'uniform vec3 cSun;',
-          'uniform vec3 sunDir;',
-          'uniform float glow;',
-          'varying vec3 vDir;',
-          'void main(){',
-          '  vec3 d = normalize(vDir);',
-          '  float t = smoothstep(-0.04, 0.62, d.y);',
-          '  vec3 col = mix(cHor, cZen, t);',
-          '  float band = pow(1.0 - clamp(abs(d.y) * 3.4, 0.0, 1.0), 2.0);',
-          '  col = mix(col, cHor, band * 0.55);',
-          '  float s = max(0.0, dot(d, normalize(sunDir)));',
-          /* the halo was pow(s, 8.0) once: at midday it spread a soft
-             disc over most of the dome and read as a hard-edged bubble
-             rather than as light */
-          '  col += cSun * pow(s, 40.0)  * glow * 0.30;',
-          '  col += cSun * pow(s, 600.0) * glow * 1.9;',
-          '  gl_FragColor = vec4(col, 1.0);',
-          '}'
-        ].join('\n')
-      })
-    );
-    mesh.renderOrder = -10;
-    return { mesh: mesh, uni: uni };
-  }
-
-  /* ── a palm frond ──
-     A V-folded strip: three vertices per segment with the spine lifted
-     above the two edges, tapering and drooping along its length. A flat
-     ribbon reads as a feather. */
-  function frondGeometry(len, wide, droop, segs){
-    const pos = [], idx = [];
-    for(let i = 0; i <= segs; i++){
-      const t = i / segs;
-      const x = len * t;
-      const y = -droop * t * t;
-      const w = wide * Math.sin(Math.PI * Math.min(1, 0.18 + t * 0.9)) * (1 - t * 0.5);
-      pos.push(x, y + w * 0.20, -w,
-               x, y + w * 0.46,  0,
-               x, y + w * 0.20,  w);
-    }
-    for(let i = 0; i < segs; i++){
-      const a = i * 3, b = a + 3;
-      idx.push(a, b, a + 1,          a + 1, b, b + 1);
-      idx.push(a + 1, b + 1, a + 2,  a + 2, b + 1, b + 2);
-    }
-    const g = new THREE.BufferGeometry();
-    g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
-    g.setIndex(idx);
-    g.computeVertexNormals();
-    return g;
-  }
-
-  /* ── a palm ── trunk swept along a bezier, nine fronds in a crown.
-     The crown is exposed on userData so the caller can breathe it. */
-  function palm(frond, mTrunk, mFrond, h, lean, spin, shadows){
-    const g = new THREE.Group();
-    const tip = new THREE.Vector3(Math.sin(lean) * h * 0.30, h, Math.cos(lean) * h * 0.12);
-    const curve = new THREE.QuadraticBezierCurve3(
-      new THREE.Vector3(0, 0, 0),
-      new THREE.Vector3(tip.x * 0.22, h * 0.56, tip.z * 0.22),
-      tip
-    );
-    const trunk = new THREE.Mesh(new THREE.TubeGeometry(curve, 14, 0.17, 7, false), mTrunk);
-    trunk.castShadow = shadows;
-    g.add(trunk);
-    const crown = new THREE.Group();
-    crown.position.copy(tip);
-    for(let i = 0; i < 9; i++){
-      const f = new THREE.Mesh(frond, mFrond);
-      f.rotation.y = (i / 9) * Math.PI * 2 + spin;
-      f.rotation.z = -0.30 - (i % 3) * 0.16;
-      f.scale.setScalar(0.86 + (i % 4) * 0.10);
-      f.castShadow = shadows;
-      crown.add(f);
-    }
-    g.add(crown);
-    g.userData.crown = crown;
-    return g;
-  }
-
-  /* ── an island ──
-     A BEACH, not a plinth. The vertical wall of a straight cylinder
-     catches the sun broadside and reads as a slice of cake sitting on
-     the sea, so the top ring is inset and the edge shelves. */
-  function islandGeometry(rx, rz, h, wob){
-    const g = new THREE.CylinderGeometry(1, 1, 1, 40, 1);
-    const p = g.attributes.position;
-    for(let i = 0; i < p.count; i++){
-      const x = p.getX(i), y = p.getY(i), z = p.getZ(i);
-      const a = Math.atan2(z, x);
-      const n = 1 + wob * (Math.sin(a * 3.1) * 0.6 + Math.sin(a * 5.7 + 1.2) * 0.4);
-      const taper = y > 0 ? 0.80 : 1.0;
-      p.setXYZ(i, x * rx * n * taper, y * h, z * rz * n * taper);
-    }
-    p.needsUpdate = true;
-    g.computeVertexNormals();
-    return g;
-  }
-
-  /* ── a limestone stack ── the Andaman coast in silhouette */
-  function karstGeometry(w, h, d){
-    const g = new THREE.IcosahedronGeometry(1, 1);
-    const p = g.attributes.position;
-    for(let i = 0; i < p.count; i++){
-      const x = p.getX(i), y = p.getY(i), z = p.getZ(i);
-      const n = 1 + 0.24 * Math.sin(x * 3.1 + y * 2.3) + 0.15 * Math.cos(z * 4.2 - y * 1.7);
-      p.setXYZ(i, x * n * w, Math.max(-0.05, y) * n * h, z * n * d);
-    }
-    p.needsUpdate = true;
-    g.computeVertexNormals();
-    return g;
-  }
-
-  /* ── the timber palette, one set per scene ──
-     Materials are built per scene rather than shared, because each
-     scene owns its own WebGLRenderer. */
-  function materials(){
-    return {
-      teak:   new THREE.MeshLambertMaterial({ color: 0x6b4a30 }),
-      teakLt: new THREE.MeshLambertMaterial({ color: 0x8a6440 }),
-      thatch: new THREE.MeshLambertMaterial({ color: 0x3e2f21 }),
-      deck:   new THREE.MeshLambertMaterial({ color: 0x7a5b3d }),
-      post:   new THREE.MeshLambertMaterial({ color: 0x5a4130 }),
-      trunk:  new THREE.MeshLambertMaterial({ color: 0x4c3f30 }),
-      frond:  new THREE.MeshLambertMaterial({ color: 0x2a4231, side: THREE.DoubleSide }),
-      sand:   new THREE.MeshLambertMaterial({ color: 0x4f4839 }),
-      /* the karsts and islets are near-black on purpose: they are
-         backlit most of the day and the haze lifts them toward the sky
-         by itself. At a mid grey they read as pale chalk at dawn. */
-      karst:  new THREE.MeshLambertMaterial({ color: 0x16262d }),
-      bank:   new THREE.MeshLambertMaterial({ color: 0x1a2620 })
-    };
-  }
-
-  /* ── the sala ──
-     Raised deck on posts standing in the water, six columns, and a
-     two-tier pitched roof.
-
-     PITCH IS THE POINT. A first pass used 2.3 of rise on 9.6 of eave —
-     about 13 degrees — and the two tiers read as a pair of patio
-     umbrellas. These are around 40 degrees, and the eave is pulled in
-     so the roof no longer overhangs the deck by half its width again. */
-  function sala(M, shadows){
-    const g = new THREE.Group();
-    function box(w, h, d, x, y, z, mat, cast){
-      const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
-      m.position.set(x, y, z);
-      m.castShadow = !!cast && shadows;
-      m.receiveShadow = shadows;
-      g.add(m); return m;
-    }
-    const postGeo = new THREE.CylinderGeometry(0.17, 0.20, 3.4, 9);
-    for(let ix = -1; ix <= 1; ix++){
-      for(let iz = -1; iz <= 1; iz++){
-        if(ix === 0 && iz === 0) continue;
-        const p = new THREE.Mesh(postGeo, M.post);
-        p.position.set(ix * 5.6, 0.55, iz * 3.9);
-        p.castShadow = shadows;
-        g.add(p);
-      }
-    }
-    box(13.4, 0.34, 9.6, 0, 2.32, 0, M.deck, true);
-    box(14.2, 0.16, 10.4, 0, 2.12, 0, M.teak, true);
-    box(13.4, 0.10, 0.14, 0, 3.02, -4.7, M.teakLt);
-    box(13.4, 0.10, 0.14, 0, 3.02,  4.7, M.teakLt);
-    box(0.14, 0.10, 9.60, -6.6, 3.02, 0, M.teakLt);
-    box(0.14, 0.10, 9.60,  6.6, 3.02, 0, M.teakLt);
-    const colGeo = new THREE.CylinderGeometry(0.15, 0.18, 3.5, 9);
-    [[-5.7, -4.2], [-5.7, 4.2], [0, -4.2], [0, 4.2], [5.7, -4.2], [5.7, 4.2]].forEach(function(xz){
-      const c = new THREE.Mesh(colGeo, M.teakLt);
-      c.position.set(xz[0], 4.24, xz[1]);
-      c.castShadow = shadows;
-      g.add(c);
-    });
-    const lower = new THREE.Mesh(new THREE.ConeGeometry(8.4, 4.5, 4), M.thatch);
-    lower.rotation.y = Math.PI / 4; lower.position.set(0, 7.30, 0);
-    lower.castShadow = shadows; g.add(lower);
-    const bandR = new THREE.Mesh(new THREE.CylinderGeometry(3.9, 4.1, 0.45, 4), M.teak);
-    bandR.rotation.y = Math.PI / 4; bandR.position.set(0, 9.40, 0); g.add(bandR);
-    const upper = new THREE.Mesh(new THREE.ConeGeometry(4.6, 3.6, 4), M.thatch);
-    upper.rotation.y = Math.PI / 4; upper.position.set(0, 11.10, 0);
-    upper.castShadow = shadows; g.add(upper);
-    const fin = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.10, 1.8, 6), M.teakLt);
-    fin.position.set(0, 13.5, 0); g.add(fin);
-    return g;
-  }
-
-  /* ── a reflection in still water ──
-     Mirrors a group through y = 0 and dims it.
-
-     ITS NORMALS HAVE TO BE FIXED BY HAND. scale.y = -1 mirrors the
-     geometry, and three.js derives the normal matrix from the model-view
-     matrix, so a roof normal of (0,1,0) comes out as (0,-1,0) and the sun
-     lands on what used to be the undersides. At golden hour that made the
-     real roof a dark silhouette while its reflection was brighter than the
-     sky: exactly backwards. Pre-negating the y component of the geometry's
-     own normals cancels it, because the mirror is exactly diag(1,-1,1).
-     The flip also reverses triangle winding, hence DoubleSide.
-
-     (The obvious-looking alternative — giving the reflection its own layer
-     and its own mirrored sun — does NOT work in r128: a light's layers are
-     tested against the CAMERA, not against each mesh, so the second sun
-     simply lights the whole scene twice.) */
-  function reflect(group, opacity){
-    group.scale.y = -1;
-    group.position.y = 0.02;
-    group.renderOrder = 2;
-    group.traverse(function(o){
-      if(!o.isMesh) return;
-      o.castShadow = false; o.receiveShadow = false;
-      o.geometry = o.geometry.clone();
-      const n = o.geometry.attributes.normal;
-      if(n){ for(let i = 0; i < n.count; i++) n.setY(i, -n.getY(i)); n.needsUpdate = true; }
-      o.material = o.material.clone();
-      o.material.side = THREE.DoubleSide;
-      o.material.transparent = true;
-      o.material.opacity = opacity;
-      o.material.depthWrite = false;
-    });
-    return group;
-  }
-
-  /* ── colour-key sampling shared by both palettes ── */
-  function sampler(KEYS, fields){
-    const cur = {}, tA = new THREE.Color(), tB = new THREE.Color();
-    fields.colors.forEach(function(k){ cur[k] = new THREE.Color(); });
-    return function(p){
-      let i = 0;
-      while(i < KEYS.length - 2 && p > KEYS[i + 1].t) i++;
-      const a = KEYS[i], b = KEYS[i + 1];
-      const k = clamp01((p - a.t) / (b.t - a.t));
-      fields.colors.forEach(function(f){ cur[f].copy(tA.setHex(a[f])).lerp(tB.setHex(b[f]), k); });
-      fields.nums.forEach(function(f){ cur[f] = lerp(a[f], b[f], k); });
-      (fields.texts || []).forEach(function(f){ cur[f] = k < 0.5 ? a[f] : b[f]; });
-      return cur;
-    };
-  }
-
-  return { rippleNormals: rippleNormals, water: water, skyDome: skyDome,
-           frondGeometry: frondGeometry, palm: palm,
-           islandGeometry: islandGeometry, karstGeometry: karstGeometry,
-           materials: materials, sala: sala, reflect: reflect, sampler: sampler };
-})();
-
-/* ══ 3D TWO — THE LANTERN WALK AROUND THE LAGOON ══
-   Rebuilt. The idea was right and is kept: you travel the seven days in
-   first person, and at the end the camera lifts and the route turns out
-   to have been a closed loop all along.
-
-   What was wrong was the LANGUAGE. The old scene was a glowing gold tube
-   through a black starfield, with torus gates you flew through and a lamp
-   that travelled with the camera — a racing line in deep space. It was
-   the most legible thing on the page and it was saying "video game" on a
-   page about a tropical sanctuary.
-
-   Same beat, rebuilt as somewhere you could actually stand:
-     · a TIMBER BOARDWALK on posts, a hand's breadth above still water,
-       walked at eye height rather than flown down.
-     · SEVEN LANTERNS on posts, one per day. They are the waypoints the
-       torus gates used to be, and they light as you reach them, so the
-       route behind you is a line of warm reflections on the water and the
-       route ahead is dark. Progress you can see over your shoulder.
-     · BLUE HOUR, held. The pavilion tells a whole day; this one sits in a
-       single evening so the two scenes cannot be confused, and so the
-       lanterns have something to be warm against.
-     · THE SALA AT THE CENTRE — the same building from 3D one, on its own
-       island. It is why the reveal lands: you were not on a track, you
-       were circling the Sanctuary the entire time. Riding, the haze keeps
-       it hidden; it appears only as the camera lifts.
-   Still no particle system, and no stars. */
-whenTHREE(function(){ stage3D('loopCanvas', 'loopOuter', function(api){
-  const S = api.scene, C = api.camera;
-  const dayEl = document.getElementById('loopDay');
-  const subEl = document.getElementById('loopSub');
-  const closeEl = document.getElementById('loopClose');
-  const copyEl = document.getElementById('loopCopy');
-
-  const DAYS = [
-    ['Arrive',    'Reset · Orientation · Create space'],
-    ['Recover',   'Sleep · Movement · Nervous system'],
-    ['Learn',     'Frameworks · Education · Reflection'],
-    ['Practise',  'Apply · Experiment · Build'],
-    ['Account',   'Track · Reflect · Adjust'],
-    ['Connect',   'Community · Conversation · Shared experience'],
-    ['Integrate', 'Reflect · Commit · Carry it forward']
-  ];
-
-  const M = TROPIC.materials();
-  const HAZE = new THREE.Color(0x1b2740);
-  /* LINEAR fog, not exponential, and the reason is the whole section.
-     The ride has to show ~35 units of boardwalk clearly while hiding the
-     far side of the ring 100 units away, or you can see it is a loop
-     before the reveal says so — which is the one thing that must not
-     happen here. Exponential fog cannot separate those two distances: any
-     density thick enough to bury the far side takes most of the near path
-     with it. Linear fog with an explicit far plane does exactly that, and
-     the far plane is what the lift then opens up. */
-  S.fog = new THREE.Fog(0x1b2740, 8, 88);
-  api.renderer.setClearColor(HAZE, 1);
-
-  /* blue hour, fixed — see the note above on why this scene does not
-     cycle the way the pavilion does */
-  const sky = TROPIC.skyDome(600);
-  sky.uni.cZen.value.setHex(0x0d1730);
-  sky.uni.cHor.value.setHex(0x40406b);
-  sky.uni.cSun.value.setHex(0xd98a5a);
-  sky.uni.sunDir.value.set(-0.62, -0.02, -0.78).normalize();
-  sky.uni.glow.value = 0.85;
-  S.add(sky.mesh);
-
-  const W = TROPIC.water(api.renderer, 900, 130);
-  W.material.color.setRGB(0.030, 0.052, 0.078);
-  W.material.specular.setHex(0x333a52);
-  W.material.shininess = 62;
-  W.material.normalScale.set(0.075, 0.075);
-  S.add(W.mesh);
-
-  /* ─── the route ───
-     A closed ring, held FLAT. The old route undulated through ±3.6 of
-     height, which on a first-person ride is a rollercoaster; a boardwalk
-     that stays level is what makes this feel like a place rather than a
-     track. The radius still varies a little so the ring is never read as
-     a perfect circle before the reveal. */
-  /* R was 30. On a 430px portrait frame a ring that tight curves out of
-     shot within about fifteen units, so the walk never recedes and the
-     ride shows a brown wedge with no lantern in it. At 50 the boardwalk
-     reads as a long path that happens to bend, and the reveal still
-     closes as unmistakably as before. */
-  const DECK_Y = 0.62, R = 50;
-  const ctrl = [];
-  for(let i = 0; i < 7; i++){
-    const a = (i / 7) * Math.PI * 2;
-    const rr = R * (0.96 + 0.055 * Math.sin(i * 2.3));
-    ctrl.push(new THREE.Vector3(Math.cos(a) * rr, DECK_Y, Math.sin(a) * rr));
-  }
-  const curve = new THREE.CatmullRomCurve3(ctrl, true, 'catmullrom', 0.5);
-
-  /* the boardwalk itself: a ribbon swept along the curve, with a raised
-     kerb down each edge so the deck has a silhouette in low light */
-  /* NORMALS AND SIDEDNESS ARE SET BY HAND HERE, and they have to be.
-     A swept ribbon's triangle winding depends on which way the curve
-     happens to run, and computeVertexNormals() on a closed loop of quads
-     duly produced a deck whose top face pointed DOWN — so the walkway was
-     back-face culled from a camera standing on it, and the first-person
-     ride showed nothing underfoot but the posts and open water. Explicit
-     +Y on the top ring and DoubleSide on the material make it independent
-     of the sweep direction. */
-  function ribbon(halfW, y, thickness, mat, segs){
-    const pos = [], nor = [], col = [], idx = [];
-    for(let i = 0; i <= segs; i++){
-      const t = (i % segs) / segs;
-      const pt = curve.getPointAt(t);
-      const tan = curve.getTangentAt(t);
-      const side = new THREE.Vector3(-tan.z, 0, tan.x).normalize();
-      pos.push(pt.x - side.x * halfW, y, pt.z - side.z * halfW,
-               pt.x + side.x * halfW, y, pt.z + side.z * halfW,
-               pt.x - side.x * halfW, y - thickness, pt.z - side.z * halfW,
-               pt.x + side.x * halfW, y - thickness, pt.z + side.z * halfW);
-      /* two up-facing deck vertices, two out-facing skirt vertices */
-      const o = new THREE.Vector3(-side.x, 0.45, -side.z).normalize();
-      const q = new THREE.Vector3( side.x, 0.45,  side.z).normalize();
-      nor.push(0, 1, 0,  0, 1, 0,  o.x, o.y, o.z,  q.x, q.y, q.z);
-
-
-
-      /* BOARD JOINTS AS VERTEX COLOUR, not as a texture. A tiling map is
-         the obvious tool and it was tried twice: the joints are ~0.4 units
-         apart on a surface that runs to a vanishing point, so the mip
-         chain averaged them out and the deck rendered as one flat brown
-         field (measured flat to within 1/255 across the whole near deck).
-         Darkening one segment ring in every four puts the joint in the
-         geometry, where nothing can filter it away. */
-      const j = (i % 4 === 0) ? 0.58 : 1.0;
-      col.push(j, j, j,  j, j, j,  j * 0.9, j * 0.9, j * 0.9,  j * 0.9, j * 0.9, j * 0.9);
-    }
-    for(let i = 0; i < segs; i++){
-      const a = i * 4, b = a + 4;
-      idx.push(a, b, a + 1,          a + 1, b, b + 1);           /* deck  */
-      idx.push(a + 2, a, b + 2,      b + 2, a, b);               /* outer */
-      idx.push(a + 1, a + 3, b + 1,  b + 1, a + 3, b + 3);       /* inner */
-    }
-    const g = new THREE.BufferGeometry();
-    g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
-    g.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3));
-
-    g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
-    g.setIndex(idx);
-    const m = new THREE.Mesh(g, mat);
-    m.receiveShadow = false;
-    return m;
-  }
-
-  const SEG = 820;                       /* ~0.4 units a segment, so a joint
-                                            every fourth ring is a 1.6 unit bay */
-  /* Clones, so DoubleSide and the emissive below do not leak into the
-     sala's timber.
-
-     THE EMISSIVE IS NOT A CHEAT, it is the lighting design. Seven lanterns
-     around a ring of ~327 units sit 47 units apart,
-     so with any believable falloff the walker spends most of the journey
-     in pitch darkness — measured, the deck came out at rgb(13,11,10),
-     which is black. A boardwalk at blue hour genuinely does hold a little
-     warmth of its own; this puts a floor under it so the timber always
-     reads as timber, and leaves the lanterns to do the actual pooling. */
-
-  /* PHONG, NOT LAMBERT, and this is the reason: r128's MeshLambertMaterial
-     ignores emissiveMap. Since the boardwalk's visible tone at blue hour is
-     almost entirely its emissive floor (measured: 43 of 47 red), the board
-     joints simply never appeared — the deck read as one flat brown field
-     no matter how strong the texture was made. Phong honours emissiveMap,
-     so the boards modulate the part of the surface that is actually
-     bright. Shininess is kept low; this is matt timber, not varnish. */
-  const mWalk = new THREE.MeshPhongMaterial({
-    color: 0x7a5b3d, shininess: 6, specular: 0x141210,
-    emissive: new THREE.Color(0x241811), vertexColors: true,
-    side: THREE.DoubleSide
-  });
-  const mKerb = new THREE.MeshPhongMaterial({
-    color: 0x6b4a30, shininess: 8, specular: 0x1a1512,
-    emissive: new THREE.Color(0x3a2716), vertexColors: true,
-    side: THREE.DoubleSide
-  });
-  const walkway = ribbon(1.55, DECK_Y, 0.30, mWalk, SEG);
-  walkway.renderOrder = 6;
-  S.add(walkway);
-  const kerbL = ribbon(1.62, DECK_Y + 0.11, 0.10, mKerb, SEG);
-  const kerbR = ribbon(1.30, DECK_Y + 0.11, 0.10, mKerb, SEG);
-  kerbL.renderOrder = kerbR.renderOrder = 6;
-  S.add(kerbL); S.add(kerbR);
-
-  /* posts into the water, every few metres */
-  const mPostW = M.post.clone(); mPostW.emissive = new THREE.Color(0x0d0805);
-  const postGeo = new THREE.CylinderGeometry(0.10, 0.12, 2.0, 7);
-  for(let i = 0; i < 104; i++){
-    const t = i / 104;
-    const pt = curve.getPointAt(t);
-    const tan = curve.getTangentAt(t);
-    const side = new THREE.Vector3(-tan.z, 0, tan.x).normalize();
-    [-1.3, 1.3].forEach(function(o){
-      const m = new THREE.Mesh(postGeo, mPostW);
-      m.position.set(pt.x + side.x * o, DECK_Y - 1.15, pt.z + side.z * o);
-      S.add(m);
-    });
-  }
-
-  /* ─── the seven lanterns ───
-     One per day, on the outer edge: a glowing shade on a post plus its own
-     point light.
-
-     THE ONES AHEAD ARE LIT TOO, just cool and low. A first pass had them
-     fully dark until reached, which is a tidy idea and a bad picture — the
-     only lantern ever in shot was the next one, unlit, so the walk read as
-     a dark path with a dead lamp on it and the "route behind you is lit"
-     payoff was behind you where nobody could see it. Reaching a day now
-     WARMS its lantern instead of switching it on, so the path always reads
-     as a lit path and the change still registers as you pass. */
-  /* An unreached day lantern is DIM WARM, not cool blue: in a line of warm
-     globe lamps a blue box reads as a broken light rather than as a
-     milestone you have not got to yet. */
-  const LANTERN_ON = 0xffcf9a, LANTERN_OFF = 0x6a4a33;
-  const lanterns = [];
-  /* The lanterns stand IN THE WATER on their own pilings, well clear of
-     the walking line. Mounted at 1.45 on the deck edge they passed within
-     half a metre of the camera and a 4m post filled the middle of the
-     frame every time you reached a day. On a piling at 3.4 they read as
-     lamps over the lagoon, which is also simply what a boardwalk lamp is. */
-  const lampGeo = new THREE.BoxGeometry(0.62, 0.86, 0.62);
-  const stemGeo = new THREE.CylinderGeometry(0.09, 0.12, 5.5, 8);
-  for(let i = 0; i < 7; i++){
-    const t = i / 7;
-    const pt = curve.getPointAt(t);
-    const tan = curve.getTangentAt(t);
-    const side = new THREE.Vector3(-tan.z, 0, tan.x).normalize();
-    /* clear of the walking line: at 1.45 the post passed within half a
-       metre of the camera and filled the frame as you went by */
-    const x = pt.x + side.x * 3.40, z = pt.z + side.z * 3.40;
-
-    const stem = new THREE.Mesh(stemGeo, M.post);
-    stem.position.set(x, DECK_Y + 1.13, z);
-    S.add(stem);
-
-    const shade = new THREE.Mesh(lampGeo, new THREE.MeshBasicMaterial({ color: LANTERN_OFF }));
-    shade.position.set(x, DECK_Y + 3.20, z);
-    S.add(shade);
-
-    const light = new THREE.PointLight(0x6f86c4, 0.7, 78, 1.35);
-    light.position.set(x, DECK_Y + 3.20, z);
-    S.add(light);
-
-    /* a small cap so the lantern is not a bare glowing cube */
-    const cap = new THREE.Mesh(new THREE.ConeGeometry(0.60, 0.42, 4), M.teak);
-    cap.rotation.y = Math.PI / 4;
-    cap.position.set(x, DECK_Y + 3.82, z);
-    S.add(cap);
-
-    lanterns.push({ shade: shade, light: light, at: new THREE.Vector3(x, DECK_Y + 3.2, z) });
-  }
-
-  /* ─── the small lamps between them ───
-     Seven lanterns around a 327-unit ring sit 47 units apart, which on the
-     ride leaves long stretches with no light in the frame at all: the deck
-     read as a featureless dark wedge and the next lantern was usually
-     off-screen. Three low marker lamps between each pair give the walk the
-     receding line of lights that makes a lit path legible.
-
-     They carry NO PointLight — twenty-one more real lights would blow the
-     uniform budget for nothing. They are emissive shades, which is all the
-     picture needs; the seven day lanterns still do every bit of the actual
-     lighting, so reaching one is still the thing that changes the scene. */
-  const markGeo = new THREE.SphereGeometry(0.135, 10, 8);
-  const markStem = new THREE.CylinderGeometry(0.06, 0.08, 4.0, 6);
-  const mMarkOn = new THREE.MeshBasicMaterial({ color: 0xc98d55 });
-  const marks = [];
-  for(let i = 0; i < 28; i++){
-    if(i % 4 === 0) continue;                       /* a day lantern is there */
-    const t = i / 28;
-    const pt = curve.getPointAt(t);
-    const tan = curve.getTangentAt(t);
-    const side = new THREE.Vector3(-tan.z, 0, tan.x).normalize();
-    const x = pt.x + side.x * 3.15, z = pt.z + side.z * 3.15;
-    const st = new THREE.Mesh(markStem, mPostW);
-    st.position.set(x, DECK_Y + 0.19, z);
-    S.add(st);
-    const bulb = new THREE.Mesh(markGeo, mMarkOn);
-    bulb.position.set(x, DECK_Y + 2.20, z);
-    S.add(bulb);
-    marks.push({ bulb: bulb, t: t });
-  }
-
-  /* ─── the island at the centre ───
-     The same sala as 3D one, which is the whole point of the reveal. */
-  const mIsle = M.sand.clone(); mIsle.color.setHex(0x3a342a);
-  const isle = new THREE.Mesh(TROPIC.islandGeometry(22, 20, 1.8, 0.20), mIsle);
-  isle.position.set(0, -0.15, 0);
-  S.add(isle);
-
-  const centreSala = TROPIC.sala(M, false);
-  centreSala.scale.setScalar(0.95);
-  centreSala.position.y = 0.45;
-  centreSala.renderOrder = 6;
-  S.add(centreSala);
-
-  const centreRef = TROPIC.sala(M, false);
-  centreRef.scale.setScalar(0.95);
-  TROPIC.reflect(centreRef, 0.26);
-  centreRef.position.y = -0.40;
-  S.add(centreRef);
-
-  /* the sala's own lanterns, always lit — it is the fixed point */
-  const isleLamp = new THREE.PointLight(0xffb672, 2.6, 40, 1.35);
-  /* high enough to light the sala rather than wash the sand around it */
-  isleLamp.position.set(0, 3.1, 0);
-  S.add(isleLamp);
-
-  /* ─── planting ───
-     Palms on the centre island and on small islets outside the ring, so
-     the walk has something passing on both sides. */
-  const FROND = TROPIC.frondGeometry(4.6, 0.62, 3.0, 9);
-  /* NIGHT-GRADED, and this was the single loudest reason the frame read as a
-     game asset rather than a photograph. The three near palms were built with
-     M.frond — the DAYLIGHT frond colour — so they stood in a blue-hour scene
-     as bright mid-green cut-outs while the distant ring below was already
-     graded to 0x1d3024. Nothing at dusk is that saturated, and the eye reads
-     "wrong green" as "rendered" instantly.
-     They are lighter than the far ring because they sit inside the lantern
-     light, but they are foliage in the dark now, not foliage at noon. The
-     trunks come down with them; a lit trunk under an unlit crown was the
-     same mistake one layer along. */
-  const mLeafNear  = M.frond.clone(); mLeafNear.color.setHex(0x2a4133);
-  const mTrunkNear = M.trunk.clone(); mTrunkNear.color.multiplyScalar(0.58);
-  const palms = [];
-  function addPalm(x, z, y, h, lean, i){
-    const p = TROPIC.palm(FROND, mTrunkNear, mLeafNear, h, lean, i * 1.9, false);
-    p.position.set(x, y, z);
-    palms.push(p); S.add(p);
-  }
-  [[-14.5, 9.0, 9.0, 0.30], [12.5, -10.0, 7.6, -0.24], [15.0, 10.5, 6.8, 0.14]]
-    .forEach(function(d, i){ addPalm(d[0], d[1], 0.55, d[2], d[3], i); });
-
-  /* Six, not nine, and at wildly different distances. Nine islets evenly
-     spaced on one radius ringed the lagoon like counters on a board and
-     were the first thing the eye found at the reveal — which is supposed
-     to be the boardwalk. They are also darker here than in the pavilion:
-     this scene is a night, and anything outside the lantern light has no
-     business being the brightest green in the frame. */
-  const mLeaf = M.frond.clone(); mLeaf.color.setHex(0x1d3024);
-  const RING = [[0.40, 74], [1.35, 112], [2.30, 82], [3.20, 146], [4.35, 95], [5.45, 128]];
-  RING.forEach(function(d, i){
-    const x = Math.cos(d[0]) * d[1], z = Math.sin(d[0]) * d[1];
-    const m = new THREE.Mesh(TROPIC.islandGeometry(6 + (i % 3) * 4, 5 + (i % 2) * 3, 1.2, 0.26), M.bank);
-    m.position.set(x, 0.02, z);
-    S.add(m);
-    const p = TROPIC.palm(FROND, M.trunk, mLeaf, 7.0 + (i % 3) * 1.4, (i % 2 ? 0.24 : -0.2), (i + 3) * 1.9, false);
-    p.position.set(x, 0.5, z);
-    palms.push(p); S.add(p);
-  });
-
-  /* the far horizon, so the lagoon sits in a coast rather than in a void */
-  [[-150, -186, 20, 32, 17], [-96, -212, 13, 22, 12], [104, -196, 22, 36, 18],
-   [168, -238, 14, 24, 12], [20, -268, 12, 20, 10], [-210, -150, 16, 26, 13]]
-  .forEach(function(d){
-    const k = new THREE.Mesh(TROPIC.karstGeometry(d[2], d[3], d[4]), M.karst);
-    k.position.set(d[0], 0, d[1]);
-    S.add(k);
-  });
-
-  /* ─── light ───
-     Evening: a low, cool key from the afterglow plus a warm hemisphere
-     bounce off the water. The walker carries NO lamp — the old scene's
-     travelling light was what made it feel like a vehicle. The lanterns
-     do the lighting, which is why reaching one matters. */
-  const key = new THREE.DirectionalLight(0x6f7ba8, 0.34);
-  key.position.set(-90, 26, -120);
-  S.add(key);
-  const hemi = new THREE.HemisphereLight(0x3a4570, 0x141c2a, 0.42);
-  S.add(hemi);
-  const amb = new THREE.AmbientLight(0x8fa0c8, 0.16);
-  S.add(amb);
-
-  const RIDE_END = 0.82;
-  const camPos = new THREE.Vector3(), camLook = new THREE.Vector3();
-  const here = new THREE.Vector3(), ahead = new THREE.Vector3();
-  const AHEAD_T = 30 / curve.getLength();   /* 30 units of arc, whatever R is */
-  const radial = new THREE.Vector3(), vantage = new THREE.Vector3();
-  const centre = new THREE.Vector3(0, 3.4, 0);
-  const LOOP_EXTENT = 63;
-  let lastDay = -1;
-
-  /* ── THE GAIT ──────────────────────────────────────────────────────────
-     What made this scene read as a video game was not the geometry, it was
-     the CAMERA. It travelled the ring perfectly smoothly and its only
-     movement was a 1.6cm rise on a wall-clock sine — so it drifted up and
-     down while standing still, and did not change at all when you moved.
-     That is a drone on a spline, and the eye knows it instantly.
-
-     The gait below is driven by DISTANCE WALKED, not by time. The phase
-     advances pi per step, so:
-       · standing still is genuinely still — no float, no drift;
-       · scrolling slowly is a slow walk and scrolling fast is a brisk one,
-         because step rate falls out of speed rather than being imposed;
-       · every rise, sway and roll is the same footfall, so they stay in
-         phase with each other the way a real body does.
-     Vertical uses |sin| (two falls per stride, at each heel strike) while
-     sway and roll use half that frequency (one per stride) and sit a
-     quarter-cycle out, which is what stops it reading as a bobblehead. */
-  const STEP_LEN   = 1.55;    /* metres of boardwalk per step */
-  const BOB_AMP    = 0.055;   /* vertical travel at the hips */
-  const SWAY_AMP   = 0.075;   /* lateral, across the deck */
-  const ROLL_AMP   = 0.011;   /* radians — under a degree */
-  const CURVE_LEN  = curve.getLength();
-  let gaitPhase = 0, lastT = -1;
-  /* sideV, not side: the build code above declares its own block-scoped
-     `side` in four places and shadowing it here reads as the same variable */
-  const fwdV = new THREE.Vector3(), sideV = new THREE.Vector3(), UP = new THREE.Vector3(0,1,0);
-  /* Gaze lag. Aiming dead at the point 30 units ahead makes the camera turn
-     with the path to the millimetre, which is the other half of the drone
-     feel. The look target trails its ideal by ~110ms so bends are entered a
-     fraction late and left a fraction late, the way a walker's head does. */
-  const lookAt = new THREE.Vector3();
-  let lookInit = false, lastTime = -1;
-
-  /* The vantage point is derived from where you currently are on the ring
-     and from how much the camera can actually see, so the lift rises
-     outward from your own position instead of cutting across the middle of
-     the lagoon — which framed nothing but empty water. */
-  function vantageFor(from){
-    radial.set(from.x, 0, from.z);
-    if(radial.lengthSq() < 1e-4) radial.set(1, 0, 0);
-    radial.normalize();
-    const vHalf = (C.fov * Math.PI / 180) / 2;
-    const limit = Math.atan(Math.tan(vHalf) * Math.min(1, C.aspect));
-    const need = Math.min(150, LOOP_EXTENT / Math.max(0.15, Math.tan(limit)));
-    /* ~40 degrees above the water. Lower than this and the ring reads as a
-       lopsided egg rather than a loop, which is the one thing the reveal
-       has to say; much higher and it stops being a place and becomes a
-       map. */
-    vantage.copy(radial).multiplyScalar(need * 0.78);
-    vantage.y = need * 0.66;
-    return vantage;
-  }
-
-  return function frame(p, time, mx, my){
-    /* `time` arrives in seconds. Clamped because a backgrounded tab returns
-       with a multi-second gap, and an unclamped dt would snap the gaze
-       straight onto its target on the first frame back. */
-    const dtSec = lastTime < 0 ? 0.016 : Math.min(0.05, Math.max(0.001, time - lastTime));
-    lastTime = time;
-    const ride = clamp01(p / RIDE_END);
-    const t = (ride * 0.995) % 1;
-    const out = clamp01((p - RIDE_END) / (1 - RIDE_END));
-    const k = smooth(out);
-
-    here.copy(curve.getPointAt(t));
-    /* AIM AT A FIXED ARC DISTANCE ALONG THE PATH, not at a fixed fraction
-       of it and not down the tangent. Both alternatives were tried:
-         · a fixed fraction (t + 0.042) is 8 units on a small ring and 14 on
-           a large one, so the camera's turn rate changed whenever the ring
-           was resized, and at 8 units it swung with every bend.
-         · the pure tangent never turns at all, so the walk simply left the
-           frame on one side and the ride became a dark wedge.
-       Thirty-four units of arc keeps the boardwalk running to a vanishing
-       point in front of the walker at any ring size. */
-    ahead.copy(curve.getPointAt((t + AHEAD_T) % 1));
-
-    /* Riding, the haze is thick enough that the centre island is hidden
-       and you only ever see your own stretch of boardwalk. It clears
-       AHEAD of the lift, otherwise the far side of the ring is still
-       erased at the moment it is supposed to be the whole point. */
-    const kFog = smooth(clamp01(out * 1.7));
-    S.fog.near = lerp(8, 40, kFog);
-    S.fog.far = lerp(88, 620, kFog);
-    /* The lift clears the HAZE; it does not turn the lights on. An earlier
-       pass tripled the ambient here so the whole lagoon could be seen, and
-       the outer islands came up as bright green lily pads with the ring
-       lost among them. It stays night: the lit things are the boardwalk,
-       its seven lanterns and the sala, and everything else is the dark
-       they are lit against. */
-    amb.intensity = lerp(0.16, 0.26, kFog);
-    hemi.intensity = lerp(0.42, 0.50, kFog);
-    key.intensity = lerp(0.34, 0.44, kFog);
-    isleLamp.intensity = lerp(2.6, 3.6, kFog);
-    /* the lantern pools were clipping to hard white discs on the water at
-       the reveal; the surface goes matt as the camera lifts */
-    /* 62 gave a very tight specular lobe, so each lantern landed on the water
-       as a short stack of hard white dashes — the most synthetic thing in the
-       frame. 38 spreads the same energy into a longer, softer column that
-       reads as a reflection on moving water. */
-    W.material.shininess = lerp(38, 22, kFog);
-    /* ripple detail is meaningless from the vantage point and turns into a
-       visible diagonal moire across the whole lagoon, so it fades out as
-       the camera lifts */
-    W.material.normalScale.setScalar(lerp(0.075, 0.018, kFog));
-
-    W.map.offset.x = time * 0.0060;
-    W.map.offset.y = time * 0.0034;
-
-    /* which day are we on, and light every lantern up to it */
-    const day = Math.min(6, Math.floor(ride * 7 * 0.999));
-    if(day !== lastDay){
-      lastDay = day;
-      for(let i = 0; i < lanterns.length; i++){
-        const lit = i <= day;
-        lanterns[i].shade.material.color.setHex(lit ? LANTERN_ON : LANTERN_OFF);
-        lanterns[i].light.color.setHex(lit ? LANTERN_ON : 0x6f86c4);
-        lanterns[i].light.intensity = lit ? 2.2 : 0.7;
-      }
-      /* The marker lamps are ALWAYS lit. They were briefly made to warm up
-         along with the stretch they belong to, and it was wrong twice over:
-         you walk forwards, so everything already reached is behind you, and
-         the ride showed nothing but a receding line of dead lamps. They are
-         path lighting, not milestones. The seven day lanterns are the
-         milestones, and leaving them as the only thing that changes is what
-         makes reaching one register at all. */
-      if(dayEl) dayEl.innerHTML = 'Day ' + String(day + 1).padStart(2, '0') + ' — <em>' + DAYS[day][0] + '</em>';
-      if(subEl) subEl.textContent = DAYS[day][1];
-    }
-    /* The readout is text, so it cannot cross-fade with its successor: it is
-       dipped across the lantern boundary and swapped while it is faint, so
-       the day name never changes under the reader's eye mid-word. The dip is
-       shallow — this line sits over a moving scene and must not blink. */
-    const dayU = ride * 7 - Math.floor(ride * 7);
-    const dayDip = 0.34 + 0.66 * clamp01(Math.min(dayU, 1 - dayU) / 0.06);
-    if(dayEl) dayEl.style.opacity = dayDip.toFixed(3);
-    if(subEl) subEl.style.opacity = dayDip.toFixed(3);
-    /* at the reveal every lantern is lit: seven days, one continuous ring */
-    if(out > 0.42){
-      for(let i = 0; i < lanterns.length; i++){
-        lanterns[i].shade.material.color.setHex(LANTERN_ON);
-        lanterns[i].light.color.setHex(LANTERN_ON);
-        /* no boost at the reveal: the lantern pools were clipping to white
-           blobs on the water instead of reading as warm reflections */
-        lanterns[i].light.intensity = 2.2;
-      }
-      lastDay = -1;
-    }
-
-    /* Advance the gait by the distance actually covered since the last
-       frame. The wrap guard matters: t is modulo 1, so the step across the
-       seam reads as a full lap travelled backwards and would spin the phase
-       through hundreds of steps in one frame. */
-    let dT = t - lastT;
-    if(lastT < 0) dT = 0;
-    if(dT >  0.5) dT -= 1;
-    if(dT < -0.5) dT += 1;
-    lastT = t;
-    gaitPhase += (Math.abs(dT) * CURVE_LEN / STEP_LEN) * Math.PI;
-
-    /* The gait fades out as the camera lifts away at the reveal — you stop
-       walking before you rise, so carrying footfalls into the vantage shot
-       would read as a hand-held drone rather than a held final frame. */
-    const walk = 1 - k;
-    const bobY  = -Math.abs(Math.sin(gaitPhase)) * BOB_AMP * walk;
-    const swayX = Math.sin(gaitPhase * 0.5) * SWAY_AMP * walk;
-    const bobR  = Math.sin(gaitPhase * 0.5 - Math.PI / 2) * ROLL_AMP * walk;
-
-    camPos.copy(here);
-    /* sway moves the walker ACROSS the boardwalk, so it has to be applied
-       along the deck's own side vector rather than a world axis */
-    fwdV.copy(ahead).sub(here).setY(0).normalize();
-    sideV.crossVectors(fwdV, UP).normalize();
-    camPos.addScaledVector(sideV, swayX);
-    /* MOBILE IS A DIFFERENT COMPOSITION, not the desktop one shrunk. At eye
-       height in a portrait frame the deck immediately underfoot fills the
-       bottom third, the horizon sits at 55% and the rest is empty sky —
-       there is simply not enough width for a first-person walk to show
-       anything. The handset view lifts to just above head height and looks
-       down the walk, so the boardwalk, its lanterns and the water on both
-       sides all fit. Same journey, framed for the screen it is on. */
-    const portrait = C.aspect < 1;
-    camPos.y = DECK_Y + (portrait ? 2.55 : 1.78) + bobY + my * 0.5;
-
-    /* Gaze trails the ideal aim point. Framerate-independent smoothing, so
-       the ~110ms lag is the same on a 60Hz phone and a 120Hz tablet; without
-       the exponential form a fixed per-frame lerp would double the lag at
-       half the framerate. Seeded on the first frame so the camera does not
-       swing in from the origin. */
-    if(!lookInit){ lookAt.copy(ahead); lookInit = true; }
-    else {
-      const lag = 1 - Math.exp(-dtSec / 0.11);
-      lookAt.lerp(ahead, clamp01(lag));
-    }
-    camLook.copy(lookAt);
-    /* looking slightly UP on a landscape frame: level or below put the deck
-       across the bottom half and pushed the horizon almost out of shot, and
-       a walker looks at where they are going, not at their feet */
-    camLook.y = DECK_Y + (portrait ? 1.35 : 1.95);
-
-    camPos.lerp(vantageFor(here), k);
-    camLook.lerp(centre, k);
-
-    C.position.copy(camPos);
-    C.up.set(0, 1, 0);
-    C.lookAt(camLook);
-    C.rotation.z += (bobR + mx * 0.02) * (1 - k);
-
-    for(let i = 0; i < palms.length; i++){
-      const c = palms[i].userData.crown;
-      c.rotation.z = Math.sin(time * 0.29 + i * 1.4) * 0.030;
-      c.rotation.x = Math.cos(time * 0.23 + i * 0.9) * 0.022;
-    }
-
-    if(closeEl) closeEl.classList.toggle('show', out > 0.55);
-    if(copyEl) copyEl.style.opacity = String(1 - clamp01(out * 2.2));
-  };
-}); });
 
 /* ── EARLY ACCESS FORM — front end only, and it says so ── */
 (function(){

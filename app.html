@@ -552,7 +552,7 @@ body { overflow-x: clip; }
         interaction argued against the headline.
 
    It is now one day, accumulating. The phone carries the app's three real
-   home states — morning, midday, evening close — and the six habits arrive
+   home states — morning, midday, evening close — and the habits arrive
    one at a time and STAY. Watching the list fill while the same marker
    advances is the claim; nothing has to assert it.
 
@@ -584,7 +584,7 @@ body { overflow-x: clip; }
      the track takes its share. Below about 0.6 screens a beat is 3-4 wheel
      notches and the sequence reads as flashing past. See the pacing table in
      CLAUDE.md before changing this. */
-.edy-outer { height: 685vh; position: relative; }
+.edy-outer { height: 588vh; position: relative; }
 .edy-stage {
   position: sticky; top: 0; height: 100vh;
   display: flex; align-items: center; overflow: hidden;
@@ -673,7 +673,7 @@ body { overflow-x: clip; }
 }
 
 /* ── mobile: a different composition, not the desktop one shrunk ──
-   No pin, no scrub, no state machine. The six habits are simply a list —
+   No pin, no scrub, no state machine. The habits are simply a list —
    scrolling a list already IS accumulation — and the day's payoff is the
    evening screen at the end, which is the one screen that states the whole
    argument on its own ("Credits earned today · 26", from four different
@@ -699,7 +699,7 @@ body { overflow-x: clip; }
     width: min(250px, 62vw); aspect-ratio: auto; height: auto;
   }
   .edy-shot { position: static; height: auto; opacity: 1 !important; }
-  /* Home is the mobile frame: it carries all six habits as tiles, which is
+  /* Home is the mobile frame: it carries the day's actions as tiles, which is
      exactly the list beside it. The six individual habit screens are the
      desktop scrub only - six phones stacked in a 390px column would be six
      viewports of near-identical device frames. */
@@ -800,6 +800,11 @@ body { overflow-x: clip; }
 }
 .quest-map-sticky {
   position: sticky; top: 0; height: 100vh;
+  /* The route is centred in the remaining space above the waypoint card,
+     not in the whole viewport - otherwise the card, which grew when the
+     habit figures went into it, sits on top of Bangkok. Capped in vh so a
+     short window loses the reserve rather than clipping the map. */
+  padding-bottom: min(300px, 34vh);
   display: flex; flex-direction: column; justify-content: center;
   overflow: hidden;
   background-color: var(--dark-surface);
@@ -859,7 +864,7 @@ body { overflow-x: clip; }
 
 .quest-wp-info {
   position: absolute; bottom: 48px; left: 8%;
-  width: 310px; z-index: 5;
+  width: 520px; z-index: 5;
   background: rgba(28,24,20,0.9); backdrop-filter: blur(14px);
   border: 1px solid rgba(247,244,238,0.1); border-radius: 3px;
   padding: 20px 24px;
@@ -871,6 +876,35 @@ body { overflow-x: clip; }
 .wp-info-desc { font-size:var(--t-note); color: #8a8377; line-height: 1.55; }
 .wp-info-bar { height: 1px; background: var(--gold); margin-top: 14px; transform: scaleX(0); transform-origin: left; transition:transform 0.6s var(--ease) 0.15s; }
 .wp-info-bar.animate { transform: scaleX(1); }
+
+/* ── What the walking looked like, waypoint by waypoint ──
+   Placeholder figures. They are cumulative-to-date at each stop and are
+   internally consistent (steps total ≈ daily average × days elapsed, and
+   days elapsed ≈ kilometres ÷ the route's pace), so the box reads as one
+   person's record rather than four unrelated numbers. Swap them for real
+   cohort medians when the app has them; keep the arithmetic. */
+/* One row of four, not a 2x2 block: the card is absolutely positioned over
+   the left flank of the route, and the two-row version grew tall enough to
+   cover Bangkok and its label. Four columns keep the whole card clear of
+   the map at ordinary window heights. */
+.wp-info-stats {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 0 14px;
+  margin-top: 14px; padding-top: 14px;
+  border-top: 1px solid rgba(247,244,238,0.09);
+}
+.wp-stat-k { font-size:9px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(247,244,238,0.4); margin-bottom: 5px; }
+.wp-stat-v { font-family: 'Cormorant Garamond', serif; font-size: 20px; line-height: 1; color: var(--warm-white); font-weight: 300; }
+.wp-stat-s { font-size: 10px; letter-spacing: 0.02em; color: #6f6a62; line-height: 1.35; margin-top: 4px; }
+.wp-info-stats .wp-stat { opacity: 0; transform: translateY(4px); }
+.wp-info-stats.animate .wp-stat { animation: wpStatIn 0.5s var(--ease) forwards; }
+.wp-info-stats.animate .wp-stat:nth-child(2) { animation-delay: 0.06s; }
+.wp-info-stats.animate .wp-stat:nth-child(3) { animation-delay: 0.12s; }
+.wp-info-stats.animate .wp-stat:nth-child(4) { animation-delay: 0.18s; }
+@keyframes wpStatIn { to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .wp-info-stats .wp-stat { opacity: 1; transform: none; }
+  .wp-info-stats.animate .wp-stat { animation: none; }
+}
 
 .quest-prog-indicator {
   position: absolute; top: 40px; right: 8%;
@@ -959,7 +993,12 @@ body { overflow-x: clip; }
   .quest-hd-desc { font-size:var(--t-note); }
   .quest-svg-wrap { padding: 2vh 0 0; overflow: hidden; }
   .quest-svg { width: 280%; will-change: transform; }
-  .quest-wp-info { position: relative; bottom: auto; left: auto; margin: 0 7%; width: auto; }
+  .quest-wp-info { position: relative; bottom: auto; left: auto; margin: 0 7%; width: auto; padding: 16px 18px; }
+  /* Four columns across a phone leaves "119-night streak" a word per line. */
+  .wp-info-stats { grid-template-columns: 1fr 1fr; gap: 11px 14px; margin-top: 12px; padding-top: 12px; }
+  .wp-info-stats.animate .wp-stat:nth-child(3) { animation-delay: 0.06s; }
+  .wp-info-stats.animate .wp-stat:nth-child(4) { animation-delay: 0.12s; }
+  .wp-info-bar { margin-top: 12px; }
   .quest-prog-indicator { display: none; }
   .quest-phones { flex-direction: column; align-items: center; gap: 24px; }
   .booster-grid { grid-template-columns: 1fr 1fr; }
@@ -1960,6 +1999,28 @@ body { overflow-x: clip; }
         <div class="wp-info-tag" id="wpInfoTag">JOURNEY BEGINS</div>
       </div>
       <div class="wp-info-desc" id="wpInfoDesc">Set your intention. The trail opens.</div>
+      <div class="wp-info-stats" id="wpInfoStats">
+        <div class="wp-stat">
+          <div class="wp-stat-k">Steps / day</div>
+          <div class="wp-stat-v" id="wpStatStepsV">0</div>
+          <div class="wp-stat-s" id="wpStatStepsS">0 total</div>
+        </div>
+        <div class="wp-stat">
+          <div class="wp-stat-k">Sleep / night</div>
+          <div class="wp-stat-v" id="wpStatSleepV">&mdash;</div>
+          <div class="wp-stat-s" id="wpStatSleepS">no nights yet</div>
+        </div>
+        <div class="wp-stat">
+          <div class="wp-stat-k">Water / day</div>
+          <div class="wp-stat-v" id="wpStatHydV">&mdash;</div>
+          <div class="wp-stat-s" id="wpStatHydS">3 L target</div>
+        </div>
+        <div class="wp-stat">
+          <div class="wp-stat-k">Breathing</div>
+          <div class="wp-stat-v" id="wpStatBreV">0</div>
+          <div class="wp-stat-s" id="wpStatBreS">sessions logged</div>
+        </div>
+      </div>
       <div class="wp-info-bar" id="wpInfoBar"></div>
     </div>
 
@@ -2028,7 +2089,7 @@ body { overflow-x: clip; }
 
   <div class="eco-header reveal">
     <div class="s-kicker">The Living Ecosystem</div>
-    <h2 class="s-headline">Six habits.<br><em>One connected world.</em></h2>
+    <h2 class="s-headline">Nothing counts alone.<br><em>One connected world.</em></h2>
     <p class="s-body" style="margin:0 auto;text-align:center;">Most wellness apps track your metrics in isolation. DAOasis connects them. Every habit feeds the same journey — together they move you further, faster.</p>
   </div>
 
@@ -2041,13 +2102,30 @@ body { overflow-x: clip; }
 
         <div class="edy-phone">
           <div class="edy-glow" id="edyGlow"></div>
-          <img class="edy-shot" data-s="0" src="images/app-home-morning.webp" width="758" height="1600" alt="The DAOasis home screen: all six habits as tiles, and 186 km walked toward Hua Hin." />
+          <img class="edy-shot" data-s="0" src="images/app-home-morning.webp" width="758" height="1600" alt="The DAOasis home screen: the day's actions as tiles, and 186 km walked toward Hua Hin." />
           <img class="edy-shot" data-s="1" src="images/app-steps.webp"        width="758" height="1600" alt="The Move screen: 6,412 of 8,000 steps, four point one of six kilometres toward Hua Hin." />
           <img class="edy-shot" data-s="2" src="images/app-sleep.webp"        width="758" height="1600" alt="The Rest screen: seven hours twenty of eight, and the distance boost it buys tomorrow." />
           <img class="edy-shot" data-s="3" src="images/app-breathing.webp"    width="758" height="1600" alt="The Breathe screen: two minutes fourteen remaining, opening a rest stop at Hua Hin." />
           <img class="edy-shot" data-s="4" src="images/app-hydration.webp"    width="758" height="1600" alt="The Hydrate screen: one point four of two litres, two more days opening the coastal route." />
-          <img class="edy-shot" data-s="5" src="images/app-quests.webp"       width="758" height="1600" alt="Today's quests. Beneath them, ALSO COUNTING TODAY: Nourish, two meals logged, unlocking local food experiences." />
-          <img class="edy-shot" data-s="6" src="images/app-lesson.webp"       width="758" height="1600" alt="A lesson in progress, the Learn habit: one idea at a time, building toward the journey." />
+          <!-- NOURISH IS NOT A ROW HERE, AND THAT IS DELIBERATE. This section
+               shows habits the app actually MEASURES, one screen each. Nourish
+               is not a data point: the blueprint ships quest detail screens for
+               four habits only (QU-02 Steps, QU-03 Sleep, QU-04 Hydration,
+               QU-05 Breathing) and its README calls Nourish an AMBIENT habit,
+               with no figure of its own.
+               Every candidate was checked against the real files and each one
+               was a different subject: QU-01 is headed "Today's quests" over
+               walking and breathing; HM-03 is a home screen, so beside the word
+               Nourish it repeated the section's own opening frame; MK-01 is a
+               merch hero already used in the marketplace section; MK-02 and
+               MK-03 are both The Wind-Down, a SLEEP course; JO-04 is a rest
+               story; RC-03 lists what credits open. There is no Nourish screen
+               in the set of 51.
+               Nourish is still on the phone — it is one of the six tiles on the
+               home screen above. It simply is not one of the tracked inputs the
+               column names. If a Nourish screen is ever added with a real
+               figure, it becomes data-s="5" and the row goes back in. -->
+          <img class="edy-shot" data-s="5" src="images/app-lesson.webp"       width="758" height="1600" alt="A lesson in progress, the Learn habit: one idea at a time, building toward the journey." />
         </div>
 
         <div class="edy-panel">
@@ -2080,11 +2158,6 @@ body { overflow-x: clip; }
           <li class="edy-row" style="--edy-c:#6E9CC9;">
             <span class="edy-row-i"><svg viewBox="0 0 24 24" fill="none" stroke="#6E9CC9" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2L6 10a6 6 0 1 0 12 0L12 2z"/></svg></span>
             <span><span class="edy-row-n">Hydrate</span><span class="edy-row-t">Two more days opens the coastal route</span></span>
-            <i class="edy-row-r"></i>
-          </li>
-          <li class="edy-row" style="--edy-c:#A8B7A2;">
-            <span class="edy-row-i"><svg viewBox="0 0 24 24" fill="none" stroke="#A8B7A2" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 4.5c0 8.6-5.9 14-13.5 14H4.5V17C4.5 9.3 10 4.5 17.5 4.5H20z"/><path d="M4.5 20.5C7.7 14.2 11.7 10.3 16.5 7.8"/></svg></span>
-            <span><span class="edy-row-n">Nourish</span><span class="edy-row-t">Counted with the day &mdash; two meals, no tracker needed</span></span>
             <i class="edy-row-r"></i>
           </li>
           <li class="edy-row" style="--edy-c:#A98CB8;">
@@ -2927,7 +3000,7 @@ function cine(el, o){
    back up reverses the day exactly.
 
    pos() runs 0..6 over seven stops: 0 is the day opening with nothing
-   logged, 1..6 bring the six habits in. Consumers scrub pos(); nothing
+   logged, 1..5 bring the five habits in. Consumers scrub pos(); nothing
    here floors it.
 ──────────────────────────────────────────── */
 (function(){
@@ -2937,15 +3010,20 @@ function cine(el, o){
   const shots  = [...outer.querySelectorAll('.edy-shot')];
   const glow   = document.getElementById('edyGlow');
   const close  = document.getElementById('edyClose');
-  if (!rows.length || shots.length !== 7) return;
+  if (!rows.length || shots.length !== 6) return;
 
   const cl01 = v => v < 0 ? 0 : v > 1 ? 1 : v;
 
-  /* SEVEN SCREENS, ONE PER BEAT. The phone shows the habit the column is
-     naming: Home first, with all six as tiles, then each habit's own screen
-     as its row arrives. An earlier version ran the four Home states through
-     one day instead - it was a nice sequence, but it showed the same screen
-     four times while the column claimed six different things.
+  /* SIX SCREENS, ONE PER BEAT. The phone shows the habit the column is
+     naming: Home first, carrying the day's actions as tiles, then each
+     habit's own screen as its row arrives. An earlier version ran the four
+     Home states through one day instead - it was a nice sequence, but it
+     showed the same screen four times while the column named different
+     things.
+
+     FIVE HABITS, NOT SIX. Nourish was removed because it is not a data
+     point - the app measures it nowhere and ships no screen for it. See the
+     note beside the images above for every candidate that was checked.
 
      Boundaries sit at i + 0.4, i.e. as a row STARTS arriving (a row is full
      at i + 0.8), so the screen leads the sentence by a fraction rather than
@@ -2956,14 +3034,13 @@ function cine(el, o){
     'rgba(201,162,174,0.14)', /* rest    */
     'rgba(127,178,184,0.14)', /* breathe */
     'rgba(110,156,201,0.14)', /* hydrate */
-    'rgba(168,183,162,0.14)', /* nourish */
     'rgba(169,140,184,0.14)', /* learn   */
   ];
-  const BOUND = [0.4, 1.4, 2.4, 3.4, 4.4, 5.4];
+  const BOUND = [0.4, 1.4, 2.4, 3.4, 4.4];
   const DIP_W = 0.16;   /* beats either side of a boundary that the dip covers */
-  /* Narrower than the three-state version: there are six swaps now and they
-     are one beat apart, so a 0.22 window left the frame dipping almost
-     continuously through the middle of the section. */
+  /* Narrower than the three-state version: the swaps are one beat apart, so
+     a 0.22 window left the frame dipping almost continuously through the
+     middle of the section. */
   const DIP_L = 0.42;   /* how far the frame drops at the moment of the swap  */
 
   let lastState = -1;
@@ -2983,7 +3060,7 @@ function cine(el, o){
       const d = Math.abs(pos - b);
       if (d < DIP_W) dip = Math.min(dip, DIP_L + (1 - DIP_L) * (d / DIP_W));
     }
-    for (let i = 0; i < 7; i++) shots[i].style.opacity = (i === st ? dip.toFixed(3) : '0');
+    for (let i = 0; i < 6; i++) shots[i].style.opacity = (i === st ? dip.toFixed(3) : '0');
 
     /* The header is static now, so only the glow tracks the screen. */
     if (st !== lastState){
@@ -2992,7 +3069,7 @@ function cine(el, o){
     }
 
     /* the close lands after the last habit has settled */
-    close.style.setProperty('--cw', cl01((pos - 5.35) / 0.6).toFixed(3));
+    close.style.setProperty('--cw', cl01((pos - 4.35) / 0.6).toFixed(3));
   }
 
   /* Desktop only. Below 900px the section is a plain list plus the evening
@@ -3003,7 +3080,7 @@ function cine(el, o){
 
   function arm(){
     if (mq.matches && !track){
-      track = cine(outer, { mode:'sticky', pace:'major', states: 7 });
+      track = cine(outer, { mode:'sticky', pace:'major', states: 6 });
       track.on(() => render(track.pos()));
     } else if (!mq.matches && track){
       /* hand back to the CSS resting state */
@@ -3036,13 +3113,25 @@ function cine(el, o){
      x coordinates are derived from the same figure - so the marker, the
      labels and the paced stops cannot disagree with one another. Regenerate
      the geometry with scratchpad/route6.js rather than nudging by hand. */
+  /* `stats` are PLACEHOLDER figures - a representative walker's record to
+     date at each stop, not measured data. They are held consistent with one
+     another so the box cannot read as four unrelated numbers: days elapsed
+     is the waypoint's kilometres at roughly 3.1 km/day, the steps total is
+     the daily average times those days, and the breathing sessions sit just
+     under one a day. Change any one of them and rework the others. */
   const WPS = [
-    { num:'01', label:'START',           name:'Bangkok',     tag:'JOURNEY BEGINS',    desc:'Set your intention. The trail opens.',               threshold:0      },
-    { num:'02', label:'ANCIENT CAPITAL', name:'Ayutthaya',   tag:'76 KM WALKED',      desc:'The first milestone. History beneath your feet.',    threshold:0.0844 },
-    { num:'03', label:'COAST BEGINS',    name:'Hua Hin',     tag:'199 KM WALKED',     desc:'The royal coast. Where the country came to rest.',   threshold:0.2211 },
-    { num:'04', label:'GATEWAY SOUTH',   name:'Surat Thani', tag:'544 KM WALKED',     desc:'Halfway. Community stories unlock here.',            threshold:0.6044 },
-    { num:'05', label:'PENINSULA',       name:'Khao Lak',    tag:'782 KM WALKED',     desc:'The end is in sight. The jungle thins to shore.',    threshold:0.8689 },
-    { num:'06', label:'DESTINATION',     name:'Phuket',      tag:'900 KM COMPLETE',   desc:'The Sanctuary awaits. You walked here.',             threshold:1.0    }
+    { num:'01', label:'START',           name:'Bangkok',     tag:'JOURNEY BEGINS',    desc:'Set your intention. The trail opens.',               threshold:0,
+      stats:{ stepsV:'0',     stepsS:'0 total',      sleepV:'&mdash;', sleepS:'no nights yet',      hydV:'&mdash;', hydS:'3 L target',      breV:'0',   breS:'sessions logged' } },
+    { num:'02', label:'ANCIENT CAPITAL', name:'Ayutthaya',   tag:'76 KM WALKED',      desc:'The first milestone. History beneath your feet.',    threshold:0.0844,
+      stats:{ stepsV:'7,240', stepsS:'181k total',   sleepV:'6h 48m',  sleepS:'12-night streak',  hydV:'1.9 L', hydS:'63% of target', breV:'21',  breS:'over 25 days' } },
+    { num:'03', label:'COAST BEGINS',    name:'Hua Hin',     tag:'199 KM WALKED',     desc:'The royal coast. Where the country came to rest.',   threshold:0.2211,
+      stats:{ stepsV:'8,120', stepsS:'520k total',   sleepV:'7h 05m',  sleepS:'31-night streak',  hydV:'2.2 L', hydS:'73% of target', breV:'58',  breS:'over 64 days' } },
+    { num:'04', label:'GATEWAY SOUTH',   name:'Surat Thani', tag:'544 KM WALKED',     desc:'Halfway. Community stories unlock here.',            threshold:0.6044,
+      stats:{ stepsV:'8,640', stepsS:'1.52M total',  sleepV:'7h 22m',  sleepS:'74-night streak',  hydV:'2.5 L', hydS:'83% of target', breV:'162', breS:'over 176 days' } },
+    { num:'05', label:'PENINSULA',       name:'Khao Lak',    tag:'782 KM WALKED',     desc:'The end is in sight. The jungle thins to shore.',    threshold:0.8689,
+      stats:{ stepsV:'9,180', stepsS:'2.31M total',  sleepV:'7h 31m',  sleepS:'119-night streak', hydV:'2.7 L', hydS:'90% of target', breV:'238', breS:'over 252 days' } },
+    { num:'06', label:'DESTINATION',     name:'Phuket',      tag:'900 KM COMPLETE',   desc:'The Sanctuary awaits. You walked here.',             threshold:1.0,
+      stats:{ stepsV:'9,540', stepsS:'2.77M total',  sleepV:'7h 40m',  sleepS:'148-night streak', hydV:'2.8 L', hydS:'94% of target', breV:'274', breS:'over 290 days' } }
   ];
 
   let pathLen = 0, lastWp = -1;
@@ -3063,6 +3152,22 @@ function cine(el, o){
     document.getElementById('wpInfoTag').textContent    = wp.tag;
     document.getElementById('wpInfoDesc').textContent   = wp.desc;
     document.getElementById('questProgNum').textContent = wp.num;
+
+    /* innerHTML, not textContent: the stat strings carry &middot; and &mdash;. */
+    const st = wp.stats;
+    document.getElementById('wpStatStepsV').innerHTML = st.stepsV;
+    document.getElementById('wpStatStepsS').innerHTML = st.stepsS;
+    document.getElementById('wpStatSleepV').innerHTML = st.sleepV;
+    document.getElementById('wpStatSleepS').innerHTML = st.sleepS;
+    document.getElementById('wpStatHydV').innerHTML   = st.hydV;
+    document.getElementById('wpStatHydS').innerHTML   = st.hydS;
+    document.getElementById('wpStatBreV').innerHTML   = st.breV;
+    document.getElementById('wpStatBreS').innerHTML   = st.breS;
+    const stats = document.getElementById('wpInfoStats');
+    stats.classList.remove('animate');
+    void stats.offsetWidth;
+    stats.classList.add('animate');
+
     const bar = document.getElementById('wpInfoBar');
     bar.classList.remove('animate');
     void bar.offsetWidth;
