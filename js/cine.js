@@ -94,18 +94,44 @@ DAO.cine = (function(){
        0.05 settles in ~750ms. Paired with the plateau, near a stop there is
        nothing left to chase, so the longer tail costs no responsiveness
        where it would be felt. */
-    /* 0.06, not 0.05, BECAUSE js/smooth.js NOW EXISTS. 0.05 was measured
-       and chosen when native scroll was instant and this was the only
-       damping in the chain: it put one wheel notch at ~1.7s to rest. The
-       scroll damper then added ~350ms of its own glide in front of it and
-       the same constant measured 2.06s end to end, which is past the point
-       where the scene visibly trails the page. 0.06 puts it back to the
-       ~1.7s that was actually signed off.
+    /* SUPERSEDED — now `followTau`, a TIME CONSTANT IN ms. The old value was
+       a fraction applied once per frame and carried two separate faults.
 
-       THE TWO ARE A PAIR. If js/smooth.js is ever removed, this wants to go
-       back to ~0.05 or the site returns to feeling snappy. */
-    follow: 0.06
+       1. FRAME-RATE DEPENDENT, exactly like the old smooth.js constant.
+          Measured frame intervals here are 16.5ms median / 20.7ms p95, so
+          the damping swung ~27% frame to frame, and on a 120Hz display
+          every scene on the site ran at double speed.
+
+       2. IT WAS DELIBERATELY TUNED TO TRAIL THE PAGE. The note above says
+          so: 2.06s end to end was rejected as "past the point where the
+          scene visibly trails the page", and 0.06 was chosen to return to
+          "the ~1.7s that was actually signed off". But 1.7s trails too.
+          Measured on the build before this change, after one wheel notch
+          the scroll settled at ~0.9s and the scene it drives at 1.5-1.8s;
+          on web3 the scene did not begin to move for 255ms after the
+          wheel. Content arriving half a second behind its own scroll
+          position does not read as slow and considered. It reads as laggy,
+          because the page and the thing painted on it are moving at
+          different times.
+
+       WHY RAISING THIS IS SAFE — THE SEPARATION OF CONCERNS.
+       The brake on a FLICK is the speed cap below (`step`/`back`, per
+       beat) and it is untouched: one beat still cannot arrive in less than
+       1500ms. The HOLD plateau is untouched, so a state still lands and
+       sits. Section heights are untouched. All this constant decides is how
+       far behind the page the scene sits during ORDINARY scrolling, and the
+       right answer to that is "barely at all".
+
+       Every previous pass conflated the two and slowed both together. The
+       input is now damped once, in js/smooth.js; damping it a second time
+       here only ever bought lag. */
+    followTau: 120,  /* ms */
   };
+
+  /* Frame-rate independent damping factor for THIS frame. Identical feel at
+     60, 120 and 144Hz; a long frame takes a correspondingly larger step
+     rather than stalling. dt is already clamped to 64ms by the loop. */
+  function followAlpha(dt){ return 1 - Math.exp(-dt / TIMING.followTau); }
 
   var mqReduce = window.matchMedia('(prefers-reduced-motion: reduce)');
   var reduced  = mqReduce.matches;
@@ -343,7 +369,7 @@ DAO.cine = (function(){
          the scene would trail the page instead of leading it. */
       var over = ag / span - TIMING.maxSpan;
       if(over > 0) cap *= 1 + over * 3;
-      var want = gap * TIMING.follow;         /* damped, so it eases in */
+      var want = gap * followAlpha(dt);      /* damped, so it eases in */
       this.value += Math.max(-cap, Math.min(cap, want));
       this.emit(this.value);
       return;
@@ -371,7 +397,7 @@ DAO.cine = (function(){
     var scap = (span / (sgap > 0 ? t.step : t.back)) * dt;
     var sover = sag / span - TIMING.maxSpan;
     if(sover > 0) scap *= 1 + sover * 3;
-    var swant = sgap * TIMING.follow;
+    var swant = sgap * followAlpha(dt);
     this.value += Math.max(-scap, Math.min(scap, swant));
     this.emit(this.value);
   };
@@ -489,6 +515,490 @@ DAO.cine = (function(){
   };
   Track.prototype.refresh = function(){ this.emitted = -1; };
 
+  /* ── THE SCROLL CUE ────────────────────────────────────────────────────
+     Replaces the literal "· SCROLL" labels that were written into two
+     section kickers on app.html. Those were wrong twice over: they were
+     permanent (still shouting SCROLL at a reader already three quarters of
+     the way through the section), and they were per-section, so most of the
+     site had no such affordance at all while two arbitrary places did.
+
+     This knows what it is talking about, because it reads the track
+     registry directly: a pinned section only holds the viewport while its
+     own progress is below 1, so the cue can appear exactly when there is
+     genuinely more of THIS section to see, and retire the moment there is
+     not. Nothing on the page needs to declare anything.
+
+     FOUR RULES, and each one is why it does not nag:
+       · shown only while a scrubbed section owns the viewport AND its own
+         progress is under 88% — past that the reader is leaving anyway;
+       · hidden the instant the reader actually scrolls, and only returning
+         after ~900ms of stillness. A cue that stays up while you are
+         already scrolling is telling you something you are doing;
+       · the WORDS appear once per session and never again — after that the
+         mark alone carries it, because by then it has been taught;
+       · it lives in js/cine.js rather than in four page stylesheets, so the
+         four pages that have scrubbed sections cannot drift apart. Pages
+         without a track never build it at all.
+
+     It is a pure enhancement: if this file fails to load, no cue appears,
+     which is exactly the state the site was in before. */
+  /* ══════════════════════════════════════════════════════════════════════
+     THE MOBILE SCROLL GOVERNOR                          (touch only, opt-in)
+
+     THE PROBLEM IT EXISTS FOR. Everything above paces the VALUE a section
+     renders. It cannot pace the PAGE, and on a handset the page is the
+     thing that runs away: js/smooth.js is deliberately disarmed on
+     `pointer: coarse`, so one hard flick moves the document two or three
+     thousand pixels on its own momentum. The app hero is 512vh and the
+     sanctuary hero 1120vh, so a reader who flicks twice is through the
+     whole sequence before the first beat has finished handing over to the
+     second — and once the section leaves the viewport the
+     IntersectionObserver settles the track on its end state, which is the
+     "if someone scrolls fast they skip straight through" that was reported.
+
+     Damping the value harder cannot fix this. If the section is no longer
+     on screen there is nothing left to pace.
+
+     WHAT THIS DOES. On touch viewports, and only while a section that has
+     opted in (`govern: true`) owns the viewport, the page's own scroll
+     position is driven from the rAF loop at a bounded speed:
+
+         finger / fling  ->  INTENT   (where the reader asked to be)
+         governor        ->  POSITION (how fast they are allowed to get there)
+
+     So the traversal takes the same wall-clock time whatever the gesture
+     was — which is the whole request — and the magnet plateaus in snap()
+     become real pauses measured in time rather than in scroll distance.
+
+     THE SPEED IS NOT A MAGIC NUMBER. It is derived per section from the
+     track's own timing: a section of N transitions at `step` ms each is
+     allowed exactly the scroll length it has, over N * step * slack ms.
+     Change TIMING.epic and the governed pass changes with it. A track
+     whose wrapper holds no sticky stage at this width is not a pin and is
+     never governed, however tall it is — see isPinned(). `slack`
+     keeps the scroll fractionally slower than the value's own speed cap,
+     so the two do not compound into a scene that trails further behind the
+     page the longer the section runs.
+
+     FIVE THINGS THAT KEEP IT FROM BEING SCROLL-JACKING
+       · It is scoped to sections that opt in, on touch, under 900px.
+         REDUCED MOTION KEEPS IT, and that is deliberate — see the note on
+         govOn() below.
+       · INTENT ALWAYS WINS EVENTUALLY. The position converges on it at a
+         bounded but non-zero speed, so the section always completes and
+         releases. There is no state in which the reader is held.
+       · THE ESCAPE VALVE. Intent thrown well past the end of the section
+         is someone leaving, not someone reading, and the cap is relaxed in
+         proportion — the same reasoning as TIMING.maxSpan in tick().
+       · A finger down stops what is in flight, exactly as a finger down
+         stops native momentum.
+       · Taps, links and inner scrollers are untouched: touchstart is
+         passive and never prevented, and only a move that begins inside a
+         governed section is.
+
+     If this file fails to load, or a page never passes `govern`, the
+     browser scrolls natively and nothing here runs at all.
+  ══════════════════════════════════════════════════════════════════════ */
+  var GOV = {
+    /* How far ahead of the pin's own scrub range the governor takes the
+       wheel, in viewports. A fling has to be caught BEFORE it is inside
+       the section — catching it at the boundary would mean clamping the
+       page backwards, which is the one thing that must never happen. */
+    lead:    0.30,
+    /* Governed scroll runs this much slower than the value's own speed
+       cap, so the cap never binds and the scene does not drift further
+       behind the page the longer the section runs. */
+    slack:   1.15,
+    /* px/ms floor and ceiling on governed scroll, whatever the arithmetic
+       says. The ceiling is what stops a very tall pin (sanctuary's hero is
+       1120vh) from being allowed to fly; the floor stops a short one from
+       becoming a wall. */
+    minV:    0.25,
+    maxV:    1.50,
+    /* A lifted flick is worth this many ms of its own velocity. Native
+       momentum on both platforms decays over roughly this long, so intent
+       ends up where the page would have gone had we not intercepted. */
+    flingMs: 480,
+    /* Damping of the governed follow, before the cap. Gives the move an
+       ease-out rather than stopping dead on arrival. */
+    ease:    110,
+    /* Once the governed section is behind us but the gesture's intent is
+       not spent, what is left glides out on this time constant. This is
+       the momentum we blocked, handed back. */
+    freeTau: 170,
+    /* How hard the cap relaxes per viewport of intent past the section. */
+    escape:  0.9
+  };
+
+  var mqCoarse = window.matchMedia('(pointer: coarse)');
+
+  /* REDUCED MOTION IS NOT EXCLUDED, and the distinction from js/smooth.js
+     is not a fudge. smooth.js turns an input that moved the page and
+     stopped into one that keeps gliding afterwards — it ADDS motion that
+     was not asked for, which is exactly what someone setting that flag
+     means. The governor adds none: the page travels the same distance the
+     native fling was going to travel anyway, it is simply not allowed to
+     travel it as fast. Slower is the direction vestibular sensitivity
+     wants, and times() has already shortened every duration by
+     TIMING.reducedScale, so a reduced-motion reader gets a governed pass
+     that is about 45% quicker than everyone else's — controlled, but not
+     made to wait. Excluding them would have left them with the original
+     fault and nothing else. */
+  function govOn(){
+    if(!mqCoarse.matches) return false;
+    if(window.innerWidth > TIMING.mobileAt) return false;
+    /* the nav drawer and index's intro both lock the page this way */
+    if(document.body && document.body.style.overflow === 'hidden') return false;
+    return true;
+  }
+
+  /* A drag over anything with its own overflow belongs to that thing, not
+     to the page. Same rule js/smooth.js applies to the wheel. */
+  function innerScroller(el){
+    while(el && el !== document.body && el !== document.documentElement){
+      if(el.nodeType === 1){
+        var cs;
+        try { cs = getComputedStyle(el); } catch(e){ return null; }
+        if(/(auto|scroll)/.test(cs.overflowY) && el.scrollHeight > el.clientHeight + 2) return el;
+      }
+      el = el.parentNode;
+    }
+    return null;
+  }
+
+  var g = {
+    own: false,        /* we are driving window scroll                    */
+    touch: false,      /* a finger is down and its deltas are ours        */
+    pos: 0,            /* the scroll position we are rendering            */
+    intent: 0,         /* the scroll position the reader has asked for    */
+    wrote: 0,          /* the last position we wrote, to tell ours apart  */
+    fy: 0, ft: 0, fv: 0,   /* finger: y, time, velocity px/ms             */
+    oy: 0, ot: 0, ov: 0    /* observed native scroll, the same three      */
+  };
+
+  function sy(){ return window.pageYOffset || document.documentElement.scrollTop || 0; }
+  function vhNow(){ return window.innerHeight || 1; }
+  function maxY(){ return Math.max(0, document.documentElement.scrollHeight - window.innerHeight); }
+  function clampY(v){ var m = maxY(); return v < 0 ? 0 : v > m ? m : v; }
+
+  /* IS THIS WRAPPER ACTUALLY A PIN AT THIS WIDTH?
+
+     "Taller than the viewport" is not the test, and assuming it was is a
+     mistake worth recording: sanctuary's .found-outer and .seven-outer
+     collapse to `height:auto` on mobile, but their CONTENT is still 1,647
+     and 1,584px tall — nearly twice a phone viewport. On that test they
+     would both have been governed, and the reader would have been
+     speed-capped through two sections of ordinary prose that do not
+     animate at all on a handset.
+
+     A pin is a wrapper with a STICKY STAGE in it, and nothing else is. The
+     stage is always a direct child (.hero + .hero-bridge, .market-sticky,
+     .quest-map-sticky, .hero-stage), so this reads a handful of elements,
+     and the answer is cached per width — a media query is the only thing
+     that can change it. */
+  function isPinned(t){
+    var w = window.innerWidth;
+    if(t._pinW === w) return t._pin;
+    t._pinW = w; t._pin = false;
+    var vh = window.innerHeight || 1, kids = t.el.children || [];
+    for(var i = 0; i < kids.length; i++){
+      var cs;
+      try { cs = getComputedStyle(kids[i]); } catch(e){ continue; }
+      var p = cs.position;
+      if((p === 'sticky' || p === '-webkit-sticky') && kids[i].offsetHeight >= vh * 0.6){
+        t._pin = true; break;
+      }
+    }
+    return t._pin;
+  }
+
+  /* The governed section that owns the viewport right now, if any. */
+  function governedTrack(){
+    var vh = window.innerHeight || 1;
+    for(var i = 0; i < tracks.length; i++){
+      var t = tracks[i];
+      if(!t.o.govern) continue;
+      if(t.el.offsetHeight - vh <= 0) continue;
+      if(!isPinned(t)) continue;
+      var r;
+      try { r = t.el.getBoundingClientRect(); } catch(e){ continue; }
+      if(r.top    >  vh * GOV.lead)       continue;   /* not ours yet */
+      if(r.bottom <  vh * (1 - GOV.lead)) continue;   /* behind us    */
+      return t;
+    }
+    return null;
+  }
+
+  /* px/ms this section is allowed, derived from its own pacing. */
+  function govCaps(t){
+    var len = t.el.offsetHeight - window.innerHeight;
+    if(!(len > 0)) return null;
+    var tm = t.times();
+    function bound(v){ return v < GOV.minV ? GOV.minV : v > GOV.maxV ? GOV.maxV : v; }
+    return {
+      fwd:  bound(len / (t.N * tm.step * GOV.slack)),
+      back: bound(len / (t.N * tm.back * GOV.slack))
+    };
+  }
+
+  /* The only place the page is moved. It writes nothing when the page is
+     already where it should be, which matters: a governed section that the
+     reader is simply sitting in must not be issuing a scrollTo every frame,
+     or a gesture the governor decided not to take (an inner scroller, a
+     second finger) would be fought instead of left alone. */
+  function govWrite(){
+    g.pos = clampY(g.pos);
+    var cur = sy();
+    if(Math.abs(cur - g.pos) > 0.5){
+      window.scrollTo(0, g.pos);
+      cur = sy();
+      /* the browser refused the position (document end, rubber band) —
+         adopt it rather than pushing against it every frame */
+      if(Math.abs(cur - g.pos) > 2) g.pos = g.intent = cur;
+    }
+    g.wrote = cur;
+  }
+
+  function govRelease(y){
+    g.own = false; g.touch = false;
+    g.pos = g.intent = g.oy = y;
+    g.ov = 0; g.ot = performance.now();
+  }
+
+  /* PASS 0 of the frame — runs before any track reads its rect, so a track
+     sees the governed position in the same frame it was written. */
+  function govTick(now, dt){
+    if(!tracks.length) return;
+    if(!govOn()){ if(g.own) govRelease(sy()); return; }
+
+    var y = sy();
+
+    /* Watch how fast the page is moving whenever we are NOT the one moving
+       it. By the time a fling reaches the section the gesture is long over,
+       so this is the only record of how hard it was thrown. */
+    if(!g.own){
+      var odt = now - g.ot, ody = y - g.oy;
+      /* a jump is not a speed — see the note on `jump` below */
+      if(odt > 0 && odt < 300 && Math.abs(ody) < vhNow() * 1.2){
+        g.ov = g.ov * 0.55 + (ody / odt) * 0.45;
+      } else if(Math.abs(ody) >= vhNow() * 1.2){
+        g.ov = 0;
+      }
+      g.oy = y; g.ot = now;
+    }
+
+    var t = governedTrack();
+
+    if(!t){
+      if(!g.own) return;
+      /* Past the section. We blocked the native fling to get here, so what
+         is left of the reader's intent is ours to spend. */
+      if(g.touch){ g.pos = g.intent; govWrite(); return; }
+      var fgap = g.intent - g.pos;
+      if(Math.abs(fgap) < 0.5){ govRelease(y); return; }
+      g.pos += fgap * (1 - Math.exp(-dt / GOV.freeTau));
+      govWrite();
+      return;
+    }
+
+    var caps = govCaps(t);
+    if(!caps){ if(g.own) govRelease(y); return; }
+
+    if(!g.own){
+      /* TAKE THE WHEEL. Never by moving the page — only by refusing to let
+         it go further this frame than the cap allows. Intent inherits the
+         fling, so a hard throw still means "a long way"; it just no longer
+         means "instantly". */
+      g.own = true;
+      g.pos = y;
+      g.intent = clampY(y + g.ov * GOV.flingMs);
+    } else if(!g.touch && !down && Math.abs(y - g.wrote) > 3){
+      /* The page moved and it was not us. Two very different things look
+         like this and they must not be treated alike.
+
+         A JUMP — an in-page anchor, scroll restoration on back, a focus
+         scroll, scrollIntoView — lands somewhere in one frame. Nobody
+         scrolls at a viewport and a half per frame, so a displacement that
+         large is not input and must simply be ADOPTED. Pacing it would
+         drag the reader back out of the place the page just sent them,
+         then re-approach it over several seconds, which is the single
+         worst thing a governor can do.
+
+         MOMENTUM we never saw start is the other: read it as intent and
+         take the position back. One programmatic scroll cancels a fling on
+         both platforms, so that happens once, not every frame. */
+      var jump = Math.abs(y - g.wrote) > vhNow() * 1.2;
+      if(jump){
+        g.pos = g.intent = y;
+      } else {
+        var nv = dt > 0 ? (y - g.wrote) / dt : 0;
+        g.intent = clampY(Math.abs(nv) > 0.05 ? y + nv * GOV.flingMs : y);
+      }
+    }
+
+    var gap = g.intent - g.pos;
+    if(Math.abs(gap) < 0.4){ g.pos = g.intent; govWrite(); return; }
+
+    var v = gap > 0 ? caps.fwd : caps.back;
+
+    /* THE ESCAPE VALVE. Intent a long way past the section is a reader
+       leaving, not a reader reading. Same shape as TIMING.maxSpan. */
+    var vh = window.innerHeight || 1;
+    var r  = t.el.getBoundingClientRect();
+    var over = gap > 0 ? (g.intent - (y + r.bottom - vh)) / vh
+                       : ((y + r.top) - g.intent) / vh;
+    if(over > 0) v *= 1 + Math.min(over, 4) * GOV.escape;
+
+    var capPx = v * dt;
+    var want  = gap * (1 - Math.exp(-dt / GOV.ease));
+    g.pos += Math.max(-capPx, Math.min(capPx, want));
+    govWrite();
+  }
+
+  /* ── the finger ─────────────────────────────────────────────────────── */
+  /* `down` is any finger, including one on a gesture the governor has not
+     taken. It matters because a drag that STARTS above the section and
+     carries into it must be adopted as a drag, not mistaken for momentum
+     by the frame loop and clamped while the finger is still on the glass. */
+  var down = false, blocked = false;
+
+  function govGrab(y){
+    g.touch = true;
+    g.fy = y; g.ft = performance.now(); g.fv = 0;
+    if(!g.own){ g.own = true; g.pos = sy(); }
+    g.intent = g.pos;          /* a finger down stops what is in flight */
+  }
+
+  function govStart(e){
+    g.touch = false; down = false; blocked = false;
+    if(!govOn()) return;
+    if(e.touches && e.touches.length > 1) return;
+    down = true;
+    if(innerScroller(e.target)){ blocked = true; return; }
+    /* Not governed yet is not the same as never: the gesture may drag into
+       a governed section, and govMove picks it up when it does. */
+    if(!governedTrack()) return;
+    govGrab(e.touches[0].clientY);
+  }
+
+  function govMove(e){
+    if(!down || blocked) return;
+    if(e.touches.length > 1){ govEnd(); return; }
+    if(!g.touch){
+      if(!govOn() || !governedTrack()) return;
+      govGrab(e.touches[0].clientY);      /* dragged in — take it from here */
+      return;
+    }
+    var y = e.touches[0].clientY, now = performance.now(), dt = now - g.ft;
+    var dy = g.fy - y;                       /* finger up = page down */
+    if(dt > 0) g.fv = g.fv * 0.6 + (dy / dt) * 0.4;
+    g.fy = y; g.ft = now;
+    g.intent = clampY(g.intent + dy);
+    /* Chrome marks a move uncancelable once native scrolling has begun; the
+       per-frame cap covers that case, so this is never load-bearing. */
+    if(e.cancelable) e.preventDefault();
+  }
+
+  function govEnd(){
+    down = false; blocked = false;
+    if(!g.touch) return;
+    g.touch = false;
+    /* held still before lifting — that is a stop, not a throw */
+    if(performance.now() - g.ft > 90) g.fv = 0;
+    g.intent = clampY(g.intent + g.fv * GOV.flingMs);
+  }
+
+  if('ontouchstart' in window || navigator.maxTouchPoints > 0){
+    window.addEventListener('touchstart',  govStart, { passive: true  });
+    window.addEventListener('touchmove',   govMove,  { passive: false });
+    window.addEventListener('touchend',    govEnd,   { passive: true  });
+    window.addEventListener('touchcancel', govEnd,   { passive: true  });
+  }
+
+  var cue = (function(){
+    var el = null, label = null, shown = false, lastY = -1, still = 0, built = false;
+    var TAUGHT = 'daoasis-scroll-taught';
+
+    function build(){
+      if(built) return; built = true;
+      var css = document.createElement('style');
+      css.textContent =
+        '.dao-cue{position:fixed;left:50%;bottom:26px;transform:translate(-50%,10px);' +
+        'z-index:80;pointer-events:none;opacity:0;' +
+        'transition:opacity .55s var(--ease,cubic-bezier(.22,1,.36,1)),transform .55s var(--ease,cubic-bezier(.22,1,.36,1));' +
+        'display:flex;flex-direction:column;align-items:center;gap:9px;}' +
+        '.dao-cue.on{opacity:1;transform:translate(-50%,0);}' +
+        '.dao-cue-t{font-family:"Frank Ruhl Libre",Georgia,serif;font-size:10px;letter-spacing:.24em;' +
+        'text-transform:uppercase;color:currentColor;opacity:.62;white-space:nowrap;' +
+        'transition:opacity .5s var(--ease,cubic-bezier(.22,1,.36,1));}' +
+        '.dao-cue-r{width:1px;height:34px;background:currentColor;opacity:.22;position:relative;overflow:hidden;}' +
+        '.dao-cue-r::after{content:"";position:absolute;left:0;top:-34px;width:1px;height:34px;' +
+        'background:linear-gradient(180deg,transparent,currentColor);animation:daoCueRun 2.1s var(--ease,cubic-bezier(.22,1,.36,1)) infinite;}' +
+        '@keyframes daoCueRun{0%{transform:translateY(0)}60%,100%{transform:translateY(68px)}}' +
+        '@media (prefers-reduced-motion: reduce){.dao-cue-r::after{animation:none;transform:translateY(34px);}}';
+      document.head.appendChild(css);
+
+      el = document.createElement('div');
+      el.className = 'dao-cue';
+      el.setAttribute('aria-hidden', 'true');
+      label = document.createElement('div');
+      label.className = 'dao-cue-t';
+      label.textContent = 'Keep scrolling';
+      var rule = document.createElement('div');
+      rule.className = 'dao-cue-r';
+      var taught = false;
+      try { taught = sessionStorage.getItem(TAUGHT) === '1'; } catch(e){}
+      if(taught) label.style.display = 'none';
+      el.appendChild(label); el.appendChild(rule);
+      document.body.appendChild(el);
+    }
+
+    /* The cue inherits `color` from the section it is standing in front of,
+       so it reads on a photograph, on ivory and on the dark grounds without
+       a per-page rule. Sampling the section's own computed colour is what
+       makes that automatic. */
+    function tint(t){
+      try {
+        var c = getComputedStyle(t.el).color;
+        if(c) el.style.color = c;
+      } catch(e){}
+    }
+
+    function show(on, t){
+      if(on === shown) return;
+      shown = on;
+      el.classList.toggle('on', on);
+      if(on && t) tint(t);
+      if(on && label.style.display !== 'none'){
+        /* taught once, then the mark carries it for the rest of the visit */
+        try { sessionStorage.setItem(TAUGHT, '1'); } catch(e){}
+        setTimeout(function(){ if(label) label.style.opacity = '0'; }, 4200);
+        setTimeout(function(){ if(label) label.style.display = 'none'; }, 4900);
+      }
+    }
+
+    return function(now){
+      if(!tracks.length) return;
+      build();
+      var y = window.pageYOffset || document.documentElement.scrollTop || 0;
+      if(y !== lastY){ lastY = y; still = now; show(false); return; }
+      if(now - still < 900) return;             /* only once they have stopped */
+
+      /* the scrubbed section that actually owns the viewport */
+      var vh = window.innerHeight || 1, best = null, bestCover = 0;
+      for(var i = 0; i < tracks.length; i++){
+        var t = tracks[i];
+        if(!t.near) continue;
+        var r; try { r = t.el.getBoundingClientRect(); } catch(e){ continue; }
+        var cover = Math.min(r.bottom, vh) - Math.max(r.top, 0);
+        if(cover > bestCover){ bestCover = cover; best = t; }
+      }
+      if(!best || bestCover < vh * 0.72){ show(false); return; }
+      var p = best.get();
+      show(p < 0.88, best);
+    };
+  })();
+
   /* one rAF loop for every track on the page */
   var tracks = [], running = false, last = 0;
   function loop(now){
@@ -496,9 +1006,13 @@ DAO.cine = (function(){
     last = now;
     if(!(dt > 0)) dt = 16;
     if(dt > 64) dt = 64;               /* tab-return / long frame guard */
+    /* PASS 0 — the governor writes window.scrollY BEFORE anything reads a
+       rect, so every track sees the governed position in the same frame */
+    govTick(now, dt);
     /* read every track, THEN emit to every track — see Track.read */
     for(var i = 0; i < tracks.length; i++) tracks[i].read();
     for(var j = 0; j < tracks.length; j++) tracks[j].tick(now, dt);
+    cue(now);
     requestAnimationFrame(loop);
   }
   function start(){
@@ -520,12 +1034,20 @@ DAO.cine = (function(){
     var real = w !== lastW || Math.abs(h - lastH) > 140;
     lastW = w; lastH = h;
     if(!real) return;
+    /* Hand the scroll back before the tracks settle. A real resize
+       relaid the document out under us, so every position the governor
+       is holding is now meaningless; it re-takes the wheel on the next
+       frame from wherever the browser actually left the reader. */
+    govRelease(sy());
     for(var i = 0; i < tracks.length; i++){ tracks[i].settle(); tracks[i].refresh(); }
   }, { passive: true });
 
   return {
     track:  function(el, o){ return el ? new Track(el, o) : null; },
     TIMING: TIMING,
+    GOV:    GOV,
+    /* the governed section right now, or null — for measurement only */
+    governing: function(){ return govOn() ? governedTrack() : null; },
     ramp:   ramp,
     smooth: smooth,
     lead:   lead,

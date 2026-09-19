@@ -318,29 +318,40 @@ body { overflow-x: clip; }
 }
 @media (prefers-reduced-motion: reduce) { .hero::before { animation: none; opacity: 0.7; } }
 
-/* "Meet the App" title card */
+/* "Meet the App" title card.
+
+   THIS IS SANCTUARY'S LANDING CARD, and it is deliberately the same object
+   on both pages: same near-black ground (#080605, NOT --mineral — the card
+   has to read as the lights going down before the page begins, and --mineral
+   is the ordinary section ground), same eyebrow / display / cue stack in a
+   centred column, same measures. The two pages are the site's two cinematic
+   heroes and a reader moving between them should meet one thing twice.
+   Only the words differ. Keep them in step if either is touched. */
 .hero-title-card {
   position: absolute; inset: 0; z-index: 15;
-  background: var(--mineral);
-  display: flex; align-items: center; justify-content: center;
-  pointer-events: none; opacity: 0;
+  background: #080605;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  pointer-events: none; text-align: center; padding: 0 6%; opacity: 0;
+}
+.hero-title-eyebrow {
+  font-size:12.5px; letter-spacing: 0.42em; text-transform: uppercase;
+  color: rgba(247,244,238,0.4); margin-bottom: 38px; padding-left: 0.42em;
 }
 .hero-title-text {
   font-family: 'Cormorant Garamond', serif; font-weight: 500;
-  font-size: clamp(42px,8.5vw,120px);
-  color: var(--warm-white); text-align: center;
-  letter-spacing: 0.01em; padding: 0 6%;
+  font-size: clamp(40px,7.6vw,116px); line-height: 1.02;
+  color: var(--warm-white); letter-spacing: 0.004em;
 }
 .hero-title-text em { font-style: italic; color: var(--gold); }
 .hero-title-text .type-cursor {
-  display: inline-block; width: 2px; height: 0.85em; background: var(--gold);
-  margin-left: 3px; vertical-align: -0.08em; animation: heroTypeBlink 0.85s steps(1) infinite;
+  display: inline-block; width: 2px; height: 0.82em; background: var(--gold);
+  margin-left: 4px; vertical-align: -0.06em; animation: heroTypeBlink 0.85s steps(1) infinite;
 }
 @keyframes heroTypeBlink { 50% { opacity: 0; } }
 .hero-title-scroll-cue {
-  position: absolute; bottom: 8vh; left: 50%; transform: translateX(-50%);
-  font-size:var(--t-micro); letter-spacing: 0.12em; text-transform: uppercase;
-  color: rgba(247,244,238,0.55); opacity: 0; transition:opacity 0.8s var(--ease);
+  position: absolute; bottom: 7vh; left: 50%; transform: translateX(-50%);
+  font-size:11.5px; letter-spacing: 0.28em; text-transform: uppercase;
+  color: rgba(247,244,238,0.42); opacity: 0; transition:opacity 1.2s var(--ease);
 }
 .hero-title-scroll-cue.show { opacity: 1; }
 
@@ -411,7 +422,13 @@ body { overflow-x: clip; }
   .hero-outer { height: 512vh; }
   .hero { height: 100vh; }
   .hero-title-text { font-size: clamp(40px,12vw,64px); }
-  .hero-title-scroll-cue { bottom: 6vh; font-size:var(--t-micro); letter-spacing: 0.24em; }
+  /* Matches sanctuary's own mobile landing: the eyebrow spends tracking
+     rather than type size, and the cue is centred with left/right rather
+     than a translateX, because half the stage is not enough room to centre
+     a nowrap line in and the overflow is silent. */
+  .hero-title-eyebrow { letter-spacing: 0.3em; margin-bottom: 26px; }
+  .hero-title-scroll-cue { bottom: 6vh; font-size:10.5px; letter-spacing: 0.14em;
+    left: 0; right: 0; transform: none; }
   .hero-bridge { position: sticky; top: 0; height: 100vh; padding: 0 7%;
                  opacity: 1; transform: translateY(100%); will-change: transform; }
   .hero-bridge-text { font-size: clamp(34px,9.5vw,52px); }
@@ -1929,8 +1946,9 @@ img{height:auto;}
 
     <!-- "Meet the App" title card -->
     <div class="hero-title-card" id="heroTitleCard">
+      <div class="hero-title-eyebrow">The Companion App</div>
       <div class="hero-title-text" id="heroTitleText"></div>
-      <div class="hero-title-scroll-cue" id="heroTitleScrollCue" aria-hidden="true">↓</div>
+      <div class="hero-title-scroll-cue" id="heroTitleScrollCue" aria-hidden="true">Scroll to enter ↓</div>
     </div>
 
     <!-- The three screens are the 2026 design set, exported from the MVP

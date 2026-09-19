@@ -255,7 +255,7 @@
       try { localStorage.setItem('daoasis-theme', theme); } catch (err) { /* private mode */ }
     }
     var stored = 'dark';
-    try { stored = localStorage.getItem('daoasis-theme') || 'dark'; } catch (err) { /* private mode */ }
+    try { stored = 'dark' /* light mode disabled */; } catch (err) { /* private mode */ }
     applyTheme(stored);
     btnLight.addEventListener('click', function () { applyTheme('light'); });
     btnDark.addEventListener('click', function () { applyTheme('dark'); });
