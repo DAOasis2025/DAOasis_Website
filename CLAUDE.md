@@ -37,6 +37,23 @@ There was also an older, unlinked copy one level up (outside `site/`) with extra
 - Browser tab title on the home page was a leftover dev label ("DAOasis Hero Prototype v5"). Fixed to a real title, and added meta description + Open Graph tags so shared links preview properly (Slack/email).
 - App page hero sub-copy tightened to state the core loop explicitly (track habits/learning → earn rewards).
 
+## Phuket 2027 is a real map now — September 19
+
+Section 9's plate was the `PHUKET.jpg` poster; it is the illustrated island
+map, `phuket-map.jpg`. Two things came with it:
+
+- **`.place-map` is `aspect-ratio: 2/3`, not a height in vh.** `contain`
+  draws the image at whatever the box allows, so a 2:3 map in a box of any
+  other ratio loses the difference to letterboxing — and a smaller map means
+  smaller place names. At the old mobile `height: 48vh` the island rendered
+  205px wide on a 375px screen and every beach name on it was about two
+  pixels tall. It is 269×403 at 320px wide now, with no letterbox at all.
+- **q88, not the q82 the photographs get.** The map carries hand-set type
+  down both coasts and the smallest names ringed at 82. 3.1MB PNG → 516KB.
+- Still no pin, and the reason is stronger than it was: the map names every
+  beach on the island, so a marker would claim a located site while the copy
+  beside it says the location is still in development.
+
 ## The Sanctuary hero is four plates now — September 19
 
 Three landscape plates (centre + a left/right pair) became **four portrait
@@ -65,6 +82,11 @@ in the DOM as well as on screen.
   hero** — against a 608KB largest image everywhere else in the project. They
   ship as `sanctuary-0N.jpg`, mozjpeg q82 4:4:4, ~320KB each, 1.25MB total.
   The `.png` originals are still in `images/` and are not referenced.
+- The caption under the fan is the site's four-word line, **"Rest · Learn ·
+  Earn · Return"** — one word per plate, which is the other reason the fan is
+  four wide. It is not a description of the four photographs (Rest sits under
+  the terrace at dawn), so do not reorder the plates to match it. The title
+  card above still reads "The DAOasis Sanctuary".
 - Verified by pulling the real `applyFrame` source out of the served page and
   driving it by hand at fixed `raw` values, because the Browser pane freezes
   `requestAnimationFrame` when hidden. Settled fan measures 65px clear of both

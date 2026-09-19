@@ -89,7 +89,10 @@
   --img-exp-community:  url('images/connect.jpg');
   --img-exp-nourish:    url('images/Nourish.jpg');
 
-  --img-place:          url('images/PHUKET.jpg');
+  /* The illustrated island map. q88 rather than the q82 the photographs get:
+     this one carries hand-set place names down both coasts, and at q82 the
+     smallest of them (Surin, Kamala, Nai Harn) picked up ringing. 516KB. */
+  --img-place:          url('images/phuket-map.jpg');
   --img-pilot:          url('images/img-07.jpg');
 }
 
@@ -1034,11 +1037,22 @@ img { max-width: 100%; }
    SECTION 9 — THE PLACE
 ══════════════════════════════════════════════ */
 .place-grid { display: grid; grid-template-columns: 1fr 0.9fr; gap: 8%; align-items: center; max-width: 1360px; margin: 0 auto; }
-.place-map { position: relative; height: 82vh; min-height: 440px; background-image: var(--img-place); background-size: contain; background-position: center; background-repeat: no-repeat; }
+/* THE BOX IS THE MAP'S OWN SHAPE, not a height in vh. `contain` draws the
+   image at whatever the box lets it, and a 2:3 map in a box of some other
+   ratio loses the difference to letterboxing — which here means the map
+   renders smaller and its place names get correspondingly smaller. Matching
+   the box to the artwork spends the whole column on the map. max-height
+   keeps a wide viewport from making the section taller than a screen. */
+.place-map { position: relative; aspect-ratio: 2 / 3; max-height: 88vh; min-height: 440px;
+  background-image: var(--img-place); background-size: contain; background-position: center; background-repeat: no-repeat; }
 .place-coords { margin-top: 34px; padding-top: 22px; border-top: 1px solid rgba(247,244,238,0.12); display: flex; gap: 46px; flex-wrap: wrap; }
 .place-coord-k { font-size:var(--t-nano); letter-spacing: 0.22em; text-transform: uppercase; color: #8f887d; margin-bottom: 8px; }
 .place-coord-v { font-family: 'Cormorant Garamond', serif; font-size: 22px; color: var(--warm-white); font-weight: 300; }
-@media(max-width:900px){ .place-grid { grid-template-columns: 1fr; gap: 8vh; } .place-map { height: 48vh; min-height: 300px; order: 2; } }
+/* On a phone the map is the full column and keeps its own ratio. It used to
+   be 48vh tall, which on a 375px screen drew the island 205px wide — every
+   beach name on it was about two pixels tall, so the one thing this image
+   is for did not survive the breakpoint. */
+@media(max-width:900px){ .place-grid { grid-template-columns: 1fr; gap: 8vh; } .place-map { max-height: none; min-height: 0; order: 2; } }
 
 /* ══════════════════════════════════════════════
    SECTION 10 — TRANSFORMATION
@@ -1228,7 +1242,12 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
     <div class="hero-plate" id="heroPlate03" role="img" aria-label="Five people talking over a long timber table under an open roof"></div>
     <div class="hero-plate" id="heroPlate04" role="img" aria-label="The fire pit lit after dark, lanterns in the trees above it"></div>
 
-    <div class="hero-plate-cap" id="heroPlateCap">Dawn · Rest · Gathering · Night</div>
+    <!-- The site's four-word line, and the reason the fan is four plates
+         wide rather than three: one word per plate, left to right. It is
+         NOT a description of the four photographs — Rest sits under the
+         terrace at dawn, not under the bedroom — so do not reorder the
+         plates to chase it. -->
+    <div class="hero-plate-cap" id="heroPlateCap">Rest · Learn · Earn · Return</div>
     <div class="hero-grain"></div>
   </section>
 
@@ -1561,11 +1580,12 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
       </div>
       <div class="note-line soft d3" style="margin-top:30px;">Location and programme in development</div>
     </div>
-    <!-- The pin is gone with the switch to the PHUKET poster: the plate
-         labels itself, and a pin dropped on a specific spot would claim a
-         located site while this very section says the location is still in
-         development. -->
-    <div class="place-map rv"></div>
+    <!-- No pin, and that matters more with a real map than it did with the
+         PHUKET poster this replaces. The map names every beach on the
+         island; dropping a marker on one of them would claim a located site
+         while the copy beside it says the location is still in development.
+         The map is the region, not the address. -->
+    <div class="place-map rv" role="img" aria-label="An illustrated map of Phuket, its beaches named down the west coast from Mai Khao to Nai Harn, with Phuket Town and Chalong Bay to the east"></div>
   </div>
 </section>
 
