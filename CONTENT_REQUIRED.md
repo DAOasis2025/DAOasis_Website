@@ -354,7 +354,8 @@ into Technology, and Uchenna was added as App Developer.
 |---|---|
 | **Uchenna's real profile copy** — the current bio is placeholder text | still outstanding, `about.html` §Technology |
 | ~~Uchenna's quote~~ | **supplied 19 Sep** — *"A great mobile app doesn't prove how much code you can write. It proves how much complexity you can hide from the person using it."* |
-| Portraits — `team-uchenna` · `team-nelson` · `team-dan` · `team-etiosa` | outstanding; being collected. All four currently 404 and fall back to the monogram plate |
+| Portraits — `team-nelson` · `team-uchenna` · `team-etiosa` | outstanding; being collected. All three currently 404 and fall back to the monogram plate |
+| ~~Portrait for Dan~~ | **supplied 19 Sep** — `images/team-dan.jpg`, 900x1200 |
 | ~~CTO "Appointment to follow"~~ | **closed 19 Sep** — the card is now a recruitment ad, see below |
 
 **Do not write a quote for anyone to fill the layout.** The `.pf-soon` placeholder

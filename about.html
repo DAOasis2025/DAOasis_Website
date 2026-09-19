@@ -1025,9 +1025,19 @@ img{height:auto;}
       </article>
 
       <article class="team-i soft d1">
-        <!-- PORTRAIT SLOT — <img loading="lazy" decoding="async" src="images/team-dan.jpg" alt="Dan, Co-Founder, Company Strategy at DAOasis" /> -->
+        <!-- The monogram and the caption stay UNDERNEATH the portrait rather
+             than being deleted — `.pt img` is z-index 2 and covers them once
+             the file loads, and `onerror` strips the <img> if it is ever
+             missing or renamed, so the slot falls back to the same plate the
+             portrait-less profiles show instead of a broken-image icon.
+             Same wiring as the founder's. No `object-position` here: the
+             source is 3:4 against a 4:5 plate, so cover crops 6.3% of the
+             height and a centred crop already sits well. -->
         <figure class="pt">
           <span class="pt-mono" aria-hidden="true">D</span>
+          <img loading="lazy" decoding="async" src="images/team-dan.jpg"
+               alt="Dan, Co-Founder, Company Strategy at DAOasis"
+               width="900" height="1200" onerror="this.remove();" />
           <figcaption class="pt-tag">Portrait to follow</figcaption>
         </figure>
         <div>

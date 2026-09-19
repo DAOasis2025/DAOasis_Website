@@ -76,7 +76,8 @@ Also: three mobile fixes on the home page (the 'why now' blank space, the
 ecosystem plate divides, the full-bleed community photograph) — **`index.html`
 changed again**. Desktop verified untouched.
 
-Also: Uchenna's quote and the CTO recruitment card + role dialog — **`about.html`
+Also: Dan's portrait (`images/team-dan.jpg` — NEW, upload it), Uchenna's quote
+and the CTO recruitment card + role dialog — **`about.html`
 and `contact.html` changed**. jamie@daoasis.xyz is now live on both.
 
 ### After go-live
@@ -156,8 +157,9 @@ same conclusion and reconciled it in text instead.
 - **Mobile pin heights have not been re-paced.** Every `@media` override still
   carries its pre-3-September value.
 - `about-hero-mobile.jpg` is still missing (documented, degrades gracefully),
-  and so are the four team portraits `team-nelson/dan/uchenna/etiosa.jpg` —
-  five 404s on `about.html`. The photographs are being collected.
+  and so are three team portraits — `team-nelson`, `team-uchenna` and
+  `team-etiosa`. Four 404s on `about.html`. Jamie and Dan are in; the rest are
+  being collected.
 - ~~There is still **no favicon** anywhere in the project.~~ **Closed 19
   September** — `favicon.ico` plus the PNG and apple-touch sizes are generated
   from the palm mark and linked on all 13 pages. See section 0 above; they
@@ -372,9 +374,11 @@ Easy to miss because they are not page files:
   `about-hero-mobile.jpg` still does not. The page degrades to a colour field by
   design — it never shows a broken image. This is the only unresolved image
   reference on the site.
-- **Five team portraits are still monogram plates** (`team-nelson`, `team-dan`,
-  `team-trong`, `team-uchenna`, `team-etiosa`). Jamie's is in.
-  Dropping a file into the marked slot needs no code change.
+- **Three team portraits are still monogram plates** (`team-nelson`,
+  `team-uchenna`, `team-etiosa`). **Jamie's and Dan's are in.** `team-trong` is
+  gone — Trong was removed from the team on 25 August.
+  Dropping a file into a marked slot needs no code change beyond wiring the
+  `<img>`; copy the pattern from Jamie's or Dan's card.
 - **No signup or form backend exists anywhere.** The Sanctuary early-access
   form and the investor request panel both say so on submit. Do not wire either
   to a fake confirmation.

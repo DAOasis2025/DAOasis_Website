@@ -6216,3 +6216,33 @@ exactly two pages and nowhere else.
 
 ### Upload
 `about.html` · `contact.html`. No stylesheet, no script file and no image changed.
+
+### Dan's portrait wired in — 19 September 2026
+
+Supplied as `images/dan.jpeg`, 1200x1600, 71KB. Processed to the project's own
+portrait rules and wired into his card.
+
+- **`images/team-dan.jpg`, 900x1200, 49KB** — mozjpeg q82 4:4:4 progressive, long edge
+  capped at the documented 1200 for the `portrait` role. The name matters: the card
+  already carried an HTML comment naming `team-dan.jpg`, and every other slot follows
+  the same `team-<name>.jpg` convention.
+- The source moved to `images-original/`, which is where originals live and is **not
+  uploaded**. Left in `images/` it would have shipped an unreferenced 71KB duplicate.
+- Wired exactly like the founder's: monogram and "Portrait to follow" caption kept
+  UNDERNEATH the image, `onerror="this.remove();"` so a missing or renamed file falls
+  back to the standard plate rather than a broken-image icon, and
+  `.pt:has(img) .pt-tag{display:none}` hides the caption only when a portrait actually
+  loaded.
+- **No `object-position` override, unlike Jamie's.** His source is 0.666 against a 4:5
+  plate, so a centred crop lost 8.9% off the top and needed `center 30%`. Dan's is
+  0.750, so `cover` crops **6.3% of the height** in total and a centred crop already
+  sits well — checked by cutting the crop at three anchors and looking at them.
+
+`about.html` now 404s on three portraits (`team-nelson`, `team-uchenna`,
+`team-etiosa`) plus `about-hero-mobile.jpg`, down from five. **Verified**: 0 JS errors
+and 0 horizontal overflow at 375 / 768 / 1280 / 1920, both portraits load, and the
+"Portrait to follow" caption is correctly hidden on exactly the two cards that have
+one. Judged by eye at 375.
+
+### Upload
+`about.html` · `contact.html` · **`images/team-dan.jpg` (NEW)**.
