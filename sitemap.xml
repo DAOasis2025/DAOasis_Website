@@ -1,79 +1,79 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://daoasis.xyz/</loc>
+    <loc>https://da-oasis-website.vercel.app/</loc>
     <lastmod>2026-09-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://daoasis.xyz/app</loc>
+    <loc>https://da-oasis-website.vercel.app/app</loc>
     <lastmod>2026-09-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://daoasis.xyz/sanctuary</loc>
+    <loc>https://da-oasis-website.vercel.app/sanctuary</loc>
     <lastmod>2026-09-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://daoasis.xyz/web3</loc>
+    <loc>https://da-oasis-website.vercel.app/web3</loc>
     <lastmod>2026-09-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://daoasis.xyz/investors</loc>
+    <loc>https://da-oasis-website.vercel.app/investors</loc>
     <lastmod>2026-09-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://daoasis.xyz/about</loc>
+    <loc>https://da-oasis-website.vercel.app/about</loc>
     <lastmod>2026-09-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://daoasis.xyz/contact</loc>
+    <loc>https://da-oasis-website.vercel.app/contact</loc>
     <lastmod>2026-09-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://daoasis.xyz/privacy</loc>
+    <loc>https://da-oasis-website.vercel.app/privacy</loc>
     <lastmod>2026-09-19</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://daoasis.xyz/health-data</loc>
+    <loc>https://da-oasis-website.vercel.app/health-data</loc>
     <lastmod>2026-09-19</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://daoasis.xyz/terms</loc>
+    <loc>https://da-oasis-website.vercel.app/terms</loc>
     <lastmod>2026-09-19</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://daoasis.xyz/cookies</loc>
+    <loc>https://da-oasis-website.vercel.app/cookies</loc>
     <lastmod>2026-09-19</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://daoasis.xyz/token-disclaimer</loc>
+    <loc>https://da-oasis-website.vercel.app/token-disclaimer</loc>
     <lastmod>2026-09-19</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://daoasis.xyz/accessibility</loc>
+    <loc>https://da-oasis-website.vercel.app/accessibility</loc>
     <lastmod>2026-09-19</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>

@@ -10,23 +10,33 @@ Things that must be done outside this environment, before the site goes live.
 Icons, share previews, sitemap, keyboard focus, image loading and the social
 links. See CLAUDE.md, "Findable, shareable, keyboard-navigable — 19 September".
 
-### BLOCKER — POINT daoasis.xyz AT THE SITE FIRST
+### THE HOST IS THE VERCEL ONE — confirmed 19 September
 
-Every canonical URL, og:url and share-image URL on all 13 pages now reads
-**https://daoasis.xyz**. That was the deliberate choice (it is already the
-email domain and the site should not be indexed under a vercel.app address),
-but **until the domain actually serves the site those URLs resolve to
-nothing.** Share previews will still show no image and Google will be told
-the canonical page lives somewhere it cannot fetch.
+Every canonical, `og:url` and share-image URL on all 13 pages reads
+**`https://da-oasis-website.vercel.app`**. Verified: all 17 published URLs
+return 200 on that host, including `/images/og-card.jpg`, `/sitemap.xml`,
+`/robots.txt` and `/favicon.ico`.
 
-Order matters:
-1. add daoasis.xyz to the Vercel project and point the DNS at it;
-2. upload the files below;
-3. confirm with Facebook's Sharing Debugger and LinkedIn's Post Inspector —
-   both cache aggressively, so scrape once after go-live.
+**THE LIVE SITE CURRENTLY POINTS AT THE WRONG DOMAIN AND NEEDS THIS UPLOAD.**
+An earlier build went up carrying `https://daoasis.xyz` in every canonical and
+every `og:image`. That domain **does** resolve — but to a DIFFERENT DAOasis
+site (title *"DAOasis | Behavioural Wellness Ecosystem"*, 93KB, not this
+codebase, served from 185.158.133.1), and `daoasis.xyz/images/og-card.jpg`
+**404s** there.
 
-If the domain is going to be more than a few days away, change ORIGIN back to
-the vercel host: it is one constant at the top of every head block.
+So as it stands the live site is telling Google that the canonical version of
+every one of its pages is a different website, and every share preview points
+at a missing image. Re-uploading the 13 HTML files plus `sitemap.xml` and
+`robots.txt` fixes both.
+
+> **There are two DAOasis websites live.** Which one is canonical is a business
+> decision, not a technical one — but they must not point at each other the way
+> they currently do.
+
+**To move to the custom domain later**, the origin appears exactly 4 times per
+HTML page, 13 times in `sitemap.xml` and once in `robots.txt`. Swap that one
+string, re-upload, then re-scrape on Facebook's Sharing Debugger and LinkedIn's
+Post Inspector — both cache hard.
 
 ### Files — REPLACE
 ```
@@ -82,7 +92,7 @@ and `contact.html` changed**. jamie@daoasis.xyz is now live on both.
 
 ### After go-live
 - Re-scrape the share card on Facebook, LinkedIn and Slack.
-- Submit https://daoasis.xyz/sitemap.xml in Google Search Console.
+- Submit https://da-oasis-website.vercel.app/sitemap.xml in Google Search Console.
 - Check the three social links actually land: instagram.com/thedaoasis,
   x.com/thedaoasis, linkedin.com/company/daoasis. **The LinkedIn one was
   inferred from "@daoasis"** — confirm it is a company page and not a

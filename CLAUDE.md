@@ -6355,3 +6355,170 @@ claimed and which had quietly stopped being true.
 `images-unused/` joins `images-original/` (49 MB), `baseline/` (8.3 MB) and
 `original-backup/` (1.3 MB). **That is 75 MB of local copies inside the folder that
 gets dragged to GitHub.** The deployable site is now about **11 MB**.
+
+---
+
+## Full-site audit — 19 September 2026
+
+Thirteen pages measured at 320–1920, light and dark, with and without JavaScript.
+**Three bugs found that I had introduced earlier the same day, and fixed during the
+audit**; everything else below is a finding, not a change.
+
+### FIXED — the community note was in the wrong element on 7 of 13 pages
+
+The footer block was inserted with a whitespace anchor, `'</div>\n</div>'`, and
+`indexOf` found the **first** such pair in the document rather than the one closing
+`.footer-social-row`. The icon row landed correctly everywhere; the note under it did
+not. It ended up inside an ecosystem plate (index), a waypoint stats panel (app), the
+early-access form grid (sanctuary), the participation list (web3), a card list
+(contact), a policy section (health-data) and a green content band (about).
+
+It rendered as ordinary body copy in the middle of unrelated sections and **passed
+every check I had run**, because the *row* was in the footer and that is what I had
+asserted on. Re-anchored on the LinkedIn link, which is the last child of the row and
+unique on every page.
+
+> **An insertion anchor must be something only the target can contain.** Indentation
+> and closing tags are not. This is the fourth guard-matches-the-wrong-thing mistake
+> in one day — the others matched a `<body>` inside a CSS comment, a `*/` written
+> mid-comment, and a selector name appearing in the prose of the comment above it.
+
+### FIXED — `var(--t-nano)` with no fallback, on a sheet that has no tokens
+
+`.footer-social-note` used `var(--t-nano)`. **`css/trust.css` defines no `--t-*`
+tokens at all**, so on the seven trust pages the declaration was invalid and the note
+inherited **16px** beside a 10px label. `sanctuary.html` names the same 10.5px step
+`--t-micro` and also has no `--t-nano`, so it was 16px there too.
+
+Fixed two ways: an explicit `11px` in `trust.css`, and `var(--t-nano,10.5px)` on the
+six marketing pages so the rule is portable. Verified 10.5px on the six, 11px on the
+seven.
+
+### FOUND, NOT FIXED — sanctuary uses `--t-nano` 16 times and never defines it
+
+The same bug, **pre-existing and far larger**. Sixteen rules on that page silently
+render at the inherited 16px instead of 10.5px:
+
+`.phil-num` · `.phil-b` · `.found-num` · `.seven-label` · `.day-time` · `.ea-label` ·
+`.place-coord-k` · `.hero-plate-cap` · `.footer-col-label` ·
+`.footer-appearance-label`, and six more eyebrow rules.
+
+**Measured: sanctuary's `.footer-col-label` renders at 16px where index, app, web3
+and investors all render the same shared component at 10.5px.** Every small tracked
+label on the page is about 52% larger than designed, including the form labels and
+the seven day names.
+
+> **One line fixes all sixteen** — add `--t-nano: 10.5px;` to sanctuary's token block
+> beside `--t-micro`. Left undone deliberately: it changes a page in many places at
+> once, and that page was signed off by eye in its current state, so someone may have
+> compensated elsewhere. Worth doing, worth looking at afterwards.
+
+### Contrast — 36 distinct failing styles, 171 instances
+
+Measured with full alpha compositing to the first opaque layer, skipping SVG text and
+anything sitting on a photograph. **This contradicts the "0 contrast failures"
+recorded earlier in this file** — that pass measured differently.
+
+Failing instances by page: investors **64** · sanctuary **41** · about **36** ·
+web3 13 · app 12 · index, contact and cookies 0 · the five other trust pages 1 each.
+
+The pattern is consistent and almost entirely pre-existing:
+
+- **Step numerals** — `row-n` 1.99, `disc-n` and `pr-n` 2.36, `cap-u-n` 2.40,
+  `part-idx` 2.68, `lp-step-n` 3.48. At 10.5–15px these are readable-size text, not
+  decoration, so the 4.5 floor applies. Thirteen instances of `row-n` on investors alone.
+- **The gold display italic**, `EM` at 69px, **2.27–2.68 against a 3.0 floor**, on
+  web3, investors and about. This is the largest type on those pages.
+- **Form labels** on sanctuary at 3.58, which matters more than the rest.
+- The single failure repeated across five trust pages is the same `EM` at 4.25.
+
+> **A naive checker reports nonsense here, and I hit it twice.** Reading
+> `backgroundColor` without compositing alpha made `.pf-cta` look like 1.60:1 when it
+> is 8.12:1. Not excluding SVG `<text>` and text over photographs produced another
+> twenty phantom failures at exactly 1.00. Composite the whole stack, and skip
+> anything over an image — it cannot be judged from colours at all.
+
+### Tap targets — the navigation chrome is the smallest thing on a phone
+
+Measured at 390×844. Burger menu button **28 × 23** — below the 24px minimum, and
+**the note claiming a 40×40 touch box does not match what renders**. Footer links,
+eighteen per page, **141 × 18** with 13px between them. Theme toggle 67 × 26.
+Social icons 34 × 34, acceptable. Hero buttons 323 × 54 and drawer links 333 × 59,
+both good.
+
+The two things a visitor taps most are the two that are too small.
+
+### Weight — sanctuary loads 4.4 MB before you scroll
+
+Cold load at 1280, nothing scrolled: **sanctuary 4,441 KB** (19 images) · app
+1,108 KB · index 715 KB · about 447 KB · investors 285 KB · web3 190 KB.
+
+**The lazy loading added earlier works** — 8 of app's 18 lazy images and 5 of
+sanctuary's 10 were still unloaded — but it cannot reach sanctuary, whose weight is
+almost entirely **CSS `background-image`**. The day plates are 316–608 KB each.
+
+### Structure
+- **Five pages have no `<main>`**: index, app, sanctuary, web3, investors. The skip
+  links on four of them therefore point at a `<div>`.
+- **index and app have no `<h1>` at all**; sanctuary has two.
+- Clean: no duplicate IDs, no heading-level skips, `lang="en"` everywhere, every
+  image has `alt`, no `target="_blank"` without `rel`, and the sitemap matches the 13
+  pages exactly.
+
+### Without JavaScript
+`app.html` renders **33% of its headings and paragraphs invisible** — the documented
+missing `<noscript>`, and still the worst case on the site. index is 19%. sanctuary
+and web3 are 0%. The trust layer's `html.js` gate works as designed.
+
+### Content contradictions, verified
+- **The two learning tracks have two different names.** `app.html` says *Wellness
+  Track* / *Web3 Track*; `investors.html` says *Behavioural Wellness* / *Digital
+  Sovereignty*.
+- **"Six habits"** on index (×2) and investors against the **five** the app page now
+  tracks. Defensible — index describes the home *screen*, which does show six tiles —
+  but a reader moving between them sees six, then five.
+- `app.html`'s booster grid still claims **+1 km/session, +1 km/target hit, +2 km/
+  quality night**, which the app's own 8,000 steps ≈ 6 km model contradicts.
+- Lesson counts are consistent everywhere (twenty, ten per track).
+
+### Verified clean
+0 JS errors and 0 horizontal overflow on all 13 pages at 390 and 1280, dark and
+light. 0 broken images. 0 elements escaping the viewport. Every asset resolves except
+the four known gaps.
+
+### Not measurable here
+Frame timing. `requestAnimationFrame` does not run in a hidden Browser pane, and this
+machine's software rendering makes those numbers unreliable anyway — recorded on
+17 September.
+
+### Origin reverted to the Vercel host — 19 September 2026 (end of day)
+
+The custom domain is not in use yet, so all **66 absolute URLs** went back to
+`https://da-oasis-website.vercel.app` — 4 per HTML page, 13 in `sitemap.xml`, 1 in
+`robots.txt`, and one bare mention in the CTO panel's copy-the-role text. The 41
+`info@daoasis.xyz` and `jamie@daoasis.xyz` addresses were untouched: the swap was
+anchored on the scheme, not on the bare domain, which is the only safe way to do it
+when the brand's domain is also its email domain.
+
+> **`daoasis.xyz` is NOT parked — it serves a DIFFERENT DAOasis website.**
+> Title *"DAOasis | Behavioural Wellness Ecosystem"*, 93KB, served from
+> 185.158.133.1, not this codebase — and `daoasis.xyz/images/og-card.jpg` **404s**
+> there.
+>
+> The build already live on Vercel carries the `daoasis.xyz` canonicals, so **the
+> live site is currently telling Google that the canonical version of every one of
+> its pages is a different website.** That is worse than pointing at a dead domain,
+> and it is fixed only by re-uploading the 13 pages plus `sitemap.xml` and
+> `robots.txt`.
+>
+> **Two DAOasis sites are live at once.** Which is canonical is a business question,
+> not a technical one — but they must not point at each other.
+
+**To switch to the custom domain later:** the origin is 4 occurrences per HTML page,
+13 in `sitemap.xml`, 1 in `robots.txt` and 1 in `about.html`'s panel script. Swap the
+string, re-upload, then re-scrape on Facebook's Sharing Debugger and LinkedIn's Post
+Inspector.
+
+Verified after the swap: all 17 published URLs return 200 on the Vercel host, and all
+13 pages carry a consistent canonical / og:url / og:image / twitter:image with 0 JS
+errors and the footer note correctly placed.
