@@ -426,11 +426,24 @@ img { max-width: 100%; }
      notches and the sequence reads as flashing past. See the pacing table in
      CLAUDE.md before changing this. */
 .part-outer { position: relative; height: 600vh; background: var(--warm-white); }
+/* THE PIN CLIPS WHATEVER DOES NOT FIT, AND NOTHING CAN SEE IT.
+   `overflow:hidden` on a 100vh frame means the document never overflows,
+   nothing escapes the viewport and scrollHeight === clientHeight — so a
+   layout audit passes while the last element is sliced in half. Measured
+   before this rule: the content needed 1226px inside 1080 at 1920x1080,
+   1209 inside 1050 at 1680, and 674 inside 625 at 1366x625. Six of ten
+   standard sizes overflowed, and the closing paragraph was what went.
+
+   Fixed the same way sanctuary's .found-sticky was: every padding on a
+   vh clamp so a tall viewport does not inflate it, and THE SUMMARY MOVED
+   OUT OF THE PIN entirely (see .part-close). A summary is not one of the
+   six items — it earns a beat after the stage has scrolled away. */
 .part-sticky {
   position: sticky; top: 0; height: 100vh; overflow: hidden;
-  display: flex; flex-direction: column; justify-content: center; padding: 13vh 8% 8vh;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: clamp(64px,11vh,132px) 8% clamp(48px,7vh,96px);
 }
-.part-head { max-width: 1360px; width: 100%; margin: 0 auto 4vh; }
+.part-head { max-width: 1360px; width: 100%; margin: 0 auto clamp(18px,3vh,42px); }
 .part-grid { display: grid; grid-template-columns: 0.62fr 1.38fr; gap: 7%; align-items: center; max-width: 1360px; width: 100%; margin: 0 auto; }
 .part-list { position: relative; border-top: 1px solid rgba(43,38,35,0.14); }
 /* SCRUBBED off the paced scroll value — --w is how live this row is.
@@ -439,7 +452,9 @@ img { max-width: 100%; }
    rendering six frames across 4.6 viewports of pin. */
 .part-item {
   display: grid; grid-template-columns: auto 1fr; gap: 22px; align-items: baseline;
-  padding: 2.5vh 0; border-bottom: 1px solid rgba(43,38,35,0.14);
+  /* clamped, not 2.5vh: six rows multiply it, so on a 1080 viewport a plain
+     2.5vh spent 324px of the frame on row padding alone */
+  padding: clamp(8px,1.7vh,19px) 0; border-bottom: 1px solid rgba(43,38,35,0.14);
   opacity: calc(0.26 + 0.74 * var(--w, 0));
 }
 .part-idx { font-size:var(--t-nano); letter-spacing: 0.2em; color: var(--gold); }
@@ -455,7 +470,14 @@ img { max-width: 100%; }
   font-family: 'Frank Ruhl Libre', serif; font-size:var(--t-small); letter-spacing: 0.04em;
   color: #8a7f6d; opacity: var(--sw); transform: translateX(calc(-8px * (1 - var(--sw))));
 }
-.part-foot { max-width: 1360px; width: 100%; margin: 5vh auto 0; font-size:var(--t-note); color: #8a7f6d; line-height: 1.8; }
+/* Its own closing beat on the same ivory ground, so the pin releases and the
+   reader reads it in ordinary flow. The bottom padding is the divider tail:
+   --divider-h is 14vh+26px and the divider overlays this section by its own
+   full height, so a plain 16vh would put the palm mark in the last line on
+   any viewport shorter than ~1300px — the defect already recorded against
+   this page's #dvt section. */
+.part-close { background: var(--warm-white); padding: 9vh 8% calc(16vh + 60px); }
+.part-foot { max-width: 88ch; width: 100%; margin: 0 auto; font-size:var(--t-note); color: #8a7f6d; line-height: 1.8; }
 .part-foot a { color: var(--charcoal); text-decoration: none; border-bottom: 1px solid rgba(43,38,35,0.3); padding-bottom: 2px; }
 .part-foot a:hover { border-bottom-color: var(--charcoal); }
 /* short viewports — the sticky frame is the constraint, not the width */
@@ -465,11 +487,14 @@ img { max-width: 100%; }
   .part-head .display { font-size: clamp(28px,3.4vw,50px); }
   .part-item { padding: 1.4vh 0; }
   .part-verb { font-size: clamp(22px,2.6vw,36px); }
-  .part-foot { margin-top: 3vh; }
+  /* the foot is outside the pin now, so the short-viewport tier only has
+     to make the pin itself fit */
+  .part-close { padding-top: 7vh; }
 }
 @media(max-width:1000px){
   .part-outer { height: auto; }
   .part-sticky { position: relative; height: auto; padding: 14vh 8%; }
+  .part-close { padding: 0 8% calc(16vh + 60px); }
   .part-grid { grid-template-columns: 1fr; gap: 7vh; }
   .part-item { opacity: 1; padding: 3.4vh 0; }
   .part-item .part-verb small { opacity: 1; transform: none; }
@@ -509,8 +534,9 @@ img { max-width: 100%; }
 
 /* ══════════════════════════════════════════════
    SECTION 4 — THE BRIDGE
-   Many separate recognitions converge and resolve
-   into one. No arrows, no swap interface.
+   Two banks and a span. Many small countable marks
+   on one side, one solid whole on the other, and a
+   crossing that only goes one way. No swap interface.
 ══════════════════════════════════════════════ */
   /* HEIGHT SET BY BEATS. 5 beats x 83.33vh + 100vh of sticky, so each
      beat gets ~0.70 screens of scroll AFTER the 8% settle pad at each end of
@@ -524,28 +550,48 @@ img { max-width: 100%; }
 }
 .bridge-head { max-width: 1360px; width: 100%; margin: 0 auto; }
 .bridge-stage { position: relative; flex: 1; max-width: 1360px; width: 100%; margin: 0 auto; }
-.bh-stack { position: absolute; left: 50%; top: 50%; width: min(560px, 74vw); height: 1px; transform: translateX(-50%); }
-.bh-stack i { position: absolute; left: 0; top: 0; display: block; width: 100%; height: 1px; background: rgba(196,138,90,0.85); opacity: 0; will-change: transform, opacity; }
-.bh-rule {
-  position: absolute; left: 50%; top: 50%; width: min(560px, 74vw); height: 3px;
-  background: linear-gradient(90deg, rgba(196,138,90,0.25), var(--gold) 50%, rgba(196,138,90,0.25));
-  transform: translate(-50%,-50%) scaleX(0.2); opacity: 0;
-  box-shadow: 0 0 34px rgba(196,138,90,0.5);
-}
-.bh-label {
-  position: absolute; left: 50%; top: 50%; margin-top: 36px; transform: translateX(-50%);
-  text-align: center; opacity: 0; white-space: nowrap;
-}
-/* margin-top is set from the measured stack spread in script, so the
-   caption always clears the hairlines whatever the viewport height */
+/* ── THE BRIDGE STAGE ──
+   Two banks and a span, drawn on one canvas. The DRC side is many small
+   countable marks; the $DVT side is a single solid bar that grows only
+   as marks arrive. What crosses the span is what the copy says crosses
+   it, and it crosses one way.
+
+   WHY A CANVAS AND NOT SEVENTEEN <i> ELEMENTS. The old stage converged a
+   stack of hairlines and equalised them, which is an accurate picture of
+   "consolidation" and an unreadable one: nothing in the frame said what
+   the lines WERE, where they were going, or why there was suddenly one.
+   Forty travelling marks on a path need a canvas; seventeen DOM elements
+   sliding vertically could only ever be an abstraction.
+
+   The two bank captions stay as DOM type, positioned from the script —
+   Cormorant at 64px is worth having as real text, and it keeps the
+   token name selectable and readable by a screen reader. */
+.bh-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+/* The running caption. Its rule was lost when this block replaced the
+   old hairline stage, so it rendered as unstyled 16px body text tight
+   under the headline. Offset from the stage centre, not from its top:
+   the stage begins immediately below the head, and a caption pinned
+   near that edge sits on the display line with no gap at all. */
 .bh-ticker {
-  position: absolute; left: 50%; top: 50%; margin-top: -90px; transform: translateX(-50%);
-  font-size:var(--t-nano); letter-spacing: 0.3em; text-transform: uppercase; color: rgba(247,244,238,0.34);
-  white-space: nowrap;
+  position: absolute; left: 50%; top: 50%; margin-top: -62px; transform: translateX(-50%);
+  font-size:var(--t-nano); letter-spacing: 0.3em; text-transform: uppercase;
+  color: rgba(247,244,238,0.42); white-space: nowrap; text-align: center;
+}
+.bh-bank {
+  position: absolute; top: 50%; transform: translateX(-50%);
+  text-align: center; white-space: nowrap; opacity: 0; pointer-events: none;
+}
+.bh-bank-n {
+  font-size:var(--t-nano); letter-spacing: 0.3em; text-transform: uppercase;
+  color: rgba(247,244,238,0.62);
+}
+.bh-bank-c {
+  font-family: 'Cormorant Garamond', serif; font-weight: 300;
+  font-size: clamp(22px,2.4vw,34px); color: var(--warm-white); line-height: 1; margin-bottom: 10px;
 }
 .bh-token { font-family: 'Cormorant Garamond', serif; font-size: clamp(32px,4.4vw,64px); font-weight: 300; color: var(--warm-white); line-height: 1; }
 .bh-token em { font-style: italic; color: var(--gold); }
-.bh-sub { font-size:var(--t-nano); letter-spacing: 0.28em; text-transform: uppercase; color: rgba(247,244,238,0.5); margin-top: 16px; }
+.bh-sub { font-size:var(--t-nano); letter-spacing: 0.28em; text-transform: uppercase; color: rgba(247,244,238,0.5); margin-top: 14px; }
 .bridge-rail { max-width: 1360px; width: 100%; margin: 0 auto; }
 .bridge-steps { display: grid; grid-template-columns: repeat(5,1fr); gap: 18px; border-top: 1px solid rgba(247,244,238,0.14); padding-top: 20px; position: relative; }
 /* scrubbed — the rail tracks the paced scroll value directly, so no
@@ -574,14 +620,17 @@ img { max-width: 100%; }
 @media(max-width:900px){
   .bridge-outer { height: 608vh; }
   /* the rail is the greedy part on a phone — trimming it is what
-     gives the hairline stage enough room to actually converge */
+     gives the bridge stage enough room to hold both banks */
   .bridge-sticky { padding: 10vh 7% 5vh; }
   .bridge-head .display { font-size: clamp(30px,6vw,44px); }
   .bridge-steps { grid-template-columns: repeat(2,1fr); gap: 10px 16px; padding-top: 16px; }
   .bridge-step-i { margin-bottom: 6px; }
   .bridge-step-n { font-size:var(--t-small); letter-spacing: 0.08em; }
   .bridge-foot { font-size:var(--t-note); line-height: 1.7; margin-top: 18px; }
-  .bh-label { margin-top: 24px; }
+  /* .bh-label is gone with the old hairline stage — the two bank
+     captions are positioned from the script now. */
+  .bh-ticker { top: 0; margin-top: 2px; letter-spacing: 0.2em; }
+  .bh-bank-c { font-size: 20px; }
   .bh-token { font-size: 30px; }
   .bh-sub { font-size:var(--t-nano); letter-spacing: 0.22em; margin-top: 10px; }
 }
@@ -955,6 +1004,166 @@ input:focus-visible, select:focus-visible, textarea:focus-visible,
    rule and higher than a presentational hint — so this neutralises the
    attribute's height while leaving every real CSS height untouched. */
 img{height:auto;}
+
+/* ══════════════════════════════════════════════
+   THE SIMPLE VERSION — the plain-English summary
+
+   Sits between the hero and the page's own account of itself: the hero
+   is the impression, this is the understanding, the rest of the page is
+   the detail. Same block and same class names on app.html,
+   sanctuary.html and web3.html; only the ground and the copy differ.
+
+   IT IS A SUMMARY, NOT AN ESSAY. The first version of this section was
+   three paragraphs of centred prose, and prose is the wrong instrument
+   for the job — a reader who does not yet know what DAOasis is will not
+   read a paragraph to find out. This is one sentence that answers the
+   question, then three beats of four-to-eight words each. Nothing here
+   should take more than about fifteen seconds.
+
+   NO NEW VISUAL LANGUAGE. Tracked eyebrow, Cormorant display, gold
+   folio numerals and a drawing hairline are all already on these pages
+   (the divider rule, sanctuary's Four Foundations, index's journey
+   medallions). SIZES ARE EXPLICIT, NOT TOKENISED: the three pages do
+   not share a type-token set — sanctuary defines no --t-nano at all —
+   so a var() here would render differently on each page.
+══════════════════════════════════════════════ */
+/* ── THE PLATE ──
+   The section is its own ground, a step off the sections either side, so
+   it reads as a deliberate pause rather than as more page. The palm mark
+   sits behind it as a watermark — the site's own mark, the one the
+   dividers and the home page's assembly already use, at an alpha low
+   enough that it changes no measured contrast (verified against the
+   rendered pixels, not against the colour values).
+
+   background-image, never an <img> with a filter — the project's own
+   rule for photographic and mark backgrounds alike. */
+.simple { position: relative; overflow: hidden; }
+.simple::before {
+  content: ''; position: absolute; left: 50%; top: 50%;
+  /* sized to sit WHOLLY inside the section — .simple is overflow:hidden,
+     and a mark cropped by the section edge reads as a rendering fault
+     rather than as a watermark */
+  width: min(600px, 72vw); aspect-ratio: 465 / 492;
+  transform: translate(-50%, -50%);
+  background-image: var(--simple-mark);
+  background-size: contain; background-repeat: no-repeat; background-position: center;
+  opacity: var(--simple-mark-a); pointer-events: none;
+}
+.simple-inner { position: relative; z-index: 1; }
+@media(max-width:900px){
+  .simple::before { width: min(420px, 86vw); }
+}
+
+.simple { padding: 12vh 8%; }
+.simple-inner { max-width: 1000px; margin: 0 auto; text-align: center; }
+
+.simple-eyebrow {
+  display: flex; align-items: center; justify-content: center; gap: 14px;
+  font-size: 11px; letter-spacing: 0.34em; text-transform: uppercase;
+  padding-left: 0.34em; margin-bottom: 26px;
+}
+.simple-eyebrow::before, .simple-eyebrow::after {
+  content: ''; display: block; width: 28px; height: 1px;
+  background: currentColor; opacity: 0.5;
+}
+.simple-head {
+  font-family: 'Cormorant Garamond', serif; font-weight: 300;
+  font-size: clamp(31px,4.1vw,56px); line-height: 1.08; letter-spacing: -0.004em;
+  max-width: 22ch; margin: 0 auto; text-wrap: balance;
+}
+/* the one sentence that answers the question */
+.simple-lede {
+  font-family: 'Cormorant Garamond', serif; font-weight: 300; font-style: italic;
+  font-size: clamp(19px,1.9vw,26px); line-height: 1.45;
+  max-width: 34ch; margin: 22px auto 0; text-wrap: balance;
+}
+
+/* ── the three beats ──
+   A row on desktop, a stack on a handset. The rule above them draws from
+   the left as the block arrives — the site's own divider gesture, which
+   is why it needs no new motion vocabulary. */
+.simple-steps {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 0 6%; margin: clamp(38px,6vh,68px) auto 0; padding-top: 34px;
+  position: relative; list-style: none; text-align: left;
+}
+.simple-steps::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: currentColor; opacity: 0.18;
+  transform: scaleX(0); transform-origin: left center;
+  transition: transform 1.4s var(--ease) 0.15s;
+}
+.rv.show .simple-steps::before, .simple-steps.show::before { transform: scaleX(1); }
+
+.simple-step { position: relative; padding-top: 4px; }
+/* the tick that marks this beat on the rule */
+.simple-step::before {
+  content: ''; position: absolute; top: -34px; left: 0; width: 1px; height: 12px;
+  background: var(--gold); opacity: 0;
+  transition: opacity 0.7s var(--ease);
+}
+.rv.show .simple-step::before, .simple-step.show::before { opacity: 0.75; }
+.rv.show .simple-step:nth-child(2)::before, .simple-step:nth-child(2).show::before { transition-delay: 0.18s; }
+.rv.show .simple-step:nth-child(3)::before, .simple-step:nth-child(3).show::before { transition-delay: 0.34s; }
+
+.simple-step-n {
+  display: block; font-size: 11px; letter-spacing: 0.22em;
+  color: var(--gold); margin-bottom: 12px;
+}
+.simple-step-t {
+  display: block; font-family: 'Cormorant Garamond', serif; font-weight: 300;
+  font-size: clamp(21px,2.1vw,29px); line-height: 1.12; margin-bottom: 9px;
+}
+.simple-step-d { display: block; font-size: var(--t-note); line-height: 1.7; }
+
+.simple-note {
+  font-size: 11.5px; letter-spacing: 0.16em; text-transform: uppercase;
+  max-width: 52ch; margin: clamp(34px,5vh,54px) auto 0; padding-top: 22px; line-height: 1.9;
+}
+
+@media(max-width:900px){
+  /* A STACK, NOT THREE SQUEEZED COLUMNS. At 390 a third of the column is
+     about 100px, which breaks a two-word title onto three lines. Stacked,
+     the rule runs down the left instead of across the top and the ticks
+     sit on it — the same drawing gesture rotated, not a second idea. */
+  .simple { padding: 9vh 8%; }
+  .simple-eyebrow { letter-spacing: 0.26em; margin-bottom: 20px; gap: 11px; }
+  .simple-eyebrow::before, .simple-eyebrow::after { width: 20px; }
+  .simple-lede { margin-top: 18px; }
+  .simple-steps {
+    grid-template-columns: 1fr; gap: 26px; padding: 0 0 0 26px;
+    margin-top: 36px; text-align: left;
+  }
+  .simple-steps::before {
+    top: 6px; bottom: 6px; left: 0; right: auto; width: 1px; height: auto;
+    transform: scaleY(0); transform-origin: top center;
+    transition: transform 1.4s var(--ease) 0.15s;
+  }
+  .rv.show .simple-steps::before, .simple-steps.show::before { transform: scaleY(1); }
+  .simple-step { padding-top: 0; }
+  .simple-step::before { top: 7px; left: -26px; width: 14px; height: 1px; }
+  .simple-step-n { margin-bottom: 7px; }
+  .simple-step-t { margin-bottom: 6px; }
+  .simple-note { margin-top: 30px; }
+}
+
+/* warm stone, one step off the ivory sections either side. NOTE the
+   recorded finding that the ivory ink weights fail on warm stone — the
+   inks below are the darker set, measured on this ground, not inherited. */
+.simple { background: var(--warm-stone);
+  --simple-mark: url('images/img-09.png'); --simple-mark-a: 0.05; }
+/* ivory ground */
+/* the ivory ink weights fail on warm stone — recorded finding. These
+   are the weights for this ground: #5A544A is 5.23, #7F4F22 is 4.82.
+   var(--gold) would be 2.06 here and is not usable on stone at 11px. */
+.simple .simple-eyebrow { color: #5A544A; }
+.simple .simple-head    { color: var(--charcoal); }
+.simple .simple-lede    { color: #4a443c; }
+.simple .simple-steps   { color: rgba(43,38,35,0.5); }
+.simple .simple-step-n  { color: #7F4F22; }
+.simple .simple-step-t  { color: var(--charcoal); }
+.simple .simple-step-d  { color: #5c554c; }
+.simple .simple-note    { color: #5A544A; border-top: 1px solid rgba(43,38,35,0.16); }
 </style>
 </head>
 <body>
@@ -1000,7 +1209,7 @@ img{height:auto;}
 ══════════════════════════════════════════════ -->
 <div class="hero-outer" id="heroOuter" tabindex="-1" data-skip-target>
   <section class="hero-stage" id="heroStage">
-    <canvas class="hero-canvas" id="heroCanvas" role="img" aria-label="A single thread is drawn across the frame, then the view pulls back and it becomes one thread among many, woven into a much larger field."></canvas>
+    <canvas class="hero-canvas" id="heroCanvas" role="img" aria-label="An oasis in cross-section. A single drop of participation lands on the surface and percolates down through the eight layers of the ecosystem, naming each as it passes; then thousands of drops fall at once and the water table rises until the aquifer is full."></canvas>
 
     <div class="hero-title" id="heroTitle">
       <div class="hero-title-eyebrow">The DAOasis Web3 Layer</div>
@@ -1009,7 +1218,7 @@ img{height:auto;}
         <span class="ln"><i>becomes part of</i></span>
         <span class="ln"><i><em>something bigger.</em></i></span>
       </h1>
-      <div class="hero-cue">Scroll to follow the thread ↓</div>
+      <div class="hero-cue">Scroll to follow the drop ↓</div>
     </div>
 
     <div class="hero-mark" id="heroMark"><em>Your participation</em> &nbsp;·&nbsp; The ecosystem</div>
@@ -1034,6 +1243,27 @@ img{height:auto;}
 <!-- ══════════════════════════════════════════════
      SECTION 2 — PARTICIPATION
 ══════════════════════════════════════════════ -->
+
+<!-- ══════════════════════════════════════════════
+     THE SIMPLE VERSION
+     Added between the hero and the participation section. Nothing above
+     or below it was changed. Ivory, the same ground as .part-outer that
+     follows it, so the hero's dark-to-ivory join is unchanged.
+══════════════════════════════════════════════ -->
+<section class="simple bg-ivory on-light" aria-labelledby="simpleHead">
+  <div class="simple-inner rv">
+    <div class="simple-eyebrow soft">The simple version</div>
+    <h2 class="simple-head soft d1" id="simpleHead">Web3, without the complexity.</h2>
+    <p class="simple-lede soft d2">The part that turns taking part into belonging.</p>
+    <ol class="simple-steps soft d2">
+      <li class="simple-step soft d2"><span class="simple-step-n">01</span><span class="simple-step-t">Take part</span><span class="simple-step-d">Use the app and the Sanctuary normally.</span></li>
+      <li class="simple-step soft d3"><span class="simple-step-n">02</span><span class="simple-step-t">Earn recognition</span><span class="simple-step-d">What you contribute is recognised, and it stays yours.</span></li>
+      <li class="simple-step soft d3"><span class="simple-step-n">03</span><span class="simple-step-t">Have a say</span><span class="simple-step-d">Access and governance, introduced in stages.</span></li>
+    </ol>
+    <div class="simple-note soft d3">You do not need to understand crypto to use DAOasis.</div>
+  </div>
+</section>
+
 <div class="part-outer on-light" id="partOuter">
   <div class="part-sticky">
 
@@ -1047,9 +1277,12 @@ img{height:auto;}
 
     <div class="part-grid">
       <div class="dev" id="partDev">
-        <div class="dev-shot on" data-shot="0"><img fetchpriority="low" decoding="async" src="images/app-quests.webp" width="758" height="1600" alt="The DAOasis Companion App quests screen" /></div>
-        <div class="dev-shot" data-shot="1"><img fetchpriority="low" decoding="async" src="images/app-module.webp" width="758" height="1600" alt="The DAOasis Companion App learning module screen" /></div>
-        <div class="dev-shot" data-shot="2"><img fetchpriority="low" decoding="async" src="images/app-community.webp" width="758" height="1600" alt="The DAOasis Companion App community screen" /></div>
+        <div class="dev-shot on" data-shot="0"><img fetchpriority="low" decoding="async" src="images/app-journey-map.webp" width="758" height="1600" alt="The Bangkok to Phuket journey map: 186 km walked, between Ayutthaya and Hua Hin" /></div>
+        <div class="dev-shot" data-shot="1"><img fetchpriority="low" decoding="async" src="images/app-quests.webp" width="758" height="1600" alt="Today's quests: a walk to the ridge, three minutes of breathing, a morning intention" /></div>
+        <div class="dev-shot" data-shot="2"><img fetchpriority="low" decoding="async" src="images/app-module.webp" width="758" height="1600" alt="A behavioural wellness module of four lessons, from the pilot’s twenty across two tracks" /></div>
+        <div class="dev-shot" data-shot="3"><img fetchpriority="low" decoding="async" src="images/app-home-morning.webp" width="758" height="1600" alt="The home screen in the morning: the day's six actions as tiles, and the journey so far" /></div>
+        <div class="dev-shot" data-shot="4"><img fetchpriority="low" decoding="async" src="images/app-community.webp" width="758" height="1600" alt="The community screen: a shared breathing challenge and the cohort walking together" /></div>
+        <div class="dev-shot" data-shot="5"><img fetchpriority="low" decoding="async" src="images/app-marketplace.webp" width="758" height="1600" alt="The marketplace: courses, coaching and experiences made by members further along the route" /></div>
       </div>
 
       <div class="part-list" id="partList">
@@ -1057,33 +1290,38 @@ img{height:auto;}
           <div class="part-idx">01</div>
           <div class="part-verb">Walk. <small>Movement, steps and daily targets</small></div>
         </div>
-        <div class="part-item" data-part="1" data-shot="0">
+        <div class="part-item" data-part="1" data-shot="1">
           <div class="part-idx">02</div>
           <div class="part-verb">Complete a quest. <small>Wellness, Web3 and community quests</small></div>
         </div>
-        <div class="part-item" data-part="2" data-shot="1">
+        <div class="part-item" data-part="2" data-shot="2">
           <div class="part-idx">03</div>
           <div class="part-verb">Learn. <small>Lessons across both learning tracks</small></div>
         </div>
-        <div class="part-item" data-part="3" data-shot="1">
+        <div class="part-item" data-part="3" data-shot="3">
           <div class="part-idx">04</div>
           <div class="part-verb">Build a routine. <small>Consistency, held over time</small></div>
         </div>
-        <div class="part-item" data-part="4" data-shot="2">
+        <div class="part-item" data-part="4" data-shot="4">
           <div class="part-idx">05</div>
           <div class="part-verb">Take part. <small>Challenges and shared community effort</small></div>
         </div>
-        <div class="part-item" data-part="5" data-shot="2">
+        <div class="part-item" data-part="5" data-shot="5">
           <div class="part-idx">06</div>
           <div class="part-verb">Help others. <small>Referrals and contribution</small></div>
         </div>
       </div>
     </div>
 
-    <p class="part-foot">You show up. You learn. You move. You build. You contribute. None of it sits in its own column — every one of these feeds the same Journey, and together they compound. DAOasis recognises that participation and gives it somewhere to go, beginning in the <a href="app.html">Companion App</a>.</p>
-
   </div>
 </div>
+
+<!-- The closing line of the participation section, OUTSIDE the pin. It used
+     to sit inside .part-sticky, where a 100vh frame with overflow:hidden
+     sliced it in half at six of ten standard viewport sizes. -->
+<section class="part-close on-light">
+  <p class="part-foot">You show up. You learn. You move. You build. You contribute. None of it sits in its own column — every one of these feeds the same Journey, and together they compound. DAOasis recognises that participation and gives it somewhere to go, beginning in the <a href="app.html">Companion App</a>.</p>
+</section>
 
 <div class="divider light bg-ivory">
   <div class="divider-inner">
@@ -1152,9 +1390,12 @@ img{height:auto;}
 
     <div class="bridge-stage">
       <div class="bh-ticker" id="bhTicker">Individual acts of participation</div>
-      <div class="bh-stack" id="bhStack" aria-hidden="true"></div>
-      <div class="bh-rule" id="bhRule"></div>
-      <div class="bh-label" id="bhLabel">
+      <canvas class="bh-canvas" id="bhCanvas" role="img" aria-label="Many small marks of participation gather on one side as DRC. A single span is drawn across, and the marks cross it one at a time, one way, consolidating on the far side into one solid bar of $DVT."></canvas>
+      <div class="bh-bank" id="bhBankL">
+        <div class="bh-bank-c">Reward Credits</div>
+        <div class="bh-bank-n">DRC</div>
+      </div>
+      <div class="bh-bank" id="bhBankR">
         <div class="bh-token"><em>$DVT</em></div>
         <div class="bh-sub">DAOasis Value Token</div>
       </div>
@@ -1846,12 +2087,29 @@ function rnd(i){ const s = Math.sin(i * 127.1 + 311.7) * 43758.5453; return s - 
 
 
 /* ════════════════════════════════════════════
-   SECTION 1 — HERO — THE FABRIC
-   One thread is drawn across the frame. Then the
-   camera pulls back and the thread turns out to be
-   one of many, woven into a field. Deliberately not
-   a particle system — that language belongs to the
-   home page palm assembly and stays there.
+   SECTION 1 — HERO — THE AQUIFER
+
+   An oasis in cross-section. One gold drop of participation lands on the
+   surface and percolates DOWN through the eight layers of the ecosystem,
+   lighting and naming each as it passes. The camera follows it down and
+   pulls back as it goes, so the depth of the thing is discovered rather
+   than presented. Then the drop is not one but thousands — every member's
+   participation at once — and the water table rises until the aquifer is
+   full. An oasis is fed from below by water nobody sees arrive.
+
+   WHAT THIS DELIBERATELY IS NOT, and each exclusion is load-bearing:
+   - NOT a particle system assembling into the palm mark. That language is
+     the home page's and stays there; it was rejected here once already.
+   - NOT a ring. Section 8's loop is the page's circle and a second one in
+     the hero would compete with it.
+   - NOT the woven fabric this replaces. One thread among forty-five read
+     as noise: the frame was busy without being legible, and the eight
+     layers it named were indistinguishable from the anonymous ticks
+     either side of them.
+
+   The eight layers are unchanged, in the same order, and DRC and $DVT are
+   still two separate entries — they are different layers and this page
+   never lets them blur.
 ════════════════════════════════════════════ */
 (function(){
   const outer  = document.getElementById('heroOuter');
@@ -1869,309 +2127,349 @@ function rnd(i){ const s = Math.sin(i * 127.1 + 311.7) * 43758.5453; return s - 
      than waiting for an observer that has already fired */
   requestAnimationFrame(() => { titleRv.classList.add('show'); title.classList.add('lit'); });
 
-  /* BOTH OF THESE ARE PER-FRAME, NOT CONSTANTS — set in resize(), and so
-     DECLARED ABOVE IT: resize() is called immediately below its own
-     definition, which is before the point these used to sit, and a `let`
-     read from inside a function that runs during its temporal dead zone
-     throws rather than reading undefined.
+  const clamp01 = v => v < 0 ? 0 : v > 1 ? 1 : v;
+  const ease    = t => t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t + 2, 2)/2;
+  const outQuad = t => t * (2 - t);
+  const lerp    = (a,b,t) => a + (b-a)*t;
+  /* Deterministic — a sine hash, so the strata, the grain and the whole
+     field of drops are identical on every load and on every device. A
+     Math.random() field would re-roll on resize and the hero would not be
+     the same photograph twice. */
+  const rnd = i => { const s = Math.sin(i * 127.1 + 311.7) * 43758.5453; return s - Math.floor(s); };
 
-     Z0 was 7.4, which put the nearest neighbour 960px off screen — half
-     the pull-back was spent before a second thread was even visible, so
-     the middle of the hero was a single line and nothing else. 4.8 still
-     opens on one thread but lets the field start arriving straight away.
-
-     That fix was measured against a 1440px frame and never re-checked on a
-     handset, where it does not hold: a 390px frame is 3.7x narrower, so at
-     the same GAP and Z0 the nearest neighbour sits 312px off centre at the
-     middle of the pull-back — right at the edges of the screen. Measured at
-     p=0.42 the mobile frame carried ONE gold thread and two hairlines, for
-     most of a viewport of scrolling. The field is the whole point of the
-     hero, so mobile gets its own spacing and its own opening zoom rather
-     than the desktop numbers applied to a third of the width.
-
-     GAP 85 is bounded by the threads themselves, not chosen freely: a
-     thread's excursion is amp (16-38) + amp2 (6-14), so up to 52 world
-     units, and any spacing near that lets neighbours cross and the weave
-     turns to noise. 85 keeps a clear margin at the densest frame. */
-  let GAP = 130;                       /* world spacing between threads */
-  let Z0  = 4.8;                       /* camera zoom at the open */
-  const Z1 = 0.34;                     /* ...and at the end of the pull-back */
+  /* ── THE EIGHT LAYERS ──────────────────────────────────────────────
+     Top to bottom is surface to bedrock: where you act, down to what it
+     is ultimately for. Deliberately NOT the stem-and-label treatment of
+     the Ecosystem diagram in Section 6, which names the same parts —
+     that is the diagram, this is the section drawing. */
+  const LAYERS = [
+    { name: 'Companion App',  short: 'App' },
+    { name: 'Learning',       short: 'Learning' },
+    { name: 'Community',      short: 'Community' },
+    { name: 'Reward Credits', short: 'DRC' },
+    { name: '$DVT',           short: '$DVT' },
+    { name: 'Marketplace',    short: 'Marketplace' },
+    { name: 'Governance',     short: 'Governance' },
+    { name: 'The Sanctuary',  short: 'Sanctuary' }
+  ];
+  const N     = LAYERS.length;
+  const LH    = 100;          /* world units per stratum */
+  const DEPTH = N * LH;       /* 800 */
 
   let W = 0, H = 0, DPR = 1, mobile = false;
   function resize(){
     mobile = window.innerWidth <= 900;
-    /* see the note on GAP/Z0 above — the handset is a different frame, so
-       it gets a denser weave and a closer opening camera, not the desktop
-       composition scaled down */
-    GAP = mobile ? 85  : 130;
-    Z0  = mobile ? 3.2 : 4.8;
-    DPR = Math.min(window.devicePixelRatio || 1, mobile ? 2 : 2);
-    W = canvas.clientWidth || window.innerWidth;
+    DPR = Math.min(window.devicePixelRatio || 1, 2);
+    W = canvas.clientWidth  || window.innerWidth;
     H = canvas.clientHeight || window.innerHeight;
-    canvas.width = Math.round(W * DPR);
+    canvas.width  = Math.round(W * DPR);
     canvas.height = Math.round(H * DPR);
     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
   }
   resize();
   window.addEventListener('resize', resize, { passive: true });
 
-  /* ease-OUT, not smoothstep: the reveal has to move early and settle
-     late, not the other way round */
-  const outQuad = t => t * (2 - t);
-
-  /* The layers the thread runs through. The ticks keep their original
-     meaning — individual acts of participation — and these name the layer
-     each act belongs to.
-
-     Deliberately NOT the stem-and-label treatment of the Ecosystem
-     diagram in Section 6, which names the same parts: these sit inline
-     along the thread, carry no stems and no sub-labels, and dissolve with
-     the close view. Section 6 is the diagram; this is the close-up.
-
-     DRC and $DVT are two separate entries on purpose. They are different
-     layers and the page never lets them blur. */
-  const LAYERS   = ['Companion App','Learning','Community','Reward Credits',
-                    '$DVT','Marketplace','Governance','Sanctuary'];
-  /* a handset shows ~3 of these at once, so the long ones are shortened
-     rather than allowed to collide */
-  const LAYERS_M = ['App','Learning','Community','DRC',
-                    '$DVT','Marketplace','Governance','Sanctuary'];
-  const L_FIRST  = -4;              /* the set is centred on the thread */
-
   /* Canvas letter-spacing is not reliable across the engines this has to
      run on, so tracking is applied by hand. It also yields an exact width,
-     which is what centres the label over its tick. */
+     which is what lets a label underline itself to its own measure. */
   function trackedWidth(s, tr){
     let w = 0;
-    for(let i = 0; i < s.length; i++){
-      w += ctx.measureText(s[i]).width + (i < s.length - 1 ? tr : 0);
-    }
+    for(let i = 0; i < s.length; i++) w += ctx.measureText(s[i]).width + (i < s.length - 1 ? tr : 0);
     return w;
   }
-  /* Returns the drawn width. Canvas letter-spacing is not reliable across
-     engines, so tracking is applied by hand here — which means this is also
-     the only place that knows how wide a tracked label actually ends up.
-     The layer labels underline themselves with a gold rule and need exactly
-     that number; measuring it any other way would drift from what is drawn. */
-  function trackedText(s, midX, y, tr){
+  function trackedText(s, x, y, tr){
     const w = trackedWidth(s, tr);
-    let x = midX - w / 2;
-    for(let i = 0; i < s.length; i++){
-      ctx.fillText(s[i], x, y);
-      x += ctx.measureText(s[i]).width + tr;
-    }
+    let cx = x;
+    for(let i = 0; i < s.length; i++){ ctx.fillText(s[i], cx, y); cx += ctx.measureText(s[i]).width + tr; }
     return w;
   }
 
-  function threadAt(i, worldX){
-    const amp  = 16 + rnd(i) * 22;
-    const freq = 0.0042 + rnd(i + 91) * 0.0036;
-    const ph   = rnd(i + 17) * Math.PI * 2;
-    const amp2 = 6 + rnd(i + 55) * 8;
-    return i * GAP
-         + Math.sin(worldX * freq + ph) * amp
-         + Math.sin(worldX * freq * 2.7 + ph * 1.7) * amp2;
+  /* ── TIMELINE ──────────────────────────────────────────────────────
+       0.00 - 0.16   the title card holds; the surface draws in
+       0.16 - 0.60   ONE DROP percolates the eight strata, camera
+                     following it down and pulling back as it goes
+       0.52 - 0.78   the field arrives — every member's participation
+       0.66 - 0.94   the water table rises and the aquifer fills
+       0.80 - 1.00   the statement takes the frame (chrome())
+     The drop's descent and the field's arrival overlap by design: the
+     single drop must still be on screen when the others appear, or the
+     "and then everyone" reading is lost. */
+  const T = { dropIn: 0.16, dropOut: 0.60, fieldIn: 0.52, fieldFull: 0.78, tableIn: 0.66, tableFull: 0.94 };
+
+  /* World y of the drop at p, and the layer index it is currently in. */
+  function dropY(p){
+    const d = clamp01((p - T.dropIn) / (T.dropOut - T.dropIn));
+    /* starts above the surface, accelerates in, then percolates evenly —
+       a constant rate reads as a lift, not a fall */
+    return lerp(-90, DEPTH + 30, d < 0.12 ? outQuad(d/0.12) * 0.12 : d);
+  }
+
+  /* A stratum's boundary is not a straight rule: a gentle deterministic
+     wave, so the section reads as ground rather than as a bar chart. */
+  function boundaryY(i, x, sc){
+    const k = i * 7.13;
+    return Math.sin(x * 0.0042 + k) * 3.2 + Math.sin(x * 0.0113 + k * 2.1) * 1.6;
+  }
+
+  /* The drop wanders as it descends — it is finding a way through, not
+     falling down a pipe. Deterministic in world y, so it is the same
+     path every time and the ripples land where the drop actually is. */
+  function meander(wy, spread){
+    return (Math.sin(wy * 0.014) * 0.55 + Math.sin(wy * 0.0067 + 1.9) * 0.45) * spread;
   }
 
   function draw(p){
     ctx.clearRect(0, 0, W, H);
 
-    const drawT = ease(clamp01((p - 0.055) / 0.20));          /* the thread draws in */
-    const pull  = outQuad(clamp01((p - 0.26) / 0.50));        /* the camera pulls back */
-    /* The pull-back finishes at p=0.76 but the section runs to 1.0, so the
-       frame used to be completely motionless for the last 1.17 viewports
-       of scroll while the statement faded in over it. The camera keeps
-       easing back very slightly through the statement — the field is still
-       breathing behind the copy instead of being a still image. */
-    const settle = ease(clamp01((p - 0.72) / 0.28));
-    const z     = lerp(Z0, Z1, pull) * lerp(1, 0.90, settle);
-    const cx = W / 2, cy = H / 2;
+    /* ── CAMERA ──
+       Opens close on the surface and pulls back as the drop descends, so
+       the depth is discovered. scEnd fits all eight strata in the frame
+       with a margin; scStart is 2.45x that, which holds about three and a
+       half layers — enough that the surface reads as a place, not a line. */
+    const scEnd   = (H * (mobile ? 0.80 : 0.84)) / DEPTH;
+    const scStart = scEnd * 2.45;
+    const pull    = ease(clamp01((p - T.dropIn) / (T.dropOut + 0.06 - T.dropIn)));
+    const sc      = lerp(scStart, scEnd, pull);
 
-    /* how many neighbours have arrived */
-    const maxI = Math.floor(lerp(0, mobile ? 13 : 22, pull));
-    const step = mobile ? 14 : 9;                             /* px between samples */
+    const dy = dropY(p);
+    /* the camera follows the drop while zoomed in and settles on the
+       middle of the section as it pulls back */
+    const camY = lerp(Math.max(dy, 40), DEPTH / 2, pull);
+    const midX = mobile ? W * 0.56 : W * 0.60;   /* the drop's lane */
+    const toY  = wy => H / 2 + (wy - camY) * sc;
 
-    for(let i = -maxI; i <= maxI; i++){
-      if(i === 0) continue;
-      const arrive = clamp01((pull - (Math.abs(i) - 1) / (mobile ? 15 : 24)) * 4.2);
-      if(arrive <= 0.01) continue;
-      const depth = 1 - Math.min(1, Math.abs(i) / (mobile ? 15 : 24)) * 0.55;
+    /* ── THE WATER TABLE ──
+       Rises from the bedrock up. This is the pay-off: the aquifer fills
+       because thousands of people put something into it. */
+    const tab   = ease(clamp01((p - T.tableIn) / (T.tableFull - T.tableIn)));
+    const tableW = DEPTH - tab * DEPTH * 0.96;   /* world y of the surface */
+
+    /* ── SKY ──
+       The band above the surface is air over the oasis, not a missing
+       layer. Without it the frame opens on a black strip that reads as a
+       rendering fault. */
+    const surf = toY(0);
+    if(surf > 0){
+      const sg = ctx.createLinearGradient(0, 0, 0, surf);
+      sg.addColorStop(0, '#050403');
+      sg.addColorStop(1, '#0d0a08');
+      ctx.fillStyle = sg;
+      ctx.fillRect(0, 0, W, surf);
+    }
+
+    /* ── STRATA ── */
+    for(let i = 0; i < N; i++){
+      const y0 = toY(i * LH), y1 = toY((i + 1) * LH);
+      if(y1 < -40 || y0 > H + 40) continue;
+
+      /* How lit this stratum is: the drop lights it on the way through and
+         it stays warm afterwards — a layer that goes dark again would say
+         the participation had left it. */
+      const passed = clamp01((dy - i * LH) / LH);
+      const wet    = clamp01((DEPTH - tableW - (DEPTH - (i + 1) * LH)) / LH);
+      const lit    = Math.max(passed * 0.55, wet * 0.9);
+      const near   = 1 - Math.abs(dy - (i + 0.5) * LH) / (LH * 1.4);
+      const live   = clamp01(near) * (1 - tab * 0.7);
+
+      /* DEPTH DARKENS THE GROUND, AND THE STEP HAS TO BE BIG ENOUGH TO SEE.
+         The first pass stepped 1.05 per layer off a base of 16, which put
+         all eight inside six values of each other — the section rendered as
+         one flat brown field and the whole "percolating through layers"
+         reading was lost. Alternating the step as well as ramping it is
+         what makes eight bands legible in a frame this dark. */
+      const base = 27 - i * 2.6 + (i % 2 ? 3.2 : 0);
+      const g = ctx.createLinearGradient(0, y0, 0, y1);
+      const top = Math.round(base + 6 + lit * 20 + live * 9);
+      const bot = Math.round(base + lit * 12 + live * 4);
+      g.addColorStop(0, `rgb(${top},${Math.round(top*0.86)},${Math.round(top*0.74)})`);
+      g.addColorStop(1, `rgb(${bot},${Math.round(bot*0.86)},${Math.round(bot*0.74)})`);
+      ctx.fillStyle = g;
       ctx.beginPath();
-      for(let sx = -20; sx <= W + 20; sx += step){
-        const wx = (sx - cx) / z;
-        const sy = cy + threadAt(i, wx) * z;
-        if(sx === -20) ctx.moveTo(sx, sy); else ctx.lineTo(sx, sy);
+      ctx.moveTo(0, y0);
+      for(let x = 0; x <= W; x += 16) ctx.lineTo(x, y0 + boundaryY(i, x, sc) * sc);
+      /* the bedrock runs to the bottom of the frame — a black strip under
+         the last stratum reads as the drawing having stopped short */
+      const bottomEdge = (i === N - 1) ? Math.max(y1, H) : y1;
+      ctx.lineTo(W, bottomEdge);
+      for(let x = W; x >= 0; x -= 16) ctx.lineTo(x, bottomEdge + (i === N - 1 ? 0 : boundaryY(i + 1, x, sc) * sc));
+      ctx.closePath();
+      ctx.fill();
+
+      /* sediment grain — a few faint streaks, deterministic, and only
+         while the camera is close enough for them to be a texture rather
+         than noise */
+      if(sc > scEnd * 1.15){
+        ctx.strokeStyle = `rgba(247,244,238,${0.02 + lit * 0.02})`;
+        ctx.lineWidth = 1;
+        for(let s = 0; s < 5; s++){
+          const r = rnd(i * 13 + s);
+          const yy = y0 + (y1 - y0) * (0.12 + r * 0.76);
+          const x0 = W * (r * 0.5), x1 = x0 + W * (0.18 + rnd(i * 31 + s) * 0.4);
+          ctx.beginPath(); ctx.moveTo(x0, yy); ctx.lineTo(Math.min(x1, W), yy); ctx.stroke();
+        }
       }
-      ctx.strokeStyle = 'rgba(214,204,188,' + (0.30 * arrive * depth).toFixed(3) + ')';
-      ctx.lineWidth = 1;
+
+      /* the boundary itself, gold where the drop is crossing it */
+      const cross = clamp01(1 - Math.abs(dy - i * LH) / 30);
+      ctx.strokeStyle = cross > 0.01
+        ? `rgba(196,138,90,${0.16 + cross * 0.7})`
+        : `rgba(247,244,238,${0.15 + lit * 0.10})`;
+      ctx.lineWidth = cross > 0.01 ? 1.4 : 1;
+      ctx.beginPath();
+      for(let x = 0; x <= W; x += 16){
+        const yy = y0 + boundaryY(i, x, sc) * sc;
+        x === 0 ? ctx.moveTo(x, yy) : ctx.lineTo(x, yy);
+      }
       ctx.stroke();
     }
 
-    /* thread zero — yours */
-    const cut = W * drawT;
-    ctx.beginPath();
-    for(let sx = -20; sx <= W + 20; sx += Math.max(3, step - 4)){
-      const wx = (sx - cx) / z;
-      const sy = cy + threadAt(0, wx) * z;
-      if(sx === -20) ctx.moveTo(sx, sy); else ctx.lineTo(sx, sy);
-    }
-    ctx.save();
-    ctx.beginPath();
-    ctx.rect(0, 0, drawT >= 1 ? W : cut, H);
-    ctx.clip();
-    ctx.beginPath();
-    for(let sx = -20; sx <= W + 20; sx += Math.max(3, step - 4)){
-      const wx = (sx - cx) / z;
-      const sy = cy + threadAt(0, wx) * z;
-      if(sx === -20) ctx.moveTo(sx, sy); else ctx.lineTo(sx, sy);
-    }
-    ctx.strokeStyle = 'rgba(196,138,90,' + lerp(0.95, 0.8, pull).toFixed(3) + ')';
-    ctx.lineWidth = lerp(2.2, 1.3, pull);
-    ctx.shadowColor = 'rgba(196,138,90,0.55)';
-    ctx.shadowBlur = lerp(18, 5, pull);
-    ctx.stroke();
-    ctx.shadowBlur = 0;
+    /* ── THE WATER ──
+       Drawn over the strata as a warm translucent body, with its own
+       surface line. It is light, not blue: this is value accumulating. */
+    if(tab > 0.001){
+      const ty = toY(tableW);
+      const by = toY(DEPTH);
+      const wg = ctx.createLinearGradient(0, ty, 0, by);
+      wg.addColorStop(0, 'rgba(196,138,90,0.30)');
+      wg.addColorStop(1, 'rgba(196,138,90,0.10)');
+      ctx.fillStyle = wg;
+      ctx.beginPath();
+      ctx.moveTo(0, ty);
+      for(let x = 0; x <= W; x += 12) ctx.lineTo(x, ty + Math.sin(x * 0.011 + p * 9) * 2.2);
+      ctx.lineTo(W, by); ctx.lineTo(0, by); ctx.closePath(); ctx.fill();
 
-    /* the marks along it — individual acts of participation.
-       They belong to the close view and fade as we pull away. */
-    /* Keyed to Z0 on mobile so the ticks still open at full strength.
-       Hard-coded 3.2 against a desktop Z0 of 4.8 gives 1.19 at the open
-       (clamped to 1); the same 3.2 against a mobile Z0 of 3.2 would give
-       0.69, so the marks would arrive already faded. */
-    const tickA = clamp01((z - 1.0) / (mobile ? (Z0 - 1.0) : 3.2));
-    if(tickA > 0.02){
-      ctx.strokeStyle = 'rgba(247,244,238,' + (0.55 * tickA).toFixed(3) + ')';
-      ctx.lineWidth = 1;
-      const spacing = 78;
-      const firstN = Math.floor(((0 - cx) / z) / spacing) - 1;
-      const lastN  = Math.ceil(((W - cx) / z) / spacing) + 1;
-
-      /* The label window is set by geometry, not by taste. The set spans
-         7 * 78 world units, so all eight only fit on screen once
-         z <= (W - 100) / 546 — about 3.2 at desktop width. Ramping the
-         labels off tickA put that moment at ~50% opacity and held it for
-         barely a tenth of the hero, so the full set was never actually
-         readable. This holds them at full strength through the window
-         where all eight are visible, then clears them well before the
-         densest frame so they never fight the field's arrival.
-
-         The floor is 2.0 rather than 1.7 because adjacent labels start
-         touching at z ≈ 1.95 — they must be fully gone by then, not
-         merely faint, or the overlap shows as a smudge. */
-      const names = mobile ? LAYERS_M : LAYERS;
-      const labA  = clamp01((z - 2.0) / 0.65);
-      const fs    = mobile ? 10 : 10;
-      const tr    = fs * (mobile ? 0.16 : 0.2);
-
-      /* ── THE MOBILE READING HEAD ──────────────────────────────────
-         Mobile names one layer at a time (see the note below), and it used
-         to draw that name floating at the frame's centre while the gold
-         node treatment was driven by labA — which is zero below z = 2.0,
-         while the mobile name walk runs all the way down to z = 1.2. So
-         for the back half of the sequence the page named a layer with no
-         node lit anywhere, and for the front half the name and the node
-         were two unrelated objects that happened to share an x.
-
-         The centre tick is the one mark that is ALWAYS on screen (its
-         world x is 0, so its screen x is exactly cx at every zoom), and
-         the neighbours converge on it far too late on a narrow frame to
-         carry a label of their own — measured, at most three ticks are on
-         screen at any point in the walk. So on mobile the centre tick IS
-         the reading head: the name sits on it, the gold rule under the
-         name, the node lit beneath, and the eight layers pass through it
-         as the camera pulls back. One object, not three. */
-      const mWalk  = clamp01((Z0 - z) / (Z0 - 1.2)) * names.length;
-      const mIdx   = Math.min(names.length - 1, Math.floor(mWalk));
-      const mFrac  = mWalk - mIdx;
-      /* stamped in and out, so a change of layer is deliberate rather than
-         a hard cut from one word to another */
-      const mSlot  = clamp01(Math.min(mFrac / 0.12, (1 - mFrac) / 0.12));
-      const mA     = mobile ? clamp01(Math.min(drawT, clamp01((z - 1.15) / 0.5))) * mSlot : 0;
-
-      if(labA > 0.02 || mA > 0.02){
-        ctx.font = '400 ' + fs + 'px "Frank Ruhl Libre", serif';
-        ctx.textBaseline = 'alphabetic';
+      ctx.strokeStyle = `rgba(214,160,108,${0.30 + tab * 0.45})`;
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      for(let x = 0; x <= W; x += 12){
+        const yy = ty + Math.sin(x * 0.011 + p * 9) * 2.2;
+        x === 0 ? ctx.moveTo(x, yy) : ctx.lineTo(x, yy);
       }
+      ctx.stroke();
+    }
 
-      /* THE EIGHT LAYERS ARE THE BRAND, SO THEY ARE DRAWN IN IT.
-
-         Every mark used to be the same 1px warm-white tick and every label
-         the same warm-white caps — so the eight named layers, which are the
-         whole point of the hero, were indistinguishable from the anonymous
-         participation ticks either side of them and read as scale marks on
-         a ruler. A NAMED layer now gets:
-
-           · a gold node on the thread, with the page's own gold glow
-           · a heavier, gold-tinted stem
-           · a gold rule under its name, drawn to the name's own width
-           · the label a step brighter than an unnamed tick
-
-         Unnamed ticks are unchanged — they are still the quiet individual
-         acts of participation, and the contrast between the two is what
-         makes the layers read as layers. */
-      for(let n = firstN; n <= lastN; n++){
-        const wx = n * spacing;
-        const sx = wx * z + cx;
-        if(sx < -10 || sx > W + 10) continue;
-        const sy = cy + threadAt(0, wx) * z;
-        const h = 13 * z * 0.5 + 5;
-        const li = n - L_FIRST;
-        /* Desktop names every tick that has a layer. Mobile names ONLY the
-           centre tick — the reading head — so `named` and the weight that
-           drives the treatment both come from the mobile walk there. */
-        const named = mobile ? (n === 0) : (li >= 0 && li < names.length);
-        /* a named layer only earns its treatment while its label is legible;
-           as the label's own alpha falls away it returns to being an
-           ordinary tick */
-        const nm = named ? (mobile ? mA : labA) : 0;
-
-        if(nm > 0.02){
-          ctx.strokeStyle = 'rgba(214,160,110,' + (0.75 * tickA).toFixed(3) + ')';
-          ctx.lineWidth = 1 + 0.6 * nm;
-        }
+    /* ── THE FIELD — everyone else's participation ──
+       Eighty drops on deterministic lanes and phases, so the field is the
+       same every load. They keep percolating at the end rather than
+       stopping: the aquifer is fed continuously, not once. */
+    const fld = ease(clamp01((p - T.fieldIn) / (T.fieldFull - T.fieldIn)));
+    if(fld > 0.001){
+      const COUNT = mobile ? 42 : 80;
+      const shown = Math.round(COUNT * fld);
+      for(let i = 0; i < shown; i++){
+        const lane  = rnd(i * 3.1);
+        const x     = W * (0.04 + lane * 0.92);
+        const phase = rnd(i * 5.7);
+        const speed = 0.7 + rnd(i * 9.3) * 0.6;
+        /* travel is driven by scroll, not a clock: everything on this page
+           moves because the reader moves */
+        const trav  = ((p - T.fieldIn) * speed * 2.1 + phase) % 1;
+        const wy    = -60 + trav * (DEPTH + 90);
+        if(wy > tableW) continue;                 /* it has joined the water */
+        const yy    = toY(wy);
+        if(yy < -20 || yy > H + 20) continue;
+        const a  = fld * (0.34 + rnd(i * 2.3) * 0.44) * (1 - clamp01((wy - tableW + 120) / 120) * 0.8);
+        const dx = x + meander(wy, 9);
+        /* a short trail, or eighty 1.5px marks read as dust on the lens
+           rather than as other people's participation falling */
+        ctx.strokeStyle = `rgba(206,150,101,${a * 0.5})`;
+        ctx.lineWidth = 1.1;
         ctx.beginPath();
-        ctx.moveTo(sx, sy - h);
-        ctx.lineTo(sx, sy + h);
+        ctx.moveTo(dx, yy - 16);
+        ctx.lineTo(dx, yy);
         ctx.stroke();
-        if(nm > 0.02){
-          ctx.strokeStyle = 'rgba(247,244,238,' + (0.55 * tickA).toFixed(3) + ')';
-          ctx.lineWidth = 1;
-          /* the node — the piece of the layer that pops off the thread */
-          ctx.beginPath();
-          ctx.arc(sx, sy, 2.2 + 1.5 * nm, 0, Math.PI * 2);
-          ctx.fillStyle = 'rgba(214,160,110,' + (0.95 * nm).toFixed(3) + ')';
-          ctx.shadowColor = 'rgba(196,138,90,0.9)';
-          ctx.shadowBlur = 12 * nm;
-          ctx.fill();
-          ctx.shadowBlur = 0;
-        }
-
-        /* ONE label path for both compositions. Mobile used to have its own
-           block further down that drew plain warm-white caps at the frame
-           centre with no rule and no tie to any node — so the brand
-           treatment the desktop hero was given stopped at 900px. Desktop
-           labels every named tick; mobile labels the reading head. Beyond
-           which tick and which alpha, the drawing is identical. */
-        if(nm > 0.02){
-          const label = names[mobile ? mIdx : li].toUpperCase();
-          const ly = sy - h - 12;
-          ctx.fillStyle = 'rgba(250,241,231,' + (0.96 * nm).toFixed(3) + ')';
-          const wlab = trackedText(label, sx, ly, tr);
-          /* a gold rule the exact width of the name it underlines —
-             trackedText returns that width precisely because canvas
-             letter-spacing is not reliable across engines */
-          if(wlab){
-            ctx.strokeStyle = 'rgba(196,138,90,' + (0.72 * nm).toFixed(3) + ')';
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.moveTo(sx - wlab / 2, ly + 6);
-            ctx.lineTo(sx + wlab / 2, ly + 6);
-            ctx.stroke();
-          }
-        }
+        ctx.fillStyle = `rgba(226,176,120,${a})`;
+        ctx.beginPath();
+        ctx.ellipse(dx, yy, 1.9, 4.2, 0, 0, Math.PI * 2);
+        ctx.fill();
       }
     }
-    ctx.restore();
+
+    /* ── THE ONE DROP ──
+       Still the brightest thing in the frame while it is on screen: the
+       field is context, this is the reader. */
+    const alive = clamp01((p - T.dropIn + 0.02) / 0.04) * (1 - clamp01((p - T.dropOut) / 0.07));
+    if(alive > 0.003 && dy < DEPTH + 40){
+      const x = midX + meander(dy, 16) * (mobile ? 0.7 : 1);
+      const y = toY(dy);
+
+      /* trail — the path it has actually taken, so the wander is legible */
+      ctx.strokeStyle = `rgba(196,138,90,${0.30 * alive})`;
+      ctx.lineWidth = 1.1;
+      ctx.beginPath();
+      for(let t = 0; t <= 26; t++){
+        const wy = dy - t * 7;
+        if(wy < -90) break;
+        const tx = midX + meander(wy, 16) * (mobile ? 0.7 : 1);
+        t === 0 ? ctx.moveTo(tx, toY(wy)) : ctx.lineTo(tx, toY(wy));
+      }
+      ctx.stroke();
+
+      /* the ripple it leaves at each boundary it crosses */
+      for(let i = 1; i < N; i++){
+        const age = (dy - i * LH) / 46;
+        if(age > 0 && age < 1){
+          const r = age * 52 * sc;
+          ctx.strokeStyle = `rgba(196,138,90,${(1 - age) * 0.5 * alive})`;
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.ellipse(midX + meander(i * LH, 16), toY(i * LH), r, r * 0.22, 0, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+      }
+
+      const gl = ctx.createRadialGradient(x, y, 0, x, y, 26 * sc + 8);
+      gl.addColorStop(0, `rgba(226,176,120,${0.55 * alive})`);
+      gl.addColorStop(1, 'rgba(226,176,120,0)');
+      ctx.fillStyle = gl;
+      ctx.beginPath(); ctx.arc(x, y, 26 * sc + 8, 0, Math.PI * 2); ctx.fill();
+
+      ctx.fillStyle = `rgba(247,230,208,${0.95 * alive})`;
+      ctx.beginPath(); ctx.ellipse(x, y, 2.6, 5.2, 0, 0, Math.PI * 2); ctx.fill();
+    }
+
+    /* ── THE NAMES ──
+       On the left, on the stratum's own band, in the page's own tracked
+       caps. A layer is named from the moment the drop reaches it and stays
+       named — the set builds into a legible stack of the whole ecosystem,
+       which is the thing the old hero never managed to show all at once. */
+    /* THE NAMES ARE THE CONTENT OF THIS HERO, so they are set at a size
+       you read rather than a size that fits. 10.5px against a 390px frame
+       was a caption on a photograph; 18px is the smallest that reads as
+       the subject. Tracking comes down as the size goes up so the longest
+       name (MARKETPLACE) still clears the frame at 320. */
+    const fs = mobile ? 18 : 15;
+    const tr = mobile ? 1.4 : 2.8;
+    ctx.font = `500 ${fs}px 'Frank Ruhl Libre', Georgia, serif`;
+    ctx.textBaseline = 'middle';
+    const lx = mobile ? W * 0.06 : W * 0.075;
+    for(let i = 0; i < N; i++){
+      const yc = toY(i * LH + LH / 2);
+      if(yc < -20 || yc > H + 20) continue;
+      const passed = clamp01((dy - (i * LH + LH * 0.35)) / 40);
+      const wet    = clamp01((DEPTH - tableW - (DEPTH - (i + 1) * LH)) / LH);
+      const a      = Math.max(passed, wet);
+      if(a < 0.02) continue;
+      const live = clamp01(1 - Math.abs(dy - (i + 0.5) * LH) / (LH * 0.9)) * (1 - tab * 0.8);
+
+      const name = (mobile ? LAYERS[i].short : LAYERS[i].name).toUpperCase();
+      ctx.fillStyle = live > 0.35
+        ? `rgba(222,168,114,${a})`
+        : `rgba(247,244,238,${a * (0.58 + live * 0.3)})`;
+      const w = trackedText(name, lx, yc, tr);
+
+      /* the live layer underlines itself to its own measure — trackedText
+         returns that width precisely because canvas letter-spacing cannot
+         be trusted to produce it */
+      if(live > 0.06){
+        ctx.strokeStyle = `rgba(196,138,90,${live * 0.75})`;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(lx, yc + fs * 0.95);
+        ctx.lineTo(lx + w * live, yc + fs * 0.95);
+        ctx.stroke();
+      }
+    }
   }
 
   /* the card holds, then clears; the statement takes the frame at the end */
@@ -2194,9 +2492,9 @@ function rnd(i){ const s = Math.sin(i * 127.1 + 311.7) * 43758.5453; return s - 
     new IntersectionObserver(l => l.forEach(e => { visible = e.isIntersecting; }), { threshold: 0 }).observe(outer);
   }
 
-  /* GUIDED — the pull-back is one continuous camera move, so it is
-     speed-capped rather than quantised. Three beats (card → field →
-     statement) set the pace; a flick can no longer snap the zoom. */
+  /* GUIDED — the descent and the pull-back are one continuous camera move,
+     so it is speed-capped rather than quantised. Three beats (card → the
+     descent → the statement) set the pace; a flick cannot snap the fall. */
   const track = cine(outer, { mode: 'guided', pace: 'epic', states: 3 });
   (function tick(){
     requestAnimationFrame(tick);
@@ -2271,92 +2569,239 @@ function rnd(i){ const s = Math.sin(i * 127.1 + 311.7) * 43758.5453; return s - 
 
 
 /* ════════════════════════════════════════════
-   SECTION 4 — THE BRIDGE
-   Separate hairlines converge, equalise and resolve
-   into a single rule. The conversion is shown as
-   consolidation, never as a swap interface.
+   SECTION 4 — THE BRIDGE — two banks and a span
+
+   Many small countable marks on one side; one solid whole on the other;
+   a span between them that things cross ONE WAY. The section is called
+   the Bridge, so it draws a bridge — which is the entire reason this
+   replaced the converging hairlines: that version was an accurate
+   diagram of consolidation that never told you what was consolidating.
+
+   THE BAR GROWS ONLY AS MARKS ARRIVE. Its height is arrived/total, not
+   a separate ramp, so the two sides cannot drift out of agreement and
+   the frame can never show $DVT that nothing crossed for.
+
+   Conversion is DESIGNED, not live — the rail below carries the status
+   and the captions here say "designed to" for the same reason.
 ════════════════════════════════════════════ */
 (function(){
   const outer  = document.getElementById('bridgeOuter');
-  const stack  = document.getElementById('bhStack');
-  const rule   = document.getElementById('bhRule');
-  const label  = document.getElementById('bhLabel');
+  const canvas = document.getElementById('bhCanvas');
   const ticker = document.getElementById('bhTicker');
+  const bankL  = document.getElementById('bhBankL');
+  const bankR  = document.getElementById('bhBankR');
   const steps  = [...document.querySelectorAll('.bridge-step')];
   const fill   = document.getElementById('bridgeFill');
-  if(!outer || !stack) return;
+  if(!outer || !canvas) return;
+  const ctx = canvas.getContext('2d');
+  if(!ctx) return;
 
-  const N = window.innerWidth <= 900 ? 13 : 17;
-  const bars = [];
-  for(let i = 0; i < N; i++){
-    const b = document.createElement('i');
-    stack.appendChild(b);
-    bars.push({ el: b, w: 0.30 + rnd(i * 3.1) * 0.62, x: (rnd(i * 7.7) - 0.5) * 0.18 });
+  const clamp01 = v => v < 0 ? 0 : v > 1 ? 1 : v;
+  const ease    = t => t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t + 2, 2)/2;
+  const lerp    = (a,b,t) => a + (b-a)*t;
+
+  let W = 0, H = 0, DPR = 1, mobile = false, COLS = 6, TOTAL = 42;
+  function resize(){
+    mobile = window.innerWidth <= 900;
+    COLS   = mobile ? 4 : 6;
+    TOTAL  = mobile ? 24 : 42;
+    DPR = Math.min(window.devicePixelRatio || 1, 2);
+    W = canvas.clientWidth  || 1;
+    H = canvas.clientHeight || 1;
+    canvas.width  = Math.round(W * DPR);
+    canvas.height = Math.round(H * DPR);
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  }
+  resize();
+  window.addEventListener('resize', resize, { passive: true });
+
+  /* ── geometry ──
+     The banks sit in from the edges far enough for their captions, and
+     the span's apex is measured off the stage rather than fixed, so a
+     short laptop does not put the arc through the headline. */
+  const geo = () => {
+    const lx = mobile ? W * 0.20 : W * 0.17;
+    const rx = mobile ? W * 0.80 : W * 0.83;
+    /* THE CAPTIONS GET RESERVED HEIGHT, NOT A FIXED OFFSET. Placing them
+       at a constant distance below the bar put them through the rail
+       below the stage at every desktop size — the drawing is centred in
+       the stage, so the lower it reaches the further past the floor the
+       caption lands. The composition is centred in what is left after
+       the reserve instead, so the two can never collide. */
+    /* space reserved at BOTH ends: the captions below, and on a handset
+       the running caption above — the mobile stage is only ~300px tall, so
+       a caption offset from the centre landed on the composition itself. */
+    const cap  = mobile ? 74 : 104;
+    const top  = mobile ? 34 : 0;
+    const use  = Math.max(H - cap - top, 120);
+    const base = top + use * 0.5;
+    const gap  = mobile ? 18 : 19;       /* mark pitch */
+    return { lx, rx, base, gap, cap, use, top,
+             rowH: gap + (mobile ? 6 : 7),
+             barW: mobile ? 54 : 66,
+             barH: Math.min(use * 0.72, mobile ? 178 : 210),
+             apex: Math.min(use * 0.26, 96) };
+  };
+
+  /* a mark's resting slot in the left bank */
+  function slot(i, g){
+    const col = i % COLS, row = Math.floor(i / COLS);
+    const rows = Math.ceil(TOTAL / COLS);
+    return {
+      x: g.lx + (col - (COLS - 1) / 2) * g.gap,
+      y: g.base + (row - (rows - 1) / 2) * g.rowH,
+    };
   }
 
-  /* The stack has to live inside the stage it is centred in, so the
-     spacing comes from the measured stage rather than a fixed number —
-     otherwise a short viewport pushes hairlines over the headline. */
-  let gapPx = 14;
-  function measure(){
-    const h = stack.parentElement.getBoundingClientRect().height || 300;
-    gapPx = Math.max(6, Math.min(15, (h * 0.46) / Math.max(1, N - 1)));
-    if(ticker) ticker.style.marginTop = -(((N - 1) / 2) * gapPx + 38).toFixed(0) + 'px';
+  /* the span: a quadratic from the left bank's edge to the top of the bar */
+  function span(t, g){
+    const x0 = g.lx + (COLS / 2) * g.gap + 14;
+    const x1 = g.rx - g.barW / 2 - 12;
+    const cx = (x0 + x1) / 2, cy = g.base - g.apex;
+    const mt = 1 - t;
+    return {
+      x: mt*mt*x0 + 2*mt*t*cx + t*t*x1,
+      y: mt*mt*g.base + 2*mt*t*cy + t*t*g.base,
+      x0, x1, cx, cy,
+    };
   }
-  measure();
-  window.addEventListener('resize', measure, { passive: true });
 
-  const TICK = [
-    [0.00, 'Individual acts of participation'],
-    [0.30, 'Recognised as Reward Credits'],
-    [0.52, 'Consistency, held over time'],
-    [0.72, 'Converted'],
-    [0.86, 'One token, one ecosystem']
-  ];
-  const STEP_AT = [0, 0.22, 0.42, 0.64, 0.84];
-  let lastTick = -1, lastStep = -1;
+  function draw(p){
+    ctx.clearRect(0, 0, W, H);
+    const g = geo();
 
-  function frame(p){
-    const appear   = clamp01(p / 0.26);
-    const converge = smooth(clamp01((p - 0.26) / 0.34));
-    const equalise = smooth(clamp01((p - 0.30) / 0.36));
-    const merge    = smooth(clamp01((p - 0.64) / 0.20));
+    /* BEATS — the same five the rail names.
+         0.00-0.22  participate : marks arrive on the near bank
+         0.22-0.42  earn DRC    : the bank is complete and named
+         0.42-0.56  consistency : it holds, and the span begins to draw
+         0.56-0.84  convert     : marks cross, one at a time, one way
+         0.84-1.00  $DVT        : one solid bar, named */
+    const gathered = Math.round(TOTAL * ease(clamp01((p - 0.02) / 0.34)));
+    const spanT    = ease(clamp01((p - 0.44) / 0.14));
+    const cross    = clamp01((p - 0.56) / 0.30);
+    const arrived  = Math.floor(TOTAL * cross);
+    /* each mark's own crossing: staggered starts, a short flight each */
+    const flight   = 0.16;
 
-    for(let i = 0; i < N; i++){
-      const b = bars[i];
-      const on = clamp01((appear - (i / N) * 0.85) * 5);
-      const y  = (i - (N - 1) / 2) * gapPx * (1 - converge);
-      const x  = b.x * (1 - converge) * 100;
-      const sx = lerp(b.w, 1, equalise);
-      b.el.style.opacity = (on * (1 - merge) * 0.9).toFixed(3);
-      b.el.style.transform = 'translate(' + x.toFixed(2) + '%,' + y.toFixed(1) + 'px) scaleX(' + sx.toFixed(3) + ')';
+    /* ── the span ── */
+    if(spanT > 0.001){
+      const sp = span(0, g);
+      ctx.strokeStyle = 'rgba(196,138,90,' + (0.30 + spanT * 0.35) + ')';
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      const steps2 = 60, upto = Math.round(steps2 * spanT);
+      for(let i = 0; i <= upto; i++){
+        const q = span(i / steps2, g);
+        i === 0 ? ctx.moveTo(q.x, q.y) : ctx.lineTo(q.x, q.y);
+      }
+      ctx.stroke();
+      /* the two piers, so it reads as a crossing and not a trajectory */
+      ctx.fillStyle = 'rgba(196,138,90,' + (0.5 * spanT) + ')';
+      ctx.fillRect(sp.x0 - 1, g.base - 7, 2, 14);
+      const e = span(1, g);
+      if(spanT > 0.98) ctx.fillRect(e.x - 1, g.base - 7, 2, 14);
     }
 
-    rule.style.opacity = merge.toFixed(3);
-    rule.style.transform = 'translate(-50%,-50%) scaleX(' + lerp(0.35, 1, merge).toFixed(3) + ')';
-    const lab = smooth(clamp01((p - 0.78) / 0.16));
-    label.style.opacity = lab.toFixed(3);
-    label.style.transform = 'translateX(-50%) translateY(' + lerp(14, 0, lab).toFixed(1) + 'px)';
+    /* ── the near bank: many, small, countable ── */
+    for(let i = 0; i < gathered; i++){
+      const st = slot(i, g);
+      /* has this one crossed yet? */
+      const order = TOTAL - 1 - i;                 /* the far side goes first */
+      const t0 = (order / TOTAL) * (1 - flight);
+      const ft = clamp01((cross - t0) / flight);
+      if(ft >= 1) continue;                        /* arrived — it is in the bar now */
 
-    let ti = 0;
-    for(let i = 0; i < TICK.length; i++) if(p >= TICK[i][0]) ti = i;
-    if(ti !== lastTick){ lastTick = ti; ticker.textContent = TICK[ti][1]; }
+      let x = st.x, y = st.y, alpha = 1, h = mobile ? 12 : 11;
+      if(ft > 0){
+        const q = span(ease(ft), g);
+        /* lift out of its slot onto the span, then ride it in */
+        const lift = ease(Math.min(ft / 0.22, 1));
+        x = lerp(st.x, q.x, lift);
+        y = lerp(st.y, q.y, lift);
+        alpha = 1 - ft * 0.25;
+        h *= 1 - ft * 0.3;
+      }
+      ctx.fillStyle = 'rgba(212,155,105,' + (alpha * (0.5 + 0.5 * (i / TOTAL))) + ')';
+      ctx.fillRect(Math.round(x) - 1, Math.round(y - h / 2), 2, h);
+    }
 
-    /* The rail is continuous. It used to advance a whole fifth at a time
-       and then animate there on a 0.5s width transition — so the rail was
-       still moving after the scroll had stopped, and motionless while it
-       was happening. Position is interpolated between the stage marks the
-       ticker already uses, so the rail and the copy stay in step. */
-    let si = 0;
-    for(let i = 0; i < STEP_AT.length; i++) if(p >= STEP_AT[i]) si = i;
-    const nx = STEP_AT[si + 1];
-    const sub = nx === undefined ? 0 : clamp01((p - STEP_AT[si]) / (nx - STEP_AT[si]));
-    const spos = si + sub;
-    steps.forEach((s, n) => {
-      s.classList.remove('on');
-      s.style.setProperty('--w', clamp01(spos - n + 1).toFixed(4));
+    /* ── the far bank: one, solid, whole ── */
+    const frac = arrived / TOTAL;
+    if(frac > 0.001){
+      const bh = g.barH * frac;
+      const x  = g.rx - g.barW / 2;
+      const y  = g.base + g.barH / 2 - bh;
+      const grad = ctx.createLinearGradient(0, y, 0, y + bh);
+      grad.addColorStop(0, 'rgba(226,176,120,0.95)');
+      grad.addColorStop(1, 'rgba(178,120,72,0.85)');
+      ctx.save();
+      ctx.shadowColor = 'rgba(196,138,90,0.55)';
+      ctx.shadowBlur = 34;
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      const r = Math.min(6, bh / 2);
+      ctx.moveTo(x + r, y);
+      ctx.arcTo(x + g.barW, y, x + g.barW, y + bh, r);
+      ctx.arcTo(x + g.barW, y + bh, x, y + bh, r);
+      ctx.arcTo(x, y + bh, x, y, r);
+      ctx.arcTo(x, y, x + g.barW, y, r);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+      /* the seam each arrival adds — the bar is made of what crossed */
+      ctx.strokeStyle = 'rgba(23,20,18,0.20)';
+      ctx.lineWidth = 1;
+      for(let i = 1; i < arrived; i++){
+        const sy = y + (bh * i) / arrived;
+        ctx.beginPath(); ctx.moveTo(x + 4, sy); ctx.lineTo(x + g.barW - 4, sy); ctx.stroke();
+      }
+    }
+
+    /* ── captions ── */
+    const lA = ease(clamp01((p - 0.14) / 0.12)) * (1 - ease(clamp01((p - 0.80) / 0.14)));
+    const rA = ease(clamp01((p - 0.80) / 0.12));
+    /* CLAMPED INSIDE THE STAGE. A caption centred on its bank runs past
+       the frame on a handset — measured, DAOASIS VALUE TOKEN reached 343
+       of 335px and .bridge-sticky's overflow:hidden simply cut it off. */
+    const place = (el, x, alpha) => {
+      if(!el) return;
+      const half = el.offsetWidth / 2;
+      const cx = Math.max(half + 6, Math.min(W - half - 6, x));
+      el.style.left = cx + 'px';
+      /* under the composition, and never past the stage floor */
+      const want = g.base + g.barH / 2 + (mobile ? 16 : 22);
+      const top  = Math.min(want, H - el.offsetHeight - 4);
+      el.style.marginTop = (top - H / 2) + 'px';
+      el.style.opacity = alpha.toFixed(3);
+    };
+    place(bankL, g.lx, lA);
+    place(bankR, g.rx, rA);
+
+    /* the running caption — text, so it swaps while invisible rather than
+       cross-fading one sentence through another */
+    const LINES = [
+      [0.00, 'Individual acts of participation'],
+      [0.22, 'Recognised as DRC'],
+      [0.44, 'Held, and built on'],
+      [0.58, 'Designed to convert — one way'],
+      [0.86, 'One layer, one token'],
+    ];
+    let idx = 0;
+    for(let i = 0; i < LINES.length; i++) if(p >= LINES[i][0]) idx = i;
+    const next = LINES[idx + 1] ? LINES[idx + 1][0] : 1.2;
+    const near = Math.min((p - LINES[idx][0]) / 0.06, (next - p) / 0.06, 1);
+    if(ticker){
+      if(ticker.dataset.i !== String(idx) && near > 0.02){ ticker.dataset.i = String(idx); ticker.textContent = LINES[idx][1]; }
+      ticker.style.opacity = clamp01(near).toFixed(3);
+    }
+
+    /* the rail below — unchanged behaviour, scrubbed off the same value */
+    const sp5 = p * (steps.length - 1);
+    steps.forEach((el, n) => {
+      el.classList.toggle('on', Math.round(sp5) === n);
+      el.style.setProperty('--w', clamp01(1 - Math.abs(sp5 - n)).toFixed(4));
     });
-    if(fill) fill.style.width = ((spos / (STEP_AT.length - 1)) * 100).toFixed(2) + '%';
+    if(fill) fill.style.width = (p * 100).toFixed(2) + '%';
   }
 
   let visible = true;
@@ -2364,15 +2809,12 @@ function rnd(i){ const s = Math.sin(i * 127.1 + 311.7) * 43758.5453; return s - 
     visible = false;
     new IntersectionObserver(l => l.forEach(e => { visible = e.isIntersecting; }), { threshold: 0 }).observe(outer);
   }
-  /* CINEMATIC STICKY — the conversion is the page's central claim, so it
-     is paced in the five deliberate stages the ticker already names.
-     The value still eases continuously between them, so the hairlines
-     converge smoothly; what is fixed is how long each move takes. */
-  const track = cine(outer, { mode: 'sticky', pace: 'epic', states: STEP_AT.length });
-  (function loop(){
-    requestAnimationFrame(loop);
+
+  const track = cine(outer, { mode: 'sticky', pace: 'epic', states: 5 });
+  (function tick(){
+    requestAnimationFrame(tick);
     if(!visible) return;
-    frame(track.get());
+    draw(track.get());
   })();
 })();
 

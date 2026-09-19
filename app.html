@@ -1901,6 +1901,165 @@ input:focus-visible, select:focus-visible, textarea:focus-visible,
    rule and higher than a presentational hint — so this neutralises the
    attribute's height while leaving every real CSS height untouched. */
 img{height:auto;}
+
+/* ══════════════════════════════════════════════
+   THE SIMPLE VERSION — the plain-English summary
+
+   Sits between the hero and the page's own account of itself: the hero
+   is the impression, this is the understanding, the rest of the page is
+   the detail. Same block and same class names on app.html,
+   sanctuary.html and web3.html; only the ground and the copy differ.
+
+   IT IS A SUMMARY, NOT AN ESSAY. The first version of this section was
+   three paragraphs of centred prose, and prose is the wrong instrument
+   for the job — a reader who does not yet know what DAOasis is will not
+   read a paragraph to find out. This is one sentence that answers the
+   question, then three beats of four-to-eight words each. Nothing here
+   should take more than about fifteen seconds.
+
+   NO NEW VISUAL LANGUAGE. Tracked eyebrow, Cormorant display, gold
+   folio numerals and a drawing hairline are all already on these pages
+   (the divider rule, sanctuary's Four Foundations, index's journey
+   medallions). SIZES ARE EXPLICIT, NOT TOKENISED: the three pages do
+   not share a type-token set — sanctuary defines no --t-nano at all —
+   so a var() here would render differently on each page.
+══════════════════════════════════════════════ */
+/* ── THE PLATE ──
+   The section is its own ground, a step off the sections either side, so
+   it reads as a deliberate pause rather than as more page. The palm mark
+   sits behind it as a watermark — the site's own mark, the one the
+   dividers and the home page's assembly already use, at an alpha low
+   enough that it changes no measured contrast (verified against the
+   rendered pixels, not against the colour values).
+
+   background-image, never an <img> with a filter — the project's own
+   rule for photographic and mark backgrounds alike. */
+.simple { position: relative; overflow: hidden; }
+.simple::before {
+  content: ''; position: absolute; left: 50%; top: 50%;
+  /* sized to sit WHOLLY inside the section — .simple is overflow:hidden,
+     and a mark cropped by the section edge reads as a rendering fault
+     rather than as a watermark */
+  width: min(600px, 72vw); aspect-ratio: 465 / 492;
+  transform: translate(-50%, -50%);
+  background-image: var(--simple-mark);
+  background-size: contain; background-repeat: no-repeat; background-position: center;
+  opacity: var(--simple-mark-a); pointer-events: none;
+}
+.simple-inner { position: relative; z-index: 1; }
+@media(max-width:900px){
+  .simple::before { width: min(420px, 86vw); }
+}
+
+.simple { padding: 12vh 8%; }
+.simple-inner { max-width: 1000px; margin: 0 auto; text-align: center; }
+
+.simple-eyebrow {
+  display: flex; align-items: center; justify-content: center; gap: 14px;
+  font-size: 11px; letter-spacing: 0.34em; text-transform: uppercase;
+  padding-left: 0.34em; margin-bottom: 26px;
+}
+.simple-eyebrow::before, .simple-eyebrow::after {
+  content: ''; display: block; width: 28px; height: 1px;
+  background: currentColor; opacity: 0.5;
+}
+.simple-head {
+  font-family: 'Cormorant Garamond', serif; font-weight: 300;
+  font-size: clamp(31px,4.1vw,56px); line-height: 1.08; letter-spacing: -0.004em;
+  max-width: 22ch; margin: 0 auto; text-wrap: balance;
+}
+/* the one sentence that answers the question */
+.simple-lede {
+  font-family: 'Cormorant Garamond', serif; font-weight: 300; font-style: italic;
+  font-size: clamp(19px,1.9vw,26px); line-height: 1.45;
+  max-width: 34ch; margin: 22px auto 0; text-wrap: balance;
+}
+
+/* ── the three beats ──
+   A row on desktop, a stack on a handset. The rule above them draws from
+   the left as the block arrives — the site's own divider gesture, which
+   is why it needs no new motion vocabulary. */
+.simple-steps {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 0 6%; margin: clamp(38px,6vh,68px) auto 0; padding-top: 34px;
+  position: relative; list-style: none; text-align: left;
+}
+.simple-steps::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: currentColor; opacity: 0.18;
+  transform: scaleX(0); transform-origin: left center;
+  transition: transform 1.4s var(--ease) 0.15s;
+}
+.rv.show .simple-steps::before, .simple-steps.show::before { transform: scaleX(1); }
+
+.simple-step { position: relative; padding-top: 4px; }
+/* the tick that marks this beat on the rule */
+.simple-step::before {
+  content: ''; position: absolute; top: -34px; left: 0; width: 1px; height: 12px;
+  background: var(--gold); opacity: 0;
+  transition: opacity 0.7s var(--ease);
+}
+.rv.show .simple-step::before, .simple-step.show::before { opacity: 0.75; }
+.rv.show .simple-step:nth-child(2)::before, .simple-step:nth-child(2).show::before { transition-delay: 0.18s; }
+.rv.show .simple-step:nth-child(3)::before, .simple-step:nth-child(3).show::before { transition-delay: 0.34s; }
+
+.simple-step-n {
+  display: block; font-size: 11px; letter-spacing: 0.22em;
+  color: var(--gold); margin-bottom: 12px;
+}
+.simple-step-t {
+  display: block; font-family: 'Cormorant Garamond', serif; font-weight: 300;
+  font-size: clamp(21px,2.1vw,29px); line-height: 1.12; margin-bottom: 9px;
+}
+.simple-step-d { display: block; font-size: var(--t-note); line-height: 1.7; }
+
+.simple-note {
+  font-size: 11.5px; letter-spacing: 0.16em; text-transform: uppercase;
+  max-width: 52ch; margin: clamp(34px,5vh,54px) auto 0; padding-top: 22px; line-height: 1.9;
+}
+
+@media(max-width:900px){
+  /* A STACK, NOT THREE SQUEEZED COLUMNS. At 390 a third of the column is
+     about 100px, which breaks a two-word title onto three lines. Stacked,
+     the rule runs down the left instead of across the top and the ticks
+     sit on it — the same drawing gesture rotated, not a second idea. */
+  .simple { padding: 9vh 8%; }
+  .simple-eyebrow { letter-spacing: 0.26em; margin-bottom: 20px; gap: 11px; }
+  .simple-eyebrow::before, .simple-eyebrow::after { width: 20px; }
+  .simple-lede { margin-top: 18px; }
+  .simple-steps {
+    grid-template-columns: 1fr; gap: 26px; padding: 0 0 0 26px;
+    margin-top: 36px; text-align: left;
+  }
+  .simple-steps::before {
+    top: 6px; bottom: 6px; left: 0; right: auto; width: 1px; height: auto;
+    transform: scaleY(0); transform-origin: top center;
+    transition: transform 1.4s var(--ease) 0.15s;
+  }
+  .rv.show .simple-steps::before, .simple-steps.show::before { transform: scaleY(1); }
+  .simple-step { padding-top: 0; }
+  .simple-step::before { top: 7px; left: -26px; width: 14px; height: 1px; }
+  .simple-step-n { margin-bottom: 7px; }
+  .simple-step-t { margin-bottom: 6px; }
+  .simple-note { margin-top: 30px; }
+}
+
+/* app.html: --elevated, one step up from the --mineral sections either
+   side, so the plate separates without becoming a different page. The
+   white mark, because a near-black silhouette disappears on it. */
+.simple { background: var(--elevated);
+  --simple-mark: url('images/img-09-white.png'); --simple-mark-a: 0.045; }
+/* app.html sits on --mineral — the ink .s-dark already gives its own copy */
+/* NOT var(--gold): #C48A5A measures 4.47 on --elevated, a hair under
+   AA. #D49B69 is app.html own raised gold (.int-card-status) — 5.47. */
+.simple .simple-eyebrow { color: #D49B69; }
+.simple .simple-head    { color: var(--warm-white); }
+.simple .simple-lede    { color: rgba(247,244,238,0.80); }
+.simple .simple-steps   { color: rgba(247,244,238,0.5); }
+.simple .simple-step-n  { color: #D49B69; }
+.simple .simple-step-t  { color: var(--warm-white); }
+.simple .simple-step-d  { color: #b8b1a4; }
+.simple .simple-note    { color: #ADA69A; border-top: 1px solid rgba(247,244,238,0.14); }
 </style>
 </head>
 <body>
@@ -1977,6 +2136,34 @@ img{height:auto;}
   </div>
 
 </div>
+
+
+<!-- ══════════════════════════════
+     THE SIMPLE VERSION
+     Added between the hero and Section 2. Nothing above or below it was
+     changed. Uses this page's own .s-dark ground and its own .reveal
+     observer, so it needs no new JavaScript.
+══════════════════════════════ -->
+<section class="simple s-dark" aria-labelledby="simpleHead">
+  <div class="simple-inner">
+    <div class="simple-eyebrow reveal">The simple version</div>
+    <h2 class="simple-head reveal reveal-delay-1" id="simpleHead">A quieter way to stay on track.</h2>
+    <p class="simple-lede reveal reveal-delay-2">The everyday part of DAOasis.</p>
+    <ol class="simple-steps reveal reveal-delay-2">
+      <li class="simple-step reveal reveal-delay-2"><span class="simple-step-n">01</span><span class="simple-step-t">Build habits</span><span class="simple-step-d">Movement, rest, learning and community, in one place.</span></li>
+      <li class="simple-step reveal reveal-delay-3"><span class="simple-step-n">02</span><span class="simple-step-t">Stay consistent</span><span class="simple-step-d">Your progress, visible over time rather than day to day.</span></li>
+      <li class="simple-step reveal reveal-delay-3"><span class="simple-step-n">03</span><span class="simple-step-t">No crypto needed</span><span class="simple-step-d">Use the app without owning a token or understanding Web3.</span></li>
+    </ol>
+  </div>
+</section>
+<noscript><style>
+  /* app.html has no page-wide noscript block and .reveal starts at
+     opacity 0, so without this the one section whose job is to be
+     understood would be the one that did not render. */
+  .simple .reveal { opacity: 1 !important; transform: none !important; }
+  .simple .simple-steps::before { transform: scaleX(1) !important; }
+  .simple .simple-step::before { opacity: 0.75 !important; }
+</style></noscript>
 
 <div class="divider-dark"><div class="divider-inner">
   <div class="divider-line-d"></div>
