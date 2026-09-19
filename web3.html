@@ -492,13 +492,63 @@ img { max-width: 100%; }
   .part-close { padding-top: 7vh; }
 }
 @media(max-width:1000px){
-  .part-outer { height: auto; }
-  .part-sticky { position: relative; height: auto; padding: 14vh 8%; }
+  /* MOBILE IS A PINNED STAGE, NOT THE DESKTOP SPREAD STACKED.
+
+     Two earlier shapes were tried and both failed for the same reason.
+     All six rows in flow with the phone above them is what this was
+     before: the phone leaves after one row and the other five are
+     illustrated by nothing. Making that phone position:sticky keeps it
+     on screen but the rows then scroll THROUGH it — measured, the live
+     row sat directly behind the device at 390px, which is worse than no
+     phone at all.
+
+     A 390px column cannot hold a phone and a six-row list side by side,
+     so it holds them one above the other and shows ONE ROW AT A TIME:
+     the phone takes the upper half and answers whichever row is live.
+     That is the same idiom index.html's mobile journey already uses.
+
+     Two things this depends on:
+       overflow must be reset to visible along with position — a hidden
+       ancestor silently disables sticky on everything inside it;
+       the rows are absolutely stacked, so they must NOT cross-fade —
+       two runs of type at half strength read as a double exposure (the
+       Rhythm section on sanctuary was rebuilt for exactly this). Each
+       row is full within 0.34 of its stop and gone by 0.5, so there is
+       a brief clear frame between rows and never two legible at once. */
+  .part-outer { height: 460vh; }
+  .part-sticky {
+    position: sticky; top: 0; height: 100vh; overflow: hidden;
+    display: flex; flex-direction: column; justify-content: flex-start;
+    padding: calc(var(--nav-h, 72px) + 2vh) 8% 4vh;
+  }
   .part-close { padding: 0 8% calc(16vh + 60px); }
-  .part-grid { grid-template-columns: 1fr; gap: 7vh; }
-  .part-item { opacity: 1; padding: 3.4vh 0; }
-  .part-item .part-verb small { opacity: 1; transform: none; }
-  .part-grid .dev { width: 100%; max-width: 230px; height: auto; }
+  .part-head { margin-bottom: 2vh; }
+  .part-head .display { font-size: clamp(26px, 6.4vw, 38px); }
+  /* align-items MUST be reset: the desktop rule centres on the cross
+     axis, which in a column flex container is the HORIZONTAL one — the
+     row shrank to content width and the sub-label wrapped one word per
+     line. */
+  .part-grid { display: flex; flex-direction: column; align-items: stretch;
+    gap: 2vh; flex: 1; min-height: 0; }
+  .part-grid .dev {
+    width: auto; max-width: none; height: min(42vh, 330px);
+    aspect-ratio: 758 / 1600; margin: 0 auto; flex: none;
+  }
+  .part-grid .dev-shot { transition: opacity 0.34s var(--ease); }
+
+  /* the list becomes one box the rows take turns in */
+  .part-list { position: relative; flex: 1; min-height: 132px; border-top: 0; }
+  .part-item {
+    position: absolute; left: 0; right: 0; top: 0; bottom: 0;
+    display: grid; align-content: center;
+    padding: 0; border-bottom: 0;
+    opacity: var(--w, 1); text-align: center;
+  }
+  .part-idx { display: block; margin-bottom: 6px; }
+  .part-verb {
+    display: block; font-size: clamp(27px, 7.4vw, 40px); line-height: 1.06;
+  }
+  .part-verb small { display: block; margin-top: 8px; opacity: 1; transform: none; }
 }
 
 /* ══════════════════════════════════════════════
@@ -2474,9 +2524,17 @@ function rnd(i){ const s = Math.sin(i * 127.1 + 311.7) * 43758.5453; return s - 
 
   /* the card holds, then clears; the statement takes the frame at the end */
   function chrome(p){
-    const tIn = p <= 0.001 ? 1 : ease(clamp01((p - 0.001) / 0.05));
+    /* THE CARD ONLY EVER LEAVES. It used to fade IN across the first 5%
+       of the track as well, special-cased to full opacity only at exactly
+       raw <= 0.001 — so the page opened on an opaque card, and the instant
+       the reader scrolled, raw became a small positive number, the ramp
+       evaluated to nearly zero and the card BLINKED OUT, uncovering the
+       scene, before climbing back to full and later fading properly.
+       Measured: opacity 1.00 at rest, 0.09 one step into the scroll, 0.64,
+       then 1.00 again. That flash is the "reboot" between the landing and
+       the animation. There was never anything for it to fade in from. */
     const tOut = ease(clamp01((p - 0.14) / 0.10));
-    const card = Math.min(tIn, 1 - tOut);
+    const card = 1 - tOut;
     title.style.opacity = card;
     title.style.pointerEvents = card > 0.02 ? 'auto' : 'none';
 
@@ -2519,14 +2577,36 @@ function rnd(i){ const s = Math.sin(i * 127.1 + 311.7) * 43758.5453; return s - 
      value keeps moving after the scrolling itself has stopped, and a
      scroll listener would never repaint those frames. */
   const track = cine(outer, { mode: 'sticky', pace: 'major', states: items.length });
+  /* ── MOBILE ──
+     Pinned, so the paced value drives it exactly as on desktop; only the
+     visibility window differs. The rows are absolutely stacked here, so a
+     triangle cross-fade would print two of them through each other —
+     full within 0.34 of its own stop, gone by 0.5, which leaves a brief
+     clear frame at every handover and never two legible at once. */
+  function mobileRender(pos){
+    let live = 0, best = Infinity;
+    items.forEach((el, n) => {
+      const d = Math.abs(pos - n);
+      if(d < best){ best = d; live = n; }
+      const w = d >= 0.5 ? 0 : d <= 0.34 ? 1 : 1 - (d - 0.34) / 0.16;
+      el.style.setProperty('--w', w.toFixed(3));
+      el.classList.toggle('active', false);
+    });
+    items[live].classList.add('active');
+    shots.forEach((s, n) => { s.style.removeProperty('--w'); s.classList.toggle('on', n === live); });
+  }
+
   track.on(() => {
     if(window.innerWidth <= 1000){
-      if(mob !== true){
-        mob = true;
-        items.forEach(el => { el.classList.add('active'); el.style.removeProperty('--w'); });
-        shots.forEach((s, n) => { s.style.removeProperty('--w'); s.classList.toggle('on', n === 0); });
-      }
+      mob = true;
+      mobileRender(track.pos());
       return;
+    }
+    if(mob === true){
+      /* coming back to desktop: drop the mobile classes so the scrub owns
+         the rows again */
+      mob = false;
+      items.forEach(el => el.classList.remove('active'));
     }
     mob = false;
     const pos = track.pos();

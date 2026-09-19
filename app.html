@@ -640,6 +640,12 @@ body { overflow-x: clip; }
   opacity: 0;
   filter: drop-shadow(0 40px 100px rgba(0,0,0,0.85));
 }
+/* FAIL-VISIBLE RESTING FRAME. Every shot starts at opacity 0 and the
+   scrub lights one — so with JavaScript off, or if cine.js 404s, the
+   phone rendered as an empty box on desktop. Measured: 0 screens showing
+   at 1440 with script disabled. The scrub writes inline opacity, which
+   outranks this, so it changes nothing when the script does run. */
+.edy-shot[data-s="0"] { opacity: 1; }
 .edy-glow {
   position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
   width: 160%; height: 78%; border-radius: 50%; pointer-events: none;
@@ -719,32 +725,64 @@ body { overflow-x: clip; }
    observer, a missing cine.js or a thrown error cannot leave the reader
    with an empty section. */
 @media(max-width:900px) {
-  .edy-outer { height: auto; }
-  .edy-stage { position: static; height: auto; overflow: visible; }
-  /* The mobile composition ends on the evening screen and its caption, and
-     the section had no tail of its own - so the divider that follows put its
-     palm mark 27px off the caption, against the 49px floor and against
-     124-155px on every other divider on this page. Desktop does not need it
-     (the stage is a 100vh pin and the caption is display:none there). */
-  .edy-grid { grid-template-columns: 1fr; gap: 5vh; padding: 0 8% clamp(80px, 12vh, 140px); }
-  .edy-panel { max-width: none; order: 1; }
-  .edy-phone {
-    order: 2; justify-self: center;
-    width: min(250px, 62vw); aspect-ratio: auto; height: auto;
+  /* MOBILE IS A PINNED STAGE, ONE HABIT AT A TIME.
+
+     The note that used to sit here said six phones stacked in a 390px
+     column would be six viewports of near-identical device frames, and
+     that was right — but the answer is one phone that CHANGES, not one
+     that never does. A sticky phone over a flowing list was tried first
+     and is worse: measured at 390, the live row sat directly behind the
+     device.
+
+     So the phone takes the upper half and answers whichever habit is
+     live, and the day fills in one line at a time beneath it.
+
+     The rows are absolutely stacked, so they must NOT cross-fade: two
+     runs of type at half strength read as a double exposure. Each is
+     full within 0.34 of its own stop and gone by 0.5, which leaves a
+     brief clear frame at every handover.
+
+     FAIL-VISIBLE: every --w falls back to 1, so a thrown error or a
+     missing cine.js leaves the habits legible rather than at 16% grey. */
+  .edy-outer { height: 430vh; }
+  .edy-stage {
+    position: sticky; top: 0; height: 100vh; overflow: hidden;
+    display: flex; align-items: stretch;
   }
-  .edy-shot { position: static; height: auto; opacity: 1 !important; }
-  /* Home is the mobile frame: it carries the day's actions as tiles, which is
-     exactly the list beside it. The six individual habit screens are the
-     desktop scrub only - six phones stacked in a 390px column would be six
-     viewports of near-identical device frames. */
-  .edy-shot:not([data-s="0"]) { display: none; }
+  .edy-grid {
+    display: flex; flex-direction: column; align-items: stretch;
+    gap: 2vh; width: 100%; min-height: 0;
+    padding: calc(var(--nav-h, 72px) + 2vh) 8% 5vh;
+  }
+  .edy-phone {
+    order: 1; flex: none; margin: 0 auto;
+    height: min(40vh, 320px); width: auto; aspect-ratio: 758 / 1600;
+  }
+  .edy-shot {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    opacity: 0; transition: opacity 0.34s var(--ease);
+  }
+  .edy-shot[data-s="0"] { opacity: 1; }   /* the resting frame with no script */
   .edy-glow { display: none; }
-  .edy-cue, .edy-clock { display: none; }
-  .edy-rows { border-top: 1px solid rgba(196,138,90,0.22); padding-top: 1vh; }
-  .edy-mob-cap { display: block; order: 3; }
-  .edy-row { padding: 2vh 0; opacity: 1 !important; }
-  .edy-row-r { transform: none !important; }
-  .edy-close { opacity: 1 !important; }
+  .edy-panel { order: 2; flex: 1; min-height: 120px; max-width: none; position: relative; }
+  /* the cue stays: pinned, the section headline has already scrolled
+     away, so without it the frame is a phone and one word with no
+     statement of what is being counted */
+  .edy-cue { display: block; text-align: center; margin-bottom: 1vh; }
+  .edy-clock { display: none; }
+  .edy-rows { position: absolute; inset: 0; border-top: 0; padding-top: 0; }
+  .edy-row {
+    position: absolute; left: 0; right: 0; top: 0; bottom: 0;
+    display: grid; align-content: center;
+    padding: 0; border-top: 0; text-align: center;
+    opacity: var(--w, 1);
+  }
+  .edy-row-i { display: none; }
+  .edy-row-n { font-size: clamp(27px, 7.4vw, 40px); line-height: 1.06; }
+  .edy-row-t { margin-top: 8px; }
+  .edy-row-r { margin: 12px auto 0; transform: scaleX(var(--w, 1)); }
+  /* the closing line and the mobile caption come after the pin */
+  .edy-close, .edy-mob-cap { display: none; }
 }
 
 /* ══════════════════════════════════════════════
@@ -3107,10 +3145,18 @@ function cine(el, o){
       : { outStart: 0.13, outLen: 0.09, phase: 0.20, appear: 0.34, zoom: 0.52, bridge: 0.80, bridgeLen: 0.20 };
 
     /* Phase 1: "Meet the App" title card — visible immediately on load */
-    const titleIn  = raw <= 0.001 ? 1 : ease(clamp01((raw-0.001)/0.05));
+    /* THE CARD ONLY EVER LEAVES. It used to fade IN across the first 5%
+       of the track as well, special-cased to full opacity only at exactly
+       raw <= 0.001 — so the page opened on an opaque card, and the instant
+       the reader scrolled, raw became a small positive number, the ramp
+       evaluated to nearly zero and the card BLINKED OUT, uncovering the
+       scene, before climbing back to full and later fading properly.
+       Measured: opacity 1.00 at rest, 0.09 one step into the scroll, 0.64,
+       then 1.00 again. That flash is the "reboot" between the landing and
+       the animation. There was never anything for it to fade in from. */
     const titleOut = ease(clamp01((raw-P.outStart)/P.outLen));
     if(titleCard){
-      const cardT = Math.min(titleIn, 1-titleOut);
+      const cardT = 1 - titleOut;
       titleCard.style.opacity = cardT;
       titleText.style.opacity = cardT;
       titleCard.style.pointerEvents = cardT > 0.02 ? 'auto' : 'none';
@@ -3376,23 +3422,38 @@ function cine(el, o){
     close.style.setProperty('--cw', cl01((pos - 4.35) / 0.6).toFixed(3));
   }
 
-  /* Desktop only. Below 900px the section is a plain list plus the evening
-     screen, forced visible in CSS, so the scrub must not run at all — it
-     would write opacities the media query then has to fight with. */
+  /* ── MOBILE ──
+     Pinned, so the paced value drives it exactly as on desktop; only the
+     visibility window differs. The rows are absolutely stacked here, so a
+     row is full within 0.34 of its own stop and gone by 0.5 — a brief
+     clear frame at every handover, never two legible at once.
+
+     Row i maps to shot i+1: shot 0 is Home, which holds until the first
+     habit arrives. */
+  function renderMobile(pos){
+    let live = -1, best = Infinity;
+    rows.forEach((r, i) => {
+      const d = Math.abs(pos - (i + 1));
+      if (d < best) { best = d; live = i; }
+      const w = d >= 0.5 ? 0 : d <= 0.34 ? 1 : 1 - (d - 0.34) / 0.16;
+      r.style.setProperty('--w', w.toFixed(3));
+    });
+    const st = pos < 0.5 ? 0 : live + 1;
+    for (let i = 0; i < 6; i++) shots[i].style.opacity = (i === st ? '1' : '0');
+  }
+
+  /* ONE TRACK, BOTH BREAKPOINTS. The section is pinned at every width
+     now, so the track is built once and the renderer is chosen per frame
+     — which also removes the resize hazard the old code carried, where
+     track was set to null while its callback still dereferenced it. */
   const mq = window.matchMedia('(min-width:901px)');
   let track = null;
 
   function arm(){
-    if (mq.matches && !track){
-      track = cine(outer, { mode:'sticky', pace:'major', states: 6 });
-      track.on(() => render(track.pos()));
-    } else if (!mq.matches && track){
-      /* hand back to the CSS resting state */
-      rows.forEach(r => r.style.removeProperty('--w'));
-      shots.forEach(sh => sh.style.removeProperty('opacity'));
-      close.style.removeProperty('--cw');
-      lastState = -1;
-      track = null;
+    if (!track){
+      const t = cine(outer, { mode:'sticky', pace:'major', states: 6 });
+      track = t;
+      t.on(() => (mq.matches ? render : renderMobile)(t.pos()));
     }
   }
   arm();

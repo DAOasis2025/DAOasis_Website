@@ -6522,3 +6522,381 @@ Inspector.
 Verified after the swap: all 17 published URLs return 200 on the Vercel host, and all
 13 pages carry a consistent canonical / og:url / og:image / twitter:image with 0 JS
 errors and the footer note correctly placed.
+
+---
+
+## Light mode disabled · the Companion App landing · the Phuket map — 19 September 2026 (evening)
+
+### Dark only, site-wide
+Light mode is off on all 13 pages. Nothing was deleted: every
+`html[data-theme="light"]` rule and the footer toggle's markup and handlers are
+intact and unreachable, so re-enabling it is two edits, both marked
+`/* light mode disabled */`.
+
+- **Forced dark at boot.** Each page's head script read
+  `localStorage.getItem('daoasis-theme') || 'dark'`; that read is now the literal
+  `'dark'`, so `data-theme="light"` is never set before first paint. Same in
+  `js/trust.js` and in each page's own later theme init.
+- **The toggle is hidden**, one `<style>` line after `<meta charset>` per page:
+  `.footer-appearance { display: none !important; }`
+- **A visitor who had already chosen light gets dark**, because the stored value
+  is ignored rather than cleared.
+
+> **`css/trust.css` had never been uploaded.** The giant blue footer icons on the
+> seven legal pages were not a code fault — the live sheet was 41,530 bytes with
+> **zero** occurrences of `fs-i`, against 43,020 locally. Without those rules the
+> SVGs fall back to intrinsic size and the link inherits UA blue. The six
+> marketing pages were unaffected because they carry `.fs-i` inline. **If footer
+> icons or `.entity-note` ever look wrong again, check the deployed stylesheet's
+> byte count before reading any source.**
+
+### app.html's landing card IS sanctuary.html's
+The two cinematic heroes were the same idea built twice with different numbers.
+They are now one object; only the words differ.
+
+| | app, before | both, now |
+|---|---|---|
+| ground | `--mineral` | **#080605** |
+| layout | flex row, centred | flex **column**, centred, `padding 0 6%` |
+| eyebrow | none | **"The Companion App"** |
+| display | clamp(42,8.5vw,120) | clamp(40,**7.6vw**,116), line-height 1.02 |
+| cue | `↓` at 8vh, 0.12em | **"Scroll to enter ↓"** at 7vh, 0.28em |
+
+**Both cards set their eyebrow and cue in explicit px, not `var(--t-nano)`,** and
+that is deliberate: sanctuary defines no `--t-nano` at all, so those two rules
+were silently inheriting **16px** while app would have rendered 10.5px. 12.5px /
+11.5px on both. Sanctuary's other 15 `--t-nano` rules are untouched and still
+render at 16px — see the open item below.
+
+### The Phuket map
+`sanctuary.html` had pointed `--img-place` at `images/phuket-map.jpg` since the
+19 September image cleanup, **and that file did not exist** — the Place section
+had been drawing nothing. The supplied `Phuket Map.png` (1024x1536, 2.9MB) ships
+as that exact filename: mozjpeg **q88** (not the q82 photographs get — the map
+carries hand-set type and the smallest beach names ring at 82), progressive,
+4:4:4, **287KB**. Not upscaled; 1536 is below the 1800 plate cap.
+
+The artwork is **2:3 and `.place-map` is `aspect-ratio: 2/3`**, so `contain`
+letterboxes nothing — measured 369x554 desktop and 353x529 at 420px, ratio 0.667
+at both. No HTML or CSS change was needed.
+
+> **The map carries a gold "DAOasis (PLANNED)" pin** on the west coast between
+> Patong and Karon. This file has twice recorded removing a pin because it claims
+> a located site while the copy says the location is in development; `(PLANNED)`
+> answers that objection but still names a specific beach. Shipped as supplied
+> and flagged — it is a positioning call. The artwork also labels **Surin twice**.
+
+---
+
+## THE SIMPLE VERSION — a plain-English summary after each hero — 19 September 2026
+
+`app.html` · `sanctuary.html` · `web3.html`. One new section per page,
+immediately after the hero. **Nothing else on those pages was changed** — proved,
+not assumed: 0 computed-style differences against a rebuilt pre-change copy on a
+second port, at 390x844 / 1440x900 / 1920x1080, across the hero, the hero
+animation, every pinned section, dividers and body sections. Each page grows by
+exactly the new section's own height.
+
+### It is a summary, not an essay
+The first build was three paragraphs of centred prose. It was correct in tone and
+useless at its job: **a reader who does not know what DAOasis is will not read a
+paragraph to find out.** Rebuilt as one sentence and three beats of four to eight
+words. Nothing in it should take more than about fifteen seconds.
+
+    eyebrow → headline → one italic sentence → three beats → one honest note
+
+| | app | sanctuary | web3 |
+|---|---|---|---|
+| the answer | *The everyday part of DAOasis.* | *Somewhere real to reset, not another screen.* | *The part that turns taking part into belonging.* |
+| 01 | Build habits | Step away | Take part |
+| 02 | Stay consistent | Reset | Earn recognition |
+| 03 | No crypto needed | Take it with you | Have a say |
+
+Sanctuary closes on *"The first Sanctuary is planned for Phuket in 2027. The
+location and programme remain in development."*; web3 on *"You do not need to
+understand crypto to use DAOasis."* No speculative or investment language.
+
+### How it is built
+- **No new visual language.** Tracked eyebrow, Cormorant display, gold folio
+  numerals and a drawing hairline are all already on these pages.
+- **Each page's own reveal engine, so no new JavaScript** — app uses `.reveal` +
+  its existing observer, sanctuary and web3 use `.rv` / `.soft` / `.d1–d3`.
+- The rule above the beats draws from the left (`scaleX`), a gold tick lights at
+  each beat staggered 0 / 0.18 / 0.34s, and each beat rises behind it. **On mobile
+  the whole gesture rotates**: the rule runs down the left and draws top to
+  bottom, with the ticks on it.
+- **Its own plate plus the palm mark as a watermark** — app on `--elevated`,
+  sanctuary and web3 on `--warm-stone`, one step off the sections either side.
+  The mark is sized to sit wholly inside the section because `.simple` is
+  `overflow:hidden` and a clipped mark reads as a rendering fault.
+- **Sizes are explicit, not tokenised.** The three pages do not share a type-token
+  set, so a `var()` would render this block differently on each.
+
+### The new grounds broke six styles, and all six are fixed
+Moving off ivory and mineral invalidated the inks. Measured against the ground
+**composited with the watermark at its darkest point**:
+
+| | before | after |
+|---|---|---|
+| gold numerals on warm stone | **2.05** | **4.81**  `#7F4F22` |
+| eyebrow / note on warm stone | **3.99** | **5.22**  `#5A544A` |
+| gold on app's `--elevated` | **4.47** | **5.45**  `#D49B69` |
+| note on app's `--elevated` | **4.38** | **5.46**  `#ADA69A` |
+
+`#5A544A` and `#7F4F22` are the weights this project already recorded for a warm
+stone ground; `#D49B69` is app.html's own raised gold.
+
+> **THREE WAYS A SCREENSHOT-BASED CONTRAST CHECK LIED, in one sitting.** It
+> reported 40, then 40, then 26 failures that did not exist.
+> 1. **A clipped `page.screenshot` captures in DOCUMENT coordinates**, because a
+>    clip implies `captureBeyondViewport`. A viewport-relative `y` therefore
+>    photographs a different part of the page — here the dark hero — and every
+>    box measured against it "failed".
+> 2. **Fixed chrome is painted into the clip** wherever it sits. The gold
+>    scroll-progress bar landed exactly on the eyebrow and returned a ratio of
+>    **1.00** — ink measured against a copy of itself.
+> 3. Hiding the text with `visibility:hidden` does not hide a *pseudo-element*
+>    rule drawn in `currentColor` inside the same box.
+>
+> **The background here is a flat ground plus a known PNG at a known alpha, so it
+> can be COMPUTED.** `scratchpad/ink.js` reads the mark's extreme pixel, composites
+> it onto the ground and needs no capture at all. Prefer that whenever the
+> background is not a photograph.
+
+---
+
+## web3.html rebuilt: the participation pin, the hero, the Bridge — 19 September 2026
+
+### "Where it begins" was clipping its own closing paragraph
+`.part-sticky` is a 100vh frame with `overflow:hidden`, so **no audit could see
+this**: the document never overflows, nothing escapes the viewport and
+`scrollHeight === clientHeight` while the last element is sliced in half.
+Measured content against frame:
+
+| | needs | has | over |
+|---|---|---|---|
+| 1680x1050 | 1209 | 1050 | **159** |
+| 1920x1080 | 1226 | 1080 | **146** |
+| 1366x625 | 674 | 625 | **49** |
+| 1280x720 | 735 | 720 | **15** |
+
+**Six of ten standard sizes overflowed.** Fixed the way sanctuary's
+`.found-sticky` was: every padding on a vh clamp so a tall viewport cannot
+inflate it, row padding clamped (six rows multiply it — a plain 2.5vh spent
+324px of a 1080 frame on row padding alone), and **the summary moved out of the
+pin** into its own `.part-close` beat. A summary is not one of the six items.
+After: all ten fit with 18–91px of slack, divider clearance 128–175px.
+
+### The hero is an aquifer, not a fabric
+The woven-thread hero read as noise: one thread among forty-five, and the eight
+named layers were indistinguishable from the anonymous ticks either side.
+
+**An oasis in cross-section.** One gold drop of participation lands on the surface
+and percolates DOWN through the eight layers, lighting and naming each as it
+passes; the camera follows it down and pulls back, so the depth is discovered
+rather than presented. Then thousands of drops fall at once and the water table
+rises until the aquifer is full. An oasis is fed from below by water nobody sees
+arrive.
+
+Deliberately **not** a particle assembly (the home page owns that) and **not** a
+ring (section 8's loop owns that). The eight layers, their order, and DRC and
+$DVT as separate entries are unchanged.
+
+Two things found by looking, not measuring:
+- **The strata stepped 1.05 per layer off a base of 16**, putting all eight inside
+  six values of each other — the section rendered as one flat brown field. The
+  step is now larger and alternates, which is what makes eight bands legible in a
+  frame this dark.
+- **The field drops were 1.5px marks** and read as dust on the lens. Bigger, with
+  a short trail.
+
+**The layer names are 18px on mobile, 15px on desktop** (were 10.5 / 12). They are
+the content of the hero, not a caption on it. Measured: the longest name
+(MARKETPLACE) draws 143px and ends at 162px of a 320px screen.
+
+### The Bridge: two banks and a span
+The converging hairlines were an accurate diagram of consolidation and an
+unreadable one — nothing in the frame said what the lines were, where they were
+going, or why there was suddenly one.
+
+It draws the thing the section is named after. A near bank of many small
+countable marks; a span with a pier at each end; the marks **cross it one at a
+time, one way**; a far bank that is one solid bar with a seam for each arrival.
+
+> **The bar's height is `arrived / total`, not a separate ramp.** The two sides
+> cannot drift apart and the frame can never show $DVT that nothing crossed for.
+
+Forty travelling marks on a path need a canvas; seventeen DOM elements sliding
+vertically could only ever be an abstraction. The rail, its five steps and the
+`In design · rate and eligibility not set` status are untouched.
+
+**Three faults the geometry produced, all fixed:**
+1. **The captions printed through the rail at every desktop size.** Placed at a
+   constant distance below the bar, and the drawing is centred in the stage — so
+   the lower it reaches, the further past the floor the caption lands. The
+   captions have **reserved height** now, not a fixed offset, and the composition
+   is centred in what is left.
+2. On a ~300px mobile stage the running caption, offset from the centre, landed
+   **on** the composition. Space is reserved at the top as well on mobile.
+3. `DAOASIS VALUE TOKEN` reached 343px of a 335px stage and was cut off by
+   `overflow:hidden`. Bank captions are clamped inside the stage.
+
+> **Replacing a CSS block deleted `.bh-ticker`'s rule**, so the running caption
+> rendered as unstyled 16px body text tight under the headline. When a rewrite
+> spans a range of a stylesheet, list what was inside it before deleting.
+
+### Six screens in "Where it begins", one per row
+Three screens across six rows meant the phone sat still through half the section
+and twice showed something the row was not about.
+
+| row | screen |
+|---|---|
+| **Walk.** | the journey map — Bangkok to Phuket, 186 km walked |
+| Complete a quest. | Today's quests |
+| Learn. | a wellness module, four lessons |
+| Build a routine. | the morning home screen |
+| Take part. | the community campfire challenge |
+| Help others. | the marketplace — *made by members* |
+
+Every one was chosen by opening the real file. No script change was needed: the
+existing code already weights a shot by the range of rows it serves.
+
+---
+
+## The hero "reboot" — the landing card was fading IN — 19 September 2026
+
+Reported as: app, web3 and sanctuary are not seamless from the landing into the
+animation, there is a reboot. There was, on all three, and it was one line each:
+
+```js
+const titleIn = raw <= 0.001 ? 1 : ease(clamp01((raw - 0.001) / 0.05));
+const cardT   = Math.min(titleIn, 1 - titleOut);
+```
+
+The page opens on that card, so it is already fully opaque — but the instant the
+reader scrolls, `raw` becomes a small positive number, the ramp evaluates to
+nearly zero and **the card blinks out, uncovering the scene, then climbs back to
+full** before its real exit. Measured: 1.00 at rest, **0.09** one step in, 0.64,
+1.00.
+
+**There was never anything for it to fade in from.** It is `1 - titleOut` on all
+three now: the card only ever leaves.
+
+> **A jump-and-settle harness cannot see this.** The blink happens BETWEEN two
+> scroll positions, so sampling only at settled positions steps straight over it.
+> Scroll continuously and sample every frame.
+
+Verified: monotonic on all three at 1440, and under **real touch swipes** at
+390x844 (three swipes plus momentum, ~370 frames each) **0 scroll reversals and 0
+opacity rises**.
+
+> **A separate trap worth keeping.** With touch emulation on and a harness that
+> calls `window.scrollTo` every frame, scroll went **backwards 204 times** on
+> app — the mobile governor clamping a harness that forces position faster than
+> the cap. Under a real finger it is zero. **Drive the governor with touch events,
+> never with per-frame `scrollTo`.**
+
+---
+
+## Two more sections scrubbed on mobile — 19 September 2026
+
+`web3.html`'s **"Where it begins"** and `app.html`'s **Living Ecosystem** were the
+two accumulating lists still static on a handset. Both now run there.
+
+### Both are a pinned stage, and two cheaper shapes were tried first
+1. **All rows in flow with the phone above them** — the phone leaves after one row
+   and the other five are illustrated by nothing.
+2. **The same, with `position:sticky` on the phone** — it stays on screen, but the
+   rows then scroll THROUGH it. Measured at 390: the live row sat directly behind
+   the device, which is worse than no phone at all.
+
+A 390px column cannot hold a phone and a six-row list side by side, so it holds
+them one above the other and shows **one row at a time**: the phone takes the
+upper half and answers whichever row is live. Same idiom as index's mobile
+journey.
+
+**Three CSS facts this depended on, each of which silently broke it:**
+- **A grid item can only stick within its own grid area** — in a one-column mobile
+  grid that is its own height, so the phone had nowhere to travel. Column flex
+  gives each item the whole container; `order:` still works.
+- **An ancestor with `overflow` other than `visible` disables `position:sticky`
+  on everything inside it.** `.part-sticky`'s mobile override reset position and
+  height but not overflow.
+- **`align-items:center` on a column flex container centres the HORIZONTAL axis**,
+  so every child shrank to content width and the sub-label wrapped one word per
+  line. Reset to `stretch`.
+
+### The rows must not cross-fade
+They are absolutely stacked, so a triangle cross-fade prints two runs of type
+through each other — the fault sanctuary's Rhythm section was rebuilt to remove.
+Each row is full within **0.34** of its own stop and gone by **0.5**: a brief
+clear frame at every handover, and never two legible at once (verified across
+100+ samples per width).
+
+### Fail-visible, and one desktop fault found on the way
+Every `--w` on mobile falls back to **1** where desktop falls back to 0, so a
+thrown error or a missing `cine.js` leaves the rows legible rather than at 16–26%
+grey. Verified with JavaScript disabled: **0 rows invisible** on both pages at 390
+and 1440.
+
+> `app.html`'s `.edy-shot` starts at `opacity:0` and the scrub lights one — so
+> with script off the phone rendered as an **empty box on desktop** (measured: 0
+> screens showing at 1440). `.edy-shot[data-s="0"]{opacity:1}` is now the resting
+> frame. The scrub writes inline opacity, which outranks it, so nothing changes
+> when the script runs. This was pre-existing.
+
+Also fixed while here: the Living Ecosystem's cine callback dereferenced `track`
+after a resize to mobile set it to `null`. There is **one track at both
+breakpoints** now and the renderer is chosen per frame.
+
+### The cost, stated plainly
+| at 390x844 | before | after |
+|---|---|---|
+| web3 "Where it begins" | 1.8 screens, static | **4.6 screens, pinned** |
+| app Living Ecosystem | 1.6 screens, static | **4.3 screens, pinned** |
+| web3 page | ~39.7 | **42.5 screens** |
+| app page | ~45.6 | **48.3 screens** |
+
+Every beat lands at 320 / 360 / 390 / 430 and on desktop, 0 horizontal overflow,
+0 console errors, 6/6 screens shown on both. **Desktop behaviour is unchanged** —
+every change is inside a mobile media query or is the shared render being chosen
+per frame.
+
+> These are long pages on a phone. The single knob is the pin height —
+> `.part-outer` 460vh and `.edy-outer` 430vh, i.e. about 55vh per beat. Scale each
+> against its own value if they need to come down; do not normalise them to one
+> number.
+
+### What still does not animate on mobile, by design
+index's `.pin3` / `.pin4` / `.pin5` (`display:none`, each with its own mobile
+section), sanctuary's Four Foundations and Seven Days (all rows open at once),
+and web3's complete loop. These were unpinned deliberately.
+
+> **A mobile-animation audit needs the right fingerprint.** A first pass read only
+> inline `style.--w` / opacity / transform and scored every canvas-driven and
+> class-driven section **1/25 distinct frames**, which is a false negative, not a
+> finding. Include the canvas's own pixels and computed styles.
+
+---
+
+## Open items carried forward
+- **`sanctuary.html` uses `--t-nano` 16 times and never defines it**, so sixteen
+  small tracked labels render at the inherited 16px instead of 10.5. One line in
+  its token block fixes all of them, and the page then wants an eye pass.
+- The web3 **aquifer hero has not been tuned by eye** — it is measured, and its
+  contrast pass was done, but the timing has not been watched at full size.
+- `app.html` still has **no `<noscript>` block** while `.reveal` starts at
+  `opacity: 0`.
+- The **Phuket map's "(PLANNED)" pin** and its duplicated *Surin* label.
+- `images-original/`, `images-unused/`, `baseline/` and `original-backup/` are
+  **75MB of local safety copies that must not be uploaded**.
+
+## Upload for this batch
+`index.html` · `app.html` · `sanctuary.html` · `web3.html` · `investors.html` ·
+`about.html` · `privacy.html` · `health-data.html` · `terms.html` ·
+`cookies.html` · `token-disclaimer.html` · `accessibility.html` ·
+`contact.html` · **`css/trust.css`** · **`js/trust.js`** ·
+**`images/phuket-map.jpg` (NEW)**.
+
+`css/trust.css` is the one that fixes the live footer icons and has never been
+uploaded. No other image, and no other JS file, changed.

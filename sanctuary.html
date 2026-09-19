@@ -2298,9 +2298,17 @@ const lead = (window.DAO && DAO.cine && DAO.cine.lead) ? DAO.cine.lead
     const vw = window.innerWidth, vh = window.innerHeight;
 
     /* 1 — darkness holds, then clears */
-    const tIn = raw <= 0.001 ? 1 : ease(clamp01((raw - 0.001) / 0.045));
+    /* THE CARD ONLY EVER LEAVES. It used to fade IN across the first 5%
+       of the track as well, special-cased to full opacity only at exactly
+       raw <= 0.001 — so the page opened on an opaque card, and the instant
+       the reader scrolled, raw became a small positive number, the ramp
+       evaluated to nearly zero and the card BLINKED OUT, uncovering the
+       scene, before climbing back to full and later fading properly.
+       Measured: opacity 1.00 at rest, 0.09 one step into the scroll, 0.64,
+       then 1.00 again. That flash is the "reboot" between the landing and
+       the animation. There was never anything for it to fade in from. */
     const tOut = ease(clamp01((raw - 0.14) / 0.09));
-    const tCard = Math.min(tIn, 1 - tOut);
+    const tCard = 1 - tOut;
     title.style.opacity = tCard;
     title.style.pointerEvents = tCard > 0.02 ? 'auto' : 'none';
 
