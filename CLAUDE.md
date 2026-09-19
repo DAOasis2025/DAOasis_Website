@@ -6134,3 +6134,85 @@ from the cascade.
 
 ### Upload
 `index.html` only.
+
+---
+
+## Uchenna's quote, and the CTO card became an advertisement — 19 September 2026
+
+`about.html` and `contact.html`.
+
+### The quote
+Uchenna's card carried `.pf-soon` — "Quote to follow". His words are now in, wrapped in
+the straight quotation marks the other five profiles use (the convention is in the
+markup, not the CSS; a quote added without them sits visibly outside the set).
+
+**All six profiles now carry a quote and `.pf-soon` has no user on the page.** The rule
+is kept rather than deleted: a portrait or a quote can go missing again and it is the
+idiom for saying so without leaving a ragged hole in a three-up row. **Do not write a
+placeholder quote for a real person to fill it.**
+
+### The CTO card
+
+It read *"To be appointed / Appointment to follow"*. Accurate, and the least
+interesting thing it could say to the one person most worth reaching — a senior
+engineer reading a team page. It now says **"We're looking for you"**, addresses that
+person directly, and opens a dialog carrying the whole role.
+
+**THE TERMS CAME FROM THE FOUNDERS AND WERE NOT INFERRED**: equity from day one with
+salary once the Build raise closes, remote and flexible to start. A CTO ad that will
+not say what is on offer is one most senior candidates skip, so this was asked rather
+than guessed. Every other fact in the panel is already published elsewhere on the site
+— the live UK company, pre-revenue, the two engineers in post, the app in build, the
+unfinished $DVT legal position, the 2027 Phuket pilot. The panel has a *"Being straight
+with you"* section that states the absence of users, revenue and salary plainly; it is
+the most persuasive part and should not be softened.
+
+**The dialog is investors.html's `.req` panel, minus the form** — scrim, shell, card,
+focus trap, Escape, focus restore, body scroll lock. That one is already tested, and a
+second dialog idiom on one site is a bug waiting to happen.
+
+> **Nothing is submitted, because nothing on this site can be.** The panel hands over
+> an address and, optionally, the role as plain text on the clipboard, and says so.
+>
+> **The copy buttons degrade three deep**: `navigator.clipboard` when the context is
+> secure, `execCommand` when it is not, and an honest message when neither works. An
+> earlier version of that message said *"the text is selected, press Ctrl/Cmd+C"* —
+> **the legacy path removes its own textarea, so nothing was selected and the
+> instruction was a lie.** Each button now says something the visitor can act on. Worth
+> remembering generally: a fallback that misdescribes what happened is worse than no
+> fallback.
+>
+> A `<noscript>` inside the card gives the address directly, because with JavaScript
+> off the button opens nothing.
+
+### `jamie@daoasis.xyz` — a deliberate exception
+
+`contact.html` has carried *"One address, not six"* since August: every route reaches
+`info@daoasis.xyz`. A named founder address breaks that, so rather than quietly
+contradicting the page it was retitled **"One address, with one exception"** and the
+reason given — a senior hire writes to a person, not to an inbox. The Careers route now
+names the open role and links to `about.html#technology`.
+
+**Every other route on the site still goes to `info@daoasis.xyz`.** jamie@ appears on
+exactly two pages and nowhere else.
+
+### Verified
+- **8 widths** (320 → 1920), panel opened and closed at each: **0 horizontal overflow
+  with the panel open and closed, 0 JS errors**, the card fits the viewport at every
+  one (281px at 320, capped at 680 from 768 up).
+- Dialog behaviour: focus moves to the close button on open, **returns to the trigger**
+  on Escape, scrim click closes, `aria-hidden` flips both ways, body scroll restored to
+  its stylesheet value (`clip visible`, not `visible` — this page sets `overflow-x:clip`).
+- **JavaScript disabled entirely**: the card and all six quotes render, the panel stays
+  `display:none`, and the `<noscript>` address appears.
+- **Contrast: 13 new or changed text styles, 0 failures.**
+
+> **A contrast check that does not composite alpha will lie to you here, and it did.**
+> `.pf-cta` measured **1.60:1** on a naive pass because its own background is
+> `rgba(196,138,90,0.10)` and the checker treated that as solid clay. Composited down
+> through every translucent layer to the first opaque one it is **8.12:1**. This is the
+> third time that trap is recorded in this file; write the compositing checker, do not
+> reach for the quick one.
+
+### Upload
+`about.html` · `contact.html`. No stylesheet, no script file and no image changed.

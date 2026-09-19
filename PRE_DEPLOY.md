@@ -76,6 +76,9 @@ Also: three mobile fixes on the home page (the 'why now' blank space, the
 ecosystem plate divides, the full-bleed community photograph) — **`index.html`
 changed again**. Desktop verified untouched.
 
+Also: Uchenna's quote and the CTO recruitment card + role dialog — **`about.html`
+and `contact.html` changed**. jamie@daoasis.xyz is now live on both.
+
 ### After go-live
 - Re-scrape the share card on Facebook, LinkedIn and Slack.
 - Submit https://daoasis.xyz/sitemap.xml in Google Search Console.

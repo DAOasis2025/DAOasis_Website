@@ -350,15 +350,37 @@ touched.
 The About page team structure was corrected: Trong moved out of the founding team and
 into Technology, and Uchenna was added as App Developer.
 
-| Needed | Appears on |
+| Needed | Status |
 |---|---|
-| **Uchenna's real profile copy** — the current bio is placeholder text | `about.html` §Technology |
-| **Uchenna's quote** — his card carries a "Quote to follow" placeholder | `about.html` §Technology |
-| Portrait for Uchenna — `images/team-uchenna.jpg` | `about.html` §Technology |
+| **Uchenna's real profile copy** — the current bio is placeholder text | still outstanding, `about.html` §Technology |
+| ~~Uchenna's quote~~ | **supplied 19 Sep** — *"A great mobile app doesn't prove how much code you can write. It proves how much complexity you can hide from the person using it."* |
+| Portraits — `team-uchenna` · `team-nelson` · `team-dan` · `team-etiosa` | outstanding; being collected. All four currently 404 and fall back to the monogram plate |
+| ~~CTO "Appointment to follow"~~ | **closed 19 Sep** — the card is now a recruitment ad, see below |
 
-**Do not write a quote for Uchenna, or for anyone else, to fill the layout.** The
-`.pf-soon` placeholder exists specifically so the three-up row stays balanced without
-words being attributed to a real person who did not say them.
+**Do not write a quote for anyone to fill the layout.** The `.pf-soon` placeholder
+exists specifically so the row stays balanced without words being attributed to a real
+person who did not say them. It currently has no user on the page — keep the rule.
+
+### The CTO card became an advertisement — 19 September 2026
+
+It read *"To be appointed / Appointment to follow"*: accurate, and the least
+interesting thing it could say to the one person most worth reaching. It now asks that
+person directly and opens a dialog with the full role.
+
+**The terms in it came from the founders and were not inferred:** equity from day one
+with salary once the Build raise closes, remote and flexible to start. Everything else
+in the panel is already published elsewhere on the site.
+
+**`jamie@daoasis.xyz` is a deliberate exception to the "one address, not six" rule** —
+a senior hire writes to a person, not an inbox. `contact.html`'s card was retitled
+*"One address, with one exception"* so the site does not contradict itself, and its
+Careers route now points at the role. **Every other route on the site still goes to
+`info@daoasis.xyz`** and should stay that way.
+
+| Still needed for the role | |
+|---|---|
+| A decision on whether to publish an equity range | currently "equity from day one", no figure |
+| Start date / notice expectations | not stated |
 
 Portrait files still missing for **every** profile on the page: Jamie, Nelson, Dan,
 Trong, Uchenna, Etiosa, George. Each has an HTML comment giving the intended filename;

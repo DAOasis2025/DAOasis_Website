@@ -504,6 +504,87 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--gold); outline-
 .on-dark .team-i.open .pf-name { color: rgba(212,163,115,0.94); }
 .on-light .team-i.open .pf-name { color: #8a5f34; }
 
+/* THE CARD IS NOW AN APPROACH, NOT A VACANCY NOTICE.
+   It read "To be appointed / Appointment to follow" — accurate, and the
+   least interesting thing it could say to the one person most worth
+   reaching, who is a senior engineer reading a team page. The card asks
+   them directly and opens the role.
+
+   `.pf-soon` now has NO user on the page — Uchenna's quote arrived in the
+   same pass that replaced the CTO placeholder. The rule is kept rather
+   than deleted because a portrait or a quote can go missing again, and it
+   is the idiom for saying so without leaving a ragged hole in a three-up
+   row. Do not write a placeholder quote for a real person to fill it. */
+.pf-cta { margin-top: 30px; display: inline-flex; align-items: center; gap: 11px;
+  padding: 13px 24px; border-radius: 40px; cursor: pointer;
+  background: rgba(196,138,90,0.10); border: 1px solid rgba(196,138,90,0.55);
+  color: rgba(226,183,140,0.96);
+  font-family: 'Frank Ruhl Libre', Georgia, serif; font-size:var(--t-note);
+  letter-spacing: 0.1em; text-transform: uppercase;
+  transition: background 0.25s var(--ease), border-color 0.25s var(--ease), color 0.25s var(--ease); }
+.pf-cta:hover { background: rgba(196,138,90,0.2); border-color: rgba(196,138,90,0.9);
+  color: var(--warm-white); }
+.pf-cta-i { transition: transform 0.25s var(--ease); }
+.pf-cta:hover .pf-cta-i { transform: translateX(4px); }
+@media (prefers-reduced-motion: reduce){ .pf-cta:hover .pf-cta-i { transform: none; } }
+
+/* ── THE ROLE PANEL ───────────────────────────────────────────────────
+   Same shape as investors.html's request panel — scrim, shell, card,
+   focus trap, Escape, focus restore, body scroll lock — because that one
+   is already tested and a second dialog idiom on one site is a bug
+   waiting to happen. It differs in one way: nothing is submitted. There
+   is no form backend anywhere in this project, so the panel hands over an
+   address and the text to send, and says so. */
+.role { position: fixed; inset: 0; z-index: 300; display: none; }
+.role.open { display: block; }
+.role-scrim { position: absolute; inset: 0; background: rgba(6,5,4,0.8);
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  opacity: 0; transition: opacity 0.35s var(--ease); }
+.role.open .role-scrim { opacity: 1; }
+.role-shell { position: absolute; inset: 0; overflow-y: auto;
+  display: flex; align-items: flex-start; justify-content: center; padding: 6vh 20px; }
+.role-card { position: relative; width: min(680px, 100%); background: var(--mineral);
+  border: 1px solid rgba(247,244,238,0.13); border-radius: 4px; padding: 46px 48px 40px;
+  opacity: 0; transform: translateY(14px);
+  transition: opacity 0.4s var(--ease), transform 0.4s var(--ease); }
+.role.open .role-card { opacity: 1; transform: translateY(0); }
+.role-x { position: absolute; top: 16px; right: 18px; background: none; border: 0;
+  color: #8f887d; font-size: 26px; line-height: 1; cursor: pointer; padding: 6px 10px; }
+.role-x:hover { color: var(--warm-white); }
+.role-k { font-size:var(--t-nano); letter-spacing: 0.24em; text-transform: uppercase;
+  color: rgba(196,138,90,0.9); margin-bottom: 14px; }
+.role-t { font-family: 'Cormorant Garamond', serif; font-weight: 300;
+  font-size: clamp(30px,4.2vw,44px); line-height: 1.1; color: var(--warm-white);
+  margin: 0 0 8px; }
+.role-sub { font-size:var(--t-note); color: #9b9488; margin: 0 0 30px; line-height: 1.7; }
+.role-h { font-size:var(--t-nano); letter-spacing: 0.2em; text-transform: uppercase;
+  color: rgba(196,138,90,0.86); margin: 30px 0 12px; }
+.role-card p { font-size:var(--t-note); line-height: 1.85; color: #a9a294; margin: 0 0 14px; }
+.role-card ul { margin: 0; padding-left: 20px; }
+.role-card li { font-size:var(--t-note); line-height: 1.8; color: #a9a294; margin-bottom: 9px; }
+.role-card strong { color: rgba(247,244,238,0.94); font-weight: 400; }
+.role-send { margin-top: 32px; padding-top: 26px; border-top: 1px solid rgba(247,244,238,0.14); }
+.role-mail { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: 14px; }
+.role-addr { font-family: 'Frank Ruhl Libre', Georgia, serif; font-size: 17px;
+  color: var(--warm-white); letter-spacing: 0.02em; }
+.role-copy { padding: 11px 20px; border-radius: 40px; cursor: pointer;
+  background: var(--warm-white); border: 1px solid var(--warm-white); color: var(--charcoal);
+  font-family: 'Frank Ruhl Libre', Georgia, serif; font-size:var(--t-nano);
+  letter-spacing: 0.14em; text-transform: uppercase;
+  transition: opacity 0.25s var(--ease); }
+.role-copy:hover { opacity: 0.85; }
+.role-copy.done { background: rgba(196,138,90,0.18); border-color: rgba(196,138,90,0.6);
+  color: rgba(226,183,140,0.96); }
+.role-note { font-size:var(--t-nano); line-height: 1.7; color: #8f887d; margin-top: 16px; }
+@media (max-width: 640px){
+  .role-shell { padding: 3vh 12px; }
+  .role-card { padding: 40px 24px 30px; }
+  .role-mail { gap: 10px; }
+}
+@media (prefers-reduced-motion: reduce){
+  .role-scrim, .role-card { transition-duration: 0.01s; }
+}
+
 /* TWO-UP VARIANT — the founding team is two people.
    Dropped into the three-column grid they would fill two thirds and
    leave a visible hole, which reads as a card having been deleted
@@ -1012,12 +1093,27 @@ img{height:auto;}
           <span class="pt-open" aria-hidden="true">Open role</span>
         </figure>
         <div>
-          <h3 class="pf-name">To be appointed</h3>
+          <h3 class="pf-name">We&rsquo;re looking for you</h3>
           <div class="pf-role">Chief Technology Officer</div>
-          <p class="pf-bio">A planned senior hire to lead technical architecture, product
-          development and platform scaling as the ecosystem grows. No candidate is named,
-          and the appointment is a priority of the current funding stage.</p>
-          <div class="pf-soon">Appointment to follow</div>
+          <p class="pf-bio">This seat is open, and filling it is the priority of the
+          current funding stage. We are looking for an engineer who wants to own the
+          architecture of a wellness ecosystem from before launch &mdash; the app, the
+          data, and the on-chain layer underneath them &mdash; rather than inherit
+          someone else&rsquo;s.</p>
+          <p class="pf-bio"><strong>If you are reading this and recognising
+          yourself, we would like to hear from you.</strong></p>
+          <button type="button" class="pf-cta" data-cto-open>
+            Read the role<span class="pf-cta-i" aria-hidden="true">&rarr;</span>
+          </button>
+          <!-- Without JavaScript the button above opens nothing, so the one
+               thing a candidate actually needs is given directly. Same
+               fail-visible reasoning as the trust layer. -->
+          <noscript>
+            <p class="pf-bio" style="margin-top:22px;">The full role needs JavaScript to
+            open. Write to <a href="mailto:jamie@daoasis.xyz?subject=CTO%20%E2%80%94%20DAOasis"
+            style="color:rgba(226,183,140,0.96);">jamie@daoasis.xyz</a> and we will send
+            it to you.</p>
+          </noscript>
         </div>
       </article>
 
@@ -1033,7 +1129,10 @@ img{height:auto;}
           <p class="pf-bio">Uchenna works across the development of the DAOasis Companion
           App, helping turn the product vision into a scalable, intuitive experience for
           members.</p>
-          <div class="pf-soon">Quote to follow</div>
+          <blockquote class="pf-q">
+            "A great mobile app doesn&rsquo;t prove how much code you can write. It proves
+            how much complexity you can hide from the person using it."
+          </blockquote>
         </div>
       </article>
 
@@ -1314,6 +1413,88 @@ img{height:auto;}
 
 </main>
 
+<!-- ══ THE CTO ROLE PANEL ══
+     Nothing here is submitted. There is no form backend anywhere in this
+     project, so the panel gives the address and the text to send, and says
+     so plainly rather than implying an application was received.
+
+     EVERY FACT IN IT IS ALREADY PUBLISHED ELSEWHERE ON THIS SITE — the UK
+     company, the pre-revenue stage, the two developers in post, the app in
+     build, the pending $DVT legal position, the 2027 Phuket pilot. Nothing
+     about the role's terms was invented: the equity/salary sequence and the
+     remote, flexible-to-start basis were given by the founders.
+
+     jamie@daoasis.xyz IS A DELIBERATE EXCEPTION to the site's "one address,
+     not six" rule (contact.html). A senior hire writes to a person, not to
+     an inbox. Every other route on the site still goes to info@daoasis.xyz
+     and should stay that way. -->
+<div class="role" id="rolePanel" aria-hidden="true">
+  <div class="role-scrim" data-role-close></div>
+  <div class="role-shell">
+    <div class="role-card" role="dialog" aria-modal="true" aria-labelledby="roleTitle" aria-describedby="roleSub">
+      <button type="button" class="role-x" data-role-close aria-label="Close">&times;</button>
+
+      <div class="role-k">Open role &middot; DAOasis Global Ltd</div>
+      <h2 class="role-t" id="roleTitle">Chief Technology Officer</h2>
+      <p class="role-sub" id="roleSub">Remote, flexible to start &middot; Equity from day one,
+      salary once the Build raise closes &middot; Reporting to the founders</p>
+
+      <p>DAOasis is a wellness ecosystem: a Companion App where daily habits become a
+      journey, a reward layer that recognises participation, and &mdash; from 2027 &mdash; a
+      physical sanctuary in Phuket. The UK company is live. The app is in build. Nothing
+      has launched yet.</p>
+      <p><strong>That is the offer.</strong> You would be shaping the architecture before
+      it hardens, not maintaining someone else&rsquo;s decisions after the fact.</p>
+
+      <div class="role-h">What you would own</div>
+      <ul>
+        <li>The technical architecture end to end &mdash; mobile app, backend, data model
+        and the on-chain layer, and how honestly they fit together.</li>
+        <li>Health data handling. It is the most sensitive thing we touch and the
+        published position is deliberately conservative; you would be the person who
+        keeps it that way.</li>
+        <li>Leading the two engineers already in post &mdash; Uchenna on the Companion App,
+        Etiosa on smart contracts &mdash; and hiring the next ones.</li>
+        <li>Getting the MVP finished and in people&rsquo;s hands, which is the gate the
+        next funding stage depends on.</li>
+        <li>Working with counsel on the $DVT technical position. That review is
+        unfinished and its outcome shapes what gets built.</li>
+      </ul>
+
+      <div class="role-h">Who this suits</div>
+      <ul>
+        <li>You have shipped and run a real mobile product, not only prototypes.</li>
+        <li>You are comfortable being the most senior technical person in the room and
+        saying no when the honest answer is no.</li>
+        <li>You can read a regulatory constraint as a design input rather than an
+        obstacle.</li>
+        <li>Web3 experience is useful. Being sceptical about it is more useful.</li>
+        <li>Pre-revenue does not frighten you, and equity is something you want rather
+        than something you tolerate.</li>
+      </ul>
+
+      <div class="role-h">Being straight with you</div>
+      <p>There are no users, no revenue and nothing validated in market. There is no
+      salary until the Build raise closes, and that raise is gated on work you would be
+      doing. The British Virgin Islands and Thai companies are planned, not formed.
+      We would rather you knew all of that now than found it out in week three.</p>
+
+      <div class="role-send">
+        <div class="role-h" style="margin-top:0;">How to apply</div>
+        <p>No form, no tracking, no portal. Write to Jamie directly &mdash; a few
+        paragraphs about what you have built and why this one interests you is plenty.</p>
+        <div class="role-mail">
+          <a class="role-addr" href="mailto:jamie@daoasis.xyz?subject=CTO%20%E2%80%94%20DAOasis">jamie@daoasis.xyz</a>
+          <button type="button" class="role-copy" id="roleCopy" data-addr="jamie@daoasis.xyz">Copy address</button>
+          <button type="button" class="role-copy" id="roleCopyAll">Copy the role</button>
+        </div>
+        <p class="role-note" id="roleNote">Copying puts the text on your clipboard. Nothing
+        is sent or stored by this website.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <!-- ══ FOOTER ══ -->
 <footer class="site-footer">
@@ -1480,6 +1661,133 @@ const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   applyTheme(localStorage.getItem('daoasis-theme') || 'dark');
   btnLight.addEventListener('click', () => applyTheme('light'));
   btnDark.addEventListener('click', () => applyTheme('dark'));
+})();
+</script>
+
+<script>
+/* ── THE CTO ROLE PANEL ───────────────────────────────────────────────
+   Deliberately the same shape as investors.html's request panel: focus is
+   remembered and restored, Escape closes, Tab is trapped inside the card,
+   and the page behind it cannot scroll. A second dialog idiom on one site
+   is a bug waiting to happen, so this is that one, minus the form.
+
+   It is also a pure enhancement. The button is a plain <button> inside the
+   card; if this script never runs the panel stays display:none and the
+   card still reads as an open role with everything it needs except the
+   detail. Nothing here is required for the page to make sense. */
+(function(){
+  const panel = document.getElementById('rolePanel');
+  if(!panel) return;
+  const note = document.getElementById('roleNote');
+  const NOTE = note ? note.textContent : '';
+  let lastFocus = null, noteTimer = null;
+
+  function open(){
+    lastFocus = document.activeElement;
+    panel.classList.add('open');
+    panel.setAttribute('aria-hidden','false');
+    document.body.style.overflow = 'hidden';
+    /* the close button, not the first link — a dialog should open with the
+       way out already under the cursor */
+    const x = panel.querySelector('.role-x');
+    if(x) x.focus();
+  }
+
+  function close(){
+    panel.classList.remove('open');
+    panel.setAttribute('aria-hidden','true');
+    document.body.style.overflow = '';
+    if(lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+
+  document.addEventListener('click', e => {
+    if(e.target.closest('[data-cto-open]')){ e.preventDefault(); open(); return; }
+    if(e.target.closest('[data-role-close]')) close();
+  });
+
+  document.addEventListener('keydown', e => {
+    if(!panel.classList.contains('open')) return;
+    if(e.key === 'Escape'){ close(); return; }
+    if(e.key !== 'Tab') return;
+    const f = [...panel.querySelectorAll('button, a[href], input, textarea, select')]
+      .filter(el => el.offsetParent !== null && !el.disabled);
+    if(!f.length) return;
+    const first = f[0], last = f[f.length - 1];
+    if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+    else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+  });
+
+  /* ── copying ──
+     navigator.clipboard needs a secure context and can be refused outright,
+     so every path falls back to the old execCommand trick and then, if even
+     that fails, to selecting the text so the visitor can copy it themselves.
+     Telling someone it copied when it did not is worse than not offering. */
+  function say(msg){
+    if(!note) return;
+    note.textContent = msg;
+    clearTimeout(noteTimer);
+    noteTimer = setTimeout(() => { note.textContent = NOTE; }, 4000);
+  }
+
+  function copy(text, btn, label, onFail){
+    const done = ok => {
+      if(!ok){ say(onFail); return; }
+      const was = btn.textContent;
+      btn.textContent = 'Copied';
+      btn.classList.add('done');
+      say(label + ' copied to your clipboard.');
+      setTimeout(() => { btn.textContent = was; btn.classList.remove('done'); }, 2600);
+    };
+    if(navigator.clipboard && window.isSecureContext){
+      navigator.clipboard.writeText(text).then(() => done(true), () => done(legacy(text)));
+    } else {
+      done(legacy(text));
+    }
+  }
+
+  function legacy(text){
+    try{
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly','');
+      ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;';
+      document.body.appendChild(ta);
+      ta.select();
+      const ok = document.execCommand('copy');
+      ta.remove();
+      return ok;
+    }catch(e){ return false; }
+  }
+
+  /* the readable version of the role, for pasting into an email or a DM */
+  function roleText(){
+    const card = panel.querySelector('.role-card');
+    const parts = ['DAOasis — Chief Technology Officer'];
+    parts.push(panel.querySelector('#roleSub').textContent.replace(/\s+/g,' ').trim());
+    parts.push('');
+    card.querySelectorAll('.role-h, p, li').forEach(el => {
+      if(el.closest('.role-mail') || el.id === 'roleNote') return;
+      if(el.id === 'roleSub') return;
+      const t = el.textContent.replace(/\s+/g,' ').trim();
+      if(!t) return;
+      if(el.classList.contains('role-h')) parts.push('', t.toUpperCase());
+      else if(el.tagName === 'LI') parts.push('  - ' + t);
+      else parts.push(t);
+    });
+    parts.push('', 'Apply: jamie@daoasis.xyz', 'daoasis.xyz/about');
+    return parts.join('\n');
+  }
+
+  const cAddr = document.getElementById('roleCopy');
+  const cAll  = document.getElementById('roleCopyAll');
+  /* The failure line has to be TRUE. An earlier version said 'the text is
+     selected, press Ctrl/Cmd+C' — the legacy path removes its textarea, so
+     nothing was selected and the instruction was a lie. Each button now says
+     something the visitor can actually act on. */
+  if(cAddr) cAddr.addEventListener('click', () => copy(cAddr.dataset.addr, cAddr, 'Address',
+    'Your browser would not let the page copy. The address is jamie@daoasis.xyz — the link above opens your mail app.'));
+  if(cAll)  cAll.addEventListener('click',  () => copy(roleText(), cAll, 'The role',
+    'Your browser would not let the page copy. Select the text above, or just write to jamie@daoasis.xyz and say hello.'));
 })();
 </script>
   <script src="js/smooth.js"></script>
