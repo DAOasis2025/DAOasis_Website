@@ -2,11 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
+<style>/* Light mode disabled — dark only. Remove this rule and restore the theme reads in the boot script to re-enable. */ .footer-appearance { display: none !important; }</style>
 <script>
   (function(){
     var h = document.documentElement;
     try {
-      var t = localStorage.getItem('daoasis-theme') || 'dark';
+      var t = 'dark' /* light mode disabled */;
       if(t === 'light') h.setAttribute('data-theme','light');
     } catch(e) { /* private mode: fall through to the dark default */ }
 

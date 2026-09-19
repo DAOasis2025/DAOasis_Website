@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
+<style>/* Light mode disabled — dark only. Remove this rule and restore the theme reads in the boot script to re-enable. */ .footer-appearance { display: none !important; }</style>
 <script>
   (function(){
-    var t = localStorage.getItem('daoasis-theme') || 'dark';
+    var t = 'dark' /* light mode disabled */;
     if(t === 'light') document.documentElement.setAttribute('data-theme','light');
   })();
 </script>
@@ -3612,7 +3613,7 @@ function cine(el, o){
     localStorage.setItem('daoasis-theme', theme);
   }
 
-  var saved = localStorage.getItem('daoasis-theme') || 'dark';
+  var saved = 'dark' /* light mode disabled */;
   applyTheme(saved);
 
   btnLight.addEventListener('click', function(){ applyTheme('light'); });
