@@ -1613,13 +1613,20 @@
         linear-gradient(180deg,var(--clay-ink),var(--clay-ink)) top left / 1px calc(var(--fill,1) * 100%) no-repeat,
         linear-gradient(180deg,rgba(23,21,15,0.16),rgba(23,21,15,0.16));}
 
-    /* 66vh, not 100. A statistic is ~300px of content; giving it a whole
-       viewport puts ~270px of empty column between one statement and the
-       next, which reads as the section having ended. At 66vh the gap is
-       ~0.27 of a screen — a breath, with the spine running through it — and
-       the beat is still tall enough that only one statistic is ever
-       properly in frame. */
-    .panel{position:relative;width:auto;min-height:106vh;
+    /* 68vh, not 100, and NOT the 106vh this carried until 19 September.
+       A statistic is ~230-290px of content; giving it a whole viewport puts
+       ~270px of empty column between one statement and the next, which
+       reads as the section having ended.
+
+       THE COMMENT ABOVE WAS RIGHT AND THE VALUE WAS WRONG. The 15 September
+       "everything x1.6" pass took this 66 -> 106 and left the reasoning
+       stranded underneath it, so each beat became an 895px box around 230px
+       of type — about 640px of nothing, three times over. Reported as
+       "huge blank space", and it was. 68vh keeps a little of that pass's
+       intent over the original 66 and returns the gap to a breath.
+
+       If the section is ever slowed again, slow the SCRUB, not the box. */
+    .panel{position:relative;width:auto;min-height:68vh;
       display:flex;flex-direction:column;justify-content:center;
       background:none;border:0;border-radius:0;box-shadow:none;
       padding:3.5vh 0;margin:0;opacity:1;transform:none;transition:none;will-change:auto;}
@@ -1710,8 +1717,14 @@
        viewport and a half down the page. A canvas paints its background
        behind its drawn content, so this keeps the fail-visible guarantee
        exactly as it was: no script, no frame drawn, the mark still shows. */
+    /* 200vh, down from 300 on 19 September. The canvas sticks at 100vh, so
+       the runway minus that viewport IS the scrub: 300 gave two full screens
+       of scrolling for one mark to assemble, and with the three statistic
+       beats above it the section ran to 6.6 screens. 200vh leaves a whole
+       screen of scroll across assemble / hold / pop, which is still a real
+       sequence with a real pause in it — see drawMark for the division. */
     .why-mark{order:3;position:relative;display:block;width:100%;
-      height:300vh;margin:2.4vh 0 0;background:none;}
+      height:200vh;margin:2.4vh 0 0;background:none;}
     .why-mark canvas{position:sticky;top:0;display:block;width:100%;height:100vh;
       background:url('images/img-09.png') center center / auto 30% no-repeat;}
     .why-mark.live canvas{background-image:none;}
@@ -1731,13 +1744,13 @@
        divider mark was 35px at 390x659 against the site's 49px floor; the
        extra tail here takes it to 53. */
     .stage{padding-bottom:0;}
-    .panel{min-height:118vh;padding:3vh 0;}
+    .panel{min-height:76vh;padding:3vh 0;}
     .panel .stat{font-size:clamp(32px,9.4vw,42px);}
     .panel .desc{line-height:1.56;margin-top:13px;}
     .panel .source{margin-top:15px;padding-top:10px;}
     /* the runway is already in vh, so it scales on its own — only the
        resting PNG needs to come down on a short screen */
-    .why-mark{height:270vh;}
+    .why-mark{height:180vh;}
     .why-mark canvas{background-size:auto 26%;}
   }
   /* Short handsets (iPhone SE and similar, 667px tall). The clear band above
@@ -2591,7 +2604,52 @@
     background:linear-gradient(to top, rgba(15,12,10,0.6) 0%, transparent 45%);}
   .cm-body-image-caption{position:absolute;bottom:28px;left:28px;right:28px;z-index:3;
     font-size:var(--t-nano);letter-spacing:0.24em;color:rgba(247,244,238,0.78);text-transform:uppercase;}
-  @media (max-width:900px){.cm-body-image{aspect-ratio:4/3;}}
+  /* FULL BLEED ON MOBILE, and framed on the figure — 19 September.
+     It was a 4/3 letterbox inside the section's 8% padding: 236px tall on a
+     390px screen, floating in a column of ivory with the caption "The people
+     who build this, own this." tucked in a corner of it. Reported as looking
+     oddly placed, and it did — the one photograph carrying the line about
+     ownership was the smallest thing in the section.
+
+     It now runs edge to edge and takes a real portrait crop.
+
+     THE BLEED IS DONE WITH A PERCENTAGE, NOT `100vw`, AND THAT IS
+     DELIBERATE. The obvious `width:100vw; margin-left:calc(50% - 50vw)` was
+     tried first and measured 8px of horizontal overflow at every width,
+     because `vw` counts the scrollbar and `100%` does not. A real handset
+     has no persistent scrollbar so it would usually be invisible — but this
+     page has already been through the bug where a few pixels of overflow
+     made the whole layout render 3-5% zoomed out, and that is not worth
+     risking on an assumption about scrollbars.
+     `.community-section` is padded `8%`, so the grid track is `84%` of the
+     section and one padding is `8/84` of the track: -9.5238% each side lands
+     exactly on the section edge at every width, with no `vw` anywhere.
+
+     THE CROP WAS MEASURED, AND THE FIRST MEASUREMENT WAS WRONG. Read off a
+     percentage grid drawn over the photograph, the seated figure looked to
+     be at x 44%. He is at x 62%, and 44% pushed him almost out of frame.
+     Cutting four candidate crops straight out of the source and looking at
+     them side by side is what caught it. Do that; the grid overlay was not
+     trustworthy at that size.
+
+     `auto 116%` is a small push past cover so the figure reads at thumb
+     size, and 58% places him just RIGHT of centre — he is looking left, so
+     the sunset he is looking at is the space the frame should give him. A
+     full-bleed 4/5 box is a 469px plate on a 390 screen: the photograph goes
+     from 0.28 of a viewport to 0.56 of one. */
+  @media (max-width:900px){
+    .cm-body-image{aspect-ratio:4/5;width:auto;margin-inline:-9.5238%;}
+    .cm-body-image .par-layer{background-size:auto 116%!important;
+      background-position:58% 50%!important;}
+    .cm-body-image::after{background:linear-gradient(to top,
+      rgba(15,12,10,0.78) 0%, rgba(15,12,10,0.30) 34%, transparent 62%);
+      box-shadow:none;}
+    /* Bigger, and set as a statement rather than a filed caption. */
+    .cm-body-image-caption{bottom:7%;left:8%;right:8%;
+      font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;
+      font-size:clamp(24px,7.2vw,34px);line-height:1.18;letter-spacing:0;
+      text-transform:none;color:rgba(247,246,242,0.97);}
+  }
 
   .cm-body-text{opacity:0;transform:translateY(24px);transition:opacity 0.9s var(--ease) 0.3s, transform 0.9s var(--ease) 0.3s;}
   .community-section.in-view .cm-body-text{opacity:1;transform:translateY(0);}
@@ -3009,13 +3067,28 @@
      the plate and the veil and below the type, which is where it belongs,
      and 5vh/6vh clears both panels with room. */
   @media (max-width:900px){
+    /* THE FOLD BECAME A SMUDGE — corrected 19 September.
+       The 15 September pass melted each plate into the next over 6vh of
+       rgba(8,7,6,0.88) so the run read as one sequence rather than three
+       butted cards. It over-corrected: reported as the three plates being
+       "all blurred into each other", and they were — two photographs
+       dissolving through a shared grey with no edge anywhere.
+
+       These are STEP ONE / TWO / THREE. A numbered sequence needs to read
+       as three things. So the melt is halved and taken to FULL opacity at
+       the edge, which resolves each plate onto a definite dark line instead
+       of trailing off, and a gold hairline sits on the join. Photograph,
+       clean edge, rule, photograph. */
     .eco-item{overflow:hidden;}
     .eco-item::before,.eco-item::after{content:'';position:absolute;
-      left:0;right:0;height:6vh;z-index:2;pointer-events:none;}
+      left:0;right:0;height:3vh;z-index:2;pointer-events:none;}
     .eco-item::before{top:0;background:linear-gradient(180deg,
-      rgba(8,7,6,0.88) 0%, rgba(8,7,6,0.46) 38%, rgba(8,7,6,0) 100%);}
+      rgba(8,7,6,1) 0%, rgba(8,7,6,0.55) 45%, rgba(8,7,6,0) 100%);}
     .eco-item::after{bottom:0;background:linear-gradient(0deg,
-      rgba(8,7,6,0.88) 0%, rgba(8,7,6,0.46) 38%, rgba(8,7,6,0) 100%);}
+      rgba(8,7,6,1) 0%, rgba(8,7,6,0.55) 45%, rgba(8,7,6,0) 100%);}
+    /* The join itself. On the item rather than the pseudo, so it sits above
+       both plates' gradients and runs the full bleed. */
+    .eco-item + .eco-item{border-top:1px solid rgba(196,138,90,0.42);}
     /* THE RUN'S TWO OUTER EDGES ARE NOT THE SAME EDGE, AND ON MOBILE THEY
        ARE NOT WHAT DESKTOP'S ARE. .eco-outer carries an ivory melt at each
        end for desktop, where the sections above and below are both

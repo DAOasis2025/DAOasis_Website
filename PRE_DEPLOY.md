@@ -72,6 +72,10 @@ named none, the BVI and Thai entities reframed as post-operational on
 **`terms.html` section 23 still wants a lawyer's read before launch.** Two values
 were filled into existing scaffolding; no provision was drafted.
 
+Also: three mobile fixes on the home page (the 'why now' blank space, the
+ecosystem plate divides, the full-bleed community photograph) — **`index.html`
+changed again**. Desktop verified untouched.
+
 ### After go-live
 - Re-scrape the share card on Facebook, LinkedIn and Slack.
 - Submit https://daoasis.xyz/sitemap.xml in Google Search Console.

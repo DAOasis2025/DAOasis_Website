@@ -6025,3 +6025,112 @@ mechanisms · security review and certification status · technical architecture
 liability cap figure · the accessibility audit · the response-time commitment · the
 consent mechanism required before any analytics · and, separately, which jurisdictions
 $DVT functionality may be offered in.
+
+---
+
+## Three mobile faults on the home page — 19 September 2026 (later still)
+
+`index.html` only, and **mobile only** — every rule changed sits inside an existing
+`@media (max-width:900px)` block. Desktop verified byte-identical at 1280, 1440 and
+1920: `.panel` min-height `auto`, `.why-mark` `display:none`, no border on
+`.eco-item`, no margin on `.cm-body-image`, layer background still `cover`.
+
+### 1. "Why now" had ~640px of nothing per statistic, three times over
+
+The stylesheet's own comment above the rule read:
+
+> *66vh, not 100. A statistic is ~300px of content; giving it a whole viewport puts
+> ~270px of empty column between one statement and the next, which reads as the
+> section having ended.*
+
+**The value underneath it was `min-height:106vh`.** The 15 September "everything
+×1.6" pass took it 66 → 106 and left the reasoning stranded, so each beat became an
+895px box around 230–290px of type. Measured at 390×844: **146px of content in an
+895px box, 359px empty above and 307px below**, per statistic.
+
+Now `68vh` (and `76vh` on the short-screen tier, from 118). Measured after: box 574px,
+gaps **146 / 118 / 126px** — a breath with the spine running through it, which is what
+the comment always described.
+
+> **If this section is ever slowed again, slow the SCRUB, not the box.** A per-beat
+> height is a layout decision; pacing is a scroll decision. Conflating them is what
+> produced this.
+
+The palm-mark runway followed the same ×1.6 and was **300vh — two full screens of
+scroll for one logo to assemble**, on top of the three beats. Now 200vh (180 on short
+screens), which still leaves a whole screen across assemble / hold / pop.
+
+Section total: **5,594px → 3,788px** at 390×844 (6.63 → 4.49 screens). Whole page
+29.1 → 27.2 screens.
+
+### 2. The ecosystem fold had become a smudge
+
+The 15 September pass melted each plate into the next over 6vh of `rgba(8,7,6,0.88)`
+so the three read as one run rather than butted cards. **It over-corrected.** Reported
+as the plates being "all blurred into each other", and they were: two photographs
+dissolving through a shared grey with no edge anywhere.
+
+These are STEP ONE / TWO / THREE. A numbered sequence has to read as three things. So
+the melt is **halved to 3vh and taken to full opacity at the edge**, which resolves
+each plate onto a definite dark line instead of trailing off, and a **gold hairline
+sits on the join** (`.eco-item + .eco-item{border-top}`). Photograph, clean edge, rule,
+photograph.
+
+> The border is on the item, not the pseudo, so it sits above both plates' gradients
+> and runs the full bleed.
+
+### 3. The community photograph was the smallest thing in its own section
+
+`.cm-body-image` was a 4/3 letterbox inside the section's 8% padding — **236px tall on
+a 390 screen**, floating in a column of ivory, with the line *"The people who build
+this, own this."* filed in a corner of it. Now full bleed, 4/5, **469px**, with the
+caption reset as a Cormorant italic statement at 24–34px.
+
+> **THE BLEED IS A PERCENTAGE, NOT `100vw`.** The obvious
+> `width:100vw; margin-left:calc(50% - 50vw)` was written first and **measured 8px of
+> horizontal overflow at every width**, because `vw` counts the scrollbar and `100%`
+> does not. A handset usually has no persistent scrollbar so it would often be
+> invisible — but this page has already been through the bug where a few pixels of
+> overflow made the whole layout render 3–5% zoomed out. `.community-section` is
+> padded `8%`, so the grid track is `84%` of it and one padding is `8/84` of the
+> track: **`margin-inline:-9.5238%`** lands exactly on the section edge at every
+> width, with no `vw` anywhere. Verified 0 overflow at 320/360/375/390/430/768 and
+> the plate's width equal to the section's to within 1px at all six.
+
+> **THE CROP WAS MEASURED AND THE FIRST MEASUREMENT WAS WRONG.** Read off a percentage
+> grid drawn over the photograph, the seated figure looked to be at x 44%. **He is at
+> x 62%**, and 44% pushed him almost out of frame — which only became obvious on
+> screen. Cutting four candidate crops straight out of the source with sharp and
+> looking at them side by side is what settled it. **Do that; a grid overlay on a
+> 760px preview is not trustworthy at that size.**
+>
+> Final: `background-size:auto 116%` (a small push past cover so he reads at thumb
+> size) and `background-position:58% 50%` — just RIGHT of centre, because he is
+> looking left and the sunset is the space the frame should give him.
+
+### A note on the fourth CSS-comment accident this session
+
+Rewriting the comment above the community block closed it with `*/` half way through,
+leaving the rest as raw text — **which silently killed the whole media query**, so the
+bleed, the crop and the caption all failed to apply while `grep` still found them in
+the file. It was caught by reading `document.styleSheets` and finding the rule absent
+from the cascade.
+
+> **A long CSS comment is a real hazard in this file.** After editing one, confirm the
+> rule is in the cascade, not just in the source.
+
+### Verified
+- **0 horizontal overflow and 0 JS errors** at 320×640, 360×740, 375×667, 390×844,
+  430×932 and 768×1024, each loaded fresh and swept top to bottom.
+- **Desktop untouched** — every changed property resolves to its pre-change value at
+  1280, 1440 and 1920.
+- **Divider clearances A/B'd against a rebuilt pre-change copy on a second port:
+  identical at every mark** — `[661, 72, 3439, 77, 45, 61]` at 375 and
+  `[759, 95, 4394, 100, 68, 84]` at 390 on both builds. The 45px minimum at 375 is
+  **pre-existing and not caused by this pass** (and is almost certainly an artefact of
+  measuring to the nearest text box rather than to real ink).
+- Judged by eye at 390×844: the statistic beat, the plate-one/plate-two seam, and the
+  community plate.
+
+### Upload
+`index.html` only.
