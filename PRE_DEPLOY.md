@@ -290,14 +290,20 @@ Delete in the GitHub UI: open the file → bin icon → commit.
 
 ```
 images-original/     49 MB local backup of the pre-compression originals
+images-unused/       16 MB of images nothing on the site references (19 Sep)
+baseline/            8.3 MB local A/B copy
+original-backup/     1.3 MB local safety copy
 CLAUDE.md            working notes (harmless, but not part of the site)
 PRE_DEPLOY.md        this file
 CONTENT_REQUIRED.md  tracking
 README.md            optional
 ```
 
-`images-original/` exists so the compression is reversible. Delete it locally
-once the live site has been checked.
+`images-original/` exists so the compression is reversible and
+`images-unused/` so nothing is lost; both are local safety copies, and
+`images-unused/` has a README listing what is in it and how it was decided.
+Together with `baseline/` and `original-backup/` that is **75 MB that must
+not be uploaded** — the deployable site is about **11 MB** without them.
 
 ### F. Changed earlier on 22 August, before this batch
 

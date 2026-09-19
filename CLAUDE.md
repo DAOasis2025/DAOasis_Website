@@ -5897,11 +5897,10 @@ same release: both currently state as fact that this site collects nothing.
   scrolling (was 2/6).
 
 ### Deliberately not done
-- `images/` still holds **~15 MB of unreferenced files**, including five
-  pre-compression originals with **spaces in their names** (`PHUKET map.png`,
-  `sanctuary 1-4.png`). The claim elsewhere in this file that no filename in
-  `images/` contains a space is no longer true. Deleting them is a separate,
-  destructive job and was not done unasked.
+- ~~`images/` still holds ~15 MB of unreferenced files, including five
+  pre-compression originals with spaces in their names.~~ **Done 19
+  September** — 25 files moved to `images-unused/`; see the entry at the end
+  of this file. No filename in `images/` contains a space again.
 - `baseline/`, `original-backup/` and `images-original/` — 58 MB of local
   safety copies still inside the folder that gets uploaded.
 - Meta descriptions on the six marketing pages are still 169-279 characters
@@ -6233,10 +6232,8 @@ portrait rules and wired into his card.
   back to the standard plate rather than a broken-image icon, and
   `.pt:has(img) .pt-tag{display:none}` hides the caption only when a portrait actually
   loaded.
-- **No `object-position` override, unlike Jamie's.** His source is 0.666 against a 4:5
-  plate, so a centred crop lost 8.9% off the top and needed `center 30%`. Dan's is
-  0.750, so `cover` crops **6.3% of the height** in total and a centred crop already
-  sits well — checked by cutting the crop at three anchors and looking at them.
+- **SUPERSEDED THE SAME DAY — the photograph was replaced.** See the note directly
+  below; the ratio changed and the crop rule changed with it.
 
 `about.html` now 404s on three portraits (`team-nelson`, `team-uchenna`,
 `team-etiosa`) plus `about-hero-mobile.jpg`, down from five. **Verified**: 0 JS errors
@@ -6246,3 +6243,115 @@ one. Judged by eye at 375.
 
 ### Upload
 `about.html` · `contact.html` · **`images/team-dan.jpg` (NEW)**.
+
+### Dan's portrait replaced — 19 September 2026 (same day)
+
+A second version was supplied as `images/team-dan.png` — **and it overwrote the
+reference, not just the file.** The card points at `team-dan.jpg`; the new file was a
+PNG, so for a moment the portrait 404'd and fell back to the monogram. Worth knowing:
+dropping a replacement into `images/` only works if the extension matches what the
+markup asks for.
+
+| | first version | replacement |
+|---|---|---|
+| source | 1200x1600 JPEG, 71KB | 1024x1536 **PNG, 2,141KB** |
+| ratio | 0.750 | **0.667** |
+| colour | colour | **greyscale** |
+| shipped as | `team-dan.jpg` 900x1200, 49KB | `team-dan.jpg` **800x1200, 56KB** |
+
+Three things followed from it:
+
+1. **A 2.1MB PNG of an opaque photograph is the wrong container** — the documented
+   rule is photographs to mozjpeg q82, portrait long edge capped at 1200. 2,141KB to
+   56KB, a 97% saving for no visible difference. A greyscale JPEG was measured too and
+   saved only a further 3KB, which is not worth diverging from the pipeline for.
+2. **The crop rule had to change, and this is why that note says to re-check.** The
+   first version was 0.750 against a 4:5 plate — 6.3% of the height cropped, centred
+   was fine, no override. This one is 0.667, the founder's ratio, so `cover` now crops
+   **16.7%** and centred takes 8.4% off the top with the head near the cut. It gets
+   `#dan .pt img { object-position: center 30%; }`, the same bias as `#founder`, and
+   the article gained `id="dan"` to hang it on.
+3. **The replacement is greyscale and the first was colour.** Jamie's is greyscale
+   too, so the new one is consistent with the page and the old one was the odd card
+   out. Measured rather than eyeballed — mean channel spread 0.5 for Dan, 0.0 for
+   Jamie. **If a colour portrait is ever added, that inconsistency becomes a design
+   decision someone has to make deliberately.**
+
+The `width`/`height` attributes moved 900x1200 -> 800x1200 with the new frame. Both
+source files are in `images-original/`, which is not uploaded.
+
+> **A guard matched a comment again.** The script adding the CSS rule tested
+> `s.includes('#dan .pt img')` — which was already true, because the HTML comment it
+> had *just written* mentions that selector. The rule silently did not land. Same
+> class of mistake as the `<body>` and `*/` incidents earlier today: **when guarding
+> an insert, test for something only the inserted CODE can contain, never a string
+> that also appears in prose.**
+
+**Verified**: 0 JS errors, 0 horizontal overflow and 0 broken images at 375 / 768 /
+1280 / 1920; the portrait loads at every width and the "Portrait to follow" caption is
+hidden on his card. `about.html` now 404s on three portraits (`team-nelson`,
+`team-uchenna`, `team-etiosa`) plus `about-hero-mobile.jpg`. Judged by eye at 375.
+
+---
+
+## `images/` cleaned out — 19 September 2026
+
+**24 MB → 8.7 MB. 75 files → 50.** The 25 unreferenced ones were **moved, not
+deleted**, to `images-unused/`, which carries a README listing every file and how
+the list was decided. Anything can be put back by moving it to `images/`.
+
+### Neither scan alone was safe, and each caught something the other missed
+
+1. **Static scan** — every HTML, CSS, JS and MD file, matching each filename in
+   `images/` with its url-encoded variants, then re-testing with HTML and CSS
+   comments stripped so a mention inside a comment does not count as a reference.
+2. **Runtime scan** — all 13 pages in an iframe at 390 and 1280, lazy loading forced
+   on, the whole document scrolled so scroll-gated sections mount, then every
+   network fetch, every `<img src>` and **every computed `background-image` on every
+   element** collected. Light theme exercised too.
+
+| | found |
+|---|---|
+| static only | **`og-card.jpg`** — the share card is named in `<meta>` and never fetched by a browser. **Runtime alone would have moved it and broken every link preview.** |
+| runtime only | `about-hero-mobile.jpg` — resolved from a CSS custom property, but the file does not exist, so it was never a candidate |
+
+A file had to be absent from **both** to move. That is the rule to reuse.
+
+> **THE SCAN REPORTED ZERO USED FILES ON ITS FIRST RUN, AND THE CAUSE IS WORTH
+> KNOWING.** The "is this a whole word" guard was
+> `(^|[^A-Za-z0-9_./-])<name>` — which excludes `/` from the characters allowed
+> before the filename. Every real reference is `images/<name>`, so the `/`
+> immediately before the name failed the test and nothing matched. The only hits
+> were in prose, where the name is preceded by a space or a backtick. **A
+> word-boundary class for a path fragment must allow `/`.** Had the first result
+> been believed, all 75 files would have been moved.
+
+### Two comments pointed at files that had moved
+`investors.html` lists the banned mockups by name, and `index.html` says the palm
+path was "copied verbatim from images/daoasis-palm-icon.svg". Both now say
+`images-unused/`, so the trail still leads somewhere. Nothing loads either file —
+the SVG's path data is inlined in `index.html`, which is the only thing that ever
+used it.
+
+### What went, in short
+Five pre-compression originals with spaces in their names (`PHUKET map.png`,
+`sanctuary 1-4.png` — 13 MB between them), the eleven banned app mockups already on
+the do-not-use list (`06/11/13/14/17/18/19.png`, `img-03/04/05/06/08/10`,
+`Brathing_quest.png`, `Hydration.png`), the superseded `PHUKET.jpg`, `Web3.jpg`,
+`img-map.jpg`, `app-home-evening.webp` and `daoasis-palm-icon.svg`.
+
+**No filename in `images/` contains a space again**, which the note from 22 August
+claimed and which had quietly stopped being true.
+
+### Verified
+- **All 13 pages, 390 and 1280**, scrolled end to end with lazy loading forced:
+  **0 broken images, 0 failed image requests, 0 JS errors.**
+- Filesystem check of all 56 distinct `images/…` references in the source: the only
+  misses are the four already-known gaps (`about-hero-mobile`, `team-nelson`,
+  `team-uchenna`, `team-etiosa`) plus the two comment-only mentions above.
+- Re-ran after editing those two comments: still clean.
+
+### The folder is a local safety copy — do not upload it
+`images-unused/` joins `images-original/` (49 MB), `baseline/` (8.3 MB) and
+`original-backup/` (1.3 MB). **That is 75 MB of local copies inside the folder that
+gets dragged to GitHub.** The deployable site is now about **11 MB**.

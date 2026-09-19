@@ -437,6 +437,14 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--gold); outline-
    If the photograph is ever replaced, re-check this number against the new
    frame rather than assuming it still holds. */
 #founder .pt img { object-position: center 30%; }
+/* Dan's portrait was REPLACED on 19 September — a different photograph, and
+   the numbers moved with it. The first was 1200x1600 (0.750) and a centred
+   crop lost only 6.3%, so it needed nothing. This one is 1024x1536 (0.667) —
+   the founder's ratio — so cover crops ~16.7% of the height, and centred
+   that takes 8.4% off the top with the head close to the cut. 30% biases it
+   the same way, and spends the difference on the jacket.
+   Re-check this against the frame if the photograph changes again. */
+#dan .pt img { object-position: center 30%; }
 .on-dark .pt, .on-green .pt { background: #2a2521; }
 .on-dark .pt::after, .on-green .pt::after { border-color: rgba(247,244,238,0.10); }
 .on-dark .pt-mono, .on-green .pt-mono { color: rgba(247,244,238,0.14); }
@@ -1024,20 +1032,20 @@ img{height:auto;}
         </div>
       </article>
 
-      <article class="team-i soft d1">
+      <article class="team-i soft d1" id="dan">
         <!-- The monogram and the caption stay UNDERNEATH the portrait rather
              than being deleted — `.pt img` is z-index 2 and covers them once
              the file loads, and `onerror` strips the <img> if it is ever
              missing or renamed, so the slot falls back to the same plate the
              portrait-less profiles show instead of a broken-image icon.
-             Same wiring as the founder's. No `object-position` here: the
-             source is 3:4 against a 4:5 plate, so cover crops 6.3% of the
-             height and a centred crop already sits well. -->
+             Same wiring as the founder's, including the crop bias — this
+             portrait was replaced on 19 September with a taller frame that
+             needs it. See `#dan .pt img` in the stylesheet. -->
         <figure class="pt">
           <span class="pt-mono" aria-hidden="true">D</span>
           <img loading="lazy" decoding="async" src="images/team-dan.jpg"
                alt="Dan, Co-Founder, Company Strategy at DAOasis"
-               width="900" height="1200" onerror="this.remove();" />
+               width="800" height="1200" onerror="this.remove();" />
           <figcaption class="pt-tag">Portrait to follow</figcaption>
         </figure>
         <div>
