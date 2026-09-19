@@ -409,13 +409,25 @@ img { max-width: 100%; }
 /* ══════════════════════════════════════════════
    SECTION 1 — HERO
 ══════════════════════════════════════════════ */
-/* 620 -> 700 -> 780vh. The fourth plate and the black beat before the
-   statement bought the first rise; the second is the HELD frame. The fan
-   now settles at raw 0.50 and does not move again until 0.74 — 0.24 of a
-   780vh track, about 187vh of scroll, against 70vh before. That hold is
-   the only place the four photographs are sharp AND still, so it is the
-   part of this sequence worth the most scroll. */
-.hero-outer { position: relative; height: 780vh; }
+/* 620 -> 700 -> 780 -> 900vh, and THERE ARE NOW TWO HELD FRAMES. Both are
+   the point of the sequence, and both were previously arrived at and then
+   immediately left:
+
+     · the fan, sharp and still     raw 0.43 - 0.64   ~189vh
+     · "Immersion creates
+        acceleration."              raw 0.84 - 1.00   ~144vh
+
+   The statement's hold is the newer of the two and it used to be ZERO: bp
+   reached 1 at raw 1.00, which is the exact frame the sticky releases, so
+   the line hit full strength and left in the same instant. It now finishes
+   fading at 0.84 and holds for the last 0.16 of the track.
+
+   EVERY RAMP IN applyFrame WAS RESCALED BY 780/900 when the track grew, so
+   the plates' own timings are unchanged in actual pixels of scroll — the
+   extra 120vh went to the statement and nowhere else. Rescale them all
+   again together if this number changes, or the earlier beats will
+   silently slow down to pay for a later one. */
+.hero-outer { position: relative; height: 900vh; }
 .hero-stage {
   position: sticky; top: 0; height: 100vh; overflow: hidden;
   display: flex; align-items: center; justify-content: center;
@@ -527,7 +539,7 @@ img { max-width: 100%; }
 .hero-bridge .btn-row { justify-content: center; margin-top: 46px; }
 
 @media(max-width:900px){
-  .hero-outer { height: 980vh; }
+  .hero-outer { height: 1120vh; }
   .hero-title-eyebrow { letter-spacing: 0.3em; margin-bottom: 26px; }
   .hero-plate { box-shadow: 0 30px 60px rgba(0,0,0,0.78); }
   /* SPEND THE TRACKING, NOT THE TYPE SIZE.
@@ -1991,7 +2003,15 @@ const lead = (window.DAO && DAO.cine && DAO.cine.lead) ? DAO.cine.lead
      proportion to their size and so still raced on a hard flick.
      4 states, not 3: the departure and the statement are now two beats
      with a held black frame between them, not one crossfade. */
-  const track = cine(outer, { mode: 'guided', pace: 'epic', states: 4 });
+  /* `govern` is the mobile fix for "scroll fast and it skips straight
+     through". This pin is 1120vh on a phone and js/smooth.js is disarmed
+     on touch by design, so one flick used to carry the reader through the
+     darkness, the emergence and the pass in a single throw. Governed, the
+     page itself is speed-capped while this section owns the viewport, so
+     the pass takes the same wall-clock time whatever the gesture was.
+     Desktop, mouse and reduced motion are untouched — see the governor
+     block in js/cine.js. */
+  const track = cine(outer, { mode: 'guided', pace: 'epic', states: 4, govern: true });
 
   /* ── THE FAN, at settle ──
      One entry per plate, left to right. Lanes are in plate-widths from the
@@ -2011,8 +2031,8 @@ const lead = (window.DAO && DAO.cine && DAO.cine.lead) ? DAO.cine.lead
     const vw = window.innerWidth, vh = window.innerHeight;
 
     /* 1 — darkness holds, then clears */
-    const tIn = raw <= 0.001 ? 1 : ease(clamp01((raw - 0.001) / 0.05));
-    const tOut = ease(clamp01((raw - 0.16) / 0.10));
+    const tIn = raw <= 0.001 ? 1 : ease(clamp01((raw - 0.001) / 0.045));
+    const tOut = ease(clamp01((raw - 0.14) / 0.09));
     const tCard = Math.min(tIn, 1 - tOut);
     title.style.opacity = tCard;
     title.style.pointerEvents = tCard > 0.02 ? 'auto' : 'none';
@@ -2021,10 +2041,10 @@ const lead = (window.DAO && DAO.cine && DAO.cine.lead) ? DAO.cine.lead
        outer pair follows it out, so the fan opens rather than appearing.
        Every one of these now finishes by raw 0.50, where the old set ran
        to 0.60 — the arrival is not the point, the held frame after it is. */
-    const emIn  = ease(clamp01((raw - 0.24) / 0.16));
-    const emOut = ease(clamp01((raw - 0.29) / 0.17));
-    const spread = ease(clamp01((raw - 0.28) / 0.22));
-    const zoom   = ease(clamp01((raw - 0.25) / 0.25));
+    const emIn  = ease(clamp01((raw - 0.21) / 0.14));
+    const emOut = ease(clamp01((raw - 0.25) / 0.15));
+    const spread = ease(clamp01((raw - 0.24) / 0.19));
+    const zoom   = ease(clamp01((raw - 0.22) / 0.21));
 
     /* Four PORTRAIT plates need width the old three landscape ones did not,
        so the cap is computed from the span of the whole fan rather than
@@ -2042,14 +2062,14 @@ const lead = (window.DAO && DAO.cine && DAO.cine.lead) ? DAO.cine.lead
        statement faded up THROUGH the photographs — the wording was legible
        while the plates were still on screen, which is the one thing this
        sequence must not do. */
-    const pT   = clamp01((raw - 0.74) / 0.12);
+    const pT   = clamp01((raw - 0.64) / 0.10);
     const pass = pT * pT;                       /* accelerating departure */
-    const gone = ease(clamp01((raw - 0.74) / 0.11));
-    const bp   = ease(clamp01((raw - 0.88) / 0.12));
+    const gone = ease(clamp01((raw - 0.64) / 0.095));
+    const bp   = ease(clamp01((raw - 0.76) / 0.08));
 
     const LANE = isMobile ? LANE_M : LANE_D;
     /* The idle drift is a held-frame gesture, so it starts with the hold. */
-    const drift = REDUCED ? 0 : clamp01((raw - 0.50) / 0.16) * (isMobile ? 5 : 9);
+    const drift = REDUCED ? 0 : clamp01((raw - 0.43) / 0.14) * (isMobile ? 5 : 9);
 
     /* ══ WHY THE PLATES LOOK SHARP AT REST ══════════════════════════════
        They did not, and it was not the JPEGs — the encode is 1024x1536 for
@@ -2105,7 +2125,7 @@ const lead = (window.DAO && DAO.cine && DAO.cine.lead) ? DAO.cine.lead
     }
 
     /* the caption only exists while the fan is settled and still */
-    if(cap) cap.classList.toggle('show', raw > 0.50 && pT < 0.05);
+    if(cap) cap.classList.toggle('show', raw > 0.43 && pT < 0.05);
 
     bridge.style.opacity = bp;
     bridge.style.pointerEvents = bp > 0.06 ? 'auto' : 'none';
@@ -2161,7 +2181,14 @@ const lead = (window.DAO && DAO.cine && DAO.cine.lead) ? DAO.cine.lead
      lands exactly one row); what changed is that the handover between two
      rows is now rendered continuously off the paced value instead of being
      a class flip that CSS then animated on an unrelated clock. */
-  const track = cine(outer, { mode: 'sticky', pace: 'major', states: items.length });
+  /* `govern` is inert here today. .found-outer collapses to height:auto
+     below 900px, .found-sticky stops being sticky with it, and the
+     governor only ever takes a wrapper that still holds a sticky stage —
+     being tall is not enough, and this section's content IS still taller
+     than a phone viewport. Declared so that if this section is ever given
+     a real mobile pin it is paced like the hero rather than quietly
+     reverting to "one flick and it is gone". */
+  const track = cine(outer, { mode: 'sticky', pace: 'major', states: items.length, govern: true });
   let mob = null;
   track.on(() => {
     if(window.innerWidth <= 900){
@@ -2303,7 +2330,10 @@ const lead = (window.DAO && DAO.cine && DAO.cine.lead) ? DAO.cine.lead
     }
   }
 
-  const track = cine(outer, { mode: 'sticky', pace: 'epic', states: days.length });
+  /* as .found-outer above: inert while .seven-outer is height:auto and
+     .seven-sticky is not sticky on mobile, declared so a future mobile pin
+     inherits the pacing */
+  const track = cine(outer, { mode: 'sticky', pace: 'epic', states: days.length, govern: true });
   track.on(() => { pos = track.pos(); update(); });
   window.addEventListener('resize', build, { passive: true });
   /* NOT gated on `load`. That waits for every image, and this page carries

@@ -93,13 +93,31 @@ integer translate — no `perspective`, no `rotateY`, no `scale` — `filter` is
 `none`, and the values are byte-identical at 0.50, 0.60 and 0.74, so nothing
 moves.
 
-### And the hold itself
-Track 700 → **780vh** (mobile 880 → 980). Everything before the hold now
-finishes by raw 0.50 instead of 0.60, and departure starts at 0.74 instead
-of 0.70: **the fan is sharp and motionless for 0.24 of the track, ~187vh,
-against 70vh before.** The black beat between the plates reaching 0 (0.85)
-and the statement starting (0.88) widened too. The arrival is not the point;
-the held frame is.
+### The two held frames
+Track 700 → 780 → **900vh** (mobile 880 → 980 → **1120**). This sequence has
+two frames that are the whole point of it, and both were arrived at and
+then immediately left:
+
+| held frame | raw | scroll |
+|---|---|---|
+| the fan, sharp and still | 0.43 – 0.64 | ~189vh |
+| "Immersion creates *acceleration.*" | 0.84 – 1.00 | ~144vh |
+
+The statement's hold **used to be zero**: `bp` reached 1 at raw 1.00, which
+is the exact frame the sticky releases, so the line hit full strength and
+left in the same instant. It now finishes fading at 0.84.
+
+**Every ramp in `applyFrame` was rescaled by 780/900 when the track grew**,
+so the plates' own beats are unchanged in actual pixels of scroll — the
+extra 120vh went to the statement and nowhere else. If the track height
+changes again, rescale them all together or the earlier beats will silently
+slow down to pay for a later one.
+
+Verified at 1440×900 and 375×812: the four plates' transforms are
+byte-identical across the whole fan hold, the bridge is 0 at every frame
+where any plate is still visible, and it reads 1 at 0.84, 0.88, 0.92, 0.96
+and 1.00. The statement block is 608px tall inside an 812px phone viewport,
+so both buttons are on screen for the whole hold.
 
 ## The nav is finally one nav — September 19
 
@@ -5571,3 +5589,126 @@ rather than deleted; it is the frame a future Nourish screen would replace.
 
 ### Upload
 `app.html` only.
+
+---
+
+## The mobile scroll governor — 19 September 2026
+
+> "on the app page for mobile, that first section with the images and the
+> handover from each section during that animation isn't working well, if
+> someone scrolls fast they skip straight through. we should control scrolling
+> so no matter how fast they scroll it moves through that section with sticky
+> pauses at the same time rate. should apply to app, sanctuary pages. for
+> mobile."
+
+### Why every previous pass could not have fixed this
+
+`js/cine.js` paces the **value a section renders**. It has no way to pace the
+**page**, and on a handset the page is what runs away:
+
+- `js/smooth.js` is deliberately disarmed on `pointer: coarse` (documented 3
+  September — "iOS and Android already carry momentum"). Nothing damps touch.
+- One hard flick is ~5 px/ms of finger velocity, and native momentum carries it
+  two to three thousand pixels.
+- The app hero pin is **512vh (4,157px at 375x812)** and the sanctuary hero
+  **1120vh (9,094px)**. Two flicks clears either one.
+- Worse, once the wrapper leaves the viewport the `IntersectionObserver` in
+  `Track` calls `settle()`, which snaps the track onto its **end state**. So the
+  section is not merely rushed, it is *finished* — which is exactly "they skip
+  straight through".
+
+Damping the value harder cannot reach this. If the section is off screen there
+is nothing left to pace. **The scroll position itself had to be governed.**
+
+### What was added
+
+A governor block in `js/cine.js`, opted into per track with `govern: true`.
+On touch, under 900px, while a governed pin owns the viewport:
+
+```
+finger / fling  ->  INTENT    (where the reader asked to be)
+governor        ->  POSITION  (how fast they are allowed to get there)
+```
+
+`govTick()` runs as **pass 0** of the existing rAF loop — before any track reads
+a rect — so a track sees the governed position in the same frame it is written.
+
+**The speed is derived, not chosen.** A section of N transitions at `step` ms
+each gets its own scroll length over `N * step * slack` ms, so changing
+`TIMING.epic` changes the governed pass with it. `slack: 1.15` keeps scroll
+fractionally slower than the value's own speed cap so the two do not compound
+into a scene that drifts further behind the page the longer the section runs.
+
+### Measured, at 375x812, no reduced motion
+
+| pin | scroll length | cap | full pass |
+|---|---|---|---|
+| app `.hero-outer` | 3,345px | 0.673 px/ms | **4.97s** |
+| app `.market-outer` | 4,385px | 1.13 px/ms | **3.88s** |
+| app `.quest-map-outer` | 4,645px | (from its own stops) | ~4-5s |
+| sanctuary `.hero-outer` | 8,282px | 1.50 px/ms (`maxV`) | **5.5s** |
+
+A 5 px/ms flick into the app hero now travels 2,885px over **5,028ms** at a
+peak of **0.67 px/ms** — the cap, exactly. Ungoverned the same gesture was
+momentum-limited only.
+
+### Five things that keep it from being scroll-jacking
+
+Each of these is a scenario in the harness, and each one exists because the
+naive version of this feature gets it wrong:
+
+1. **Intent always wins eventually.** Position converges on intent at a bounded
+   but non-zero speed, so a governed section *always* completes and releases.
+   There is no state in which the reader is held.
+2. **The escape valve.** Intent thrown past the end of the section is someone
+   leaving, not someone reading; the cap relaxes by `0.9x` per viewport of
+   overshoot, capped at 4. Measured: a fling from near the end leaves at
+   **1.57 px/ms against a 0.67 base**. Same shape as `TIMING.maxSpan`.
+3. **A JUMP IS NOT A FLING.** An in-page anchor, scroll restoration on back, or
+   `scrollIntoView` lands in one frame. Nobody scrolls at a viewport and a half
+   per frame, so a displacement that large is **adopted, never paced**. Without
+   this guard a hash link into the hero dragged the reader back to the top of
+   the pin and re-approached over five seconds. Caught by the harness.
+4. **"Tall" is not "pinned".** The first version gated on
+   `offsetHeight > innerHeight`. Sanctuary's `.found-outer` and `.seven-outer`
+   collapse to `height:auto` on mobile but their **content is still 1,647 and
+   1,584px** — nearly two phone viewports — so both would have been governed,
+   speed-capping the reader through two sections of ordinary prose that do not
+   animate on mobile at all. `isPinned()` now looks for a **sticky direct
+   child** at >= 0.6vh, cached per width. Verified: on sanctuary only
+   `heroOuter` is ever governed; on app exactly `heroOuter`, `questMapOuter`
+   and `marketOuter`, each only inside its own range.
+5. **A drag that starts above the pin is adopted as a drag**, not mistaken for
+   momentum and clamped while the finger is still on the glass. `govMove()`
+   takes over mid-gesture the moment the section comes into range (measured:
+   move 12 of a 1.5 px/ms drag). `GOV.lead = 0.30` viewports of run-up means a
+   fling is caught *before* the scrub range, so the one unavoidable
+   momentum-cancelling clamp happens where there is no content to jar.
+
+### Reduced motion KEEPS it, unlike `js/smooth.js`
+
+The distinction is not a fudge. `smooth.js` turns an input that moved the page
+and stopped into one that keeps gliding — it **adds** motion nobody asked for.
+The governor adds none: the page travels the distance the native fling was
+going to travel anyway, it is simply not allowed to travel it as fast, and
+slower is the direction vestibular sensitivity wants. `times()` has already
+shortened everything by `reducedScale`, so a reduced-motion reader gets a
+governed pass **~40% quicker** (app hero 3,172ms against 5,028ms) — controlled,
+but not made to wait. Excluding them would have left them the original fault
+and nothing else.
+
+### Scope
+
+`govern: true` is on app's hero / quest map / marketplace and sanctuary's hero
+(plus sanctuary's two collapsed pins, where it is inert by design and declared
+only so a future mobile pin inherits the pacing). **`index.html` and
+`web3.html` pass it nowhere and were verified completely unaffected**, as was
+every desktop and fine-pointer viewport — `governing()` returns null throughout
+both, and there are no new console errors on any of the four scrubbed pages.
+
+> **If this ever needs removing**, delete `govern: true` from the call sites.
+> The governor block can stay; with nothing opted in, `governedTrack()` returns
+> null on every frame and not a single `scrollTo` is issued.
+
+### Upload
+`js/cine.js`, `app.html`, `sanctuary.html`.
