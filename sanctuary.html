@@ -14,7 +14,7 @@
 <meta name="description" content="The DAOasis Sanctuary is where the digital journey becomes physical — a seven day rolling programme of recovery, learning, accountability and community. First pilot planned for Phuket in 2027." />
 <meta property="og:title" content="The Sanctuary — DAOasis" />
 <meta property="og:description" content="Immersion creates acceleration. A seven day rolling programme of wellness, learning and community. Coming to Phuket in 2027." />
-<meta property="og:image" content="images/img-07.jpg" />
+<meta property="og:image" content="images/sanctuary-01.jpg" />
 <meta property="og:type" content="website" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -28,9 +28,11 @@
    nowhere else. To swap a holding image for a final photograph,
    change the path here only.
 
-   --img-hero-01        Sanctuary architecture    (hero, centre plate)
-   --img-hero-02        Reset                     (hero, left plate)
-   --img-hero-03        Integrate                 (hero, right plate)
+   --img-hero-01..04    The hero fan, left to right, and they are in that
+                        order for a reason: dawn on the terrace, the room
+                        waking, the long table at midday, the fire at night.
+                        One day, read left to right. Reordering them breaks
+                        the only thing four plates say that three did not.
    --img-sanctuary-wide Wide establishing shot    (Section 2)
    --img-day-*          One plate per time slot   (Section 6)
    --img-immersion      Full-bleed cinematic still
@@ -39,9 +41,15 @@
    --img-pilot          Phuket 2027 pilot
 ══════════════════════════════════════════════════════════════ */
 :root {
-  --img-hero-01:        url('images/img-07.jpg');
-  --img-hero-02:        url('images/Reset.jpg');
-  --img-hero-03:        url('images/Integrate.jpg');
+  /* 1024x1536 — exactly the 2:3 the plates are, so `cover` crops nothing
+     and no plate needs a focal point of its own. Re-encoded from the
+     supplied PNGs (2.3-2.6MB each, 9.6MB for the set, all of it in the
+     hero) to mozjpeg q82 4:4:4 at ~320KB each. The .png originals are
+     still in images/ if a different encode is ever wanted. */
+  --img-hero-01:        url('images/sanctuary-01.jpg');
+  --img-hero-02:        url('images/sanctuary-02.jpg');
+  --img-hero-03:        url('images/sanctuary-03.jpg');
+  --img-hero-04:        url('images/sanctuary-04.jpg');
 
   --img-sanctuary-wide: url('images/Sunrise.jpg');
 
@@ -398,7 +406,11 @@ img { max-width: 100%; }
 /* ══════════════════════════════════════════════
    SECTION 1 — HERO
 ══════════════════════════════════════════════ */
-.hero-outer { position: relative; height: 620vh; }
+/* 620 -> 700vh. Two things were added that need scroll to spend: a fourth
+   plate, and a beat of black between the plates leaving and the statement
+   arriving. Squeezing both into the old track would have bought the pause
+   by making everything before it faster. */
+.hero-outer { position: relative; height: 700vh; }
 .hero-stage {
   position: sticky; top: 0; height: 100vh; overflow: hidden;
   display: flex; align-items: center; justify-content: center;
@@ -449,10 +461,15 @@ img { max-width: 100%; }
 }
 .hero-cue.show { opacity: 1; }
 
+/* PORTRAIT, and no focal points. The plates were 3:2 landscape holding
+   landscape crops of landscape photographs. The four sanctuary renders are
+   2:3, so the plate matches the picture and `cover` crops nothing at all —
+   which is why there is not a single per-plate background-position below,
+   where there used to be one per image. */
 .hero-plate {
   position: absolute; top: 50%; left: 50%; z-index: 5;
-  width: 300px; aspect-ratio: 3 / 2;
-  background-size: cover; background-position: center 55%; background-repeat: no-repeat;
+  width: 300px; aspect-ratio: 2 / 3;
+  background-size: cover; background-position: center; background-repeat: no-repeat;
   transform: translate(-50%,-50%) scale(0.7);
   opacity: 0; pointer-events: none;
   box-shadow: 0 50px 110px rgba(0,0,0,0.8);
@@ -462,14 +479,12 @@ img { max-width: 100%; }
   content: ''; position: absolute; inset: 0; pointer-events: none;
   box-shadow: inset 0 0 0 1px rgba(247,244,238,0.16);
 }
-#heroPlate01 { background-image: var(--img-hero-01); z-index: 7; }
-/* Focal points belong to the photographs, so they moved with them. Reset is
-   an overhead frame with the swimmer dead centre — anything off centre crops
-   the one figure in it out of a canopy of palms. Integrate is a fire with the
-   group standing behind it; 46% keeps both the flame and their faces in a
-   portrait plate instead of filling it with sand. */
-#heroPlate02 { background-image: var(--img-hero-02); background-position: center center; z-index: 6; }
-#heroPlate03 { background-image: var(--img-hero-03); background-position: center 46%; z-index: 6; }
+/* The inner pair sits over the outer pair — the fan reads as depth only if
+   the near cards overlap the far ones, and at settle they do overlap. */
+#heroPlate01 { background-image: var(--img-hero-01); z-index: 6; }
+#heroPlate02 { background-image: var(--img-hero-02); z-index: 7; }
+#heroPlate03 { background-image: var(--img-hero-03); z-index: 7; }
+#heroPlate04 { background-image: var(--img-hero-04); z-index: 6; }
 
 /* a caption per plate — appears only when the trio has settled */
 .hero-plate-cap {
@@ -503,7 +518,7 @@ img { max-width: 100%; }
 .hero-bridge .btn-row { justify-content: center; margin-top: 46px; }
 
 @media(max-width:900px){
-  .hero-outer { height: 800vh; }
+  .hero-outer { height: 880vh; }
   .hero-title-eyebrow { letter-spacing: 0.3em; margin-bottom: 26px; }
   .hero-plate { box-shadow: 0 30px 60px rgba(0,0,0,0.78); }
   /* SPEND THE TRACKING, NOT THE TYPE SIZE.
@@ -1206,11 +1221,14 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
       <div class="hero-cue" id="heroCue">Scroll to enter ↓</div>
     </div>
 
-    <div class="hero-plate" id="heroPlate02" role="img" aria-label="Seen from above, one person floating alone in a pool set deep in a palm canopy"></div>
-    <div class="hero-plate" id="heroPlate03" role="img" aria-label="A group gathered around a beach fire at dusk"></div>
-    <div class="hero-plate" id="heroPlate01" role="img" aria-label="Sanctuary architecture at first light"></div>
+    <!-- Left to right, and in the DOM in that order too, so the tab and
+         screen-reader order is the same day the eye reads. -->
+    <div class="hero-plate" id="heroPlate01" role="img" aria-label="Sunrise over the bay from an open stone terrace, the pool still"></div>
+    <div class="hero-plate" id="heroPlate02" role="img" aria-label="A bed in early morning light, the doors open onto the water"></div>
+    <div class="hero-plate" id="heroPlate03" role="img" aria-label="Five people talking over a long timber table under an open roof"></div>
+    <div class="hero-plate" id="heroPlate04" role="img" aria-label="The fire pit lit after dark, lanterns in the trees above it"></div>
 
-    <div class="hero-plate-cap" id="heroPlateCap">Architecture · Stillness · Community</div>
+    <div class="hero-plate-cap" id="heroPlateCap">Dawn · Rest · Gathering · Night</div>
     <div class="hero-grain"></div>
   </section>
 
@@ -1895,10 +1913,11 @@ const lead = (window.DAO && DAO.cine && DAO.cine.lead) ? DAO.cine.lead
   const cue = document.getElementById('heroCue');
   const cap = document.getElementById('heroPlateCap');
   const bridge = document.getElementById('heroBridge');
-  const pC = document.getElementById('heroPlate01');
-  const pL = document.getElementById('heroPlate02');
-  const pR = document.getElementById('heroPlate03');
-  if(!outer || !pC) return;
+  /* Left to right. There is no "centre" plate any more — four plates fan
+     symmetrically about the middle, as an outer pair and an inner pair. */
+  const plates = ['heroPlate01','heroPlate02','heroPlate03','heroPlate04']
+                   .map(function(id){ return document.getElementById(id); });
+  if(!outer || plates.some(function(p){ return !p; })) return;
 
   (function typewrite(){
     if(!titleTx) return;
@@ -1926,8 +1945,23 @@ const lead = (window.DAO && DAO.cine && DAO.cine.lead) ? DAO.cine.lead
   /* GUIDED — darkness → plates emerge → plates pass the camera. One
      continuous move, so it is speed-capped rather than quantised. This
      replaces the old fixed-alpha lerp, which closed large gaps in
-     proportion to their size and so still raced on a hard flick. */
-  const track = cine(outer, { mode: 'guided', pace: 'epic', states: 3 });
+     proportion to their size and so still raced on a hard flick.
+     4 states, not 3: the departure and the statement are now two beats
+     with a held black frame between them, not one crossfade. */
+  const track = cine(outer, { mode: 'guided', pace: 'epic', states: 4 });
+
+  /* ── THE FAN, at settle ──
+     One entry per plate, left to right. Lanes are in plate-widths from the
+     centre line, so the whole arrangement scales with the plates and the
+     spacing cannot drift out of proportion on a different screen. The outer
+     pair is smaller, dropped slightly, and turned further in: that is the
+     entire depth cue, and it is why the eye lands on the inner pair first
+     and then reads outward to the ends of the day. */
+  const LANE_D  = [-1.60, -0.54,  0.54,  1.60];   /* desktop: four abreast  */
+  const LANE_M  = [-0.60, -0.21,  0.21,  0.60];   /* mobile: a fanned hand  */
+  const SETTLE  = [ 0.84,  1.00,  1.00,  0.84];   /* scale                  */
+  const LIFT    = [ 0.085,-0.020,-0.020, 0.085];  /* × width, + is down     */
+  const TILT    = [ 11,     3.6,  -3.6,  -11   ]; /* deg, turned inward     */
 
   function applyFrame(raw){
     const isMobile = window.innerWidth <= 900;
@@ -1935,57 +1969,69 @@ const lead = (window.DAO && DAO.cine && DAO.cine.lead) ? DAO.cine.lead
 
     /* 1 — darkness holds, then clears */
     const tIn = raw <= 0.001 ? 1 : ease(clamp01((raw - 0.001) / 0.05));
-    const tOut = ease(clamp01((raw - 0.18) / 0.10));
+    const tOut = ease(clamp01((raw - 0.16) / 0.10));
     const tCard = Math.min(tIn, 1 - tOut);
     title.style.opacity = tCard;
     title.style.pointerEvents = tCard > 0.02 ? 'auto' : 'none';
 
-    /* 2 — the Sanctuary emerges */
-    const r = clamp01((raw - 0.26) / 0.74);
-    const appear = ease(clamp01(r / 0.32));
-    const zoom = ease(clamp01(r / 0.54));
+    /* 2 — the Sanctuary emerges. The inner pair arrives first and the
+       outer pair follows it out, so the fan opens rather than appearing. */
+    const emIn  = ease(clamp01((raw - 0.24) / 0.18));
+    const emOut = ease(clamp01((raw - 0.30) / 0.20));
+    const spread = ease(clamp01((raw - 0.30) / 0.26));
+    const zoom   = ease(clamp01((raw - 0.26) / 0.34));
 
-    const startW = isMobile ? 160 : 260;
-    const widthCap = Math.min(vw * (isMobile ? 0.72 : 0.46), 720);
-    const heightCap = (vh * (isMobile ? 0.42 : 0.60)) * 1.5;   /* plates are 3:2 */
-    const endW = Math.min(widthCap, heightCap);
-    const wC = lerp(startW, endW, zoom);
+    /* Four PORTRAIT plates need width the old three landscape ones did not,
+       so the cap is computed from the span of the whole fan rather than
+       from one plate: outermost lane 1.60w plus that plate's own half-width
+       at 0.84 scale is 2.02w a side, call it 4.10w across. */
+    const startW  = isMobile ? 120 : 190;
+    const spanCap = (vw * 0.90) / (isMobile ? 2.10 : 4.10);
+    const tallCap = (vh * (isMobile ? 0.52 : 0.62)) / 1.5;   /* plates are 2:3 */
+    const endW    = Math.min(spanCap, tallCap, isMobile ? 260 : 330);
+    const w       = lerp(startW, endW, zoom);
 
-    /* 3 — the trio rushes past the camera as the statement arrives */
-    const bp = ease(clamp01((raw - 0.72) / 0.28));
-    const pass = bp * bp;                       /* accelerating departure */
-    const scaleC = lerp(0.80, 1, zoom) * (1 + pass * 0.62);
-    const blurC = isMobile ? pass * 10 : lerp(9, 0, Math.min(1, zoom * 1.7)) + pass * 16;
+    /* 3 — the fan rushes past the camera. It is DONE before the statement
+       starts: `gone` reaches 1 at raw 0.82 and `bp` does not leave 0 until
+       0.84. That gap is deliberate. The two used to share one ramp, so the
+       statement faded up THROUGH the photographs — the wording was legible
+       while the plates were still on screen, which is the one thing this
+       sequence must not do. */
+    const pT   = clamp01((raw - 0.70) / 0.14);
+    const pass = pT * pT;                       /* accelerating departure */
+    const gone = ease(clamp01((raw - 0.70) / 0.12));
+    const bp   = ease(clamp01((raw - 0.84) / 0.12));
 
-    pC.style.width = wC + 'px';
-    pC.style.transform = 'translate(-50%,-50%) scale(' + scaleC + ')';
-    pC.style.filter = blurC > 0.05 ? 'blur(' + blurC.toFixed(2) + 'px)' : 'none';
+    const LANE = isMobile ? LANE_M : LANE_D;
+    const drift = REDUCED ? 0 : clamp01((raw - 0.52) / 0.18) * (isMobile ? 5 : 9);
 
-    const sideT = ease(clamp01((r - 0.06) / 0.36));
-    const drift = REDUCED ? 0 : clamp01((r - 0.55) / 0.45) * (isMobile ? 9 : 16);
-    const spreadX = 1 + pass * 1.15;            /* they part as they pass */
-    const offX = (lerp(wC * 0.16, wC * (isMobile ? 0.30 : 0.62), sideT) + drift) * spreadX;
-    const offY = lerp(wC * 0.06, wC * (isMobile ? 0.34 : 0.24), sideT) * (1 + pass * 0.7);
-    const sideW = wC * (isMobile ? 0.70 : 0.76);
-    const sideScale = lerp(0.74, 0.90, sideT) * (1 + pass * 0.55);
-    const sideBlur = (isMobile ? 0 : lerp(11, 1.4, sideT)) + pass * 14;
-    const rot = lerp(9, 3.5, sideT);
+    for(let i = 0; i < 4; i++){
+      const outerPair = (i === 0 || i === 3);
+      const em = outerPair ? emOut : emIn;
 
-    pL.style.width = sideW + 'px';
-    pL.style.transform = 'translate(calc(-50% - ' + offX.toFixed(1) + 'px), calc(-50% - ' + offY.toFixed(1) + 'px)) perspective(1400px) rotateY(' + rot.toFixed(2) + 'deg) scale(' + sideScale.toFixed(3) + ')';
-    pL.style.filter = 'blur(' + sideBlur.toFixed(2) + 'px)';
+      /* they converge toward the centre line on the way in, part on the way out */
+      const lane = LANE[i] * lerp(0.18, 1, spread) * (1 + pass * 1.25);
+      const x = lane * w;
+      const y = LIFT[i] * w * (1 + pass * 0.8)
+              + (outerPair ? drift : -drift * 0.5);
+      const sc = lerp(0.76, SETTLE[i], zoom) * (1 + pass * 0.66);
+      const tilt = lerp(TILT[i] * 1.8, TILT[i], spread);
+      /* Mobile gets no settle blur at all — a 168px plate behind a 1.6px
+         blur is just a smudge, and the phone is doing four of them. */
+      const blur = (isMobile ? 0 : lerp(10, outerPair ? 1.6 : 0, zoom)) + pass * 15;
 
-    pR.style.width = sideW + 'px';
-    pR.style.transform = 'translate(calc(-50% + ' + offX.toFixed(1) + 'px), calc(-50% + ' + offY.toFixed(1) + 'px)) perspective(1400px) rotateY(' + (-rot).toFixed(2) + 'deg) scale(' + sideScale.toFixed(3) + ')';
-    pR.style.filter = 'blur(' + sideBlur.toFixed(2) + 'px)';
+      const el = plates[i];
+      el.style.width = w.toFixed(1) + 'px';
+      el.style.transform =
+        'translate(calc(-50% + ' + x.toFixed(1) + 'px), calc(-50% + ' + y.toFixed(1) + 'px))'
+        + ' perspective(1400px) rotateY(' + tilt.toFixed(2) + 'deg)'
+        + ' scale(' + sc.toFixed(3) + ')';
+      el.style.filter = blur > 0.05 ? 'blur(' + blur.toFixed(2) + 'px)' : 'none';
+      el.style.opacity = em * (1 - gone);
+    }
 
-    const fade = 1 - bp;
-    pC.style.opacity = appear * fade;
-    pL.style.opacity = appear * sideT * 0.94 * fade;
-    pR.style.opacity = appear * sideT * 0.94 * fade;
-
-    /* the caption only exists while the trio is settled and still */
-    if(cap) cap.classList.toggle('show', r > 0.62 && bp < 0.12);
+    /* the caption only exists while the fan is settled and still */
+    if(cap) cap.classList.toggle('show', raw > 0.56 && pT < 0.05);
 
     bridge.style.opacity = bp;
     bridge.style.pointerEvents = bp > 0.06 ? 'auto' : 'none';

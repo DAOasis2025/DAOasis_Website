@@ -37,13 +37,68 @@ There was also an older, unlinked copy one level up (outside `site/`) with extra
 - Browser tab title on the home page was a leftover dev label ("DAOasis Hero Prototype v5"). Fixed to a real title, and added meta description + Open Graph tags so shared links preview properly (Slack/email).
 - App page hero sub-copy tightened to state the core loop explicitly (track habits/learning → earn rewards).
 
+## The Sanctuary hero is four plates now — September 19
+
+Three landscape plates (centre + a left/right pair) became **four portrait
+plates in a left-to-right fan**, on `sanctuary 1–4`: dawn on the terrace, the
+room waking, the long table at midday, the fire at night. That order is the
+content — it is one day, read left to right — so the plates are in that order
+in the DOM as well as on screen.
+
+- **The bug this fixed.** The departure and the statement shared one ramp:
+  `bp` faded the plates out and "Immersion creates *acceleration.*" in at the
+  same time, so the wording was legible over the photographs. They are now
+  two beats — plates reach opacity 0 at `raw 0.82`, the bridge does not leave
+  0 until `0.84`. **Do not let those two ranges touch again.** The ~14vh of
+  black between them is the point.
+- Track 620 → **700vh** (mobile 800 → 880), `states: 3` → **4**. The fourth
+  plate and the held black frame both need scroll to spend; taking it out of
+  the existing track would only have made everything before it faster.
+- Plates are **2:3** and the renders are 1024×1536, so `cover` crops nothing
+  and there is no per-plate `background-position` any more — there used to be
+  one per image.
+- The fan is parameterised as `LANE/SETTLE/LIFT/TILT`, four entries each, with
+  lanes measured **in plate widths** so the spacing scales with the plates.
+  Width comes from the span of the whole fan (`4.10w` desktop, `2.10w` mobile
+  where they overlap into a fanned hand), not from one plate.
+- **The supplied PNGs were 2.3–2.6MB each, 9.6MB for the set, all of it in the
+  hero** — against a 608KB largest image everywhere else in the project. They
+  ship as `sanctuary-0N.jpg`, mozjpeg q82 4:4:4, ~320KB each, 1.25MB total.
+  The `.png` originals are still in `images/` and are not referenced.
+- Verified by pulling the real `applyFrame` source out of the served page and
+  driving it by hand at fixed `raw` values, because the Browser pane freezes
+  `requestAnimationFrame` when hidden. Settled fan measures 65px clear of both
+  edges at 1280×860, 24px at 375×812, 21px at 320×640.
+
+## The WebGL sections are gone from sanctuary.html — September 19
+
+**Read this before any of the 3D material below.** Everything in this file
+about `stage3D`, `TROPIC`, `whenTHREE`, the pavilion ("3D one") and the
+lantern walk ("3D two") is history, not a description of the live page.
+
+- *3D one* had already been cut before today; the structure list above still
+  named it, which is now corrected.
+- *3D two — "The Seven Day Journey"* was removed on 19 September 2026 at the
+  owner's request. With it went the three.js CDN tag, the `?shot=1` capture
+  hook, the `.three-*` / `.loop-*` CSS, `whenTHREE()`, `stage3D()`, the whole
+  `TROPIC` vocabulary and the scene builder — roughly 1,200 lines. There is
+  no `<canvas>` and no WebGL on the page any more.
+- The `.divider.solo` that followed the pinned stage went with it, and the
+  divider above it dropped `to-bleed`, because the block it now introduces is
+  Transformation, an ordinary padded section, not a full-bleed canvas.
+- The seven days themselves are untouched. **Section 5 — Seven Days** is a
+  separate, non-WebGL sticky section and is still the page's account of them.
+- The August 21 rebuild notes, the r128 shadow-frustum finding and the
+  screenshot harness notes are kept deliberately: they are the reasoning, and
+  they are the only record of it if the scenes are ever rebuilt.
+
 ## What was completed (August 13) — the Sanctuary page
 Built `sanctuary.html` as a new standalone page. `index.html` and `app.html` were **not** modified.
 Only other change: removed the `/sanctuary → /` redirect from `vercel.json` so the page is reachable at its own URL.
 
 Page structure, in scroll order:
 hero → The Sanctuary → Philosophy → Four Foundations → Seven Days → An Average Day →
-**3D one** → Immersion → The Experience → The Place → **3D two** → Transformation →
+Immersion → The Experience → The Place → Transformation →
 Phuket 2027 → Early Access form → closing.
 
 Key decisions worth keeping:
@@ -291,10 +346,9 @@ Sections given no track keep completely ordinary scrolling.
 | app | hero phone fan-out | guided · epic | 3 |
 | app | quest map route | sticky · major | 6 **uneven** stops |
 | app | marketplace scenes | sticky · major | 4 |
-| sanctuary | hero plate pass | guided · epic | 3 |
+| sanctuary | hero plate fan | guided · epic | 4 |
 | sanctuary | four foundations | sticky · major | 4 |
 | sanctuary | seven days arc | sticky · epic | 7 |
-| sanctuary | both 3D scenes | guided · epic | 7 |
 | web3 | hero fabric | guided · epic | 3 |
 | web3 | participation | sticky · major | per item |
 | web3 | the bridge | sticky · epic | 5 |
@@ -4951,3 +5005,422 @@ app.html's nine clear by 121px or more.
 **All 13 HTML pages** changed — every one gained the `js/smooth.js` script tag.
 If `js/smooth.js` is missed, the pages fall back to undamped native scrolling
 rather than breaking.
+
+---
+
+## Half the site's transitions were on the browser's default curve — 17 September 2026
+
+Reported as: the site's transitions still do not feel premium or smooth.
+Changed: all six marketing pages · the seven trust pages (via `css/trust.css`)
+· **`js/cine.js`**. The cause was not the pacing engine, which has been tuned
+repeatedly — it was that **52% of the site's transitions were never on the
+site's curve at all.**
+
+### The finding
+
+`CLAUDE.md` has claimed since 1 September that "zero off-system curves remain
+anywhere in the project". That audit searched for OTHER `cubic-bezier` values,
+and it could not see the two ways a transition ends up on the default:
+
+- a transition that names **no timing function at all** (`transition: color 0.2s`)
+- a transition that names the **CSS keyword `ease`** (`transition: opacity 0.9s ease`)
+
+Both resolve to `cubic-bezier(0.25, 0.1, 0.25, 1)` — a symmetric ease-in-out
+that is not the site's decelerating signature. So every hover, border, colour,
+drawer, card and button on the site moved on a different curve from its own
+scroll motion, which is exactly what "doesn't feel of a piece" is.
+
+| | declarations |
+|---|---|
+| bare keyword `ease` replaced | **99** |
+| no curve at all, given one | **81** |
+| already on-system | 168 |
+| **off-system before this pass** | **180 of 348 — 52%** |
+
+`index.html` was the worst: 46 bare `ease` plus 4 with nothing, against 68
+correct. `css/trust.css` had 17 of 31 wrong, so the whole trust layer's
+micro-motion was off-system too.
+
+`scratchpad/unify.js` did it — it splits transition values on **top-level
+commas only**, so `cubic-bezier(0.22, 1, 0.36, 1)` is never cut in half, and
+it leaves `linear`, `ease-out`, existing `cubic-bezier` and `var(--ease*)`
+exactly as they were. It also rewrites the four `style.transition = '…'`
+strings in JS, which carried bare `ease` as well.
+
+**Verified: one curve site-wide.** The easings histogram on every page is now
+a single entry. The one surviving `ease-out` is `index.html`'s intro headline,
+which is a deliberate decelerating curve and was left.
+
+### Three transitions were animating LAYOUT or a full-width blur
+
+Found by reading every element's computed `transition-property` and
+classifying it (`scratchpad/smooth.js`). Each frame of these costs a reflow or
+a re-blur:
+
+1. **`app.html` `.market-nav-item` transitioned `letter-spacing`** — a reflow
+   of the nav on every frame — and `.active` changes nothing but the colour,
+   so it was driving **no visual result at all**. Removed.
+2. **`index.html` `.nav` transitioned `backdrop-filter`** — re-blurring the
+   full width of the bar for half a second every time the nav crossed into or
+   out of `nav-solid`, which happens on ordinary scrolling. The blur still
+   applies; it just arrives with the background instead of ramping. This was
+   also the only change the ablation could resolve above the noise floor.
+3. **`index.html` `.nav-brand img` transitioned `height`** — animates layout,
+   and the only thing that ever changes it is a media query, so it fired on
+   resize and nowhere a reader would see.
+
+**0 layout-animating transitions remain on any page.**
+
+### Durations were deliberately NOT snapped
+
+The spread is wide (index carries 12 distinct values). The existing note is
+right that a 100ms duration difference is far less perceptible than a
+different curve, and several durations are load-bearing elsewhere. The curve
+was the perceptible fault; it is fixed. Snapping durations would be a large,
+risky change for a small return and is left alone on purpose.
+
+### THE MEASUREMENT CAVEAT — read this before chasing frame times here
+
+Headless Chrome on this machine renders in software, and **the baseline itself
+drifted 34.5ms → 50.9ms across a single interleaved run**. An ablation that
+switches one feature off per run therefore cannot resolve anything below about
+30%: a first pass showed *every* candidate "improving" the page by 20%, which
+was warm-up, not the feature.
+
+> **Interleave baselines and compare against their mean; a single
+> before/after pair on this machine is worthless.** Median frame time is the
+> only stable figure (16.7ms — i.e. 60fps — on all four pinned pages); p95 and
+> max swing by 3x between identical runs. The CPU profile is trustworthy and
+> says JS is not the bottleneck: **72% idle, 15.6% browser rendering, 5.7%
+> getBoundingClientRect.**
+
+---
+
+## "· SCROLL" removed, and one cue that knows when to speak — 17 September 2026
+
+Reported as: remove the word scroll, and teach people to keep scrolling across
+the whole site rather than in two arbitrary places.
+
+### What was there
+
+Three literal instructions, all on two pages: `LAUNCH JOURNEY · SCROLL` and
+`Six habits, six screens · scroll` on `app.html`, plus "Scroll to continue ↓"
+on both `app.html` and `index.html`. They were wrong twice over — **permanent**
+(still shouting SCROLL at a reader three quarters of the way through the
+section) and **per-section**, so most of the site had no affordance at all
+while two arbitrary places had a shouted one.
+
+### `app.html` was the only page with no read-progress bar
+
+Every other page has carried `.scroll-prog` — the 2px gold rule across the
+top — since August. `app.html` never had it, which is very likely *why* this
+page in particular ended up writing "· SCROLL" into its own kickers. It now
+has it, driven from the scroll handler that was already reading `scrollY`
+every frame. **A page that shows you how far through you are does not need to
+tell you to keep going.**
+
+### The cue lives in `js/cine.js`, and it reads the track registry
+
+Not in four page stylesheets — the four pages with scrubbed sections cannot
+drift apart, and pages without a track never build it at all. It works because
+`cine` already keeps every `Track`, each with `near` and `get()`: a pinned
+section only holds the viewport while its own progress is below 1, so the cue
+knows **which** scrubbed section owns the frame and **how far through it** the
+reader is.
+
+Four rules, and each one is why it does not nag:
+
+- shown only while a scrubbed section covers **≥72% of the viewport** and its
+  own progress is **under 88%** — past that the reader is leaving anyway;
+- **hidden the instant the reader scrolls**, returning only after ~900ms of
+  stillness. A cue that stays up while you are already scrolling is telling
+  you something you are doing;
+- **the words appear once per session and never again** — after that the
+  travelling hairline carries it, because by then it has been taught;
+- it **inherits `color` from the section it stands in front of**, so it reads
+  on a photograph, on ivory and on the dark grounds with no per-page rule.
+
+Pure enhancement: if `cine.js` fails to load, no cue appears — which is
+exactly the state the site was in before. Reduced motion gets the mark
+without the travelling animation.
+
+**Verified** at 26 scroll stops per page: built on all four pinned pages, **0
+JS errors**, shown at 13/26 stops on app, 12/26 sanctuary, 8/26 web3 and 2/26
+on index at 390 (correct — index's pins are `display:none` on mobile, so there
+is almost nothing to cue).
+
+### Nourish — the app has no Nourish screen, and that is the app
+
+`Six habits, six screens` was **never true**. The blueprint ships quest detail
+screens for four habits only — QU-02 Steps, QU-03 Sleep, QU-04 Hydration,
+QU-05 Breathing. Its README calls Nourish and Learn the two **ambient
+habits**, added to QU-01 deliberately so they had somewhere to live. Learn at
+least has LE-03; **Nourish genuinely has none.** So the row was promising a
+tracker that does not exist and the phone answered with a list headed "Today's
+quests".
+
+**Reframing it in copy was the wrong answer and was rejected** — asked twice,
+the complaint was the IMAGE, and no wording makes a frame headed "Today's
+quests / Walk to the ridge" read as Nourish.
+
+**Nourish now shows `HM-03` evening**, exported as `images/app-home-evening.webp`
+(the standard pipeline: height 1600, WebP q88, `alphaQuality: 100`, alpha min 0,
+121 KB). It is the best frame the set actually contains: the **Nourish tile sits
+centre-bottom with a real food photograph**, and the evening framing — "Today is
+closed", 192 of 900 km banked — is exactly when the meals have been logged. It
+is a home screen and not a Nourish screen, and the `alt` says so plainly.
+The kicker is now "One day, habit by habit", which is true and drops the count.
+`app-quests.webp` keeps its one remaining use in the How It Works card, so
+nothing is orphaned.
+
+> **Checked and rejected, all four for concrete reasons:** `MK-01` marketplace
+> (a MERCH hero photograph, and already used in the marketplace section below),
+> `MK-02` item detail (it is *The Wind-Down*, a SLEEP course), `MK-04` your
+> purchases (a receipts list), `HM-01` morning home (already used twice on this
+> page — the hero and the section opener).
+> **If a Nourish screen is ever added to the blueprint, it takes this slot.**
+
+### Verified
+- **60 sitewide checks** (6 pages × 320/360/375/390/430/768/1024/1280/1440/1920):
+  **0 horizontal overflow, 0 JS errors, 0 unexpected 404s.**
+- One easing curve on every page; **0 layout-animating transitions** anywhere.
+- Median frame time **16.7ms on all four pinned pages**.
+- `js/cine.js` parses clean; cue built with 0 errors on all four pages.
+
+### Flagged, not changed
+**Six photograph joins are still hard cuts** — sanctuary ×4, web3 ×1,
+investors ×1 — the same class softened on index's ecosystem plates in
+September (light meets dark is an EDGE, dark meets dark is a FOLD). Every
+other light/dark step on the site has a divider marking it. This is the
+remaining "transition between sections" work and is a bigger, page-by-page
+job than this pass.
+
+### Upload
+`index.html` · `app.html` · `sanctuary.html` · `web3.html` · `investors.html` ·
+`about.html` · **`js/cine.js`** · **`css/trust.css`** · **one new image,
+`images/app-home-evening.webp`**. The seven trust HTML pages are unchanged
+(they inherit from `trust.css`).
+
+---
+
+## The transitions made premium — the damping was frame-rate dependent — 17 September 2026
+
+Reported, after four previous rounds at this, as "the entire site's transitions
+are still not feeling premium and smooth enough". `js/smooth.js` and
+`js/cine.js` only. **No HTML, no CSS, no image, no section height and no
+narrative duration changed.**
+
+The four earlier rounds all read "not smooth" as "too fast" and slowed things
+down — pin heights, then the magnet curve, then `follow` plus a whole new
+scroll damper. The site duly got slower and still was not premium, which is
+the tell that the diagnosis was wrong every time.
+
+### What was actually wrong — measured, not guessed
+
+Both dampers applied **a fixed fraction per FRAME** (`cur += d * 0.075` in
+smooth.js, `gap * TIMING.follow` in cine.js) instead of an exponential on real
+elapsed time. That is the commonest bug in hand-rolled smooth scrolling and it
+produced three separate defects at once.
+
+**1. The site ran at a different speed on every display.** Isolated in
+`scratchpad/sim.js`, one 100px notch to rest:
+
+| display | old (per-frame) | now (dt-based) |
+|---|---|---|
+| 60Hz | 1183ms | 617ms |
+| 120Hz | **592ms** | 608ms |
+| 144Hz | **493ms** | 611ms |
+
+**The old code was 2.4x faster on a 144Hz monitor than on 60Hz.** Every timing
+decision in this file was made at 60Hz, so nobody on a high-refresh display had
+ever seen the site that was designed.
+
+**2. Velocity chatter.** Frame intervals on this site measure 16.5ms median but
+20.7ms at p95, so a per-frame constant makes the easing rate swing ~27% frame to
+frame — continuously, for the whole of every glide. Under that real measured
+jitter: **old 19.9% velocity chatter, now 3.5%.** That wobble *is* what "not
+smooth" was, and no retuning of a per-frame constant can remove it, because the
+wobble is the per-frame constant meeting a variable frame time.
+
+**3. The scene was deliberately tuned to trail the page.** The note being
+replaced in `cine.js` says so outright: 2.06s end to end was rejected as "past
+the point where the scene visibly trails the page" and `follow: 0.06` was chosen
+to return to "the ~1.7s that was actually signed off". **But 1.7s trails too.**
+Measured before this change: after one wheel notch the scroll settled at ~0.9s
+and the scene it drives at 1.5-1.8s, and on web3 the scene did not begin to move
+for **255ms**. Content arriving half a second behind its own scroll position
+does not read as slow and considered — it reads as laggy, because the page and
+the thing painted on it are moving at different times.
+
+### The fix
+
+Both constants are now **time constants in milliseconds**, applied as
+`1 - Math.exp(-dt / TAU)`. `smooth.js` `TAU = 110`; `cine.js` `followTau = 120`
+via a new `followAlpha(dt)`. `dt` is already clamped to 64ms by cine's loop and
+to the same in smooth.js.
+
+> **THE SEPARATION OF CONCERNS THAT MAKES TIGHTENING SAFE, and the thing every
+> earlier round conflated.** The brake on a FLICK is the speed cap
+> (`step`/`back`, per beat) — untouched. The HOLD plateau — untouched. Section
+> heights — untouched. `follow` only ever decided how far behind the page the
+> scene sits during ORDINARY scrolling, and the right answer to that is "barely
+> at all". The input is now damped once, in `smooth.js`; damping it a second
+> time in `cine.js` bought nothing but lag.
+
+### The numbers
+
+| | before | after |
+|---|---|---|
+| scroll settles after one notch | ~950ms | **~470-510ms** |
+| scene settles after one notch | 1.5-1.8s | **0.69-0.84s** |
+| scene starts moving (web3) | 255ms | **125ms** |
+| page trails the hand, sustained scroll | 213-266px | **142-152px** |
+| glide continues after last notch | ~1330ms | **~640ms** |
+| velocity chatter under real frame jitter | 19.9% | **3.5%** |
+| speed difference 60Hz vs 144Hz | **2.4x** | **none** |
+
+### Two measurement traps this pass, both of which produced false results first
+
+1. **Raw `|v[i]-v[i-1]|` is not a smoothness metric.** It made the new build
+   look 2-3x *worse* (0.36 vs 0.18), purely because a curve that settles in half
+   the time has twice the legitimate velocity decay per frame. A 5-point moving
+   average of position has the same bias — it reported 1.56px of "wobble" against
+   0.51px. **Run the new damper at the OLD speed and the two are identical
+   (0.52px vs 0.51px), which is the only way to isolate dt-compensation from the
+   speed change.** Compare like for like or the metric measures the wrong thing.
+2. **Latency measured through a CDP round-trip is not page latency.** Timing
+   from the `page.mouse.wheel()` call gave 81-88ms; recording
+   `performance.now()` inside the page's own wheel listener gives **17-28ms**.
+   The first number would have sent this pass chasing an input-latency problem
+   that does not exist.
+
+### Verified
+- **Flick safety — the thing that must not regress.** A full-aggression flick
+  across a whole pinned section (jump from the pin's top to its bottom) still
+  takes **3.8-4.4s** and visits every beat: app 6/6, web3 6/6, sanctuary 4/4,
+  182-241 distinct rendered frames. It cannot flash through. web3 actually
+  **improved from 5/6 to 6/6** — the old follow was so slow one beat never fully
+  arrived during a flick.
+- **No lurch.** Max single-frame change in a scrubbed `--w` during a steady
+  read: 0.071 / 0.034 / 0.071, against the old build's 0.073 / 0.033 / 0.067.
+- **No backward steps** in the glide on any page (a re-sync stutter would show
+  as one); settle time held constant under 4x CPU throttle (1155 -> 1180ms),
+  which is the frame-rate independence confirmed in the real browser.
+- **Sitewide identical to baseline**: 6 pages x 375/390/430/768/1024/1280/1440/
+  1920 = 48 checks, **0 horizontal overflow**, same two documented 404s
+  (`favicon.ico`, `about-hero-mobile.jpg`), same two pre-existing sub-10px SVG
+  `<text>` contrast entries. Nothing new.
+- **Mobile beats all land** at 390x844 — index `.jm-item` 7/7, `.eco-item` 3/3,
+  `.tm-item` 4/4, `.pr-para` 3/3; app `.edy-row` 6/6, `.quest-card` 6/6;
+  sanctuary `.found-item` 4/4, `.seven-day` 7/7, `.day-entry` 9/9, `.rv` 18/18;
+  web3 `.part-item` 6/6, `.loop-node` 9/9, `.rv` 51/51.
+  `.bridge-step-i` read 0.30 and `.market-scene` 0.98 on the coarse grid and are
+  **both 1.00 when polled to convergence** — the fifth time that trap is
+  recorded.
+- **Damper arms correctly**: on desktop with motion allowed, **off** under
+  `prefers-reduced-motion`, **off** on touch. Both page ends exactly reachable
+  on all 8 damped pages; anchors land within the documented 0-79px.
+- **Judged by eye** at 1440x900 (app Living Ecosystem, sanctuary Four
+  Foundations, web3 participation) and 390x844 (index, app).
+
+> If `js/smooth.js` is ever removed, raise `followTau` toward ~200ms — the two
+> are still a pair, they are just both honest about time now.
+
+### Flagged, not changed — three backup folders are inside the deployable folder
+`images-original/` (49MB, already documented as do-not-upload), plus
+**`baseline/` (8.3MB) and `original-backup/` (1.3MB)**, which are not documented
+anywhere. 58.6MB of local safety copies sitting in the folder that gets dragged
+into GitHub. They are not referenced by any page. Worth removing before an
+upload, but they are a safety net so they were left alone.
+
+### Upload
+**`js/smooth.js` · `js/cine.js`** — nothing else changed.
+
+---
+
+## Nourish removed from the Living Ecosystem — it is not a data point — 17 September 2026
+
+`app.html` only. Reported as "nourish is still this screen, its wrong", then
+resolved by the user as **"remove nourish, it's not a data point"** — which is
+the correct diagnosis and explains why three separate attempts to find it a
+screen had all failed.
+
+### Why no screen ever fitted
+
+The section shows habits the app **measures**, one screen each. Nourish is not
+measured. The blueprint ships quest detail screens for four habits only (QU-02
+Steps, QU-03 Sleep, QU-04 Hydration, QU-05 Breathing) and its own README calls
+Nourish an **ambient** habit, with no figure of its own.
+
+**All 51 screens were checked by name and every plausible candidate was opened
+and looked at.** There is no Nourish screen in the set:
+
+| candidate | what it actually is |
+|---|---|
+| QU-01 today's quests | headed "Today's quests" over walking and breathing; the Nourish card is a footnote at the bottom |
+| HM-03 evening | a **home screen** — so beside the word Nourish it repeated the section's own opening frame. This was the shipped state and is what was reported as wrong |
+| MK-01 marketplace | merch hero, "Made by members"; already used in the marketplace section |
+| MK-02 item-detail | **The Wind-Down — a SLEEP course** |
+| MK-03 checkout | the same sleep course, and a payment screen |
+| JO-04 waypoint-content | a rest story about Hua Hin |
+| RC-03 what-credits-open | a list of what credits unlock; no food |
+
+> The row's own copy, "Unlocks local food experiences", is verbatim from QU-01's
+> ambient Nourish card — which is exactly the point. It is a *card*, not a
+> screen, because there is no figure behind it.
+
+### What changed
+
+Six screens and five rows: **Home → Move → Rest → Breathe → Hydrate → Learn.**
+
+- The Nourish `<li>` and the `app-home-evening.webp` `<img>` are gone; Learn
+  moved `data-s="6"` -> `data-s="5"`.
+- `shots.length !== 7` -> `!== 6`, `GLOW` lost its nourish entry, `BOUND` is
+  `[0.4, 1.4, 2.4, 3.4, 4.4]`, the shot loop runs `< 6`, `states: 7` -> `6`,
+  and the closing line's window moved `(pos - 5.35)` -> `(pos - 4.35)`.
+- **`.edy-outer` 685vh -> 588vh.** One fewer beat at the SAME per-beat rate
+  (685 = 6 x 97.5 + 100; 588 = 5 x 97.5 + 100), per the standing rule that a
+  per-beat rate is a property of a section. Measured: app.html desktop
+  32,074 -> **31,201px**, i.e. 873px = exactly the 97vh removed. Mobile is
+  unaffected (`height: auto`).
+- **Headline "Six habits." -> "Nothing counts alone."** A count could not stay:
+  five rows under "Six habits" is the same error in reverse. "Five habits."
+  was rejected because the phone beside it visibly shows **six** tiles — Nourish
+  is still on the home screen, it is simply not a tracked input. "Every habit."
+  was drafted and rejected too: `app.html` already carries "Every habit earns.
+  Every credit counts." further down the same page. The line that shipped makes
+  no count claim and carries the section's own body copy ("Most wellness apps
+  track your metrics in isolation").
+- The home screen's `alt` lost "all six habits as tiles" for "the day's actions
+  as tiles" — the count clashed with the column beside it.
+
+### Deliberately NOT changed — and this is a real inconsistency to decide on
+`index.html` names Nourish twice as one of six ("Move, Rest, Breathe, Hydrate,
+Nourish and Learn. Six habits on one screen"), and `investors.html` has a
+"Six habits." line-mask. **Those are describing the home SCREEN, which genuinely
+does show six tiles, so they are not false** — but the site now says six in two
+places and shows five tracked habits in a third. Whether Nourish should also
+come out of those is a positioning call, not a defect.
+
+### Verified
+- Section driven at 41 positions with the pacing polled to convergence: **all
+  five rows reach `--w` 1.00**, the closing line reaches 1.00, **exactly one
+  screen visible at a time** (no ghosting), and the screens shown are exactly
+  `home-morning | steps | sleep | breathing | hydration | lesson` — no
+  home-evening anywhere.
+- **Sitewide identical to baseline**: 6 pages x 8 widths = 48 checks, 0
+  horizontal overflow, the same two documented 404s, the same two pre-existing
+  sub-10px SVG `<text>` entries. 0 new JS errors.
+- **Judged by eye** at 1440x900 (the late and final beats) and 390x844 (the
+  mobile list, which shows all five rows and the closing line).
+
+> A pleasing accident worth keeping: the Learn beat's screen (LE-03) is a lesson
+> called "Timing, not counting" — about **when to eat** — so the nourishment idea
+> survives in the section, correctly framed as a lesson, which *is* a data point.
+
+### Now unused
+`images/app-home-evening.webp` (124KB) is referenced nowhere. Left in place
+rather than deleted; it is the frame a future Nourish screen would replace.
+
+### Upload
+`app.html` only.
