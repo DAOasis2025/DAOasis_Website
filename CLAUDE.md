@@ -5712,3 +5712,316 @@ both, and there are no new console errors on any of the four scrubbed pages.
 
 ### Upload
 `js/cine.js`, `app.html`, `sanctuary.html`.
+
+---
+
+## Findable, shareable, keyboard-navigable — 19 September 2026
+
+Five things, all of them gaps rather than defects in existing work, found by
+auditing the served pages rather than reading these notes. Changed: **all 13
+HTML pages**, `css/trust.css`, and nine new files.
+
+### 1. Every share of this site was imageless, on every platform
+
+`og:image` was a **relative** path — `content="images/img-07.jpg"` — on all 13
+pages. Open Graph requires an absolute URL, so Facebook, LinkedIn, Slack,
+WhatsApp and iMessage all rendered a bare text link. There was also **no
+`twitter:card` anywhere**, and **no `og:url` or `rel="canonical"` on any of
+the six marketing pages** (the seven trust pages had both, pointing at the
+vercel host).
+
+Now, on every page: absolute `og:image` with `og:image:width/height/alt`,
+`og:url`, `og:site_name`, `rel="canonical"`, and the four Twitter tags.
+
+> **THE ORIGIN IS `https://daoasis.xyz`, WHICH IS NOT YET WHERE THE SITE
+> LIVES.** That was a deliberate choice — it is already the email domain and
+> the site should not be indexed under a `vercel.app` address — but **nothing
+> here works until the domain is pointed at the Vercel project.** See the
+> BLOCKER at the top of `PRE_DEPLOY.md`. If the domain slips, the host is one
+> constant at the top of each head block.
+
+**`images/og-card.jpg`** is new: 1200x630, the lockup on the brand mineral
+ground with the hero's own warm bloom, the tagline in Cormorant Garamond and
+the positioning line tracked in Frank Ruhl Libre. 35 KB.
+
+> **How it was made, because sharp cannot do it.** librsvg has no access to
+> the Google-hosted brand fonts, so the card is drawn on a `<canvas>` **in
+> Chrome**, where the site's own `@font-face` rules have already loaded them,
+> then POSTed as a data URL to a throwaway local receiver — the same trick the
+> palm mark and the Journey crops used. Canvas `letterSpacing` is unreliable
+> across engines, so the tracking is applied a glyph at a time.
+>
+> **The first attempt was rejected by eye and the numbers said nothing.** At
+> 44px the tagline was legible at full size and vanished at the thumbnail size
+> a share card is actually seen at. 76px, with the lockup *reduced* to make
+> room, is the version that reads in a WhatsApp preview.
+
+### 2. There was no favicon, no sitemap, no robots.txt and no manifest
+
+One 404 per page load since August, a blank sheet in every browser tab and
+every phone shortcut, and no map of the site for Google.
+
+`favicon.ico` (16/32/48 PNG-in-ICO, hand-built — sharp cannot write ICO),
+`favicon-32.png`, `apple-touch-icon.png` (180), `icon-192.png`,
+`icon-512.png`, `site.webmanifest`, `robots.txt`, `sitemap.xml`.
+
+- **The tiles are the WHITE mark on the mineral ground, not the mark on
+  transparency.** `img-09.png` is a near-black silhouette; on a dark browser
+  tab it disappears completely. A filled tile reads in light and dark UI alike.
+- The mark is 86% of the tile at 16px and 62% at 180px — iOS masks the corners
+  of a touch icon, so that one needs the extra margin.
+- **All eight go at the ROOT.** Every page references them with a leading
+  slash.
+
+### 3. The four flagship pages had no visible keyboard focus and no skip link
+
+`about.html`, `investors.html` and `css/trust.css` have carried a gold
+`:focus-visible` ring and a skip link since August. **`index.html`,
+`app.html`, `sanctuary.html` and `web3.html` had neither** — they fell back to
+the browser's default ring, which was never designed against these grounds.
+`accessibility.html` states that every page can be navigated by keyboard; it
+could, you just could not see where you were on the four pages that matter
+most. The block is ported unchanged.
+
+Also repaired: **`sanctuary.html`'s early-access fields and `investors.html`'s
+request panel both set `outline:none` and signalled focus with a border COLOUR
+alone.** A `input:focus-visible` rule cannot fix that — `.ea-input:focus` is
+(0,2,0) and outranks it — so each got a matching-specificity rule of its own.
+
+> **The skip link went into a CSS comment on index.html and was inert.** The
+> insert anchored on the first `<body` in the file, and index has the literal
+> text `before <body> exists` inside a stylesheet comment 2,850 lines above the
+> real one. It rendered nothing, broke nothing, and passed a `grep` for
+> `class="skip-link"`. Only pressing Tab in a real browser found it. **Anchor
+> on `<body>` at the START of a line, or on the last match, not the first.**
+
+### 4. Nothing was lazy-loaded and almost nothing reserved its space
+
+107 images across the site, **0 with `loading="lazy"`, 0 with
+`decoding="async"`, and only 23 with intrinsic dimensions** — sanctuary 0 of
+12, investors 0 of 21, about 0 of 15. Every page fetched every picture on
+arrival and reflowed as each one landed.
+
+Now: intrinsic `width`/`height` everywhere they were missing (read from the
+files themselves — a small PNG/JPEG/WebP header parser, no dependency),
+`decoding="async"` everywhere, `loading="lazy"` on everything below the fold,
+and `fetchpriority="high"` on index's intro lockup and the app hero phones.
+
+> **THE STRETCH TRAP RE-ARMED ITSELF, exactly as this file warned it would.**
+> `width`/`height` on an `<img>` are presentational hints that set a real CSS
+> **height**. Adding them site-wide made the 26px nav mark render **492px
+> tall** — measured, on all six marketing pages, on the first run.
+>
+> The guard is one rule: **`img{height:auto}`**. A bare element selector is
+> specificity (0,0,1) — above a presentational hint and below every author
+> rule — so it cancels the attribute's height and touches nothing that sets a
+> real one. Re-measured after: **every one of the 107 images renders at
+> byte-identical size to the pre-change build, at 1280 and at 390.**
+>
+> This was only caught because the rendered box of every image was snapshotted
+> *before* the pass. Do that again for any change of this shape.
+
+> **An image inside a scroll-SCRUBBED section must not be lazy.** It is not
+> decoration, it is the frame the section renders. Measured on `app.html`:
+> arriving at the Living Ecosystem by ordinary scrolling, **only 2 of its 6
+> screens had loaded**, so four beats of a state machine would have played
+> blank — the same class of fault as the `window.onload` gating fixed on 22
+> August. 13 images across index, app and web3 (`.edy-shot`, `.market-phone`,
+> `.dash-img`, `.pr-clarity-image`, web3's three `.part-outer` devices) are
+> out of lazy and on `fetchpriority="low"` instead, so they are guaranteed
+> present without competing with the hero. Verified 6/6 after.
+
+**What this does NOT fix:** sanctuary's ~5 MB is CSS `background-image`, which
+the lazy attribute cannot reach. Its twelve `<img>` tags are all logo and
+divider marks. That page needs a different treatment.
+
+### 5. There was no community anywhere on a site that is about community
+
+Searched all 13 pages: **not one link to Discord, Telegram, X, LinkedIn,
+Instagram or anything else** — while the site carries "Join the Community" as
+a journey stage, Community as a tracked habit, and a user → participant →
+contributor → stakeholder story.
+
+- **Footer, all 13 pages**: Instagram, X and LinkedIn as circular icon links
+  under a "Community" label, plus one honest line — *"Open now. The DAO and
+  its governance arrive in stages."* That matches Phase 01 (founders-led) as
+  already published on `web3.html` and in the Tokenomics Paper, and does not
+  promise a DAO that does not exist yet.
+- **Home hero**: Instagram and X only, after the two calls to action. Two
+  marks is the most the frame carries without competing with them; LinkedIn is
+  an investor and partner channel and lives in the footer.
+
+Handles: `instagram.com/thedaoasis`, `x.com/thedaoasis`,
+`linkedin.com/company/daoasis`. **The LinkedIn URL was inferred from
+"@daoasis"** and is the standard company-page form — confirm it before the
+site goes live.
+
+> **The footer block is inside `.footer-brand`, not a fifth column.**
+> `.footer-top` is `grid-template-columns:repeat(4,1fr)` with all four slots
+> already spoken for, so a new column would have meant re-laying out every
+> page's footer.
+
+> **The hero row is placed AFTER `.ctas`, and that is what makes it safe.** On
+> mobile `.hero-type` is `display:contents`, so the row is a direct grid item
+> of `.hero` and needed an explicit sixth row; the button band's closing
+> margin moved onto it. Measured at 375x667, 390x844 and 360x740: **the
+> buttons moved 0px and the photograph lost 0px** at every one. The hero grows
+> ~95px and the follow row sits just below the fold on the dark band, which is
+> where it belongs — it is not competing with the two actions.
+
+### 6. `app.html`'s only conversion CTA was a dead link
+
+`<a class="btn-primary" href="#">Join the Waitlist</a>` in the final section.
+index's equivalent was pointed at the inbox in September and this one was
+missed — and a second button further up the same page scrolls you *to* it.
+Both now open `mailto:info@daoasis.xyz` with the same subject line.
+
+**There is still no form backend anywhere in this project.** If real capture
+is ever built, `privacy.html` §09 and `cookies.html` §04/§07 must change in the
+same release: both currently state as fact that this site collects nothing.
+
+### Verified
+
+- **33 page x width combinations** (13 pages across 375/390/768/1280/1440/
+  1920, each loaded fresh): **0 horizontal overflow, 0 JS errors, skip link
+  present, 3 footer social links, community note present** on every one.
+- **Image geometry byte-identical to the pre-change build** at 1280 and 390,
+  all 107 images, after the stretch guard.
+- Skip link and the gold ring confirmed with a **real Tab press** in the
+  browser, not programmatic focus — `outline: solid 2px rgb(196,138,90)`,
+  offset 3px, on `.nav-brand`.
+- All nine new assets serve 200. The only 404s left anywhere are
+  `about-hero-mobile.jpg` and the four team portraits, which are being
+  collected.
+- Living Ecosystem: **6/6** scrubbed screens ready on arrival by ordinary
+  scrolling (was 2/6).
+
+### Deliberately not done
+- `images/` still holds **~15 MB of unreferenced files**, including five
+  pre-compression originals with **spaces in their names** (`PHUKET map.png`,
+  `sanctuary 1-4.png`). The claim elsewhere in this file that no filename in
+  `images/` contains a space is no longer true. Deleting them is a separate,
+  destructive job and was not done unasked.
+- `baseline/`, `original-backup/` and `images-original/` — 58 MB of local
+  safety copies still inside the folder that gets uploaded.
+- Meta descriptions on the six marketing pages are still 169-279 characters
+  and truncate in search results.
+- No JSON-LD `Organization` schema anywhere.
+- No `404.html`; a wrong address still shows Vercel's default page.
+
+### Upload
+All 13 HTML pages, `css/trust.css`, and the nine new files. See section 0 of
+`PRE_DEPLOY.md` — **the eight root files go at the root, and the domain has to
+be connected first.**
+
+---
+
+## The UK company carries everything — 19 September 2026 (later)
+
+Founders' instruction: *"all legal documents can be updated with DAOasis Global Ltd
+in the uk, we will open BVI and Thailand once operational, all safe etc is through
+the uk business for the time being."* Three follow-up answers settled the detail —
+**governing law England and Wales**, **the SAFE is publishable**, and **the company
+number and registered address are deliberately NOT published** ("they can find on
+Companies House if needed using the name").
+
+Changed: `terms.html` · `privacy.html` · `token-disclaimer.html` · `health-data.html` ·
+`cookies.html` · `accessibility.html` · `contact.html` · `investors.html` ·
+`css/trust.css`. **Visible `tbc` markers: 30 → 23.**
+
+### 1. Governing law and jurisdiction — England and Wales
+
+`terms.html` §23 had `tbc` for both. Both now read plainly.
+
+> **Two values were filled into existing scaffolding; no legal provision was
+> drafted.** The consumer carve-out in the same section — that a consumer keeps the
+> mandatory protections of the law where they live and may bring proceedings there —
+> **was already in the document.** It was not written for this change and must not be
+> removed: without it a blanket England-and-Wales clause overreaches against EU and
+> UK consumer law. §23 still wants a lawyer's read before launch.
+
+`token-disclaimer.html`'s jurisdiction markers are a **different question and stay
+open**. They concern *where $DVT functionality may lawfully be offered*, which is
+pending regulatory analysis; the choice of governing law does not answer it.
+
+### 2. The company number is a DECISION, not an unknown
+
+Four `tbc` markers said *"Company number and registered address to be confirmed"* —
+which stated the opposite of the truth. **The company is registered; the founders
+simply chose not to reprint the register on the website.** All four now link to
+Companies House and say the details are on the public register under the company name.
+
+> **Do not reinstate a `tbc` for these.** A marker that says "to be confirmed" about a
+> fact that is already settled is worse than no marker at all — it reads as a company
+> that has not been formed, which is exactly the impression the trust layer exists to
+> avoid.
+
+### 3. Five trust pages named no legal entity at all
+
+`privacy.html` and `terms.html` carried the full statement. **`health-data.html`,
+`cookies.html`, `accessibility.html`, `contact.html` and `token-disclaimer.html` named
+no entity anywhere** — a reader on the Health Data or Token pages could not tell who
+stood behind them. Each now carries one consistent line in the closing note it already
+had: the UK company, where its details are published, and that the BVI and Thai
+companies are planned once operational with everything running through the UK company
+until then.
+
+> `.entity-note`'s hairline was first written `rgba(43,38,35,0.12)` — a dark rule on a
+> dark ground, i.e. invisible. **The trust pages' closing note sits on `#171412`, not
+> on the ivory the document body uses.** Corrected to a light hairline. The note itself
+> measures **5.23:1**, identical to the paragraph beside it.
+
+### 4. `investors.html` — the BVI and Thai entities moved out of the raise
+
+The page had them as **groundwork the institutional raise depends on**. They are not:
+they are formed once DAOasis is operational. Six passages changed — the hero strip, the
+Stage 1 purpose, use-of-funds 01, the build-phase roadmap item, the two revenue/asset
+rows (now unambiguously future tense), and the legal foot.
+
+**Use of funds 01 went from "Corporate structure" to "Legal and corporate
+groundwork"** — the money buys counsel and a *designed* structure ready to form, not
+two incorporations.
+
+### 5. The SAFE is now stated
+
+New block, **"What you would be investing in"**, directly above the existing "What is
+deliberately not on this page", so the two are read together.
+
+Equity at the Validate and Build stages is into DAOasis Global Ltd on a SAFE. The
+planned BVI and Thai entities play no part in it.
+
+> **The first draft said "investment at every stage", which was wrong.** Stage 3 is a
+> *seed extension and $DVT sale* — a token sale is neither equity nor a SAFE. The block
+> now names the stages explicitly and separates the $DVT element, which remains gated
+> on legal review.
+>
+> **The instrument is named; its terms are not.** No valuation, cap or discount exists
+> — the page says so two inches below, and nothing was invented to fill the gap. The
+> block also repeats that nothing on the page is an offer or a solicitation, because a
+> SAFE is a security and naming it raises exactly that question.
+
+### 6. The operator is now named on every page
+
+The three product pages named no entity at all. Rather than push a corporate line
+into the App page, the copyright line does it: **"© 2026 DAOasis Global Ltd. All
+rights reserved."** on all 13. That is the conventional place for it and is what
+makes the operator identifiable from anywhere on the site.
+
+### Verified
+- All 13 pages loaded fresh at 1280 and 390: **0 JS errors, 0 horizontal overflow,
+  3 footer social links** on every one.
+- `DAOasis Global Ltd` now resolves on **all 13 pages**.
+- Contrast of every new run of text measured against its real composited
+  background: entity note **5.23:1**, SAFE block inherits `.disclose` — **0 failures**.
+- `tbc` count per page re-counted: accessibility 4, privacy 9, terms 4,
+  token-disclaimer 3, contact 1, cookies 1. `investors.html` reports 1 in source and
+  **0 rendered** — it is inside a JavaScript fallback string that only fires if
+  `INVESTOR_CONTACT` is ever set back to null.
+
+### What is still open, and it is now a short list
+Everything left is a genuine unknown rather than a decision nobody had made:
+minimum age · retention schedule · processor list · hosting locations and transfer
+mechanisms · security review and certification status · technical architecture ·
+liability cap figure · the accessibility audit · the response-time commitment · the
+consent mechanism required before any analytics · and, separately, which jurisdictions
+$DVT functionality may be offered in.

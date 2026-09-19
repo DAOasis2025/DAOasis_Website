@@ -28,8 +28,24 @@
 <title>DAOasis — Rest · Learn · Earn · Return</title>
 <meta name="description" content="Traditional wellness apps create users. DAOasis creates stakeholders. An ongoing wellness ecosystem built around the Companion App, where daily habits become a Journey — Bangkok to Phuket is the launch Journey, and completing one opens the next." />
 <meta property="og:title" content="DAOasis — Rest · Learn · Earn · Return" />
+<link rel="canonical" href="https://daoasis.xyz/" />
+<meta property="og:url" content="https://daoasis.xyz/" />
+<meta property="og:site_name" content="DAOasis" />
+<meta property="og:image" content="https://daoasis.xyz/images/og-card.jpg" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="DAOasis — Rest · Learn · Earn · Return" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:site" content="@thedaoasis" />
+<meta name="twitter:title" content="DAOasis — Rest · Learn · Earn · Return" />
+<meta name="twitter:description" content="Traditional wellness apps create users. DAOasis creates stakeholders. An ongoing wellness ecosystem built around the Companion App, where daily habits become a Journey — Bangkok to Phuket is the launch Journey, and completing one opens the next." />
+<meta name="twitter:image" content="https://daoasis.xyz/images/og-card.jpg" />
+<link rel="icon" href="/favicon.ico" sizes="any" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<link rel="manifest" href="/site.webmanifest" />
+<meta name="theme-color" content="#171412" />
 <meta property="og:description" content="An ongoing wellness ecosystem that turns consistent habits, real learning and long-term community into one Journey — with an optional real-world Sanctuary planned for Phuket in 2027. Rest · Learn · Earn · Return" />
-<meta property="og:image" content="images/img-01.jpg" />
 <meta property="og:type" content="website" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -913,7 +929,8 @@
         auto                                                                  /* 2 headline   */
         auto                                                                  /* 3 kicker     */
         minmax(calc(93.8vw + var(--hero-ground) + var(--hero-clear)), 1fr)    /* 4 photograph */
-        auto;                                                                 /* 5 buttons    */
+        auto                                                                  /* 5 buttons    */
+        auto;                                                                 /* 6 follow     */
       /* Only the button band ever shows this — the plate covers everything
          above it. The tail ramps to the ivory the next section opens on, so
          the hero closes on a graded edge and not on a rule. */
@@ -952,7 +969,13 @@
        ground of their own, with nothing behind them to compete with. */
     .ctas{grid-column:2;grid-row:5;position:relative;z-index:10;
       flex-direction:column;align-items:stretch;width:100%;
-      margin:clamp(14px,2vh,20px) 0 calc(var(--hero-melt) + 6px);gap:10px;}
+      margin:clamp(14px,2vh,20px) 0 0;gap:10px;}
+    /* The follow row takes over the band's closing margin — the buttons keep
+       their own position and the tail below them is unchanged in total. */
+    .hero-social{grid-column:2;grid-row:6;position:relative;z-index:10;
+      justify-content:center;margin:16px 0 calc(var(--hero-melt) + 6px);}
+    .hero-social-l{display:none;}
+    .hs-i{width:40px;height:40px;}
     .ctas .btn{display:flex;align-items:center;justify-content:space-between;
       gap:12px;padding:16px 24px;border-radius:999px;
       font-size:var(--t-small);letter-spacing:0.12em;white-space:nowrap;}
@@ -3106,11 +3129,88 @@
   #heroH1, .kicker, .h1, .sub, .ctas, .scroll-hint { opacity: 1 !important; animation: none !important; }
   .nav.nav-waiting { opacity: 1 !important; pointer-events: auto !important; }
 </style></noscript>
+
+<style>
+/* ── KEYBOARD FOCUS ───────────────────────────────────────────────────
+   :focus-visible, not :focus — a mouse click never draws a ring, only
+   keyboard navigation does. The skip link is off-screen until focused,
+   which is the first thing a Tab press should reach on any page. */
+.skip-link{
+  position:absolute; left:-9999px; top:0; z-index:200;
+  background:var(--warm-white); color:var(--charcoal);
+  padding:12px 22px; border-radius:0 0 8px 0;
+  font-family:'Frank Ruhl Libre',Georgia,serif; font-size:var(--t-note);
+  text-decoration:none;
+}
+.skip-link:focus{ left:0; }
+a:focus-visible, button:focus-visible, summary:focus-visible,
+input:focus-visible, select:focus-visible, textarea:focus-visible,
+[tabindex]:focus-visible{
+  outline:2px solid var(--gold); outline-offset:3px; border-radius:2px;
+}
+/* The pin wrapper is only somewhere for the skip link to land. It is
+   focusable so focus genuinely moves, but it is not a control and must
+   not draw a ring of its own. */
+[data-skip-target]:focus, [data-skip-target]:focus-visible{ outline:none; }
+</style>
+<style>
+/* ── FOOTER COMMUNITY ─────────────────────────────────────────────────
+   Sits inside .footer-brand rather than as a fifth column: .footer-top is
+   grid-template-columns:repeat(4,1fr) and all four slots are already spoken
+   for, so a new column would have meant re-laying out every page's footer. */
+.footer-social{margin-top:26px;}
+.footer-social .footer-col-label{margin-bottom:12px;}
+.footer-social-note{margin:12px 0 0;font-size:var(--t-nano);line-height:1.6;color:#8a8377;max-width:26em;}
+.footer-social-row{display:flex;align-items:center;gap:16px;}
+.fs-i{display:inline-flex;align-items:center;justify-content:center;
+  width:34px;height:34px;border-radius:50%;
+  border:1px solid rgba(247,244,238,0.16);color:#9a9285;
+  transition:color 0.25s var(--ease),border-color 0.25s var(--ease),
+             background 0.25s var(--ease);}
+.fs-i svg{width:17px;height:17px;display:block;}
+.fs-i:hover{color:var(--warm-white);border-color:rgba(196,138,90,0.55);
+  background:rgba(196,138,90,0.10);}
+
+/* ── HERO SOCIAL ──────────────────────────────────────────────────────
+   Instagram and X only. The hero is the one place on the site where a
+   stranger decides whether there is anything here to follow, and two marks
+   is the most it can carry without competing with the two calls to action
+   directly above it. LinkedIn is an investor/partner channel and lives in
+   the footer with the other two. */
+.hero-social{display:flex;align-items:center;gap:13px;margin-top:26px;
+  position:relative;z-index:10;}
+.hero-social-l{font-family:'Frank Ruhl Libre',Georgia,serif;
+  font-size:var(--t-nano);letter-spacing:0.22em;text-transform:uppercase;
+  color:rgba(247,246,242,0.5);margin-right:3px;}
+.hs-i{display:inline-flex;align-items:center;justify-content:center;
+  width:36px;height:36px;border-radius:50%;
+  border:1px solid rgba(247,246,242,0.26);color:rgba(247,246,242,0.82);
+  transition:color 0.25s var(--ease),border-color 0.25s var(--ease),
+             background 0.25s var(--ease),transform 0.25s var(--ease);}
+.hs-i svg{width:18px;height:18px;display:block;}
+.hs-i:hover{color:#fff;border-color:rgba(247,246,242,0.7);
+  background:rgba(247,246,242,0.12);transform:translateY(-2px);}
+@media (prefers-reduced-motion: reduce){ .hs-i:hover{transform:none;} }
+</style>
+<style>
+/* ── THE STRETCH GUARD ────────────────────────────────────────────────
+   width/height on an <img> are presentational hints that set a real CSS
+   HEIGHT, not merely an aspect ratio — the trap already recorded against
+   the app hero. Adding those attributes site-wide (so pages reserve space
+   and stop reflowing) re-armed it: measured, the 26px nav mark rendered
+   492px tall on all six marketing pages.
+
+   A bare `img` selector is specificity (0,0,1) — lower than any author
+   rule and higher than a presentational hint — so this neutralises the
+   attribute's height while leaving every real CSS height untouched. */
+img{height:auto;}
+</style>
 </head>
 <body>
+<a class="skip-link" href="#pinContainer">Skip to content</a>
 
   <div class="intro">
-    <div class="logo"><img src="images/img-02.png" alt="DAOasis logo" /></div>
+    <div class="logo"><img fetchpriority="high" decoding="async" width="1400" height="429" src="images/img-02.png" alt="DAOasis logo" /></div>
     <div class="headline" id="headline"></div>
     <button type="button" id="skipIntroBtn" class="intro-skip">Skip intro</button>
   </div>
@@ -3123,7 +3223,7 @@
       <span class="nav-burger-label">Menu</span>
     </button>
     <a class="nav-brand" href="index.html" id="navBrand">
-      <img src="images/img-09-white.png" alt="DAOasis" />
+      <img decoding="async" width="465" height="492" src="images/img-09-white.png" alt="DAOasis" />
       <span>DAOasis</span>
     </a>
     <a class="nav-cta" href="#waitlistSection">Join the waitlist</a>
@@ -3132,7 +3232,7 @@
   <div class="nav-drawer-backdrop" id="navDrawerBackdrop"></div>
   <div class="nav-drawer" id="navDrawer">
     <div class="nav-drawer-head">
-      <img src="images/img-02.png" alt="DAOasis" />
+      <img loading="lazy" decoding="async" width="1400" height="429" src="images/img-02.png" alt="DAOasis" />
       <button class="nav-drawer-close" id="navDrawerClose" aria-label="Close menu">&times;</button>
     </div>
     <div class="nav-drawer-list">
@@ -3145,7 +3245,7 @@
     </div>
   </div>
 
-  <div class="pin-container" id="pinContainer">
+  <div class="pin-container" id="pinContainer" tabindex="-1" data-skip-target>
     <div class="hero">
       <!-- .bg (the full-bleed sunrise) was removed on 13 September when the
            hero became a contained product plate on ivory. The sunrise
@@ -3180,6 +3280,16 @@
             <a class="btn btn-light" href="#waitlistSection">Join the waitlist<span class="btn-i" aria-hidden="true">&rarr;</span></a>
             <a class="btn btn-ghost" href="#ecoSection">Explore the ecosystem<span class="btn-i" aria-hidden="true">&darr;</span></a>
           </div>
+          <!-- AFTER the calls to action, deliberately. On mobile .hero-type is
+               display:contents, so this is a direct grid item of .hero and has
+               to be placed explicitly (row 6) — but because it follows the
+               button band, adding it cannot move either button. Verified at
+               375x667, the tightest tier. -->
+          <div class="hero-social">
+            <span class="hero-social-l">Follow</span>
+            <a class="hs-i" href="https://instagram.com/thedaoasis" target="_blank" rel="me noopener" aria-label="DAOasis on Instagram"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="1.7" d="M7.2 3.5h9.6a3.7 3.7 0 0 1 3.7 3.7v9.6a3.7 3.7 0 0 1-3.7 3.7H7.2a3.7 3.7 0 0 1-3.7-3.7V7.2a3.7 3.7 0 0 1 3.7-3.7Z"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="17.2" cy="6.8" r="1.15" fill="currentColor"/></svg></a>
+            <a class="hs-i" href="https://x.com/thedaoasis" target="_blank" rel="me noopener" aria-label="DAOasis on X"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M17.53 3h3.06l-6.69 7.64L21.75 21h-5.9l-4.62-6.04L5.94 21H2.87l7.15-8.17L2.5 3h6.05l4.18 5.52L17.53 3Zm-1.07 16.17h1.7L7.62 4.74H5.8l10.66 14.43Z"/></svg></a>
+          </div>
         </div>
         <!-- The hero's route map lived here and was removed on 3 September,
              together with the section's pin. The mobile journey stand-in
@@ -3211,7 +3321,7 @@
   <div class="divider light divider-hero" aria-hidden="true">
     <div class="divider-inner">
       <div class="divider-line"></div>
-      <img src="images/img-09.png" alt="" class="divider-mark" />
+      <img loading="lazy" decoding="async" width="465" height="492" src="images/img-09.png" alt="" class="divider-mark" />
       <div class="divider-line"></div>
     </div>
   </div>
@@ -3275,7 +3385,7 @@
 <div class="divider light bg-ivory">
   <div class="divider-inner">
     <div class="divider-line"></div>
-    <img src="images/img-09.png" alt="" class="divider-mark" />
+    <img loading="lazy" decoding="async" width="465" height="492" src="images/img-09.png" alt="" class="divider-mark" />
     <div class="divider-line"></div>
   </div>
 </div>
@@ -3313,6 +3423,7 @@
           <ul class="eco-feat"><li>Daily wellness metrics</li><li>Quests and streaks</li><li>Guided learning</li><li>Community connection</li><li>Progress tracking</li><li>Reward credits</li></ul>
           <a class="eco-learn" href="/app">Learn more <span aria-hidden="true">&rarr;</span></a>
         </div>
+        <p class="footer-social-note">Open now. The DAO and its governance arrive in stages.</p>
       </div>
       <div class="eco-item">
         <div class="eco-plate" style="background-image:url('images/img-07.jpg');background-position:38% 55%;" role="img" aria-label="DAOasis Sanctuaries"></div>
@@ -3374,7 +3485,7 @@
     </div>
 
     <div class="dash-wrap" id="dashWrap">
-      <img class="dash-img" src="images/app-home-morning.webp" width="758" height="1600" alt="The DAOasis Companion App home screen: the day's journey, and six habits as tiles." />
+      <img fetchpriority="low" decoding="async" class="dash-img" src="images/app-home-morning.webp" width="758" height="1600" alt="The DAOasis Companion App home screen: the day's journey, and six habits as tiles." />
 
       <div class="callout co-dir-left co1" id="co1">
         <div class="co-dot"></div><div class="co-line"></div>
@@ -3417,7 +3528,7 @@
   <div class="eco-kicker">The daily experience</div>
   <div class="eco-headline">Track what matters. <em>Thrive every day.</em></div>
   <div class="eco-sub">Your whole day on one screen. Every habit here moves the same marker down the same road.</div>
-  <div class="tm-dash"><img src="images/app-home-morning.webp" width="758" height="1600" alt="The DAOasis Companion App home screen: the day's journey, and six habits as tiles." /></div>
+  <div class="tm-dash"><img loading="lazy" decoding="async" src="images/app-home-morning.webp" width="758" height="1600" alt="The DAOasis Companion App home screen: the day's journey, and six habits as tiles." /></div>
   <div class="tm-list">
     <div class="tm-item"><div class="tm-label">Where you are</div><div class="tm-text">It opens on the day and the road ahead rather than a number — the direction you are going, not yesterday's total.</div></div>
     <div class="tm-item"><div class="tm-label">Your journey</div><div class="tm-text">One marker, nine hundred kilometres. Every habit you complete today moves it forward.</div></div>
@@ -3431,7 +3542,7 @@
 <div class="divider light bg-ivory">
   <div class="divider-inner">
     <div class="divider-line"></div>
-    <img src="images/img-09.png" alt="" class="divider-mark" />
+    <img loading="lazy" decoding="async" width="465" height="492" src="images/img-09.png" alt="" class="divider-mark" />
     <div class="divider-line"></div>
   </div>
 </div>
@@ -3545,7 +3656,7 @@
 <div class="divider dark bg-mineral">
   <div class="divider-inner">
     <div class="divider-line"></div>
-    <img src="images/img-09-white.png" alt="" class="divider-mark" />
+    <img loading="lazy" decoding="async" width="465" height="492" src="images/img-09-white.png" alt="" class="divider-mark" />
     <div class="divider-line"></div>
   </div>
 </div>
@@ -3628,7 +3739,7 @@
 <div class="divider light bg-ivory">
   <div class="divider-inner">
     <div class="divider-line"></div>
-    <img src="images/img-09.png" alt="" class="divider-mark" />
+    <img loading="lazy" decoding="async" width="465" height="492" src="images/img-09.png" alt="" class="divider-mark" />
     <div class="divider-line"></div>
   </div>
 </div>
@@ -3654,7 +3765,7 @@
 
     <!-- RIGHT: large image — always visible on entry -->
     <div class="pr-image-col" id="prImageCol">
-      <img class="pr-clarity-image" id="prClarityImage" src="images/clarity.jpg" alt="Clarity" />
+      <img fetchpriority="low" decoding="async" width="1672" height="941" class="pr-clarity-image" id="prClarityImage" src="images/clarity.jpg" alt="Clarity" />
     </div>
   </div>
 </div>
@@ -3674,7 +3785,7 @@
 <div class="divider light bg-ivory divider-after-principle">
   <div class="divider-inner">
     <div class="divider-line"></div>
-    <img src="images/img-09.png" alt="" class="divider-mark" />
+    <img loading="lazy" decoding="async" width="465" height="492" src="images/img-09.png" alt="" class="divider-mark" />
     <div class="divider-line"></div>
   </div>
 </div>
@@ -3695,7 +3806,7 @@
 <div class="divider dark bg-mineral">
   <div class="divider-inner">
     <div class="divider-line"></div>
-    <img src="images/img-09-white.png" alt="" class="divider-mark" />
+    <img loading="lazy" decoding="async" width="465" height="492" src="images/img-09-white.png" alt="" class="divider-mark" />
     <div class="divider-line"></div>
   </div>
 </div>
@@ -3741,12 +3852,20 @@
   <div class="footer-top">
     <div class="footer-brand">
       <div class="footer-brand-logo">
-        <img src="images/img-09-white.png" alt="DAOasis mark" />
+        <img loading="lazy" decoding="async" width="465" height="492" src="images/img-09-white.png" alt="DAOasis mark" />
         <span>DAOasis</span>
       </div>
       <div class="footer-tagline">
         <strong>Wellness meets Web3.</strong>
         <em>Rest · Learn · Earn · Return</em>
+      </div>
+      <div class="footer-social">
+        <div class="footer-col-label">Community</div>
+        <div class="footer-social-row">
+          <a class="fs-i" href="https://instagram.com/thedaoasis" target="_blank" rel="me noopener" aria-label="DAOasis on Instagram"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="1.7" d="M7.2 3.5h9.6a3.7 3.7 0 0 1 3.7 3.7v9.6a3.7 3.7 0 0 1-3.7 3.7H7.2a3.7 3.7 0 0 1-3.7-3.7V7.2a3.7 3.7 0 0 1 3.7-3.7Z"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="17.2" cy="6.8" r="1.15" fill="currentColor"/></svg></a>
+          <a class="fs-i" href="https://x.com/thedaoasis" target="_blank" rel="me noopener" aria-label="DAOasis on X"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M17.53 3h3.06l-6.69 7.64L21.75 21h-5.9l-4.62-6.04L5.94 21H2.87l7.15-8.17L2.5 3h6.05l4.18 5.52L17.53 3Zm-1.07 16.17h1.7L7.62 4.74H5.8l10.66 14.43Z"/></svg></a>
+          <a class="fs-i" href="https://linkedin.com/company/daoasis" target="_blank" rel="me noopener" aria-label="DAOasis on LinkedIn"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9.25h4v11.3H3V9.25Zm6.5 0h3.83v1.55h.05c.53-.96 1.84-1.98 3.79-1.98 4.05 0 4.8 2.53 4.8 5.82v5.91h-4v-5.24c0-1.25-.02-2.86-1.8-2.86-1.8 0-2.08 1.36-2.08 2.77v5.33h-4V9.25Z"/></svg></a>
+        </div>
       </div>
       <div class="footer-appearance">
         <div class="footer-appearance-label">Appearance</div>
@@ -3770,7 +3889,7 @@
     </div>
   </div>
   <div class="footer-bottom">
-    <span>© 2026 DAOasis. All rights reserved.</span>
+    <span>© 2026 DAOasis Global Ltd. All rights reserved.</span>
     <span>Phuket · Global</span>
   </div>
 </footer>

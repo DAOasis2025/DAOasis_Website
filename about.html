@@ -13,8 +13,24 @@
 <title>About DAOasis | The people building it</title>
 <meta name="description" content="DAOasis brings together experience across strategy, operations, technology, digital ownership, hospitality and community to build a different kind of wellness ecosystem." />
 <meta property="og:title" content="About DAOasis | The people building it" />
+<link rel="canonical" href="https://daoasis.xyz/about" />
+<meta property="og:url" content="https://daoasis.xyz/about" />
+<meta property="og:site_name" content="DAOasis" />
+<meta property="og:image" content="https://daoasis.xyz/images/og-card.jpg" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="DAOasis — Rest · Learn · Earn · Return" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:site" content="@thedaoasis" />
+<meta name="twitter:title" content="About DAOasis | The people building it" />
+<meta name="twitter:description" content="DAOasis brings together experience across strategy, operations, technology, digital ownership, hospitality and community to build a different kind of wellness ecosystem." />
+<meta name="twitter:image" content="https://daoasis.xyz/images/og-card.jpg" />
+<link rel="icon" href="/favicon.ico" sizes="any" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<link rel="manifest" href="/site.webmanifest" />
+<meta name="theme-color" content="#171412" />
 <meta property="og:description" content="Different disciplines. One direction. The team building the DAOasis Companion App, the digital ownership layer and the Sanctuary." />
-<meta property="og:image" content="images/img-07.jpg" />
 <meta property="og:type" content="website" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -678,6 +694,37 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
   .divider .divider-mark { opacity: 0.7 !important; }
   .ah-bg { opacity: 1 !important; transform: none !important; }
 </style></noscript>
+<style>
+/* ── FOOTER COMMUNITY ─────────────────────────────────────────────────
+   Sits inside .footer-brand rather than as a fifth column: .footer-top is
+   grid-template-columns:repeat(4,1fr) and all four slots are already spoken
+   for, so a new column would have meant re-laying out every page's footer. */
+.footer-social{margin-top:26px;}
+.footer-social .footer-col-label{margin-bottom:12px;}
+.footer-social-note{margin:12px 0 0;font-size:var(--t-nano);line-height:1.6;color:#8a8377;max-width:26em;}
+.footer-social-row{display:flex;align-items:center;gap:16px;}
+.fs-i{display:inline-flex;align-items:center;justify-content:center;
+  width:34px;height:34px;border-radius:50%;
+  border:1px solid rgba(247,244,238,0.16);color:#9a9285;
+  transition:color 0.25s var(--ease),border-color 0.25s var(--ease),
+             background 0.25s var(--ease);}
+.fs-i svg{width:17px;height:17px;display:block;}
+.fs-i:hover{color:var(--warm-white);border-color:rgba(196,138,90,0.55);
+  background:rgba(196,138,90,0.10);}
+</style>
+<style>
+/* ── THE STRETCH GUARD ────────────────────────────────────────────────
+   width/height on an <img> are presentational hints that set a real CSS
+   HEIGHT, not merely an aspect ratio — the trap already recorded against
+   the app hero. Adding those attributes site-wide (so pages reserve space
+   and stop reflowing) re-armed it: measured, the 26px nav mark rendered
+   492px tall on all six marketing pages.
+
+   A bare `img` selector is specificity (0,0,1) — lower than any author
+   rule and higher than a presentational hint — so this neutralises the
+   attribute's height while leaving every real CSS height untouched. */
+img{height:auto;}
+</style>
 </head>
 <body>
 
@@ -691,7 +738,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
     <span class="nav-burger-label">Menu</span>
   </button>
   <a class="nav-brand" href="index.html">
-    <img src="images/img-09-white.png" alt="DAOasis" />
+    <img decoding="async" width="465" height="492" src="images/img-09-white.png" alt="DAOasis" />
     <span>DAOasis</span>
   </a>
   <a class="nav-cta" href="index.html#waitlistSection">Join the waitlist</a>
@@ -700,7 +747,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
 <div class="nav-drawer-backdrop" id="navDrawerBackdrop"></div>
 <div class="nav-drawer" id="navDrawer">
   <div class="nav-drawer-head">
-    <img src="images/img-09-white.png" alt="DAOasis" />
+    <img decoding="async" width="465" height="492" src="images/img-09-white.png" alt="DAOasis" />
     <button class="nav-drawer-close" id="navDrawerClose" aria-label="Close menu">&times;</button>
   </div>
   <div class="nav-drawer-list">
@@ -806,7 +853,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
 </section>
 
 <div class="divider light bg-ivory">
-  <div class="divider-inner"><span class="divider-line"></span><img class="divider-mark" src="images/img-09.png" alt="" /><span class="divider-line"></span></div>
+  <div class="divider-inner"><span class="divider-line"></span><img loading="lazy" decoding="async" width="465" height="492" class="divider-mark" src="images/img-09.png" alt="" /><span class="divider-line"></span></div>
 </div>
 
 
@@ -827,7 +874,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
              own portrait. -->
         <figure class="pt soft d1">
           <span class="pt-mono" aria-hidden="true">J</span>
-          <img src="images/team-jamie.jpg" alt="Jamie, Founder and CEO of DAOasis"
+          <img loading="lazy" decoding="async" src="images/team-jamie.jpg" alt="Jamie, Founder and CEO of DAOasis"
                width="799" height="1200" onerror="this.remove();" />
           <figcaption class="pt-tag">Portrait to follow</figcaption>
         </figure>
@@ -850,7 +897,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
 </section>
 
 <div class="divider light bg-stone">
-  <div class="divider-inner"><span class="divider-line"></span><img class="divider-mark" src="images/img-09.png" alt="" /><span class="divider-line"></span></div>
+  <div class="divider-inner"><span class="divider-line"></span><img loading="lazy" decoding="async" width="465" height="492" class="divider-mark" src="images/img-09.png" alt="" /><span class="divider-line"></span></div>
 </div>
 
 
@@ -878,7 +925,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
 
     <div class="team team-2 rv">
       <article class="team-i soft">
-        <!-- PORTRAIT SLOT — <img src="images/team-nelson.jpg" alt="Nelson, Co-Founder and COO of DAOasis" /> -->
+        <!-- PORTRAIT SLOT — <img loading="lazy" decoding="async" src="images/team-nelson.jpg" alt="Nelson, Co-Founder and COO of DAOasis" /> -->
         <figure class="pt">
           <span class="pt-mono" aria-hidden="true">N</span>
           <figcaption class="pt-tag">Portrait to follow</figcaption>
@@ -897,7 +944,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
       </article>
 
       <article class="team-i soft d1">
-        <!-- PORTRAIT SLOT — <img src="images/team-dan.jpg" alt="Dan, Co-Founder, Company Strategy at DAOasis" /> -->
+        <!-- PORTRAIT SLOT — <img loading="lazy" decoding="async" src="images/team-dan.jpg" alt="Dan, Co-Founder, Company Strategy at DAOasis" /> -->
         <figure class="pt">
           <span class="pt-mono" aria-hidden="true">D</span>
           <figcaption class="pt-tag">Portrait to follow</figcaption>
@@ -919,7 +966,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
 </section>
 
 <div class="divider light bg-ivory">
-  <div class="divider-inner"><span class="divider-line"></span><img class="divider-mark" src="images/img-09.png" alt="" /><span class="divider-line"></span></div>
+  <div class="divider-inner"><span class="divider-line"></span><img loading="lazy" decoding="async" width="465" height="492" class="divider-mark" src="images/img-09.png" alt="" /><span class="divider-line"></span></div>
 </div>
 
 
@@ -975,7 +1022,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
       </article>
 
       <article class="team-i soft d1">
-        <!-- PORTRAIT SLOT — <img src="images/team-uchenna.jpg" alt="Uchenna, App Developer at DAOasis" /> -->
+        <!-- PORTRAIT SLOT — <img loading="lazy" decoding="async" src="images/team-uchenna.jpg" alt="Uchenna, App Developer at DAOasis" /> -->
         <figure class="pt">
           <span class="pt-mono" aria-hidden="true">U</span>
           <figcaption class="pt-tag">Portrait to follow</figcaption>
@@ -991,7 +1038,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
       </article>
 
       <article class="team-i soft d2">
-        <!-- PORTRAIT SLOT — <img src="images/team-etiosa.jpg" alt="Etiosa, Smart Contract Development at DAOasis" /> -->
+        <!-- PORTRAIT SLOT — <img loading="lazy" decoding="async" src="images/team-etiosa.jpg" alt="Etiosa, Smart Contract Development at DAOasis" /> -->
         <figure class="pt">
           <span class="pt-mono" aria-hidden="true">E</span>
           <figcaption class="pt-tag">Portrait to follow</figcaption>
@@ -1012,7 +1059,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
 </section>
 
 <div class="divider dark bg-mineral">
-  <div class="divider-inner"><span class="divider-line"></span><img class="divider-mark" src="images/img-09-white.png" alt="" /><span class="divider-line"></span></div>
+  <div class="divider-inner"><span class="divider-line"></span><img loading="lazy" decoding="async" width="465" height="492" class="divider-mark" src="images/img-09-white.png" alt="" /><span class="divider-line"></span></div>
 </div>
 
 
@@ -1051,6 +1098,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
         <div class="btn-row" style="margin-top:40px;">
           <a class="btn btn-ghost" href="sanctuary.html">Explore the Sanctuary</a>
         </div>
+        <p class="footer-social-note">Open now. The DAO and its governance arrive in stages.</p>
       </div>
       <div class="pair-media soft d2">
         <div class="par" data-par="0.12" style="height:min(58vh,540px);">
@@ -1065,7 +1113,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
 </section>
 
 <div class="divider green bg-green">
-  <div class="divider-inner"><span class="divider-line"></span><img class="divider-mark" src="images/img-09-white.png" alt="" /><span class="divider-line"></span></div>
+  <div class="divider-inner"><span class="divider-line"></span><img loading="lazy" decoding="async" width="465" height="492" class="divider-mark" src="images/img-09-white.png" alt="" /><span class="divider-line"></span></div>
 </div>
 
 
@@ -1133,7 +1181,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
 </section>
 
 <div class="divider dark bg-surface">
-  <div class="divider-inner"><span class="divider-line"></span><img class="divider-mark" src="images/img-09-white.png" alt="" /><span class="divider-line"></span></div>
+  <div class="divider-inner"><span class="divider-line"></span><img loading="lazy" decoding="async" width="465" height="492" class="divider-mark" src="images/img-09-white.png" alt="" /><span class="divider-line"></span></div>
 </div>
 
 
@@ -1174,7 +1222,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
 </section>
 
 <div class="divider light bg-ivory">
-  <div class="divider-inner"><span class="divider-line"></span><img class="divider-mark" src="images/img-09.png" alt="" /><span class="divider-line"></span></div>
+  <div class="divider-inner"><span class="divider-line"></span><img loading="lazy" decoding="async" width="465" height="492" class="divider-mark" src="images/img-09.png" alt="" /><span class="divider-line"></span></div>
 </div>
 
 
@@ -1271,8 +1319,16 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
 <footer class="site-footer">
   <div class="footer-top">
     <div>
-      <div class="footer-brand-logo"><img src="images/img-09-white.png" alt="DAOasis mark" /><span>DAOasis</span></div>
+      <div class="footer-brand-logo"><img loading="lazy" decoding="async" width="465" height="492" src="images/img-09-white.png" alt="DAOasis mark" /><span>DAOasis</span></div>
       <div class="footer-tagline"><strong>Wellness meets Web3.</strong><em>Rest · Learn · Earn · Return</em></div>
+      <div class="footer-social">
+        <div class="footer-col-label">Community</div>
+        <div class="footer-social-row">
+          <a class="fs-i" href="https://instagram.com/thedaoasis" target="_blank" rel="me noopener" aria-label="DAOasis on Instagram"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="1.7" d="M7.2 3.5h9.6a3.7 3.7 0 0 1 3.7 3.7v9.6a3.7 3.7 0 0 1-3.7 3.7H7.2a3.7 3.7 0 0 1-3.7-3.7V7.2a3.7 3.7 0 0 1 3.7-3.7Z"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="17.2" cy="6.8" r="1.15" fill="currentColor"/></svg></a>
+          <a class="fs-i" href="https://x.com/thedaoasis" target="_blank" rel="me noopener" aria-label="DAOasis on X"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M17.53 3h3.06l-6.69 7.64L21.75 21h-5.9l-4.62-6.04L5.94 21H2.87l7.15-8.17L2.5 3h6.05l4.18 5.52L17.53 3Zm-1.07 16.17h1.7L7.62 4.74H5.8l10.66 14.43Z"/></svg></a>
+          <a class="fs-i" href="https://linkedin.com/company/daoasis" target="_blank" rel="me noopener" aria-label="DAOasis on LinkedIn"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9.25h4v11.3H3V9.25Zm6.5 0h3.83v1.55h.05c.53-.96 1.84-1.98 3.79-1.98 4.05 0 4.8 2.53 4.8 5.82v5.91h-4v-5.24c0-1.25-.02-2.86-1.8-2.86-1.8 0-2.08 1.36-2.08 2.77v5.33h-4V9.25Z"/></svg></a>
+        </div>
+      </div>
       <div class="footer-appearance">
         <div class="footer-appearance-label">Appearance</div>
         <div class="footer-toggle"><button id="ftLight">Light</button><button id="ftDark" class="active">Dark</button></div>
@@ -1291,7 +1347,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
       <a href="privacy.html">Privacy</a><a href="health-data.html">Health Data</a><a href="terms.html">Terms</a><a href="cookies.html">Cookies</a><a href="token-disclaimer.html">Token Disclaimer</a><a href="accessibility.html">Accessibility</a>
     </div>
   </div>
-  <div class="footer-bottom"><span>© 2026 DAOasis. All rights reserved.</span><span>Phuket · Global</span></div>
+  <div class="footer-bottom"><span>© 2026 DAOasis Global Ltd. All rights reserved.</span><span>Phuket · Global</span></div>
 </footer>
 
 

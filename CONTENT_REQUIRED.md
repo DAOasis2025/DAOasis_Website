@@ -16,22 +16,34 @@ described on the website, but they have not been reviewed by a lawyer.
 ## LEGAL ENTITY
 
 **Entity name RESOLVED, 25 August 2026 — `DAOasis Global Ltd`, registered in the United
-Kingdom.** It is now printed as plain text in `privacy.html` §01/§19 and `terms.html`
-§01/§24. The company number and the registered address remain unknown and are still
-visible `tbc` markers.
+Kingdom.** Printed as plain text in `privacy.html` §01/§19 and `terms.html` §01/§24.
 
-| Needed | Appears on |
+**CLOSED, 19 September 2026 — the company number and registered address are a
+DECISION, not an unknown.** The founders' instruction was to leave them off the site:
+anyone who needs them can find them on the public register under the company name. The
+`tbc` markers said "to be confirmed", which stated the opposite of the truth — the
+company is registered — so all four were replaced with a link to Companies House.
+
+**Do not reinstate a `tbc` for these.** If the details are ever printed, they go in
+`privacy.html` §01/§19 and `terms.html` §01/§24, replacing that link.
+
+| Needed | Status |
 |---|---|
-| ~~Registered legal entity name~~ — **DAOasis Global Ltd (UK)** | resolved |
-| Company registration number | `privacy.html` §01, §19 · `terms.html` §01, §24 |
-| Registered address | `privacy.html` §01, §19 · `terms.html` §24 |
+| ~~Registered legal entity name~~ — **DAOasis Global Ltd (UK)** | resolved 25 Aug |
+| ~~Company registration number~~ | **deliberately not published** — 19 Sep |
+| ~~Registered address~~ | **deliberately not published** — 19 Sep |
 | Any trading names | Not yet referenced — add once known |
 
-The planned BVI parent and Thai operating company are **not yet formed**, so neither
-appears as a contracting entity anywhere in the trust layer. Governing law and
-jurisdiction remain `tbc`.
+**The UK company carries everything, 19 September 2026.** The planned BVI parent and
+Thai operating company are formed **once DAOasis is operational**, not as groundwork
+for the raise — `investors.html` was reframed accordingly (hero strip, Stage 1 purpose,
+use of funds 01, the build roadmap, the revenue rows and the legal foot). Until then
+every agreement, payment, investment and formal notice runs through
+`DAOasis Global Ltd`, and the five trust pages that named no entity at all
+(`health-data`, `cookies`, `accessibility`, `contact`, `token-disclaimer`) now each say
+so in their closing note.
 
-Nothing beyond the entity name was invented here.
+Nothing beyond what the founders stated was invented here.
 
 ---
 
@@ -102,12 +114,25 @@ anywhere in this project, and the page must not imply otherwise.
 
 ## JURISDICTION
 
-| Needed | Appears on |
+**RESOLVED, 19 September 2026 — England and Wales**, on the founders' instruction,
+following from the UK company being the contracting entity for everything. `terms.html`
+§23 now states both the governing law and the courts plainly.
+
+The consumer carve-out in §23 — that a consumer keeps the mandatory protections of the
+law where they live, and may bring proceedings there — was **already in the document**
+and was not written for this change. Two values were filled into existing scaffolding;
+no legal provision was drafted. **§23 still wants a lawyer's read before launch.**
+
+| Needed | Status |
 |---|---|
-| Governing law | `terms.html` §23 |
-| Courts with jurisdiction | `terms.html` §23 |
+| ~~Governing law~~ — **England and Wales** | resolved 19 Sep, `terms.html` §23 |
+| ~~Courts with jurisdiction~~ — **England and Wales** | resolved 19 Sep, `terms.html` §23 |
 | Consumer-law carve-outs required for target markets | `terms.html` §19, §20, §21, §23 |
 | Liability cap figure | `terms.html` §20 |
+
+`token-disclaimer.html`'s jurisdiction markers are a **different question** and stay
+open: they concern *where $DVT functionality may lawfully be offered*, which is pending
+regulatory analysis and is not answered by the choice of governing law.
 
 ---
 

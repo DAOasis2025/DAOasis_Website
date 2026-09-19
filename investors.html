@@ -13,8 +13,24 @@
 <title>DAOasis | Investor Overview</title>
 <meta name="description" content="DAOasis connects wellness behaviour, learning, community, real-world experiences and digital ownership into one connected ecosystem. An investor overview of the thesis, product architecture, economic model and stage." />
 <meta property="og:title" content="DAOasis | Investor Overview" />
+<link rel="canonical" href="https://daoasis.xyz/investors" />
+<meta property="og:url" content="https://daoasis.xyz/investors" />
+<meta property="og:site_name" content="DAOasis" />
+<meta property="og:image" content="https://daoasis.xyz/images/og-card.jpg" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="DAOasis — Rest · Learn · Earn · Return" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:site" content="@thedaoasis" />
+<meta name="twitter:title" content="DAOasis | Investor Overview" />
+<meta name="twitter:description" content="DAOasis connects wellness behaviour, learning, community, real-world experiences and digital ownership into one connected ecosystem. An investor overview of the thesis, product architecture, economic model and stage." />
+<meta name="twitter:image" content="https://daoasis.xyz/images/og-card.jpg" />
+<link rel="icon" href="/favicon.ico" sizes="any" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<link rel="manifest" href="/site.webmanifest" />
+<meta name="theme-color" content="#171412" />
 <meta property="og:description" content="Daily behaviour becomes a Journey. The Journey becomes participation. Participation becomes ownership — and completing one Journey opens the next. An investor overview of the DAOasis ecosystem." />
-<meta property="og:image" content="images/img-11.jpg" />
 <meta property="og:type" content="website" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -913,6 +929,7 @@ html[data-theme="light"] .req-t { color: var(--charcoal); }
   transition:border-color 0.25s var(--ease), background 0.25s var(--ease);
 }
 .req-ta { resize: vertical; min-height: 92px; }
+.req-in:focus-visible, .req-sel:focus-visible, .req-ta:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 .req-in:focus, .req-sel:focus, .req-ta:focus { outline: none; border-color: rgba(196,138,90,0.75); background: rgba(247,244,238,0.07); }
 html[data-theme="light"] .req-in, html[data-theme="light"] .req-sel, html[data-theme="light"] .req-ta {
   color: var(--charcoal); background: rgba(43,38,35,0.035); border-color: rgba(43,38,35,0.2); }
@@ -1035,6 +1052,37 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
   .br-fill { width: 100% !important; }
   .br-st::before { background: #C48A5A !important; border-color: #C48A5A !important; }
 </style></noscript>
+<style>
+/* ── FOOTER COMMUNITY ─────────────────────────────────────────────────
+   Sits inside .footer-brand rather than as a fifth column: .footer-top is
+   grid-template-columns:repeat(4,1fr) and all four slots are already spoken
+   for, so a new column would have meant re-laying out every page's footer. */
+.footer-social{margin-top:26px;}
+.footer-social .footer-col-label{margin-bottom:12px;}
+.footer-social-note{margin:12px 0 0;font-size:var(--t-nano);line-height:1.6;color:#8a8377;max-width:26em;}
+.footer-social-row{display:flex;align-items:center;gap:16px;}
+.fs-i{display:inline-flex;align-items:center;justify-content:center;
+  width:34px;height:34px;border-radius:50%;
+  border:1px solid rgba(247,244,238,0.16);color:#9a9285;
+  transition:color 0.25s var(--ease),border-color 0.25s var(--ease),
+             background 0.25s var(--ease);}
+.fs-i svg{width:17px;height:17px;display:block;}
+.fs-i:hover{color:var(--warm-white);border-color:rgba(196,138,90,0.55);
+  background:rgba(196,138,90,0.10);}
+</style>
+<style>
+/* ── THE STRETCH GUARD ────────────────────────────────────────────────
+   width/height on an <img> are presentational hints that set a real CSS
+   HEIGHT, not merely an aspect ratio — the trap already recorded against
+   the app hero. Adding those attributes site-wide (so pages reserve space
+   and stop reflowing) re-armed it: measured, the 26px nav mark rendered
+   492px tall on all six marketing pages.
+
+   A bare `img` selector is specificity (0,0,1) — lower than any author
+   rule and higher than a presentational hint — so this neutralises the
+   attribute's height while leaving every real CSS height untouched. */
+img{height:auto;}
+</style>
 </head>
 <body>
 
@@ -1048,7 +1096,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
     <span class="nav-burger-label">Menu</span>
   </button>
   <a class="nav-brand" href="index.html">
-    <img src="images/img-09-white.png" alt="DAOasis" />
+    <img decoding="async" width="465" height="492" src="images/img-09-white.png" alt="DAOasis" />
     <span>DAOasis</span>
   </a>
   <a class="nav-cta" href="index.html#waitlistSection">Join the waitlist</a>
@@ -1057,7 +1105,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
 <div class="nav-drawer-backdrop" id="navDrawerBackdrop"></div>
 <div class="nav-drawer" id="navDrawer">
   <div class="nav-drawer-head">
-    <img src="images/img-09-white.png" alt="DAOasis" />
+    <img decoding="async" width="465" height="492" src="images/img-09-white.png" alt="DAOasis" />
     <button class="nav-drawer-close" id="navDrawerClose" aria-label="Close menu">&times;</button>
   </div>
   <div class="nav-drawer-list">
@@ -1110,7 +1158,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
       <div>
         <div class="ih-si-k">Structure</div>
         <div class="ih-si-v">UK&nbsp;&middot;&nbsp;BVI&nbsp;&middot;&nbsp;Thailand</div>
-        <div class="ih-si-n">UK company live. BVI parent and Thai entity planned.</div>
+        <div class="ih-si-n">UK company live and contracting. BVI and Thai entities open once operational.</div>
       </div>
       <div>
         <div class="ih-si-k">Physical pilot</div>
@@ -1184,7 +1232,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
 </section>
 
 <div class="divider light bg-ivory">
-  <div class="divider-inner"><span class="divider-line"></span><img class="divider-mark" src="images/img-09.png" alt="" /><span class="divider-line"></span></div>
+  <div class="divider-inner"><span class="divider-line"></span><img loading="lazy" decoding="async" width="465" height="492" class="divider-mark" src="images/img-09.png" alt="" /><span class="divider-line"></span></div>
 </div>
 
 
@@ -1239,7 +1287,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
 </section>
 
 <div class="divider dark bg-surface">
-  <div class="divider-inner"><span class="divider-line"></span><img class="divider-mark" src="images/img-09-white.png" alt="" /><span class="divider-line"></span></div>
+  <div class="divider-inner"><span class="divider-line"></span><img loading="lazy" decoding="async" width="465" height="492" class="divider-mark" src="images/img-09-white.png" alt="" /><span class="divider-line"></span></div>
 </div>
 
 
@@ -1259,6 +1307,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
           <p>People have never had more wellness information, more tracking, or more
           content. Consistency has not improved to match.</p>
         </div>
+        <p class="footer-social-note">Open now. The DAO and its governance arrive in stages.</p>
       </div>
       <div class="soft d1">
         <div class="rows">
@@ -1310,7 +1359,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
 </section>
 
 <div class="divider light bg-stone">
-  <div class="divider-inner"><span class="divider-line"></span><img class="divider-mark" src="images/img-09.png" alt="" /><span class="divider-line"></span></div>
+  <div class="divider-inner"><span class="divider-line"></span><img loading="lazy" decoding="async" width="465" height="492" class="divider-mark" src="images/img-09.png" alt="" /><span class="divider-line"></span></div>
 </div>
 
 
@@ -1370,7 +1419,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
 </section>
 
 <div class="divider dark bg-mineral">
-  <div class="divider-inner"><span class="divider-line"></span><img class="divider-mark" src="images/img-09-white.png" alt="" /><span class="divider-line"></span></div>
+  <div class="divider-inner"><span class="divider-line"></span><img loading="lazy" decoding="async" width="465" height="492" class="divider-mark" src="images/img-09-white.png" alt="" /><span class="divider-line"></span></div>
 </div>
 
 
@@ -1545,7 +1594,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
 </section>
 
 <div class="divider dark bg-space">
-  <div class="divider-inner"><span class="divider-line"></span><img class="divider-mark" src="images/img-09-white.png" alt="" /><span class="divider-line"></span></div>
+  <div class="divider-inner"><span class="divider-line"></span><img loading="lazy" decoding="async" width="465" height="492" class="divider-mark" src="images/img-09-white.png" alt="" /><span class="divider-line"></span></div>
 </div>
 
 
@@ -1683,7 +1732,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
 </section>
 
 <div class="divider light bg-ivory">
-  <div class="divider-inner"><span class="divider-line"></span><img class="divider-mark" src="images/img-09.png" alt="" /><span class="divider-line"></span></div>
+  <div class="divider-inner"><span class="divider-line"></span><img loading="lazy" decoding="async" width="465" height="492" class="divider-mark" src="images/img-09.png" alt="" /><span class="divider-line"></span></div>
 </div>
 
 
@@ -1782,7 +1831,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
 </section>
 
 <div class="divider dark bg-surface">
-  <div class="divider-inner"><span class="divider-line"></span><img class="divider-mark" src="images/img-09-white.png" alt="" /><span class="divider-line"></span></div>
+  <div class="divider-inner"><span class="divider-line"></span><img loading="lazy" decoding="async" width="465" height="492" class="divider-mark" src="images/img-09-white.png" alt="" /><span class="divider-line"></span></div>
 </div>
 
 
@@ -1852,7 +1901,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
 </section>
 
 <div class="divider light bg-ivory">
-  <div class="divider-inner"><span class="divider-line"></span><img class="divider-mark" src="images/img-09.png" alt="" /><span class="divider-line"></span></div>
+  <div class="divider-inner"><span class="divider-line"></span><img loading="lazy" decoding="async" width="465" height="492" class="divider-mark" src="images/img-09.png" alt="" /><span class="divider-line"></span></div>
 </div>
 
 
@@ -1927,7 +1976,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
 </section>
 
 <div class="divider light bg-stone">
-  <div class="divider-inner"><span class="divider-line"></span><img class="divider-mark" src="images/img-09.png" alt="" /><span class="divider-line"></span></div>
+  <div class="divider-inner"><span class="divider-line"></span><img loading="lazy" decoding="async" width="465" height="492" class="divider-mark" src="images/img-09.png" alt="" /><span class="divider-line"></span></div>
 </div>
 
 
@@ -2013,7 +2062,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
 </section>
 
 <div class="divider light bg-ivory">
-  <div class="divider-inner"><span class="divider-line"></span><img class="divider-mark" src="images/img-09.png" alt="" /><span class="divider-line"></span></div>
+  <div class="divider-inner"><span class="divider-line"></span><img loading="lazy" decoding="async" width="465" height="492" class="divider-mark" src="images/img-09.png" alt="" /><span class="divider-line"></span></div>
 </div>
 
 
@@ -2069,7 +2118,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
 </section>
 
 <div class="divider light bg-stone">
-  <div class="divider-inner"><span class="divider-line"></span><img class="divider-mark" src="images/img-09.png" alt="" /><span class="divider-line"></span></div>
+  <div class="divider-inner"><span class="divider-line"></span><img loading="lazy" decoding="async" width="465" height="492" class="divider-mark" src="images/img-09.png" alt="" /><span class="divider-line"></span></div>
 </div>
 
 
@@ -2115,7 +2164,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
           <div class="row" style="border-color:rgba(247,244,238,0.2);"><div class="row-n" style="color:rgba(247,244,238,0.55)">04</div><div>
             <div class="row-t" style="color:var(--warm-white)">Asset-light by intent</div>
             <div class="row-b" style="color:rgba(247,244,238,0.72)">Leased or partnership-based hospitality models rather than owned
-            infrastructure, operated through a separate Thai entity so the digital ecosystem is never carrying hospitality risk.</div></div></div>
+            infrastructure, to be operated through a separate Thai entity once that side is live, so the digital ecosystem never carries hospitality risk.</div></div></div>
         </div>
         <a class="btn btn-ghost" href="sanctuary.html" style="margin-top:40px;">See the Sanctuary</a>
       </div>
@@ -2140,7 +2189,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
 </section>
 
 <div class="divider green bg-green">
-  <div class="divider-inner"><span class="divider-line"></span><img class="divider-mark" src="images/img-09-white.png" alt="" /><span class="divider-line"></span></div>
+  <div class="divider-inner"><span class="divider-line"></span><img loading="lazy" decoding="async" width="465" height="492" class="divider-mark" src="images/img-09-white.png" alt="" /><span class="divider-line"></span></div>
 </div>
 
 
@@ -2210,7 +2259,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
 </section>
 
 <div class="divider dark bg-mineral">
-  <div class="divider-inner"><span class="divider-line"></span><img class="divider-mark" src="images/img-09-white.png" alt="" /><span class="divider-line"></span></div>
+  <div class="divider-inner"><span class="divider-line"></span><img loading="lazy" decoding="async" width="465" height="492" class="divider-mark" src="images/img-09-white.png" alt="" /><span class="divider-line"></span></div>
 </div>
 
 
@@ -2261,7 +2310,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
 </section>
 
 <div class="divider dark bg-surface">
-  <div class="divider-inner"><span class="divider-line"></span><img class="divider-mark" src="images/img-09-white.png" alt="" /><span class="divider-line"></span></div>
+  <div class="divider-inner"><span class="divider-line"></span><img loading="lazy" decoding="async" width="465" height="492" class="divider-mark" src="images/img-09-white.png" alt="" /><span class="divider-line"></span></div>
 </div>
 
 
@@ -2326,7 +2375,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
 </section>
 
 <div class="divider light bg-ivory">
-  <div class="divider-inner"><span class="divider-line"></span><img class="divider-mark" src="images/img-09.png" alt="" /><span class="divider-line"></span></div>
+  <div class="divider-inner"><span class="divider-line"></span><img loading="lazy" decoding="async" width="465" height="492" class="divider-mark" src="images/img-09.png" alt="" /><span class="divider-line"></span></div>
 </div>
 
 
@@ -2412,7 +2461,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
 </section>
 
 <div class="divider light bg-stone">
-  <div class="divider-inner"><span class="divider-line"></span><img class="divider-mark" src="images/img-09.png" alt="" /><span class="divider-line"></span></div>
+  <div class="divider-inner"><span class="divider-line"></span><img loading="lazy" decoding="async" width="465" height="492" class="divider-mark" src="images/img-09.png" alt="" /><span class="divider-line"></span></div>
 </div>
 
 
@@ -2442,9 +2491,10 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
         <div class="cap-a">US$50,000</div>
         <div class="cap-t">Open now &middot; Founder and private network</div>
         <div class="cap-g"><b>Purpose</b>To complete the groundwork an institutional
-        raise depends on: the BVI parent above the live UK company and the Thai operating
-        entity beneath it, a reviewed legal position, an independently audited technical
-        architecture and a functional Companion App MVP. Approximately US$25,000 has already been deployed into
+        raise depends on: a reviewed legal position, an independently audited technical
+        architecture and a functional Companion App MVP. The group companies in the
+        British Virgin Islands and Thailand are not part of this stage — they open once
+        DAOasis is operational, and until then the UK company carries everything. Approximately US$25,000 has already been deployed into
         foundational development and infrastructure ahead of this stage.</div>
       </div>
       <div class="cap-i soft d1">
@@ -2476,10 +2526,11 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
       <div class="cap-u">
         <div class="cap-u-i soft d1">
           <div class="cap-u-n">01</div>
-          <div class="cap-u-t">Corporate structure</div>
-          <div class="cap-u-b">Formation of the BVI parent above the live UK company, and of the
-          Thai operating entity, including the intercompany arrangements between the
-          digital and hospitality sides of the group.</div>
+          <div class="cap-u-t">Legal and corporate groundwork</div>
+          <div class="cap-u-b">Counsel on the $DVT position, and the design of the group
+          structure — a British Virgin Islands parent and a Thai operating entity — ready
+          to be formed once DAOasis is operational. Everything contracts through
+          DAOasis Global Ltd until then.</div>
         </div>
         <div class="cap-u-i soft d1">
           <div class="cap-u-n">02</div>
@@ -2533,7 +2584,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
         </div>
         <div class="rev-i soft d1">
           <div class="rev-t">Sanctuary experiences <span class="chip chip-future">2027 pilot</span></div>
-          <div class="rev-b">Retreat bookings and programme fees, operated through the Thai entity. Paid in fiat, not in token.</div>
+          <div class="rev-b">Retreat bookings and programme fees, to be operated through the planned Thai entity. Paid in fiat, not in token.</div>
         </div>
         <div class="rev-i soft d2">
           <div class="rev-t">Education and cohort learning <span class="chip chip-building">Planned</span></div>
@@ -2553,7 +2604,30 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
         </div>
       </div>
 
-      <div class="disclose soft d4" style="margin-top:48px;">
+      <!-- WHO YOU ARE ACTUALLY INVESTING IN. Added 19 September on the
+           founders' instruction: every instrument runs through the live UK
+           company while the group is being formed, so the page should say so
+           at the point the stages are read rather than only in the legal
+           foot. The instrument is named; its terms are NOT — no valuation,
+           cap or discount exists yet and none was invented here. -->
+      <div class="disclose soft d3" style="margin-top:48px;">
+        <b>What you would be investing in</b>
+        Equity investment at the Validate and Build stages is into
+        <strong>DAOasis Global Ltd</strong>, the live UK company, on a
+        <strong>SAFE</strong> — a Simple Agreement for Future Equity, which converts to
+        shares at a future priced round rather than setting a price today. The planned
+        British Virgin Islands and Thai entities play no part in it: they are formed
+        once DAOasis is operational, and the UK company carries every agreement,
+        payment and notice until then.
+        <br /><br />
+        The $DVT element of the Scale stage is a separate matter, not equity and not a
+        SAFE, and remains gated on the legal review described above. Individual SAFE
+        terms are discussed directly and are not published here, for the reason given
+        below — there is no valuation. Nothing on this page is an offer to sell or a
+        solicitation of an offer to buy.
+      </div>
+
+      <div class="disclose soft d4" style="margin-top:32px;">
         <b>What is deliberately not on this page</b>
         No pricing, no unit economics, no revenue projections, no forecast growth curves
         and no valuation. DAOasis is pre-revenue; publishing modelled figures as though
@@ -2567,7 +2641,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
 </section>
 
 <div class="divider light bg-ivory">
-  <div class="divider-inner"><span class="divider-line"></span><img class="divider-mark" src="images/img-09.png" alt="" /><span class="divider-line"></span></div>
+  <div class="divider-inner"><span class="divider-line"></span><img loading="lazy" decoding="async" width="465" height="492" class="divider-mark" src="images/img-09.png" alt="" /><span class="divider-line"></span></div>
 </div>
 
 
@@ -2636,7 +2710,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
             <li>Working end-to-end app flows for the core daily habit loop</li>
             <li>Reward Credits implementation — the first reward mechanic to ship</li>
             <li>HealthKit and Google Health Connect integration</li>
-            <li>BVI parent and Thai operating company formation</li>
+            <li>Group structure designed and ready to form &mdash; BVI parent, Thai operating company</li>
             <li>$DVT legal and structural groundwork ahead of any public activity</li>
             <li>Twenty pilot lessons — ten in each of the two tracks</li>
           </ul>
@@ -2765,7 +2839,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
 </section>
 
 <div class="divider dark bg-mineral">
-  <div class="divider-inner"><span class="divider-line"></span><img class="divider-mark" src="images/img-09-white.png" alt="" /><span class="divider-line"></span></div>
+  <div class="divider-inner"><span class="divider-line"></span><img loading="lazy" decoding="async" width="465" height="492" class="divider-mark" src="images/img-09-white.png" alt="" /><span class="divider-line"></span></div>
 </div>
 
 
@@ -2812,9 +2886,11 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
       <p>This page is provided for information only. It is not an offer to sell, or a
       solicitation of an offer to buy, any security, token or other financial instrument,
       and it is not investment, financial, legal or tax advice.</p>
-      <p>DAOasis is at feasibility stage and pre-launch. DAOasis Global Ltd (UK) is
-      incorporated and live; the planned BVI parent and Thai operating company are not yet
-      formed, and the sequencing is still being settled with counsel. The Companion App has
+      <p>DAOasis is at feasibility stage and pre-launch. DAOasis Global Ltd, registered in the
+      United Kingdom, is incorporated, live, and the entity behind every agreement,
+      payment and investment described on this page. The British Virgin Islands parent and
+      the Thai operating company are planned and will be formed once DAOasis is
+      operational; neither exists today. The Companion App has
       not been released, $DVT has not launched, and the Sanctuary is a planned pilot rather
       than an operating property. There are no users, no revenue and nothing yet validated
       in market. Statements about future products, mechanics, timelines and
@@ -2837,8 +2913,16 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
 <footer class="site-footer">
   <div class="footer-top">
     <div>
-      <div class="footer-brand-logo"><img src="images/img-09-white.png" alt="DAOasis mark" /><span>DAOasis</span></div>
+      <div class="footer-brand-logo"><img loading="lazy" decoding="async" width="465" height="492" src="images/img-09-white.png" alt="DAOasis mark" /><span>DAOasis</span></div>
       <div class="footer-tagline"><strong>Wellness meets Web3.</strong><em>Rest · Learn · Earn · Return</em></div>
+      <div class="footer-social">
+        <div class="footer-col-label">Community</div>
+        <div class="footer-social-row">
+          <a class="fs-i" href="https://instagram.com/thedaoasis" target="_blank" rel="me noopener" aria-label="DAOasis on Instagram"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="1.7" d="M7.2 3.5h9.6a3.7 3.7 0 0 1 3.7 3.7v9.6a3.7 3.7 0 0 1-3.7 3.7H7.2a3.7 3.7 0 0 1-3.7-3.7V7.2a3.7 3.7 0 0 1 3.7-3.7Z"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="17.2" cy="6.8" r="1.15" fill="currentColor"/></svg></a>
+          <a class="fs-i" href="https://x.com/thedaoasis" target="_blank" rel="me noopener" aria-label="DAOasis on X"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M17.53 3h3.06l-6.69 7.64L21.75 21h-5.9l-4.62-6.04L5.94 21H2.87l7.15-8.17L2.5 3h6.05l4.18 5.52L17.53 3Zm-1.07 16.17h1.7L7.62 4.74H5.8l10.66 14.43Z"/></svg></a>
+          <a class="fs-i" href="https://linkedin.com/company/daoasis" target="_blank" rel="me noopener" aria-label="DAOasis on LinkedIn"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9.25h4v11.3H3V9.25Zm6.5 0h3.83v1.55h.05c.53-.96 1.84-1.98 3.79-1.98 4.05 0 4.8 2.53 4.8 5.82v5.91h-4v-5.24c0-1.25-.02-2.86-1.8-2.86-1.8 0-2.08 1.36-2.08 2.77v5.33h-4V9.25Z"/></svg></a>
+        </div>
+      </div>
       <div class="footer-appearance">
         <div class="footer-appearance-label">Appearance</div>
         <div class="footer-toggle"><button id="ftLight">Light</button><button id="ftDark" class="active">Dark</button></div>
@@ -2857,7 +2941,7 @@ html[data-theme="light"] .footer-toggle button#ftDark { color: #7a746a; backgrou
       <a href="privacy.html">Privacy</a><a href="health-data.html">Health Data</a><a href="terms.html">Terms</a><a href="cookies.html">Cookies</a><a href="token-disclaimer.html">Token Disclaimer</a><a href="accessibility.html">Accessibility</a>
     </div>
   </div>
-  <div class="footer-bottom"><span>© 2026 DAOasis. All rights reserved.</span><span>Phuket · Global</span></div>
+  <div class="footer-bottom"><span>© 2026 DAOasis Global Ltd. All rights reserved.</span><span>Phuket · Global</span></div>
 </footer>
 
 

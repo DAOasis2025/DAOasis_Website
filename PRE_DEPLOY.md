@@ -2,9 +2,87 @@
 
 Things that must be done outside this environment, before the site goes live.
 
+
 ---
 
-## 0A. UPLOAD LIST — 3 September  (NEWEST — do this one)
+## 0. UPLOAD LIST — 19 September  (NEWEST — do this one)
+
+Icons, share previews, sitemap, keyboard focus, image loading and the social
+links. See CLAUDE.md, "Findable, shareable, keyboard-navigable — 19 September".
+
+### BLOCKER — POINT daoasis.xyz AT THE SITE FIRST
+
+Every canonical URL, og:url and share-image URL on all 13 pages now reads
+**https://daoasis.xyz**. That was the deliberate choice (it is already the
+email domain and the site should not be indexed under a vercel.app address),
+but **until the domain actually serves the site those URLs resolve to
+nothing.** Share previews will still show no image and Google will be told
+the canonical page lives somewhere it cannot fetch.
+
+Order matters:
+1. add daoasis.xyz to the Vercel project and point the DNS at it;
+2. upload the files below;
+3. confirm with Facebook's Sharing Debugger and LinkedIn's Post Inspector —
+   both cache aggressively, so scrape once after go-live.
+
+If the domain is going to be more than a few days away, change ORIGIN back to
+the vercel host: it is one constant at the top of every head block.
+
+### Files — REPLACE
+```
+all 13 .html files      every one gained the icon links, the share tags and
+                        the footer community block; index, app, sanctuary and
+                        web3 also gained the skip link and the focus ring
+css/trust.css           footer community styles for the seven trust pages
+```
+
+### Files — NEW, upload to the ROOT (not into images/)
+```
+favicon.ico
+favicon-32.png
+apple-touch-icon.png
+icon-192.png
+icon-512.png
+site.webmanifest
+robots.txt
+sitemap.xml
+```
+
+### Files — NEW, upload into images/
+```
+images/og-card.jpg      the 1200x630 share card
+```
+
+**`js/cine.js` and `js/smooth.js` did NOT change in this pass.**
+
+The eight root files must sit at the ROOT, beside `index.html`. Every page
+references them with a leading slash (`/favicon.ico`), so putting them in
+`images/` would 404 exactly as the missing favicon has been doing since
+August.
+
+
+### Also in this batch — the legal pass (19 September, later)
+
+Governing law set to England and Wales, the company-number placeholders replaced
+with a Companies House pointer, an entity line added to the five trust pages that
+named none, the BVI and Thai entities reframed as post-operational on
+`investors.html`, and the SAFE stated. **`css/trust.css` changed again** (the
+`.entity-note` rule). Visible 'to be confirmed' markers: 30 -> 23.
+
+**`terms.html` section 23 still wants a lawyer's read before launch.** Two values
+were filled into existing scaffolding; no provision was drafted.
+
+### After go-live
+- Re-scrape the share card on Facebook, LinkedIn and Slack.
+- Submit https://daoasis.xyz/sitemap.xml in Google Search Console.
+- Check the three social links actually land: instagram.com/thedaoasis,
+  x.com/thedaoasis, linkedin.com/company/daoasis. **The LinkedIn one was
+  inferred from "@daoasis"** — confirm it is a company page and not a
+  personal profile (/in/daoasis).
+
+---
+
+## 0A. UPLOAD LIST — 3 September  (SUPERSEDED by section 0 above)
 
 Hero pin removed, pinned scroll cut back and re-paced, wellness-shift cards
 now take the centre, and seven fixes from the review list. See CLAUDE.md from
@@ -70,9 +148,13 @@ same conclusion and reconciled it in text instead.
   now has no WebGL at all. See the note at the top of `CLAUDE.md`.
 - **Mobile pin heights have not been re-paced.** Every `@media` override still
   carries its pre-3-September value.
-- `about-hero-mobile.jpg` is still missing (documented, degrades gracefully).
-- There is still **no favicon** anywhere in the project — one 404 per page load
-  on every page.
+- `about-hero-mobile.jpg` is still missing (documented, degrades gracefully),
+  and so are the four team portraits `team-nelson/dan/uchenna/etiosa.jpg` —
+  five 404s on `about.html`. The photographs are being collected.
+- ~~There is still **no favicon** anywhere in the project.~~ **Closed 19
+  September** — `favicon.ico` plus the PNG and apple-touch sizes are generated
+  from the palm mark and linked on all 13 pages. See section 0 above; they
+  must be uploaded to the ROOT.
 - **No form backend anywhere.** The waitlist is a `mailto:` and the investor
   request panel hands off to the reader's own email client. Both say so.
 

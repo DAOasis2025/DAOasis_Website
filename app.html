@@ -13,8 +13,24 @@
 <title>The Companion App — DAOasis</title>
 <meta name="description" content="The Companion App is the core operating environment of DAOasis — daily quests, learning and community turned into one Journey. Bangkok to Phuket is the launch Journey; completing one opens the next. Earn DAOasis Reward Credits (DRC), with a designed one-way conversion to $DVT." />
 <meta property="og:title" content="The Companion App — DAOasis" />
+<link rel="canonical" href="https://daoasis.xyz/app" />
+<meta property="og:url" content="https://daoasis.xyz/app" />
+<meta property="og:site_name" content="DAOasis" />
+<meta property="og:image" content="https://daoasis.xyz/images/og-card.jpg" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="DAOasis — Rest · Learn · Earn · Return" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:site" content="@thedaoasis" />
+<meta name="twitter:title" content="The Companion App — DAOasis" />
+<meta name="twitter:description" content="The Companion App is the core operating environment of DAOasis — daily quests, learning and community turned into one Journey. Bangkok to Phuket is the launch Journey; completing one opens the next. Earn DAOasis Reward Credits (DRC), with a designed one-way conversion to $DVT." />
+<meta name="twitter:image" content="https://daoasis.xyz/images/og-card.jpg" />
+<link rel="icon" href="/favicon.ico" sizes="any" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<link rel="manifest" href="/site.webmanifest" />
+<meta name="theme-color" content="#171412" />
 <meta property="og:description" content="Daily quests, learning and community, turned into one Journey. Bangkok to Phuket is the launch Journey — complete it and the next one opens. Rest · Learn · Earn · Return" />
-<meta property="og:image" content="images/app-home-morning.webp" />
 <meta property="og:type" content="website" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -1813,8 +1829,64 @@ body { overflow-x: clip; }
 }
 
 </style>
+
+<style>
+/* ── KEYBOARD FOCUS ───────────────────────────────────────────────────
+   :focus-visible, not :focus — a mouse click never draws a ring, only
+   keyboard navigation does. The skip link is off-screen until focused,
+   which is the first thing a Tab press should reach on any page. */
+.skip-link{
+  position:absolute; left:-9999px; top:0; z-index:200;
+  background:var(--warm-white); color:var(--charcoal);
+  padding:12px 22px; border-radius:0 0 8px 0;
+  font-family:'Frank Ruhl Libre',Georgia,serif; font-size:var(--t-note);
+  text-decoration:none;
+}
+.skip-link:focus{ left:0; }
+a:focus-visible, button:focus-visible, summary:focus-visible,
+input:focus-visible, select:focus-visible, textarea:focus-visible,
+[tabindex]:focus-visible{
+  outline:2px solid var(--gold); outline-offset:3px; border-radius:2px;
+}
+/* The pin wrapper is only somewhere for the skip link to land. It is
+   focusable so focus genuinely moves, but it is not a control and must
+   not draw a ring of its own. */
+[data-skip-target]:focus, [data-skip-target]:focus-visible{ outline:none; }
+</style>
+<style>
+/* ── FOOTER COMMUNITY ─────────────────────────────────────────────────
+   Sits inside .footer-brand rather than as a fifth column: .footer-top is
+   grid-template-columns:repeat(4,1fr) and all four slots are already spoken
+   for, so a new column would have meant re-laying out every page's footer. */
+.footer-social{margin-top:26px;}
+.footer-social .footer-col-label{margin-bottom:12px;}
+.footer-social-note{margin:12px 0 0;font-size:var(--t-nano);line-height:1.6;color:#8a8377;max-width:26em;}
+.footer-social-row{display:flex;align-items:center;gap:16px;}
+.fs-i{display:inline-flex;align-items:center;justify-content:center;
+  width:34px;height:34px;border-radius:50%;
+  border:1px solid rgba(247,244,238,0.16);color:#9a9285;
+  transition:color 0.25s var(--ease),border-color 0.25s var(--ease),
+             background 0.25s var(--ease);}
+.fs-i svg{width:17px;height:17px;display:block;}
+.fs-i:hover{color:var(--warm-white);border-color:rgba(196,138,90,0.55);
+  background:rgba(196,138,90,0.10);}
+</style>
+<style>
+/* ── THE STRETCH GUARD ────────────────────────────────────────────────
+   width/height on an <img> are presentational hints that set a real CSS
+   HEIGHT, not merely an aspect ratio — the trap already recorded against
+   the app hero. Adding those attributes site-wide (so pages reserve space
+   and stop reflowing) re-armed it: measured, the 26px nav mark rendered
+   492px tall on all six marketing pages.
+
+   A bare `img` selector is specificity (0,0,1) — lower than any author
+   rule and higher than a presentational hint — so this neutralises the
+   attribute's height while leaving every real CSS height untouched. */
+img{height:auto;}
+</style>
 </head>
 <body>
+<a class="skip-link" href="#heroOuter">Skip to content</a>
 
 <!-- NAV -->
 <div class="scroll-prog" id="scrollProg"></div>
@@ -1824,7 +1896,7 @@ body { overflow-x: clip; }
     <span class="nav-burger-label">Menu</span>
   </button>
   <a class="nav-brand" href="index.html">
-    <img src="images/img-09-white.png" alt="DAOasis" />
+    <img decoding="async" width="465" height="492" src="images/img-09-white.png" alt="DAOasis" />
     <span>DAOasis</span>
   </a>
   <a class="nav-cta" href="#waitlist">Join the waitlist</a>
@@ -1833,7 +1905,7 @@ body { overflow-x: clip; }
 <div class="nav-drawer-backdrop" id="navDrawerBackdrop"></div>
 <div class="nav-drawer" id="navDrawer">
   <div class="nav-drawer-head">
-    <img src="images/img-09-white.png" alt="DAOasis" />
+    <img decoding="async" width="465" height="492" src="images/img-09-white.png" alt="DAOasis" />
     <button class="nav-drawer-close" id="navDrawerClose" aria-label="Close menu">&times;</button>
   </div>
   <div class="nav-drawer-list">
@@ -1850,7 +1922,7 @@ body { overflow-x: clip; }
 <!-- ══════════════════════════════
      SECTION 1 — HERO
 ══════════════════════════════ -->
-<div class="hero-outer" id="heroOuter">
+<div class="hero-outer" id="heroOuter" tabindex="-1" data-skip-target>
 
   <section class="hero" id="heroStage">
 
@@ -1866,9 +1938,9 @@ body { overflow-x: clip; }
          a 24-hour change and were on this project's own do-not-use list.
          Centre is the home screen — the app's real face; the flanks are the
          two things it is for, a session and the route. -->
-    <img class="hero-phone-shot" id="heroPhoneLeft"  src="images/app-breathing.webp" alt="DAOasis breathing session screen" width="758" height="1600" />
-    <img class="hero-phone-shot" id="heroPhone"      src="images/app-home-morning.webp" alt="DAOasis home screen, morning" width="758" height="1600" />
-    <img class="hero-phone-shot" id="heroPhoneRight" src="images/app-journey-map.webp" alt="DAOasis journey map, Bangkok to Phuket" width="758" height="1600" />
+    <img fetchpriority="high" decoding="async" class="hero-phone-shot" id="heroPhoneLeft"  src="images/app-breathing.webp" alt="DAOasis breathing session screen" width="758" height="1600" />
+    <img fetchpriority="high" decoding="async" class="hero-phone-shot" id="heroPhone"      src="images/app-home-morning.webp" alt="DAOasis home screen, morning" width="758" height="1600" />
+    <img fetchpriority="high" decoding="async" class="hero-phone-shot" id="heroPhoneRight" src="images/app-journey-map.webp" alt="DAOasis journey map, Bangkok to Phuket" width="758" height="1600" />
 
   </section>
 
@@ -1889,7 +1961,7 @@ body { overflow-x: clip; }
 
 <div class="divider-dark"><div class="divider-inner">
   <div class="divider-line-d"></div>
-  <img src="images/img-09-white.png" class="divider-mark" alt="" />
+  <img loading="lazy" decoding="async" width="465" height="492" src="images/img-09-white.png" class="divider-mark" alt="" />
   <div class="divider-line-d"></div>
 </div></div>
 
@@ -1912,7 +1984,7 @@ body { overflow-x: clip; }
     <div class="how-card">
       <div class="how-step">01</div>
       <div class="how-phone-wrap">
-        <img src="images/app-quests.webp" alt="Today's quests screen" width="758" height="1600" />
+        <img loading="lazy" decoding="async" src="images/app-quests.webp" alt="Today's quests screen" width="758" height="1600" />
       </div>
       <div class="how-title">Complete daily quests</div>
       <div class="how-text">Breathe, move, hydrate, sleep, learn. Each day brings a fresh set of quests across wellness and education. Complete them and your progress advances — on the map and in the world.</div>
@@ -1921,7 +1993,7 @@ body { overflow-x: clip; }
     <div class="how-card">
       <div class="how-step">02</div>
       <div class="how-phone-wrap">
-        <img src="images/app-approaching.webp" alt="Approaching the Hua Hin waypoint on the journey map." width="758" height="1600" />
+        <img loading="lazy" decoding="async" src="images/app-approaching.webp" alt="Approaching the Hua Hin waypoint on the journey map." width="758" height="1600" />
       </div>
       <div class="how-title">Walk a real-world journey</div>
       <div class="how-text">Your daily habits fuel a Journey across a real route — starting with Bangkok to Phuket, 900km of Thailand. Every step, every completed quest, every boost moves your marker forward.</div>
@@ -1930,7 +2002,7 @@ body { overflow-x: clip; }
     <div class="how-card">
       <div class="how-step">03</div>
       <div class="how-phone-wrap">
-        <img src="images/app-credits.webp" alt="Reward Credits screen" width="758" height="1600" />
+        <img loading="lazy" decoding="async" src="images/app-credits.webp" alt="Reward Credits screen" width="758" height="1600" />
       </div>
       <div class="how-title">Earn DRC → $DVT</div>
       <div class="how-text">Consistency earns DAOasis Reward Credits — DRC. DRC is designed to convert, one way and by choice, to $DVT — the on-chain layer. $DVT is designed to carry premium access, the marketplace and Sanctuary stays in Phuket, each introduced in stages as it is built.</div>
@@ -1941,7 +2013,7 @@ body { overflow-x: clip; }
 
 <div class="divider-dark"><div class="divider-inner">
   <div class="divider-line-d"></div>
-  <img src="images/img-09-white.png" class="divider-mark" alt="" />
+  <img loading="lazy" decoding="async" width="465" height="492" src="images/img-09-white.png" class="divider-mark" alt="" />
   <div class="divider-line-d"></div>
 </div></div>
 
@@ -2020,6 +2092,7 @@ body { overflow-x: clip; }
           <div class="wp-stat-v" id="wpStatBreV">0</div>
           <div class="wp-stat-s" id="wpStatBreS">sessions logged</div>
         </div>
+        <p class="footer-social-note">Open now. The DAO and its governance arrive in stages.</p>
       </div>
       <div class="wp-info-bar" id="wpInfoBar"></div>
     </div>
@@ -2077,7 +2150,7 @@ body { overflow-x: clip; }
 
 <div class="divider-mid"><div class="divider-inner">
   <div class="divider-line-d"></div>
-  <img src="images/img-09-white.png" class="divider-mark" alt="" />
+  <img loading="lazy" decoding="async" width="465" height="492" src="images/img-09-white.png" class="divider-mark" alt="" />
   <div class="divider-line-d"></div>
 </div></div>
 
@@ -2102,11 +2175,11 @@ body { overflow-x: clip; }
 
         <div class="edy-phone">
           <div class="edy-glow" id="edyGlow"></div>
-          <img class="edy-shot" data-s="0" src="images/app-home-morning.webp" width="758" height="1600" alt="The DAOasis home screen: the day's actions as tiles, and 186 km walked toward Hua Hin." />
-          <img class="edy-shot" data-s="1" src="images/app-steps.webp"        width="758" height="1600" alt="The Move screen: 6,412 of 8,000 steps, four point one of six kilometres toward Hua Hin." />
-          <img class="edy-shot" data-s="2" src="images/app-sleep.webp"        width="758" height="1600" alt="The Rest screen: seven hours twenty of eight, and the distance boost it buys tomorrow." />
-          <img class="edy-shot" data-s="3" src="images/app-breathing.webp"    width="758" height="1600" alt="The Breathe screen: two minutes fourteen remaining, opening a rest stop at Hua Hin." />
-          <img class="edy-shot" data-s="4" src="images/app-hydration.webp"    width="758" height="1600" alt="The Hydrate screen: one point four of two litres, two more days opening the coastal route." />
+          <img fetchpriority="low" decoding="async" class="edy-shot" data-s="0" src="images/app-home-morning.webp" width="758" height="1600" alt="The DAOasis home screen: the day's actions as tiles, and 186 km walked toward Hua Hin." />
+          <img fetchpriority="low" decoding="async" class="edy-shot" data-s="1" src="images/app-steps.webp"        width="758" height="1600" alt="The Move screen: 6,412 of 8,000 steps, four point one of six kilometres toward Hua Hin." />
+          <img fetchpriority="low" decoding="async" class="edy-shot" data-s="2" src="images/app-sleep.webp"        width="758" height="1600" alt="The Rest screen: seven hours twenty of eight, and the distance boost it buys tomorrow." />
+          <img fetchpriority="low" decoding="async" class="edy-shot" data-s="3" src="images/app-breathing.webp"    width="758" height="1600" alt="The Breathe screen: two minutes fourteen remaining, opening a rest stop at Hua Hin." />
+          <img fetchpriority="low" decoding="async" class="edy-shot" data-s="4" src="images/app-hydration.webp"    width="758" height="1600" alt="The Hydrate screen: one point four of two litres, two more days opening the coastal route." />
           <!-- NOURISH IS NOT A ROW HERE, AND THAT IS DELIBERATE. This section
                shows habits the app actually MEASURES, one screen each. Nourish
                is not a data point: the blueprint ships quest detail screens for
@@ -2125,7 +2198,7 @@ body { overflow-x: clip; }
                home screen above. It simply is not one of the tracked inputs the
                column names. If a Nourish screen is ever added with a real
                figure, it becomes data-s="5" and the row goes back in. -->
-          <img class="edy-shot" data-s="5" src="images/app-lesson.webp"       width="758" height="1600" alt="A lesson in progress, the Learn habit: one idea at a time, building toward the journey." />
+          <img fetchpriority="low" decoding="async" class="edy-shot" data-s="5" src="images/app-lesson.webp"       width="758" height="1600" alt="A lesson in progress, the Learn habit: one idea at a time, building toward the journey." />
         </div>
 
         <div class="edy-panel">
@@ -2179,7 +2252,7 @@ body { overflow-x: clip; }
 
 <div class="divider-mid"><div class="divider-inner">
   <div class="divider-line-d"></div>
-  <img src="images/img-09-white.png" class="divider-mark" alt="" />
+  <img loading="lazy" decoding="async" width="465" height="492" src="images/img-09-white.png" class="divider-mark" alt="" />
   <div class="divider-line-d"></div>
 </div></div>
 
@@ -2249,7 +2322,7 @@ body { overflow-x: clip; }
 
 <div class="divider-dark"><div class="divider-inner">
   <div class="divider-line-d"></div>
-  <img src="images/img-09-white.png" class="divider-mark" alt="" />
+  <img loading="lazy" decoding="async" width="465" height="492" src="images/img-09-white.png" class="divider-mark" alt="" />
   <div class="divider-line-d"></div>
 </div></div>
 
@@ -2306,11 +2379,11 @@ body { overflow-x: clip; }
        captions are drawn from the screens' own copy. -->
   <div class="scr-strip reveal">
     <figure class="scr">
-      <img src="images/app-module.webp" width="758" height="1600" alt="A learning module in the DAOasis app, showing four lessons with two completed." />
+      <img loading="lazy" decoding="async" src="images/app-module.webp" width="758" height="1600" alt="A learning module in the DAOasis app, showing four lessons with two completed." />
       <figcaption><b>A module, opened</b>Four short lessons, a few minutes each, and the credits are attached to finishing — not to turning up every day.</figcaption>
     </figure>
     <figure class="scr">
-      <img src="images/app-lesson.webp" width="758" height="1600" alt="A lesson in the DAOasis app: Light, temperature, timing." />
+      <img loading="lazy" decoding="async" src="images/app-lesson.webp" width="758" height="1600" alt="A lesson in the DAOasis app: Light, temperature, timing." />
       <figcaption><b>A lesson inside it</b>One idea at a time, in plain language, closing with a short check that is a way of making the idea stick rather than a test.</figcaption>
     </figure>
   </div>
@@ -2318,7 +2391,7 @@ body { overflow-x: clip; }
 
 <div class="divider-dark"><div class="divider-inner">
   <div class="divider-line-d"></div>
-  <img src="images/img-09-white.png" class="divider-mark" alt="" />
+  <img loading="lazy" decoding="async" width="465" height="492" src="images/img-09-white.png" class="divider-mark" alt="" />
   <div class="divider-line-d"></div>
 </div></div>
 
@@ -2379,11 +2452,11 @@ body { overflow-x: clip; }
        statement anywhere on the site that credits are not an instrument. -->
   <div class="scr-strip reveal">
     <figure class="scr">
-      <img src="images/app-credits-source.webp" width="758" height="1600" alt="A list of every Reward Credit earned, with what earned it and when." />
+      <img loading="lazy" decoding="async" src="images/app-credits-source.webp" width="758" height="1600" alt="A list of every Reward Credit earned, with what earned it and when." />
       <figcaption><b>Where every credit came from</b>Every credit, when it was earned and why. They cannot be bought, sold or transferred, and they are never awarded retrospectively.</figcaption>
     </figure>
     <figure class="scr">
-      <img src="images/app-credits-open.webp" width="758" height="1600" alt="What Reward Credits open: waypoint stories, accountability pairing, a Sanctuary contribution." />
+      <img loading="lazy" decoding="async" src="images/app-credits-open.webp" width="758" height="1600" alt="What Reward Credits open: waypoint stories, accountability pairing, a Sanctuary contribution." />
       <figcaption><b>And what they open</b>Extended waypoint stories, accountability pairing, and a contribution toward a stay at the Sanctuary. Marketplace benefits are still in development, and the screen says so.</figcaption>
     </figure>
   </div>
@@ -2391,7 +2464,7 @@ body { overflow-x: clip; }
 
 <div class="divider-dark"><div class="divider-inner">
   <div class="divider-line-d"></div>
-  <img src="images/img-09-white.png" class="divider-mark" alt="" />
+  <img loading="lazy" decoding="async" width="465" height="492" src="images/img-09-white.png" class="divider-mark" alt="" />
   <div class="divider-line-d"></div>
 </div></div>
 
@@ -2412,7 +2485,7 @@ body { overflow-x: clip; }
         <p class="market-scene-copy">Your DRC and $DVT have a real home. Explore what the DAOasis Marketplace is being built to make possible.</p>
         <div class="market-scroll-cue" id="marketScrollCue">Scroll to explore ↓</div>
       </div>
-      <img class="market-phone" src="images/app-marketplace.webp" width="758" height="1600" alt="The DAOasis marketplace screen, listing courses, coaching and experiences published by members." />
+      <img fetchpriority="low" decoding="async" class="market-phone" src="images/app-marketplace.webp" width="758" height="1600" alt="The DAOasis marketplace screen, listing courses, coaching and experiences published by members." />
     </div>
 
     <!-- Scene 1: Sanctuary Experiences -->
@@ -2442,7 +2515,7 @@ body { overflow-x: clip; }
     <!-- Scene 3: Branded Goods -->
     <div class="market-scene market-scene-3" data-scene="3">
       <div class="market-scene-bg market-scene-bg-mark">
-        <img class="market-mark-logo" src="images/img-09-white.png" alt="" />
+        <img fetchpriority="low" decoding="async" width="465" height="492" class="market-mark-logo" src="images/img-09-white.png" alt="" />
       </div>
       <div class="market-scene-veil"></div>
       <div class="market-scene-content">
@@ -2467,7 +2540,7 @@ body { overflow-x: clip; }
 
 <div class="divider-dark"><div class="divider-inner">
   <div class="divider-line-d"></div>
-  <img src="images/img-09-white.png" class="divider-mark" alt="" />
+  <img loading="lazy" decoding="async" width="465" height="492" src="images/img-09-white.png" class="divider-mark" alt="" />
   <div class="divider-line-d"></div>
 </div></div>
 
@@ -2483,7 +2556,7 @@ body { overflow-x: clip; }
   <p class="s-body reveal reveal-delay-2">DAOasis reads from the health platforms you already use, so your data flows in on its own — steps, sleep, heart rate. Apple Health and Google Health Connect are in scope for first release; the rest are planned. You live your life. The app does the rest.</p>
 
   <div class="int-visual reveal reveal-delay-3">
-    <img class="whoop-img" src="images/whoop.png" alt="Whoop band" />
+    <img loading="lazy" decoding="async" width="1209" height="1300" class="whoop-img" src="images/whoop.png" alt="Whoop band" />
   </div>
   </div><!-- /int-section-left -->
 
@@ -2578,7 +2651,7 @@ body { overflow-x: clip; }
 
 <div class="divider-dark"><div class="divider-inner">
   <div class="divider-line-d"></div>
-  <img src="images/img-09-white.png" class="divider-mark" alt="" />
+  <img loading="lazy" decoding="async" width="465" height="492" src="images/img-09-white.png" class="divider-mark" alt="" />
   <div class="divider-line-d"></div>
 </div></div>
 
@@ -2590,8 +2663,17 @@ body { overflow-x: clip; }
   <div class="s-kicker" style="color:var(--gold);">Early Access</div>
   <h2 class="s-headline" style="color:var(--warm-white);">Your journey starts<br><em>when you decide it does.</em></h2>
   <p class="s-body" style="color:#8a8377;text-align:center;margin:0 auto 40px;">Join a community building better habits one deliberate day at a time — and being recognised for doing it.</p>
-  <a class="btn-primary" href="#">Join the Waitlist</a>
-  <div class="final-note">Free to join. No crypto knowledge required.</div>
+  <!-- WAS `href="#"` — a dead link, and the only conversion moment on this
+       page. index.html's equivalent was pointed at the inbox in September and
+       this one was missed. Same destination and same subject line, so both
+       pages land in one place.
+       There is still no form backend anywhere in this project: this hands the
+       request to the reader's own email client. If real capture is ever built,
+       privacy.html §09 and cookies.html §04/§07 must be updated in the same
+       release — both currently state that this site collects nothing. -->
+  <a class="btn-primary" href="mailto:info@daoasis.xyz?subject=Early%20access%20%E2%80%94%20DAOasis%20waitlist">Join the Waitlist</a>
+  <div class="final-note">Free to join. No crypto knowledge required.<br />
+    <span style="opacity:0.72;">This opens your email app — the list is read by a person, not a robot.</span></div>
 </section>
 
 
@@ -2600,12 +2682,20 @@ body { overflow-x: clip; }
   <div class="footer-top">
     <div>
       <div class="footer-brand-logo">
-        <img src="images/img-09-white.png" alt="DAOasis mark" />
+        <img loading="lazy" decoding="async" width="465" height="492" src="images/img-09-white.png" alt="DAOasis mark" />
         <span>DAOasis</span>
       </div>
       <div class="footer-tagline">
         <strong>Wellness meets Web3.</strong>
         <em>Rest · Learn · Earn · Return</em>
+      </div>
+      <div class="footer-social">
+        <div class="footer-col-label">Community</div>
+        <div class="footer-social-row">
+          <a class="fs-i" href="https://instagram.com/thedaoasis" target="_blank" rel="me noopener" aria-label="DAOasis on Instagram"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="1.7" d="M7.2 3.5h9.6a3.7 3.7 0 0 1 3.7 3.7v9.6a3.7 3.7 0 0 1-3.7 3.7H7.2a3.7 3.7 0 0 1-3.7-3.7V7.2a3.7 3.7 0 0 1 3.7-3.7Z"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="17.2" cy="6.8" r="1.15" fill="currentColor"/></svg></a>
+          <a class="fs-i" href="https://x.com/thedaoasis" target="_blank" rel="me noopener" aria-label="DAOasis on X"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M17.53 3h3.06l-6.69 7.64L21.75 21h-5.9l-4.62-6.04L5.94 21H2.87l7.15-8.17L2.5 3h6.05l4.18 5.52L17.53 3Zm-1.07 16.17h1.7L7.62 4.74H5.8l10.66 14.43Z"/></svg></a>
+          <a class="fs-i" href="https://linkedin.com/company/daoasis" target="_blank" rel="me noopener" aria-label="DAOasis on LinkedIn"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9.25h4v11.3H3V9.25Zm6.5 0h3.83v1.55h.05c.53-.96 1.84-1.98 3.79-1.98 4.05 0 4.8 2.53 4.8 5.82v5.91h-4v-5.24c0-1.25-.02-2.86-1.8-2.86-1.8 0-2.08 1.36-2.08 2.77v5.33h-4V9.25Z"/></svg></a>
+        </div>
       </div>
       <div class="footer-appearance">
         <div class="footer-appearance-label">Appearance</div>
@@ -2644,7 +2734,7 @@ body { overflow-x: clip; }
     </div>
   </div>
   <div class="footer-bottom">
-    <span>© 2026 DAOasis. All rights reserved.</span>
+    <span>© 2026 DAOasis Global Ltd. All rights reserved.</span>
     <span>Phuket · Global</span>
   </div>
 </footer>
