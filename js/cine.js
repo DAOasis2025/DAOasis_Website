@@ -784,7 +784,36 @@ DAO.cine = (function(){
      that is about 45% quicker than everyone else's — controlled, but not
      made to wait. Excluding them would have left them with the original
      fault and nothing else. */
+  /* ── TOUCH PACING IS OFF. THIS IS A DELIBERATE, TEMPORARY STOP. ──────
+
+     Pacing on a mouse is safe: js/smooth.js already owns the scroll
+     position, so capping it is one writer doing arithmetic on its own
+     value. Nothing else touches window.scrollY and there is nothing to
+     fight.
+
+     Touch is not that. To pace a finger this governor has to cancel the
+     browser's own scroll and move the page itself, and every time the
+     browser also moves the page — a frame the guard above hands back,
+     the URL bar collapsing at the top of a page, overscroll bounce, the
+     tail of a fling that started outside the section — there are two
+     writers and the page oscillates. That was reported as flashing and
+     popping on two separate devices, at the top of app.html and
+     sanctuary.html, which is exactly where a mobile browser is busiest
+     doing its own scrolling.
+
+     The bug behind that specific report is fixed (see the guard above),
+     but "the one I found is fixed" is not the same as "a finger and a
+     mobile browser can no longer fight", and this file's history is four
+     rounds of assuming it was. Until the paced touch path has been
+     watched on a real handset it stays off, and mobile gets the native
+     scrolling it had before — which was smooth and which nobody
+     complained about.
+
+     To re-enable: set this true. Everything else is intact. */
+  var TOUCH_PACING = false;
+
   function govOn(){
+    if(!TOUCH_PACING) return false;
     if(!mqCoarse.matches) return false;
     if(window.innerWidth > TIMING.mobileAt) return false;
     /* the nav drawer and index's intro both lock the page this way */
@@ -1103,8 +1132,22 @@ DAO.cine = (function(){
        govTick stamps g.alive every frame. If the last stamp is older than
        a handful of frames, we are not in a position to move the page, so
        we do not take the gesture. The reader gets native scrolling, which
-       is worse than paced scrolling and infinitely better than none. */
-    if(performance.now() - g.alive > GOV.aliveMs) return;
+       is worse than paced scrolling and infinitely better than none.
+
+       RELEASING IS THE WHOLE POINT, AND RETURNING BARE WAS A BUG. The
+       first version of this guard just `return`ed. That skips
+       preventDefault, so the browser scrolls natively — but it leaves
+       g.own set, so govTick carries on writing scrollTo(g.pos) every
+       frame. Two things then move the page at once and it oscillates:
+       reported as "flashing and popping up and down when I scroll", at
+       the top of the page, which is exactly where a mobile browser pauses
+       animation frames to run the URL-bar collapse. Hand the scroll back
+       properly or do not take it at all. */
+    if(performance.now() - g.alive > GOV.aliveMs){
+      if(g.own) govRelease(sy());
+      down = false; blocked = true;   /* this gesture is the browser's now */
+      return;
+    }
 
     var y = e.touches[0].clientY, now = performance.now(), dt = now - g.ft;
     var dy = g.fy - y;                       /* finger up = page down */
