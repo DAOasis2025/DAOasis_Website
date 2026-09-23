@@ -799,11 +799,30 @@ body { overflow-x: clip; }
     display: grid; align-content: center;
     padding: 0; border-top: 0; text-align: center;
     opacity: var(--w, 1);
+    /* THE DESKTOP TRACK HAS TO BE RESET, NOT JUST THE PADDING.
+
+       This block hid .edy-row-i and centred the text but left the desktop
+       `grid-template-columns: 29px 1fr` in force, so the icon column was
+       still 29px wide with nothing in it and every row's type was laid
+       out inside it. Measured at 375px: .edy-row-t came out 29px wide,
+       which is what wrapped "A distance boost on tomorrow morning" one
+       word per line down the left edge. Centring cannot show up when the
+       column it is centring in is 29px.
+
+       One column, no gap. */
+    grid-template-columns: 1fr;
+    column-gap: 0;
+    justify-items: center;
   }
   .edy-row-i { display: none; }
   .edy-row-n { font-size: clamp(27px, 7.4vw, 40px); line-height: 1.06; }
-  .edy-row-t { margin-top: 8px; }
-  .edy-row-r { margin: 12px auto 0; transform: scaleX(var(--w, 1)); }
+  /* a measure, so the line breaks read as sentences rather than as a
+     column of single words */
+  .edy-row-t { margin-top: 8px; max-width: 30ch; margin-left: auto; margin-right: auto; }
+  /* `grid-column: 2` on the desktop rule points at a track that no longer
+     exists here, and the left origin made it grow out of the centred
+     stack sideways */
+  .edy-row-r { grid-column: 1; margin: 14px auto 0; transform: scaleX(var(--w, 1)); transform-origin: center; }
   /* the closing line and the mobile caption come after the pin */
   .edy-close, .edy-mob-cap { display: none; }
 }
@@ -3339,7 +3358,7 @@ function cine(el, o){
      every frame, so this follows an orientation change or a resize with no
      extra wiring. */
   const track = cine(outer, {
-    mode: 'guided', pace: 'epic', states: 3, govern: false,
+    mode: 'guided', pace: 'epic', states: 3, govern: true,
     get step(){ return window.innerWidth <= 900 ? 3400 : 2400; },
     get back(){ return window.innerWidth <= 900 ? 2600 : 1850; }
   });
@@ -3662,7 +3681,7 @@ function cine(el, o){
     pace: 'major',
     /* governed on touch — 672vh of pin on a phone, same reasoning as the
        hero above. See the governor block in js/cine.js. */
-    govern: false,
+    govern: true,
     stops: WPS.map((w, i) => i === WPS.length - 1 ? 1 : w.threshold * 0.97)
   }).on((v) => { paced = v; questScroll(); });
 })();
@@ -3696,7 +3715,7 @@ function cine(el, o){
      instead of letting a flick crossfade through all four at once. */
   /* governed on touch — 640vh of pin on a phone, so a flick used to
      crossfade all four scenes at once. See js/cine.js. */
-  const track = cine(outer, { mode: 'sticky', pace: 'major', states: N, govern: false });
+  const track = cine(outer, { mode: 'sticky', pace: 'major', states: N, govern: true });
 
   function apply(raw){
     const pos = raw * (N - 1); // continuous scene position, 0..N-1 (each scene gets a full centred hold)

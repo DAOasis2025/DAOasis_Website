@@ -68,6 +68,11 @@
   var MAXDT = 64;     /* ms: tab-return / long-frame guard */
   var STALL = 400;    /* ms: see WATCHDOG */
 
+  /* Escape accumulator for the paced sections — see PACING below. Ours,
+     not cine's: the finger and the wheel keep separate state, they just
+     share the curve. */
+  var push = 0;
+
   var target = 0, cur = 0, running = false, armed = false, lastT = 0;
   var wrote = 0;          /* last position WE wrote — see onScroll */
   var selfWrite = false;  /* true for the duration of our own scrollTo */
@@ -98,9 +103,42 @@
       cur = target;
       write(cur);
       running = false;
+      push = 0;
       return;
     }
-    cur += d * (1 - Math.exp(-dt / TAU));
+
+    var move = d * (1 - Math.exp(-dt / TAU));
+
+    /* ── PACING ───────────────────────────────────────────────────────
+       Inside a pinned animation section the page is not allowed to move
+       faster than that section's own cap, so one state takes at least
+       GOV.beatMs however hard the wheel is spun and the screenshot under
+       it is on screen long enough to read. The cap and the escape curve
+       both come from js/cine.js, so a mouse and a finger are paced by the
+       same numbers rather than by two implementations that drift apart.
+
+       This is applied to OUR value, not by a second writer touching
+       window.scrollY. The touch governor moves the page itself, which is
+       correct there because nothing else is; here smooth.js already owns
+       the position, and adding a second writer is precisely what made the
+       first governor impossible to fight.
+
+       Outside a paced section `pace()` returns null and this whole block
+       is skipped — ordinary scrolling is untouched. */
+    var caps = (window.DAO && DAO.cine && DAO.cine.pace) ? DAO.cine.pace() : null;
+    if (caps) {
+      var vh = window.innerHeight || 1;
+      push = DAO.cine.escape(push, Math.abs(d) / vh, dt);
+      var gain = (DAO.cine.GOV && DAO.cine.GOV.pushGain) || 3;
+      var v = (d > 0 ? caps.fwd : caps.back) * (1 + push * gain);
+      var capPx = v * dt;
+      if (move >  capPx) move =  capPx;
+      if (move < -capPx) move = -capPx;
+    } else {
+      push = 0;
+    }
+
+    cur += move;
     write(cur);
     requestAnimationFrame(step);
   }

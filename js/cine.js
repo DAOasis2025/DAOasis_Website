@@ -1,21 +1,42 @@
 /* ══════════════════════════════════════════════════════════════════════
    DAOASIS — CONTROLLED CINEMATIC SCROLL                      (site-wide)
 
-   Scrolling is never intercepted. No wheel handler, no touch handler,
-   no overflow lock, no scroll engine, no library. The browser scrolls
-   natively at all times, so normal sections are completely untouched
-   and the user can always leave a section.
+   NO LONGER TRUE, AND KEPT AS A WARNING: this file used to open "scrolling
+   is never intercepted ... the browser scrolls natively at all times", and
+   described pacing the RENDERED VALUE against a time budget while scroll
+   ran free. That model was built, shipped, and taken apart again, because
+   it cannot do the one thing the site is for: a reader who flicks arrives
+   at the bottom of a section while its screenshots are still arriving, and
+   no tuning fixes it, because the brake is a clock and the reader is not.
 
-   What this decouples is PACE.
+   WHAT ACTUALLY HAPPENS NOW — the two halves are the other way round.
 
-     Scroll position  =  USER INTENT   — where the story should be
-     Rendered value   =  DAOASIS PACE  — how fast it gets there
+     Rendered value  =  a pure function of SCROLL POSITION (see tick)
+     Scroll position =  speed-capped inside pinned sections (see GOV)
 
-   A section reads scroll as a target and advances the value it actually
-   renders toward that target over a CONFIGURED DURATION. A violent
-   flick therefore sets a distant target, and the story still unfolds at
-   the intended speed. Because the paced value always converges on true
-   scroll progress, nothing is ever stranded and no one is ever trapped.
+   The scene no longer chases anything: at any scroll position it is at
+   exactly the frame that position means, so it can never lag, overshoot
+   or settle late. The pacing moved onto the PAGE instead — inside a
+   pinned section the scroll itself is not allowed to advance faster than
+   GOV.beatMs per state, so a screenshot is on screen long enough to read
+   however hard the page is thrown.
+
+   That means scrolling IS intercepted, in two places, and both are
+   dangerous enough to name:
+     - touch, by govMove below, which cancels the browser's own scroll and
+       moves the page from the frame loop instead;
+     - wheel, by js/smooth.js, which already owned the position and simply
+       caps how fast it advances.
+   Exactly one of them ever writes window.scrollY, because two writers is
+   what made the first version of this impossible to fight.
+
+   EVERY INTERCEPT NEEDS A WAY OUT, and the absence of one is the single
+   most expensive mistake in this file's history — three separate reports
+   of a page that would not scroll. There are now three:
+     - GOV.pushGain     sustained demand progressively lifts the cap
+     - GOV.maxCrossMs   no section may hold a reader beyond a hard ceiling
+     - GOV.aliveMs      if the frame loop stalls, touch is not taken at all
+   Do not remove one without replacing it.
 
    Wheel/trackpad normalisation falls out for free: delta size is never
    read. Pace is set by duration, so a 300px wheel notch and a 4px
@@ -48,6 +69,27 @@ DAO.cine = (function(){
      brake: for any gap bigger than ~1.4% of a section the speed cap binds,
      so this number — not the section's height — is what sets the pace of a
      transition once the reader is inside it. */
+  /* ┌──────────────────────────────────────────────────────────────────┐
+     │ SUPERSEDED — READ THIS BEFORE TUNING ANYTHING BELOW.              │
+     │                                                                   │
+     │ step/back/hold, mobileScale and reducedScale drove the per-state  │
+     │ SPEED CAP, which is how the scene used to chase the reader's      │
+     │ scroll position over a time budget. That mechanism is gone: the   │
+     │ scene is now a pure function of scroll position (see tick), and   │
+     │ the PAGE is what gets speed-capped instead (see GOV.beatMs).      │
+     │                                                                   │
+     │ times() has no callers. `pace: 'epic' | 'major' | 'simple'` on a  │
+     │ track is therefore inert, and so is everything in this block.     │
+     │ It is left in place because removing it touches every track       │
+     │ declaration on four pages for no behavioural gain — but DO NOT    │
+     │ tune these expecting an effect. The two numbers that matter now   │
+     │ are GOV.beatMs (how long one state takes) and the pin height in   │
+     │ the page's own CSS (how much scroll a section spends).            │
+     │                                                                   │
+     │ The long rationales below are kept as the record of why the       │
+     │ time-budget model was abandoned; they describe a mechanism that   │
+     │ no longer runs.                                                   │
+     └──────────────────────────────────────────────────────────────────┘ */
   var TIMING = {
     epic:   { step: 1500, back: 1150, hold: 90 },   /* major cinematic beats */
     major:  { step: 1250, back:  960, hold: 70 },   /* standard narrative     */
@@ -640,8 +682,38 @@ DAO.cine = (function(){
        says. The ceiling is what stops a very tall pin (sanctuary's hero is
        1120vh) from being allowed to fly; the floor stops a short one from
        becoming a wall. */
+    /* THE ONE NUMBER THAT SETS THE FEEL. Minimum wall-clock time to move
+       from one state to the next, however hard the page is thrown. 800ms
+       is long enough to take in a screenshot and a short label and short
+       enough that a five-state section clears in about four seconds. Raise
+       it to make the site more deliberate; lower it to make it brisker.
+       Everything else in this block is a guard rail around it. */
+    beatMs:  800,
+    /* scrolling back up is not a reading pass, so it runs quicker */
+    backGain: 1.35,
+
+    /* THE ESCAPE. Without one, a speed cap is indistinguishable from a
+       broken page — that is not a guess, it is what happened: the first
+       version of this governor had no way out and was reported three times
+       as a site that would not scroll.
+
+       `push` accumulates while the reader is asking for materially more
+       than the cap is giving them (their intent is running more than
+       pushThresh viewports ahead of where the page actually is), and
+       decays once they stop. At full push the cap lifts by pushGain, so a
+       reader who keeps flicking gets through roughly four times quicker —
+       about a second for a section that otherwise takes four. Someone
+       reading never generates enough demand to trigger it at all. */
+    /* how stale the frame loop may be before govMove stops taking the
+       gesture at all — about six frames */
+    aliveMs: 100,
+    pushThresh: 0.9,   /* viewports of unmet demand before it starts       */
+    pushMs:     900,   /* to reach full escape, held                        */
+    releaseMs:  500,   /* to fall back to the governed pace once they stop  */
+    pushGain:   3.0,   /* cap multiplier at full push                       */
+
     minV:    0.25,
-    maxV:    1.50,
+    maxV:    6.00,
     /* AND A CEILING ON THE TIME, WHICH IS THE ONE THE READER FEELS.
 
        maxV is a velocity, and a velocity alone cannot say how long anybody
@@ -670,7 +742,19 @@ DAO.cine = (function(){
        this — but no section may take longer than this to cross, however
        tall it is. A native fling would cross sanctuary's hero in about
        half a second, so at 1.4s this is still unmistakably governed. */
-    maxCrossMs: 1400,
+    /* RAISED 1400 -> 8000, and the old value was actively wrong once
+       beatMs existed. 1400 was set when the governor had no escape and the
+       only protection against a section becoming a wall was a hard ceiling
+       on how long it could take. It is a FLOOR on velocity, so it silently
+       overrode the beat pacing: measured, every section on app.html came
+       out crossing in exactly 1.4s regardless of how many states it had,
+       which is the bug this comment exists to stop recurring.
+
+       It is a backstop now, not a pace. A five-state section is meant to
+       take 5 x beatMs = 4s; this only binds on something declaring so many
+       states that it would hold a reader longer than eight seconds, and
+       the escape valve is what protects the reader in normal use. */
+    maxCrossMs: 8000,
     /* A lifted flick is worth this many ms of its own velocity. Native
        momentum on both platforms decays over roughly this long, so intent
        ends up where the page would have gone had we not intercepted. */
@@ -728,6 +812,8 @@ DAO.cine = (function(){
     pos: 0,            /* the scroll position we are rendering            */
     intent: 0,         /* the scroll position the reader has asked for    */
     wrote: 0,          /* the last position we wrote, to tell ours apart  */
+    alive: 0,          /* performance.now() of the last govTick — see govMove */
+    push: 0,           /* 0..1 escape accumulator — see GOV.pushGain      */
     fy: 0, ft: 0, fv: 0,   /* finger: y, time, velocity px/ms             */
     oy: 0, ot: 0, ov: 0    /* observed native scroll, the same three      */
   };
@@ -773,7 +859,7 @@ DAO.cine = (function(){
     var vh = window.innerHeight || 1;
     for(var i = 0; i < tracks.length; i++){
       var t = tracks[i];
-      if(!t.o.govern) continue;
+      if(t.o.govern === false) continue;   /* opt OUT — paced by default, see GOV.beatMs */
       if(t.el.offsetHeight - vh <= 0) continue;
       if(!isPinned(t)) continue;
       var r;
@@ -786,20 +872,66 @@ DAO.cine = (function(){
   }
 
   /* px/ms this section is allowed, derived from its own pacing. */
+  /* THE CAP IS A TIME PER BEAT, NOT A VELOCITY.
+
+     This used to derive px/ms from the track's own `step` durations and
+     then clamp the result between minV and maxV. Two sections with the
+     same pacing but different heights therefore ran at different speeds,
+     and the clamp meant the tall ones (sanctuary's hero was 1120vh) hit
+     the ceiling and took 5.5 seconds to cross while short ones hit the
+     floor and felt loose. Nobody could say what the number meant.
+
+     GOV.beatMs is what the brief actually is: no matter how hard the page
+     is thrown, moving from one state to the next takes at least this long,
+     so a screenshot and its label are on screen long enough to read. A
+     section's cap follows from its own geometry — one beat is len/N of
+     scroll, so the speed that spends beatMs on it is len/N/beatMs.
+
+     Read it back the other way and it is the whole feature: a five-state
+     section takes 5 x 0.8s to pass at full tilt, and there is no input
+     that makes it quicker except the escape in govTick. */
+  /* Shared by the touch governor and, through DAO.cine.pace(), by the wheel
+     damper in js/smooth.js — the two inputs must escape identically or the
+     site is a different product on a mouse. Pure function of the previous
+     value, so each caller keeps its own accumulator. */
+  function demandPush(push, demandVh, dt){
+    if(demandVh > GOV.pushThresh) push += dt / GOV.pushMs;
+    else                          push -= dt / GOV.releaseMs;
+    return push < 0 ? 0 : push > 1 ? 1 : push;
+  }
+
+  /* The section that owns the viewport for PACING purposes. Same test as
+     governedTrack() minus govOn(), because the wheel path is paced on
+     desktop where the touch governor deliberately never runs. */
+  function pacedTrack(){
+    var vh = window.innerHeight || 1;
+    for(var i = 0; i < tracks.length; i++){
+      var t = tracks[i];
+      if(t.o.govern === false) continue;   /* opt OUT — paced by default, see GOV.beatMs */
+      if(t.el.offsetHeight - vh <= 0) continue;
+      if(!isPinned(t)) continue;
+      var r;
+      try { r = t.el.getBoundingClientRect(); } catch(e){ continue; }
+      if(r.top    >  vh * GOV.lead) continue;
+      if(r.bottom <  vh * (1 - GOV.lead)) continue;
+      return t;
+    }
+    return null;
+  }
+
   function govCaps(t){
     var len = t.el.offsetHeight - window.innerHeight;
     if(!(len > 0)) return null;
-    var tm = t.times();
-    /* the velocity below which THIS section becomes a wall — see maxCrossMs */
+    var beat = len / Math.max(1, t.N);            /* px of scroll per state */
+    var v = beat / GOV.beatMs;                    /* px/ms */
+    /* an absolute backstop so no section can ever become a wall, however
+       many states it declares */
     var floor = Math.max(GOV.minV, len / GOV.maxCrossMs);
-    function bound(v){
-      if(v > GOV.maxV) v = GOV.maxV;
-      return v < floor ? floor : v;
-    }
-    return {
-      fwd:  bound(len / (t.N * tm.step * GOV.slack)),
-      back: bound(len / (t.N * tm.back * GOV.slack))
-    };
+    if(v < floor) v = floor;
+    if(v > GOV.maxV) v = GOV.maxV;
+    /* backwards is not a reading pass — someone scrolling up has already
+       seen it and is looking for something behind them */
+    return { fwd: v, back: v * GOV.backGain };
   }
 
   /* The only place the page is moved. It writes nothing when the page is
@@ -829,6 +961,7 @@ DAO.cine = (function(){
   /* PASS 0 of the frame — runs before any track reads its rect, so a track
      sees the governed position in the same frame it was written. */
   function govTick(now, dt){
+    g.alive = now;
     if(!tracks.length) return;
     if(!govOn()){ if(g.own) govRelease(sy()); return; }
 
@@ -910,6 +1043,14 @@ DAO.cine = (function(){
                        : ((y + r.top) - g.intent) / vh;
     if(over > 0) v *= 1 + Math.min(over, 4) * GOV.escape;
 
+    /* SUSTAINED DEMAND, which the `over` valve above does not cover: that
+       one only opens once intent has run past the END of the section, so
+       it does nothing for a reader stuck in the middle of a long one. This
+       watches the gap itself — how far ahead of the page the reader has
+       asked to be — and opens progressively while it stays large. */
+    g.push = demandPush(g.push, Math.abs(gap) / vh, dt);
+    v *= 1 + g.push * GOV.pushGain;
+
     var capPx = v * dt;
     var want  = gap * (1 - Math.exp(-dt / GOV.ease));
     g.pos += Math.max(-capPx, Math.min(capPx, want));
@@ -950,6 +1091,21 @@ DAO.cine = (function(){
       govGrab(e.touches[0].clientY);      /* dragged in — take it from here */
       return;
     }
+    /* DEAD-LOOP GUARD. Everything below cancels the browser's own scroll
+       and hands the job to govTick, which only runs inside the frame loop.
+       If that loop is not running — a stalled compositor, a throttled or
+       occluded tab, a device that has simply stopped issuing animation
+       frames — the native scroll has been thrown away and nothing replaces
+       it, and the page is dead under the finger. That is not hypothetical:
+       it is what this governor did on three separate reports, and it is
+       the reason it was removed once already.
+
+       govTick stamps g.alive every frame. If the last stamp is older than
+       a handful of frames, we are not in a position to move the page, so
+       we do not take the gesture. The reader gets native scrolling, which
+       is worse than paced scrolling and infinitely better than none. */
+    if(performance.now() - g.alive > GOV.aliveMs) return;
+
     var y = e.touches[0].clientY, now = performance.now(), dt = now - g.ft;
     var dy = g.fy - y;                       /* finger up = page down */
     if(dt > 0) g.fv = g.fv * 0.6 + (dy / dt) * 0.4;
@@ -1109,6 +1265,22 @@ DAO.cine = (function(){
     GOV:    GOV,
     /* the governed section right now, or null — for measurement only */
     governing: function(){ return govOn() ? governedTrack() : null; },
+
+    /* PACING, FOR THE WHEEL. js/smooth.js already owns the scroll position
+       on a mouse, so it applies the cap itself rather than having a second
+       thing write window.scrollY — two writers was the bug that made the
+       first governor unfightable. This hands it the same numbers the touch
+       path uses: forward and backward px/ms for whichever section owns the
+       viewport, or null when none does and the wheel is free.
+
+       `escape` is exposed as the same pure function so the mouse relaxes
+       on sustained input exactly the way a finger does. */
+    pace: function(){
+      var t = pacedTrack();
+      if(!t) return null;
+      return govCaps(t);
+    },
+    escape: demandPush,
     ramp:   ramp,
     smooth: smooth,
     lead:   lead,

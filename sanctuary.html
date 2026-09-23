@@ -2354,7 +2354,7 @@ const lead = (window.DAO && DAO.cine && DAO.cine.lead) ? DAO.cine.lead
      touch events cannot drive native scrolling, so they only ever exercise
      the governed path and will report success where a finger finds none.
      That mistake cost three rounds of wrong diagnosis here. */
-  const track = cine(outer, { mode: 'guided', pace: 'epic', states: 4, govern: false });
+  const track = cine(outer, { mode: 'guided', pace: 'epic', states: 4, govern: true });
 
   /* ── THE FAN, at settle ──
      One entry per plate, left to right. Lanes are in plate-widths from the
@@ -2666,7 +2666,7 @@ const lead = (window.DAO && DAO.cine && DAO.cine.lead) ? DAO.cine.lead
      than a phone viewport. Declared so that if this section is ever given
      a real mobile pin it is paced like the hero rather than quietly
      reverting to "one flick and it is gone". */
-  const track = cine(outer, { mode: 'sticky', pace: 'major', states: items.length, govern: false });
+  const track = cine(outer, { mode: 'sticky', pace: 'major', states: items.length, govern: true });
   let mob = null;
   track.on(() => {
     if(window.innerWidth <= 900){
@@ -2811,7 +2811,7 @@ const lead = (window.DAO && DAO.cine && DAO.cine.lead) ? DAO.cine.lead
   /* as .found-outer above: inert while .seven-outer is height:auto and
      .seven-sticky is not sticky on mobile, declared so a future mobile pin
      inherits the pacing */
-  const track = cine(outer, { mode: 'sticky', pace: 'epic', states: days.length, govern: false });
+  const track = cine(outer, { mode: 'sticky', pace: 'epic', states: days.length, govern: true });
   track.on(() => { pos = track.pos(); update(); });
   window.addEventListener('resize', build, { passive: true });
   /* NOT gated on `load`. That waits for every image, and this page carries
