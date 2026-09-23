@@ -381,50 +381,51 @@ DAO.cine = (function(){
        each page, which is where that belongs. */
     if(this.o.off){ this.emit(raw); return; }
 
-    var t = this.times();
-    var span = 1 / this.N;                    /* one state, in 0..1 */
+    /* ══ SCROLL-LINKED. THE SCENE IS A FUNCTION OF POSITION, NOT TIME. ══
 
-    /* ── GUIDED — continuous, speed-capped ── */
-    if(this.mode === 'guided'){
-      var gap = raw - this.value;
-      var ag  = Math.abs(gap);
-      if(ag < 0.0004){ this.value = raw; this.emit(raw); return; }
-      var cap = (span / (gap > 0 ? t.step : t.back)) * dt;
-      /* Relax the cap once the user is far beyond what pacing can
-         justify — an anchor jump, a resize, a hard flick. Without this
-         the scene would trail the page instead of leading it. */
-      var over = ag / span - TIMING.maxSpan;
-      if(over > 0) cap *= 1 + over * 3;
-      var want = gap * followAlpha(dt);      /* damped, so it eases in */
-      this.value += Math.max(-cap, Math.min(cap, want));
-      this.emit(this.value);
-      return;
+       Both modes used to chase the scroll position over a TIME budget: a
+       per-state duration (`step`/`back`) became a speed cap, and the value
+       crept toward the reader's position at that rate however fast they
+       had actually moved. On a mouse, behind smooth.js's eased scroll, it
+       was invisible. On touch it was the whole problem, and no constant
+       fixed it, because the fault was the architecture:
+
+         - Measured on .quest-map-outer at 375x812, one state is ~929px of
+           scroll. A phone flick crosses that in ~230ms. The cap allowed
+           the scene one state per 1125ms. The reader was two states past
+           the screen before it rendered.
+         - Lowering the mobile scale to 0.30 narrowed the gap and made the
+           site feel quicker, but it is the same mechanism: the scene still
+           decides how long it is going to take, and the reader still has
+           no way to ask for more. Reported as the site "only responding at
+           one speed".
+
+       Now the value IS the position. Scroll fast and the scene plays fast;
+       stop and it stops exactly there; scroll back and it unwinds through
+       the same frames. There is no catch-up, nothing to trail, and no way
+       to arrive somewhere the scene has not reached.
+
+       THE PAUSES DID NOT GO WITH IT — they were never temporal. Sticky
+       mode's holds come from magnet() below, which spends the first and
+       last 15% of every segment at exactly 0 and exactly 1. That is a hold
+       measured in SCROLL: a state lands and sits there while the reader
+       keeps moving, and it is the same hold whether they arrived slowly or
+       threw the page at it. Guided sections carry their holds the same
+       way, in the ramps the page itself writes (sanctuary's hero holds its
+       fan between `spread` finishing and `pass` starting).
+
+       Spending holds in distance rather than time is also the only version
+       that can survive a fling, which is what makes it the model Apple's
+       product pages use.
+
+       What this deletes: followAlpha, the step/back speed caps, and
+       TIMING.maxSpan's relaxation of them. `times()` stays because govCaps
+       still reads it, and the durations stay meaningful there. */
+    var target = this.mode === 'guided' ? raw : this.snap(raw);
+    if(this.value !== target){
+      this.value = target;
+      this.arrived = now;
     }
-
-    /* ── STICKY — the stops are MAGNETS, not steps ──────────────────────
-       This used to quantise: the track picked a whole state and eased to
-       it, so the value was motionless except during the ~950ms after a
-       commit. Measured across the site, that rendered 3 to 12 distinct
-       frames per section no matter how much scroll the pin held — 73% to
-       95% of every pinned section was a frame that did not change while
-       the page was moving under the reader. That is the whole of the
-       "I keep scrolling and nothing happens, then it rushes" complaint.
-
-       Raw scroll is now remapped through a curve that DWELLS near each
-       stop and moves briskly between them, and the result is paced with
-       the same speed cap guided mode uses. A state therefore still lands
-       and holds, one firm scroll still carries one beat — but the scene
-       is never frozen while the page is scrolling. */
-    var target = this.snap(raw);
-    var sgap = target - this.value;
-    var sag  = Math.abs(sgap);
-    if(sag < 0.0002){ this.value = target; this.arrived = now; this.emit(this.value); return; }
-
-    var scap = (span / (sgap > 0 ? t.step : t.back)) * dt;
-    var sover = sag / span - TIMING.maxSpan;
-    if(sover > 0) scap *= 1 + sover * 3;
-    var swant = sgap * followAlpha(dt);
-    this.value += Math.max(-scap, Math.min(scap, swant));
     this.emit(this.value);
   };
 
