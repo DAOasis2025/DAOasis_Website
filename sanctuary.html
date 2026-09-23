@@ -2467,12 +2467,44 @@ const lead = (window.DAO && DAO.cine && DAO.cine.lead) ? DAO.cine.lead
        of a settled fan. The plates own 0.20-0.86; `gone` starts where they
        end, and the statement starts after they are clear. */
     const HOLD_END = isMobile ? 0.86 : 0.64;
-    const BP_START = isMobile ? 0.90 : 0.76;
+    /* 0.76 -> 0.90 on desktop. The departure now runs to 0.88 (see
+       GONE_LEN below); leaving the statement at 0.76 would have started it
+       fading up while the plates were still on screen, which is the one
+       thing this sequence must not do. */
+    const BP_START = 0.90;
 
-    const pT   = clamp01((raw - HOLD_END) / 0.10);
+    /* HOW LONG THE PLATES TAKE TO LEAVE.
+
+       These are fractions of the pin, and under beat pacing that converts
+       straight into wall-clock time: a span of F takes F x N x GOV.beatMs
+       to cross, whatever the pin's height is, because the speed cap is
+       derived from that height too. N is 3 here and beatMs is 800, so the
+       old desktop 0.095 gave the fade 0.095 x 3 x 800 = 228ms. Four
+       photographs held still for a second and a half then vanished in
+       under a quarter of one — reported as "very quick, smooth it", and
+       rightly: nothing else on this page moves at that speed.
+
+       0.24 puts the fade at 576ms and the fly-past at 624ms — about two
+       and a half times longer, and it reads as the plates leaving rather
+       than being cut. Note that raising the pin height would NOT have
+       fixed this: more height also raises the speed cap, and the two
+       cancel exactly. The fraction is the only lever.
+
+       The order still holds. The plates are clear at 0.88, the statement
+       does not begin until 0.90, and the gap between them is deliberate —
+       the wording must never fade up through the photographs.
+
+       Mobile keeps its own, shorter spans: it shows one photograph at a
+       time and each already hands over to the next across its own window,
+       so this ramp is only the last one leaving. */
+    const PASS_LEN = isMobile ? 0.10  : 0.26;
+    const GONE_LEN = isMobile ? 0.095 : 0.24;
+    const BP_LEN   = isMobile ? 0.08  : 0.09;
+
+    const pT   = clamp01((raw - HOLD_END) / PASS_LEN);
     const pass = pT * pT;                       /* accelerating departure */
-    const gone = ease(clamp01((raw - HOLD_END) / 0.095));
-    const bp   = ease(clamp01((raw - BP_START) / 0.08));
+    const gone = ease(clamp01((raw - HOLD_END) / GONE_LEN));
+    const bp   = ease(clamp01((raw - BP_START) / BP_LEN));
 
     const LANE = isMobile ? LANE_M : LANE_D;
     /* The idle drift is a held-frame gesture, so it starts with the hold. */
