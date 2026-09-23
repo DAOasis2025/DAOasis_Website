@@ -62,13 +62,39 @@ DAO.cine = (function(){
     /* Touch already carries its own momentum, and a phone is held closer
        to the eye — the same durations that read as cinematic on a desktop
        read as lag on a handset. */
-    /* Was 0.70 - every duration on a handset ran 30% FASTER than desktop.
-       The original reasoning (touch carries its own momentum, a phone is
-       held closer) is not wrong, but mobile is this product's MVP and the
-       brief is that it should feel the most considered surface, not the
-       most hurried. 0.9 keeps a slight concession to touch without making
-       the phone the fastest place the story is told. */
-    mobileScale: 0.9,
+    /* Was 0.9, and before that 0.70. The 0.9 reasoning — that mobile is the
+       MVP and should read as the most considered surface, not the most
+       hurried — was sound while the mobile GOVERNOR existed to hold the
+       page still long enough for these durations to play out. The governor
+       is gone (it took the scroll away from the finger to buy that time,
+       and was reported three times as a page that would not scroll), so
+       these numbers now meet a native flick instead of a speed-capped one,
+       and 0.9 stopped meaning "considered" and started meaning "late".
+
+       WHAT THIS NUMBER ACTUALLY CONTROLS. It scales the per-state SPEED
+       CAP. The cap only binds when the gap between scroll and scene is
+       large — a flick — which is exactly the case the governor used to
+       absorb. Ordinary reading never reaches it: there the pace is set by
+       followTau, which is untouched. So lowering this does NOT make the
+       phone feel hurried while someone is reading; it only stops the scene
+       arriving seconds after the reader does.
+
+       The arithmetic, on .quest-map-outer at 672vh / 375x812. One state is
+       ~929px of scroll. A normal flick runs 3-5px/ms, so the finger crosses
+       that state in roughly 230ms. At 0.9 the cap allowed the scene one
+       state per 1125ms — five times slower than the hand — so the reader
+       was two states past the screen before it rendered. That is the
+       "scrolls through before the app screens and sanctuary images land"
+       report, and no pin height fixes it, because the brake is time.
+
+       At 0.30 the cap allows a state per ~375ms. The scene still trails a
+       hard flick slightly, which is what makes it read as settling rather
+       than snapping, but it arrives within about a third of a second of
+       the finger stopping — so the state LANDS, on the screen the reader
+       stopped on, instead of somewhere behind them.
+
+       Desktop is untouched: this multiplier is mobile-only. */
+    mobileScale: 0.30,
     mobileAt: 900,
 
     /* A jump is never allowed to take longer than step * maxSpan, so a

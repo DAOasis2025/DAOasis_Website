@@ -578,12 +578,21 @@ img { max-width: 100%; }
 .hero-bridge .btn-row { justify-content: center; margin-top: 46px; }
 
 @media(max-width:900px){
-  /* was 1120vh — eleven screens, and the worst instance of the fault
-     described at .hero-outer above, because a phone is where the reader
-     has the least patience and the least idea how long the page is. A
-     touch beat carries slightly further than a wheel one, so this sits a
-     little above the desktop figure rather than below it. */
-  .hero-outer { height: 360vh; }
+  /* 1120vh -> 360vh -> 480vh. The 1120 was the reported wall. 360 fixed
+     that but went too far the other way once the mobile governor was
+     removed: this track carries FOUR states, so 360vh gave each transition
+     only about 1.2 screens of scroll, and a single native flick covers two
+     to four screens — the plates were being scrolled past before they had
+     room to arrive.
+
+     480vh puts a transition at roughly 1.6 screens, so one ordinary flick
+     lands on a plate rather than through it. Paired with cine.js's
+     mobileScale, which is what lets the scene keep up with the finger at
+     all; distance alone cannot fix a time-based brake, and time alone
+     cannot fix a section too short to read. Still well under half the
+     1120vh that caused the original complaint, and the finger is free
+     throughout now, so a reader who wants past it can simply flick. */
+  .hero-outer { height: 480vh; }
   .hero-title-eyebrow { letter-spacing: 0.3em; margin-bottom: 26px; }
   .hero-plate { box-shadow: 0 30px 60px rgba(0,0,0,0.78); }
   /* SPEND THE TRACKING, NOT THE TYPE SIZE.
