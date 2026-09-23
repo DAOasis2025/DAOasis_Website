@@ -299,8 +299,20 @@ body { overflow-x: clip; }
    SECTION 1 — HERO
 ══════════════════════════════════════════════ */
 
-/* Scroll-pin container — same pattern as homepage */
-.hero-outer { position: relative; height: 515vh; }
+/* Scroll-pin container.
+
+   NOT the same pattern as the homepage, which is what the old comment here
+   claimed: index.html's hero is a plain 100vh that scrolls away like any
+   other section, and this was 515vh — five screens of sticky stage the
+   reader had to scroll through before anything else on the page appeared.
+   Reported as "I can't scroll past the hero", alongside sanctuary's, which
+   had the same fault at 900vh. See the longer note at sanctuary.html's
+   .hero-outer for the reasoning; the short version is that the pin should
+   be sized by the beats it carries, not chosen for weight.
+
+   This track is `states: 3` — two transitions — so two screens to move
+   through and one to hold the settled frame. This one number is the dial. */
+.hero-outer { position: relative; height: 280vh; }
 
 .hero {
   position: sticky; top: 0; height: 100vh; overflow: hidden;
@@ -419,7 +431,10 @@ body { overflow-x: clip; }
    mid-screen. Mobile now gets its own shorter pin with the same three beats —
    title, phones settling and holding, then the bridge sliding up over them. */
 @media(max-width:900px){
-  .hero-outer { height: 512vh; }
+  /* was 512vh — see the note on the desktop rule above. A touch beat
+     carries a little further than a wheel one, so this sits just above
+     the desktop figure. */
+  .hero-outer { height: 300vh; }
   .hero { height: 100vh; }
   .hero-title-text { font-size: clamp(40px,12vw,64px); }
   /* Matches sanctuary's own mobile landing: the eyebrow spends tracking

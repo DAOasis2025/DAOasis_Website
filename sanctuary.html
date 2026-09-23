@@ -444,7 +444,29 @@ img { max-width: 100%; }
    extra 120vh went to the statement and nowhere else. Rescale them all
    again together if this number changes, or the earlier beats will
    silently slow down to pay for a later one. */
-.hero-outer { position: relative; height: 900vh; }
+/* HOW LONG THE READER IS HELD ON THE HERO, AND WHY IT IS THIS NUMBER.
+
+   This was 900vh — nine full screens of scrolling, roughly eighty wheel
+   notches, during which .hero-stage is sticky and the view does not change
+   except for a four-state animation that plays over a few seconds. It read
+   as a page that would not scroll, and was reported that way twice. The
+   giveaway is index.html: its hero is a plain 100vh, and it is the landing
+   page nobody complained about; about.html and investors.html are the same.
+
+   The length is now tied to the beats it has to carry rather than picked
+   for effect. The track below is `states: 4`, so three transitions, and a
+   beat needs roughly one screen of scroll to read as deliberate — three to
+   move through, one more to sit in the settled frame, less a little because
+   the last plate lands before the pin ends.
+
+   Shortening the pin cuts nothing out of the sequence: the whole thing is
+   scrubbed from this track's 0..1, so every state still happens, in order,
+   over a third of the scroll. Guided mode's speed cap still paces it, so a
+   hard flick cannot skip the beats.
+
+   If it wants to breathe more, this one number is the dial. Much past
+   400vh and the complaint comes back. */
+.hero-outer { position: relative; height: 320vh; }
 .hero-stage {
   position: sticky; top: 0; height: 100vh; overflow: hidden;
   display: flex; align-items: center; justify-content: center;
@@ -556,7 +578,12 @@ img { max-width: 100%; }
 .hero-bridge .btn-row { justify-content: center; margin-top: 46px; }
 
 @media(max-width:900px){
-  .hero-outer { height: 1120vh; }
+  /* was 1120vh — eleven screens, and the worst instance of the fault
+     described at .hero-outer above, because a phone is where the reader
+     has the least patience and the least idea how long the page is. A
+     touch beat carries slightly further than a wheel one, so this sits a
+     little above the desktop figure rather than below it. */
+  .hero-outer { height: 360vh; }
   .hero-title-eyebrow { letter-spacing: 0.3em; margin-bottom: 26px; }
   .hero-plate { box-shadow: 0 30px 60px rgba(0,0,0,0.78); }
   /* SPEND THE TRACKING, NOT THE TYPE SIZE.
