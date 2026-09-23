@@ -740,7 +740,21 @@ DAO.cine = (function(){
        Set this back to 3.0 to restore input-sensitive escape. */
     pushGain:   0,     /* cap multiplier at full push                       */
 
-    minV:    0.25,
+    /* 0.25 -> 0.06. This is the third floor in this block to silently
+       override the pacing above it, after maxCrossMs at 1400 and again at
+       8000, and the failure is identical each time: a guard rail set when
+       the caps were fast becomes a governor of its own once they slow
+       down. At 0.25px/ms the heroes asked for 0.18 and 0.20 and were both
+       handed 0.25, so passMs: 9000 rendered as 6.5s and passMs: 10000 as
+       7.9s — silently, with no error, exactly as if the numbers had been
+       ignored.
+
+       ANY TIME A PACE IS SLOWED, CHECK IT AGAINST THIS AND maxCrossMs.
+       Both are floors on velocity, so both put a CEILING on duration.
+
+       0.06px/ms is 60px/second — slow enough to be out of the way of any
+       deliberate pacing, fast enough that a section cannot stall. */
+    minV:    0.06,
     maxV:    6.00,
     /* AND A CEILING ON THE TIME, WHICH IS THE ONE THE READER FEELS.
 
@@ -987,8 +1001,29 @@ DAO.cine = (function(){
   function govCaps(t){
     var len = t.el.offsetHeight - window.innerHeight;
     if(!(len > 0)) return null;
-    var beat = len / Math.max(1, t.N);            /* px of scroll per state */
-    var v = beat / GOV.beatMs;                    /* px/ms */
+    var v;
+
+    /* `passMs` — HOW LONG THE WHOLE SECTION TAKES, set per track.
+
+       beatMs alone cannot pace a hero, and this is why. A section's total
+       time is N x beatMs, and the heroes carry the FEWEST states on the
+       site: app.html's is `states: 3` (N=2) and sanctuary's `states: 4`
+       (N=3), against five for the screenshot sections. So at beatMs 1600
+       the app hero passed in 3.2s and sanctuary's in 4.8s while the app
+       screenshots took 8s — the two most cinematic moments on the site
+       were its quickest, and raising beatMs to fix them made everything
+       else glacial. Reported repeatedly, correctly, as the heroes still
+       being far too fast to scroll through.
+
+       A hero is not "a number of beats", it is an opening that should take
+       about as long as it takes. So it declares its own total and the cap
+       follows from that directly, with no beat arithmetic in between. */
+    if(t.o.passMs > 0){
+      v = len / t.o.passMs;
+    } else {
+      var beat = len / Math.max(1, t.N);          /* px of scroll per state */
+      v = beat / GOV.beatMs;                      /* px/ms */
+    }
     /* an absolute backstop so no section can ever become a wall, however
        many states it declares */
     var floor = Math.max(GOV.minV, len / GOV.maxCrossMs);

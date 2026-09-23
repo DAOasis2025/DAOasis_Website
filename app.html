@@ -3359,6 +3359,22 @@ function cine(el, o){
      extra wiring. */
   const track = cine(outer, {
     mode: 'guided', pace: 'epic', states: 3, govern: true,
+    /* THE WHOLE HERO TAKES 9 SECONDS TO SCROLL THROUGH, set here rather
+       than falling out of GOV.beatMs. This track declares three states, so
+       two beats — the fewest of any section on the page — and under beat
+       pacing that made the page's opening its FASTEST moment: 3.2s against
+       8s for the screenshot sections behind it. No value of beatMs fixes
+       that, because the ratio between this section and those is fixed by
+       their state counts, not by the pace.
+
+       9000ms covers the title card, the three phones arriving and fanning,
+       the hold, and the bridge line, at a speed someone can watch. Every
+       ramp in applyFrame is a fraction of this, so they all scale with it
+       — the P table above shows how the nine seconds is spent.
+
+       `step`/`back` below are inert (see the note at TIMING in cine.js);
+       they are left only because removing them changes nothing. */
+    passMs: 9000,
     get step(){ return window.innerWidth <= 900 ? 3400 : 2400; },
     get back(){ return window.innerWidth <= 900 ? 2600 : 1850; }
   });

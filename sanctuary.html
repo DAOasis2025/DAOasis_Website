@@ -2354,7 +2354,19 @@ const lead = (window.DAO && DAO.cine && DAO.cine.lead) ? DAO.cine.lead
      touch events cannot drive native scrolling, so they only ever exercise
      the governed path and will report success where a finger finds none.
      That mistake cost three rounds of wrong diagnosis here. */
-  const track = cine(outer, { mode: 'guided', pace: 'epic', states: 4, govern: true });
+  /* THE WHOLE HERO TAKES 10 SECONDS TO SCROLL THROUGH. See the matching
+     note on app.html's hero: under beat pacing a section's total is
+     N x GOV.beatMs, and the heroes declare the fewest states on the site,
+     so they came out as its FASTEST sections — this one passed in 4.8s
+     while the app's screenshot list took 8s. Raising beatMs could never
+     correct that, because the ratio between them is fixed by their state
+     counts. passMs sets the total directly, and every ramp below is a
+     fraction of it, so the darkness, the four photographs arriving, the
+     hold and the departure all scale together from this one number.
+
+     Ten rather than the app hero's nine because there is more to watch:
+     four plates fanning out, not three phones. */
+  const track = cine(outer, { mode: 'guided', pace: 'epic', states: 4, govern: true, passMs: 10000 });
 
   /* ── THE FAN, at settle ──
      One entry per plate, left to right. Lanes are in plate-widths from the
