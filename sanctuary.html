@@ -592,7 +592,19 @@ img { max-width: 100%; }
      cannot fix a section too short to read. Still well under half the
      1120vh that caused the original complaint, and the finger is free
      throughout now, so a reader who wants past it can simply flick. */
-  .hero-outer { height: 480vh; }
+  /* 480 -> 620. The held frame is a FRACTION of this pin (see HOLD_END in
+     the hero script), so the only way to give it more screens of scroll,
+     once that fraction is as wide as the choreography allows, is to make
+     the pin itself taller. At 480vh the hold measured 1.06 screens; a phone
+     flick carries two to three, so the photographs were still being jumped.
+     620vh with the widened band puts the hold near 1.8 screens.
+
+     This is creeping back toward the 1120vh that was originally reported as
+     a wall, and that is worth saying plainly — but the thing that made 1120
+     unbearable was the governor holding the finger, not the height. Nothing
+     intercepts touch now, so a reader who wants past this can flick through
+     it at their own speed. Height alone was never the fault. */
+  .hero-outer { height: 620vh; }
   .hero-title-eyebrow { letter-spacing: 0.3em; margin-bottom: 26px; }
   .hero-plate { box-shadow: 0 30px 60px rgba(0,0,0,0.78); }
   /* SPEND THE TRACKING, NOT THE TYPE SIZE.
@@ -2342,7 +2354,21 @@ const lead = (window.DAO && DAO.cine && DAO.cine.lead) ? DAO.cine.lead
      entire depth cue, and it is why the eye lands on the inner pair first
      and then reads outward to the ends of the day. */
   const LANE_D  = [-1.60, -0.54,  0.54,  1.60];   /* desktop: four abreast  */
-  const LANE_M  = [-0.60, -0.21,  0.21,  0.60];   /* mobile: a fanned hand  */
+  /* WAS [-0.60,-0.21,0.21,0.60]. Lanes are in PLATE-WIDTHS, so the overlap
+     they produce is scale-invariant — making the plates smaller does not
+     separate them, and that is why the first attempt at this reached for
+     the width. At 0.21/0.60 the four cards sat 49-75px apart while being
+     134-160px wide, so each showed 31-47% of itself and only the last one
+     was fully visible. Measured at 375px. Reported as "overlapping".
+
+     At 0.29/0.86 adjacent centres are ~0.57 widths apart, so each plate
+     shows about 57% of itself and the fan reads as four photographs rather
+     than a stack. The plates get smaller to pay for it — the whole fan is
+     capped to 90% of the viewport either way, so separation and size trade
+     directly against each other, and legibility is the one worth having.
+     A fanned hand still: the inner pair overlaps the outer, which is where
+     the depth comes from. */
+  const LANE_M  = [-0.86, -0.29,  0.29,  0.86];   /* mobile: a fanned hand  */
   const SETTLE  = [ 0.84,  1.00,  1.00,  0.84];   /* scale                  */
   const LIFT    = [ 0.085,-0.020,-0.020, 0.085];  /* × width, + is down     */
   const TILT    = [ 11,     3.6,  -3.6,  -11   ]; /* deg, turned inward     */
@@ -2380,7 +2406,12 @@ const lead = (window.DAO && DAO.cine && DAO.cine.lead) ? DAO.cine.lead
        from one plate: outermost lane 1.60w plus that plate's own half-width
        at 0.84 scale is 2.02w a side, call it 4.10w across. */
     const startW  = isMobile ? 120 : 190;
-    const spanCap = (vw * 0.90) / (isMobile ? 2.10 : 4.10);
+    /* Mobile was 2.10, matching the old 0.60 outer lane (0.60 + 0.42 =
+       1.02w a side). The lanes widened to 0.86, so a side is now 0.86 +
+       0.5x0.84 = 1.28w and the fan is 2.56w across. Leaving this at 2.10
+       would have sized the plates for a narrower fan than the one being
+       drawn and pushed the outer pair off both edges. */
+    const spanCap = (vw * 0.90) / (isMobile ? 2.56 : 4.10);
     const tallCap = (vh * (isMobile ? 0.52 : 0.62)) / 1.5;   /* plates are 2:3 */
     const endW    = Math.min(spanCap, tallCap, isMobile ? 260 : 330);
     const w       = lerp(startW, endW, zoom);
@@ -2391,10 +2422,42 @@ const lead = (window.DAO && DAO.cine && DAO.cine.lead) ? DAO.cine.lead
        statement faded up THROUGH the photographs — the wording was legible
        while the plates were still on screen, which is the one thing this
        sequence must not do. */
-    const pT   = clamp01((raw - 0.64) / 0.10);
+    /* WHERE THE HELD FRAME ENDS — AND WHY MOBILE GETS ITS OWN NUMBER.
+
+       The fan is at full opacity from raw ~0.43 (zoom and spread resolve)
+       until the departure starts here. At 0.64 that hold is 21% of the
+       pin. On a phone that worked out at about ONE screen of scroll, and a
+       single flick carries two to three — so the reader went from darkness
+       straight to the statement and never saw the photographs at all.
+       Reported as "the hero images can't be seen".
+
+       It was never the fan's geometry: the width cap already keeps all four
+       plates inside 90% of the viewport, measured at 326px of 375. The
+       plates were simply only ON for a distance shorter than one gesture.
+
+       Holding to 0.76 gives the mobile hold ~33% of the pin, about 1.6
+       screens at the current height, so an ordinary flick lands inside it
+       rather than across it. The departure and the statement shift by the
+       same amount, so the sequence keeps its shape and the deliberate gap
+       between the plates leaving and the wording arriving is preserved —
+       the statement must never fade up through the photographs. Desktop
+       keeps 0.64/0.76: a wheel notch is ~100px, the hold is many notches
+       wide there, and nobody has ever missed it.
+
+       0.76 was measured first and was not enough: it bought a hold of 1.06
+       screens, still inside one gesture. 0.80 is the most the sequence can
+       give without breaking its own rule — `gone` runs 0.095 past this, so
+       the plates are clear by 0.895, and BP_START must not precede that or
+       the statement fades up through the photographs. 0.90 leaves the
+       statement 0.08 to arrive and finishes at 0.98, just inside the pin.
+       Any later for HOLD_END and the statement no longer fits. */
+    const HOLD_END = isMobile ? 0.80 : 0.64;
+    const BP_START = isMobile ? 0.90 : 0.76;
+
+    const pT   = clamp01((raw - HOLD_END) / 0.10);
     const pass = pT * pT;                       /* accelerating departure */
-    const gone = ease(clamp01((raw - 0.64) / 0.095));
-    const bp   = ease(clamp01((raw - 0.76) / 0.08));
+    const gone = ease(clamp01((raw - HOLD_END) / 0.095));
+    const bp   = ease(clamp01((raw - BP_START) / 0.08));
 
     const LANE = isMobile ? LANE_M : LANE_D;
     /* The idle drift is a held-frame gesture, so it starts with the hold. */

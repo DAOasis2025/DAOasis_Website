@@ -431,10 +431,18 @@ body { overflow-x: clip; }
    mid-screen. Mobile now gets its own shorter pin with the same three beats —
    title, phones settling and holding, then the bridge sliding up over them. */
 @media(max-width:900px){
-  /* was 512vh — see the note on the desktop rule above. A touch beat
-     carries a little further than a wheel one, so this sits just above
-     the desktop figure. */
-  .hero-outer { height: 300vh; }
+  /* 512vh -> 300vh -> 420vh. 512 was the reported wall (with the governor
+     hijacking touch on top of it). 300 fixed that but left this track's
+     two transitions only 1.5 screens each, and the second of them — the
+     bridge, "Your progress becomes a Journey" — was reported as arriving
+     too rapidly even after its time budget was raised.
+
+     Time and distance are separate brakes and this needed both: the step
+     getter on the track below sets how fast the scene may answer, and this
+     sets how much scrolling the reader spends getting there. 420vh gives
+     each transition ~2.1 screens, so the bridge is something arrived at
+     rather than passed through. Desktop stays 280vh. */
+  .hero-outer { height: 420vh; }
   .hero { height: 100vh; }
   .hero-title-text { font-size: clamp(40px,12vw,64px); }
   /* Matches sanctuary's own mobile landing: the eyebrow spends tracking
@@ -3311,7 +3319,30 @@ function cine(el, o){
      scroll on mobile. See the fuller note at the matching track in
      sanctuary.html; the pin here is now 300vh rather than 512vh, which
      removes most of what `govern` was compensating for. */
-  const track = cine(outer, { mode: 'guided', pace: 'epic', states: 3, step: 2400, back: 1850, govern: false });
+  /* STEP AND BACK ARE VIEWPORT-DEPENDENT, AS GETTERS.
+
+     cine.js multiplies whatever these return by TIMING.mobileScale, which
+     is 0.30 — deliberately low, because it is what lets every pinned scene
+     on the site keep up with a native flick now that nothing intercepts
+     touch. It is the right global default and it is the wrong number for
+     THIS track: 2400 x 0.30 is 720ms, and the arrival of "Your progress
+     becomes a Journey" was reported as still too rapid at that. This is
+     the one place on the page where three product screens are asked to be
+     looked at, so it wants the slowest cap on the site, not the site's
+     default relationship to it.
+
+     3400 x 0.30 gives mobile ~1020ms a state — close to the 2160ms this
+     track had before the governor was removed, without dragging every
+     other section back with it. Desktop is untouched at 2400.
+
+     Getters rather than a value computed once: times() re-reads o.step on
+     every frame, so this follows an orientation change or a resize with no
+     extra wiring. */
+  const track = cine(outer, {
+    mode: 'guided', pace: 'epic', states: 3, govern: false,
+    get step(){ return window.innerWidth <= 900 ? 3400 : 2400; },
+    get back(){ return window.innerWidth <= 900 ? 2600 : 1850; }
+  });
 
   function tick(){
     applyFrame(track.get());
