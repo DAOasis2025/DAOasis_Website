@@ -604,7 +604,17 @@ img { max-width: 100%; }
      unbearable was the governor holding the finger, not the height. Nothing
      intercepts touch now, so a reader who wants past this can flick through
      it at their own speed. Height alone was never the fault. */
-  .hero-outer { height: 620vh; }
+  /* 1120 -> 360 -> 480 -> 620 -> 600. The earlier numbers were all chasing
+     a fan that could not work at this width; mobile now shows one
+     photograph at a time, so the height is set by what those four need:
+     roughly two thirds of a screen held on each, plus the title before
+     them and the statement after. 600vh gives each plate ~670px of pin,
+     of which ~536px is full opacity.
+
+     Nothing intercepts touch and the scene is position-linked, so a reader
+     who wants past this flicks through it at their own speed and watches
+     the four go by; a reader who eases through rests on each one. */
+  .hero-outer { height: 600vh; }
   .hero-title-eyebrow { letter-spacing: 0.3em; margin-bottom: 26px; }
   .hero-plate { box-shadow: 0 30px 60px rgba(0,0,0,0.78); }
   /* SPEND THE TRACKING, NOT THE TYPE SIZE.
@@ -2450,8 +2460,13 @@ const lead = (window.DAO && DAO.cine && DAO.cine.lead) ? DAO.cine.lead
        the plates are clear by 0.895, and BP_START must not precede that or
        the statement fades up through the photographs. 0.90 leaves the
        statement 0.08 to arrive and finishes at 0.98, just inside the pin.
-       Any later for HOLD_END and the statement no longer fits. */
-    const HOLD_END = isMobile ? 0.80 : 0.64;
+       Any later for HOLD_END and the statement no longer fits.
+
+       Mobile now runs one photograph at a time (see the plate loop), so
+       these mark the end of the LAST photograph's hold rather than the end
+       of a settled fan. The plates own 0.20-0.86; `gone` starts where they
+       end, and the statement starts after they are clear. */
+    const HOLD_END = isMobile ? 0.86 : 0.64;
     const BP_START = isMobile ? 0.90 : 0.76;
 
     const pT   = clamp01((raw - HOLD_END) / 0.10);
@@ -2490,6 +2505,70 @@ const lead = (window.DAO && DAO.cine && DAO.cine.lead) ? DAO.cine.lead
             carried by size and lift, which cost no sharpness. The blur is
             now purely the emerge/depart gesture and is fully resolved by
             zoom 0.74 — that is raw ~0.43, well before the hold begins. */
+    /* ══ MOBILE: ONE PHOTOGRAPH AT A TIME ═══════════════════════════════
+
+       A fan of four 2:3 portraits does not survive a 375px screen, and two
+       attempts at it are the evidence. At the original lanes the plates
+       overlapped 53-69% and read as a stack — "the hero images can't be
+       seen, they are overlapping". Widening the lanes to separate them
+       shrank each plate to pay for the space and butted them edge to edge
+       at four different heights, which read as a ragged collage. Neither
+       is a failure of tuning: four portraits abreast need roughly 2.6
+       plate-widths of room, and a phone has about 1.2 to give.
+
+       So mobile does not fan. Each photograph gets the whole screen and
+       the pin scrubs through them, which is the arrangement a phone is
+       actually shaped for. Desktop is untouched and keeps its fan — it has
+       the width, and the fan is the better image there.
+
+       The cross-fade is POSITION-driven like everything else now: each
+       plate owns a segment of the pin, holds at full opacity across the
+       middle 80% of it, and trades with its neighbour over the 20% at the
+       edges. Hold and hand-over are both measured in scroll, so a reader
+       who flicks sees all four go past and a reader who eases through
+       rests on each one. */
+    if(isMobile){
+      const P0 = 0.20, P1 = 0.86;          /* the plates own this stretch */
+      const seg = (P1 - P0) / 4;
+      /* portrait, as large as the shorter axis allows */
+      const mw = Math.round(Math.min(vw * 0.86, (vh * 0.62) / 1.5) / 2) * 2;
+
+      for(let i = 0; i < 4; i++){
+        const centre = P0 + seg * (i + 0.5);
+        const u = (raw - centre) / seg;     /* 0 at its own centre, 1 at the next */
+        const au = Math.abs(u);
+        /* full across |u| <= 0.40, gone by 0.60 — so the pair either side
+           of a hand-over cross in the same window and the screen is never
+           empty between two photographs */
+        const op = clamp01((0.72 - au) / 0.32);
+        const el = plates[i];
+        /* the arriving photograph sits ON TOP of the one it replaces, so a
+           hand-over is a cover rather than two half-transparent images over
+           a dark background. With a linear pair summing to 1 the crossing
+           point composites to 0.75 and the screen visibly dims mid-swap;
+           overlapping the ramps (0.72/0.32 rather than 0.60/0.20) holds
+           both near 0.69 there, which composites to ~0.90 under the upper
+           layer and reads as a dissolve rather than a dip. */
+        el.style.zIndex = 5 + i;
+        el.style.width = mw + 'px';
+        if(op <= 0.001){
+          /* nothing to draw: drop the layer rather than compositing a
+             transparent full-screen bitmap four times a frame */
+          el.style.opacity = 0;
+          el.style.transform = 'translate(-50%,-50%)';
+          el.style.filter = 'none';
+          continue;
+        }
+        /* a little travel and scale so the hand-over is a move, not a dissolve */
+        const ty = Math.round(-u * vh * 0.045);
+        const sc = 1 + Math.min(au, 1) * 0.04;
+        el.style.opacity = (op * (1 - gone)).toFixed(3);
+        el.style.transform =
+          'translate(-50%, calc(-50% + ' + ty + 'px))'
+          + (Math.abs(sc - 1) > 0.0005 ? ' scale(' + sc.toFixed(4) + ')' : '');
+        el.style.filter = 'none';
+      }
+    } else {
     for(let i = 0; i < 4; i++){
       const outerPair = (i === 0 || i === 3);
       const em = outerPair ? emOut : emIn;
@@ -2503,9 +2582,13 @@ const lead = (window.DAO && DAO.cine && DAO.cine.lead) ? DAO.cine.lead
       const wi = Math.round(w * SETTLE[i] / 2) * 2;
       const sc = lerp(0.76, 1, zoom) * (1 + pass * 0.66);
       const tilt = TILT[i] * ((1 - spread) + pass * 0.9);
-      const blur = (isMobile ? 0 : lerp(9, 0, Math.min(1, zoom * 1.35))) + pass * 15;
+      const blur = lerp(9, 0, Math.min(1, zoom * 1.35)) + pass * 15;
 
       const el = plates[i];
+      /* restore the stylesheet's stacking — the mobile branch writes an
+         inline z-index and inline styles survive a resize across the
+         breakpoint */
+      el.style.zIndex = (i === 0 || i === 3) ? 6 : 7;
       el.style.width = wi + 'px';
       el.style.transform =
         'translate(calc(-50% + ' + x + 'px), calc(-50% + ' + y + 'px))'
@@ -2515,9 +2598,12 @@ const lead = (window.DAO && DAO.cine && DAO.cine.lead) ? DAO.cine.lead
       el.style.filter = blur > 0.05 ? 'blur(' + blur.toFixed(2) + 'px)' : 'none';
       el.style.opacity = em * (1 - gone);
     }
+    }
 
-    /* the caption only exists while the fan is settled and still */
-    if(cap) cap.classList.toggle('show', raw > 0.43 && pT < 0.05);
+    /* The caption names what is on screen, so on mobile it belongs to
+       whichever photograph is up rather than to a settled fan. */
+    if(cap) cap.classList.toggle('show',
+      isMobile ? (raw > 0.20 && raw < 0.86) : (raw > 0.43 && pT < 0.05));
 
     bridge.style.opacity = bp;
     bridge.style.pointerEvents = bp > 0.06 ? 'auto' : 'none';

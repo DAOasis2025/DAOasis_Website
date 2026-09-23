@@ -408,7 +408,18 @@ img { max-width: 100%; }
 .hero-bridge .btn-row { justify-content: center; margin-top: 46px; }
 
 @media(max-width:900px){
-  .hero-outer { height: 768vh; }
+  /* 768vh was 7.7 screens of pinned hero on a phone for a `states: 3`
+     track — two transitions, so 3.8 screens of scrolling per beat, and
+     measured it produced 5 distinct frames across eleven samples. That is
+     the same fault that got app.html and sanctuary.html reported as pages
+     that would not scroll, on the page nobody had checked yet.
+
+     420vh matches app.html's hero, which carries the same three states:
+     ~2.1 screens a transition. Enough to read as deliberate, short enough
+     that the reader is never left wondering whether the page is stuck.
+     Desktop is still 600vh — 3 screens a beat — and is worth the same
+     look, but desktop was explicitly signed off, so it is left alone. */
+  .hero-outer { height: 420vh; }
   .hero-title-eyebrow { letter-spacing: 0.3em; margin-bottom: 26px; }
   /* 9px was under the site's own 10px floor, and was only there so the
      nowrap line would fit. Tracking is the cheaper thing to spend — see
