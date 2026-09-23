@@ -615,6 +615,35 @@ DAO.cine = (function(){
        becoming a wall. */
     minV:    0.25,
     maxV:    1.50,
+    /* AND A CEILING ON THE TIME, WHICH IS THE ONE THE READER FEELS.
+
+       maxV is a velocity, and a velocity alone cannot say how long anybody
+       is held: multiply it by a tall enough pin and it becomes a wall.
+       That is what happened. Measured at 375x812 with the governor on:
+
+         sanctuary  .hero-outer     8282px of travel   5.5s
+         app        .hero-outer     3345px             2.7s
+         app        .quest-map      4645px             3.6s
+         app        .market-outer   4385px             2.9s
+
+       Both of those pages open with a governed hero at scroll 0, so the
+       first thing a phone reader meets is 2.7 or 5.5 seconds of dragging
+       in which the page answers at a fixed rate no matter how hard it is
+       thrown — every touchmove is preventDefault'd, so there is no way to
+       ask for more. It reads as a page that does not scroll, and that is
+       exactly how it was reported. index.html and web3.html pass `govern`
+       nowhere, have no governed tracks at all, and were never reported.
+
+       The note on maxV above reasoned about sanctuary's 1120vh hero and
+       concluded the ceiling should hold it down. The arithmetic that
+       reasoning implies was never done; 1120vh at 1.50px/ms is 5.5s.
+
+       So bound the wall clock directly. A section may still be paced —
+       short ones keep the cap the formula gives them, which is well inside
+       this — but no section may take longer than this to cross, however
+       tall it is. A native fling would cross sanctuary's hero in about
+       half a second, so at 1.4s this is still unmistakably governed. */
+    maxCrossMs: 1400,
     /* A lifted flick is worth this many ms of its own velocity. Native
        momentum on both platforms decays over roughly this long, so intent
        ends up where the page would have gone had we not intercepted. */
@@ -734,7 +763,12 @@ DAO.cine = (function(){
     var len = t.el.offsetHeight - window.innerHeight;
     if(!(len > 0)) return null;
     var tm = t.times();
-    function bound(v){ return v < GOV.minV ? GOV.minV : v > GOV.maxV ? GOV.maxV : v; }
+    /* the velocity below which THIS section becomes a wall — see maxCrossMs */
+    var floor = Math.max(GOV.minV, len / GOV.maxCrossMs);
+    function bound(v){
+      if(v > GOV.maxV) v = GOV.maxV;
+      return v < floor ? floor : v;
+    }
     return {
       fwd:  bound(len / (t.N * tm.step * GOV.slack)),
       back: bound(len / (t.N * tm.back * GOV.slack))
