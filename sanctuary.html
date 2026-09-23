@@ -2297,15 +2297,33 @@ const lead = (window.DAO && DAO.cine && DAO.cine.lead) ? DAO.cine.lead
      proportion to their size and so still raced on a hard flick.
      4 states, not 3: the departure and the statement are now two beats
      with a held black frame between them, not one crossfade. */
-  /* `govern` is the mobile fix for "scroll fast and it skips straight
-     through". This pin is 1120vh on a phone and js/smooth.js is disarmed
-     on touch by design, so one flick used to carry the reader through the
-     darkness, the emergence and the pass in a single throw. Governed, the
-     page itself is speed-capped while this section owns the viewport, so
-     the pass takes the same wall-clock time whatever the gesture was.
-     Desktop, mouse and reduced motion are untouched — see the governor
-     block in js/cine.js. */
-  const track = cine(outer, { mode: 'guided', pace: 'epic', states: 4, govern: true });
+  /* `govern` WAS the mobile fix for "scroll fast and it skips straight
+     through": the page is speed-capped while this section owns the
+     viewport, so the pass takes the same wall-clock time whatever the
+     gesture was. It is OFF now, and the reason is worth keeping.
+
+     To cap the speed the governor must own the scroll, so it calls
+     preventDefault() on every touchmove inside the section and then moves
+     the page itself from the frame loop. That is a hard hijack: while it
+     is on, a phone cannot scroll this section by any means except the
+     governor choosing to move it, and the finger has no way to ask for
+     more. It was reported three times as a page that would not scroll on
+     mobile. The pin being 1120vh at the time — 5.5 seconds of continuous
+     dragging to cross, measured — is what made that unbearable rather
+     than merely slow.
+
+     The pin is now 360vh (see .hero-outer), which removes most of what
+     `govern` was for: there is far less section left for a flick to skip.
+     That makes the hijack a bad trade. A flick outrunning the beats is a
+     cosmetic loss; a page that will not scroll is not.
+
+     js/cine.js now also bounds governed crossing time (GOV.maxCrossMs), so
+     if this is ever switched back on it cannot become a wall again. Flip
+     the one word to re-enable — and re-test on a REAL handset. Synthetic
+     touch events cannot drive native scrolling, so they only ever exercise
+     the governed path and will report success where a finger finds none.
+     That mistake cost three rounds of wrong diagnosis here. */
+  const track = cine(outer, { mode: 'guided', pace: 'epic', states: 4, govern: false });
 
   /* ── THE FAN, at settle ──
      One entry per plate, left to right. Lanes are in plate-widths from the
@@ -2490,7 +2508,7 @@ const lead = (window.DAO && DAO.cine && DAO.cine.lead) ? DAO.cine.lead
      than a phone viewport. Declared so that if this section is ever given
      a real mobile pin it is paced like the hero rather than quietly
      reverting to "one flick and it is gone". */
-  const track = cine(outer, { mode: 'sticky', pace: 'major', states: items.length, govern: true });
+  const track = cine(outer, { mode: 'sticky', pace: 'major', states: items.length, govern: false });
   let mob = null;
   track.on(() => {
     if(window.innerWidth <= 900){
@@ -2635,7 +2653,7 @@ const lead = (window.DAO && DAO.cine && DAO.cine.lead) ? DAO.cine.lead
   /* as .found-outer above: inert while .seven-outer is height:auto and
      .seven-sticky is not sticky on mobile, declared so a future mobile pin
      inherits the pacing */
-  const track = cine(outer, { mode: 'sticky', pace: 'epic', states: days.length, govern: true });
+  const track = cine(outer, { mode: 'sticky', pace: 'epic', states: days.length, govern: false });
   track.on(() => { pos = track.pos(); update(); });
   window.addEventListener('resize', build, { passive: true });
   /* NOT gated on `load`. That waits for every image, and this page carries

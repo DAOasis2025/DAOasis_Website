@@ -3301,15 +3301,17 @@ function cine(el, o){
      sets how quickly the scene answers a scroll. 2400/1850 keeps the same
      damping (TIMING.follow) but lets the move arrive noticeably more
      slowly. `times()` reads o.step/o.back, so this works in guided mode. */
-  /* `govern` is the mobile fix for "scroll fast and it skips straight
-     through". This pin is 512vh on a phone and js/smooth.js is disarmed on
-     touch by design, so one flick used to carry the reader past the title,
-     the fan-out and the bridge before any of the three had handed over to
-     the next. Governed, the page itself is speed-capped while this section
-     owns the viewport, so the pass takes the same 2 x 2400ms whatever the
-     gesture was. Desktop, mouse and reduced motion are untouched — see the
-     governor block in js/cine.js. */
-  const track = cine(outer, { mode: 'guided', pace: 'epic', states: 3, step: 2400, back: 1850, govern: true });
+  /* `govern` WAS the mobile fix for "scroll fast and it skips straight
+     through", holding the pass to the same 2 x 2400ms whatever the gesture
+     was. It is OFF on all three tracks on this page. The governor buys
+     that pacing by calling preventDefault() on every touchmove inside the
+     section and moving the page itself from the frame loop, which means a
+     phone cannot scroll a governed section by any other means — and this
+     page opened with one. Reported three times as a page that would not
+     scroll on mobile. See the fuller note at the matching track in
+     sanctuary.html; the pin here is now 300vh rather than 512vh, which
+     removes most of what `govern` was compensating for. */
+  const track = cine(outer, { mode: 'guided', pace: 'epic', states: 3, step: 2400, back: 1850, govern: false });
 
   function tick(){
     applyFrame(track.get());
@@ -3629,7 +3631,7 @@ function cine(el, o){
     pace: 'major',
     /* governed on touch — 672vh of pin on a phone, same reasoning as the
        hero above. See the governor block in js/cine.js. */
-    govern: true,
+    govern: false,
     stops: WPS.map((w, i) => i === WPS.length - 1 ? 1 : w.threshold * 0.97)
   }).on((v) => { paced = v; questScroll(); });
 })();
@@ -3663,7 +3665,7 @@ function cine(el, o){
      instead of letting a flick crossfade through all four at once. */
   /* governed on touch — 640vh of pin on a phone, so a flick used to
      crossfade all four scenes at once. See js/cine.js. */
-  const track = cine(outer, { mode: 'sticky', pace: 'major', states: N, govern: true });
+  const track = cine(outer, { mode: 'sticky', pace: 'major', states: N, govern: false });
 
   function apply(raw){
     const pos = raw * (N - 1); // continuous scene position, 0..N-1 (each scene gets a full centred hold)
