@@ -2466,7 +2466,7 @@ const lead = (window.DAO && DAO.cine && DAO.cine.lead) ? DAO.cine.lead
        these mark the end of the LAST photograph's hold rather than the end
        of a settled fan. The plates own 0.20-0.86; `gone` starts where they
        end, and the statement starts after they are clear. */
-    const HOLD_END = isMobile ? 0.86 : 0.64;
+    const HOLD_END = isMobile ? 0.86 : 0.60;
     /* 0.76 -> 0.90 on desktop. The departure now runs to 0.88 (see
        GONE_LEN below); leaving the statement at 0.76 would have started it
        fading up while the plates were still on screen, which is the one
@@ -2497,8 +2497,8 @@ const lead = (window.DAO && DAO.cine && DAO.cine.lead) ? DAO.cine.lead
        Mobile keeps its own, shorter spans: it shows one photograph at a
        time and each already hands over to the next across its own window,
        so this ramp is only the last one leaving. */
-    const PASS_LEN = isMobile ? 0.10  : 0.26;
-    const GONE_LEN = isMobile ? 0.095 : 0.24;
+    const PASS_LEN = isMobile ? 0.10  : 0.30;
+    const GONE_LEN = isMobile ? 0.095 : 0.28;
     const BP_LEN   = isMobile ? 0.08  : 0.09;
 
     const pT   = clamp01((raw - HOLD_END) / PASS_LEN);

@@ -687,8 +687,21 @@ DAO.cine = (function(){
        is long enough to take in a screenshot and a short label and short
        enough that a five-state section clears in about four seconds. Raise
        it to make the site more deliberate; lower it to make it brisker.
-       Everything else in this block is a guard rail around it. */
-    beatMs:  800,
+       Everything else in this block is a guard rail around it.
+
+       800 -> 1600. 800 was chosen as "long enough to take in a screenshot
+       and a short label", and it is not: reported twice as still too quick
+       even after the sanctuary departure was widened underneath it. Half
+       the apparent problem was the escape valve above quartering it in
+       practice; the other half is that 800ms is a glance, not a viewing.
+
+       At 1600 a five-state section takes eight seconds to pass at full
+       tilt and nothing the reader does makes it quicker. That is a large
+       amount of control to hand a page and it is deliberate — the brief
+       is to ignore how someone scrolls and pace the viewing. This one
+       number scales every transition on every page proportionally, so
+       tune the site from here and nowhere else. */
+    beatMs:  1600,
     /* scrolling back up is not a reading pass, so it runs quicker */
     backGain: 1.35,
 
@@ -710,7 +723,22 @@ DAO.cine = (function(){
     pushThresh: 0.9,   /* viewports of unmet demand before it starts       */
     pushMs:     900,   /* to reach full escape, held                        */
     releaseMs:  500,   /* to fall back to the governed pace once they stop  */
-    pushGain:   3.0,   /* cap multiplier at full push                       */
+
+    /* ESCAPE IS OFF — 3.0 -> 0. This is the brief, stated plainly: "we
+       should ignore how someone scrolls and control speed for viewing."
+       An escape valve is the opposite of that. It made the pace a function
+       of how hard the reader pushed, so anyone testing the site — which
+       means scrolling into a section deliberately and firmly — opened it
+       to 4x and saw the transitions at a quarter of their intended length.
+       That is why they kept reading as "still way too quick" however much
+       the durations were raised underneath.
+
+       The page still always moves: the cap only limits how FAST scroll
+       advances, never whether it does, and GOV.maxCrossMs remains as a
+       hard ceiling on how long any single section may hold someone.
+
+       Set this back to 3.0 to restore input-sensitive escape. */
+    pushGain:   0,     /* cap multiplier at full push                       */
 
     minV:    0.25,
     maxV:    6.00,
@@ -754,7 +782,15 @@ DAO.cine = (function(){
        take 5 x beatMs = 4s; this only binds on something declaring so many
        states that it would hold a reader longer than eight seconds, and
        the escape valve is what protects the reader in normal use. */
-    maxCrossMs: 8000,
+    /* 8000 -> 14000, and this has to move whenever beatMs does. It is a
+       velocity FLOOR, so whenever it is lower than what beatMs asks for it
+       silently overrides the pacing — which is exactly what happened at
+       1400, where every section on app.html came out crossing in 1.4s
+       regardless of its beat count. At beatMs 1600 the longest section on
+       the site (five states) wants 8000ms, so the backstop has to sit
+       clear of that or it binds on the very sections it is meant to leave
+       alone. Keep it at roughly 1.75x the longest section. */
+    maxCrossMs: 14000,
     /* A lifted flick is worth this many ms of its own velocity. Native
        momentum on both platforms decays over roughly this long, so intent
        ends up where the page would have gone had we not intercepted. */
