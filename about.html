@@ -1136,10 +1136,23 @@ img{height:auto;}
         </div>
       </article>
 
-      <article class="team-i soft d1">
-        <!-- PORTRAIT SLOT — <img loading="lazy" decoding="async" src="images/team-uchenna.jpg" alt="Uchenna, App Developer at DAOasis" /> -->
+      <article class="team-i soft d1" id="uchenna">
+        <!-- Same wiring as the founders': the monogram and the caption stay
+             UNDERNEATH rather than being deleted — `.pt img` is z-index 2 and
+             covers them once the file loads, and `onerror` strips the <img> if
+             it is ever missing or renamed, so the slot falls back to the plate
+             the portrait-less profiles show instead of a broken-image icon.
+             NO `object-position` override here, and that is not an oversight:
+             this frame is 960x1200, ratio 0.800, which IS the 4:5 plate — so
+             `cover` crops nothing at all and a centred origin is exact. The
+             other two portraits need a bias only because they are 0.667 and
+             lose 16.7% of their height. If this photograph is ever replaced,
+             check the new ratio before assuming it still needs nothing. -->
         <figure class="pt">
           <span class="pt-mono" aria-hidden="true">U</span>
+          <img loading="lazy" decoding="async" src="images/team-uchenna.jpg"
+               alt="Uchenna, App Developer at DAOasis"
+               width="960" height="1200" onerror="this.remove();" />
           <figcaption class="pt-tag">Portrait to follow</figcaption>
         </figure>
         <div>
