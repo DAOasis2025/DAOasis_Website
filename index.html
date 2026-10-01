@@ -27,11 +27,12 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>DAOasis — Rest · Learn · Earn · Return</title>
-<meta name="description" content="Traditional wellness apps create users. DAOasis creates stakeholders. An ongoing wellness ecosystem built around the Companion App, where daily habits become a Journey — Bangkok to Phuket is the launch Journey, and completing one opens the next." />
+<meta name="description" content="Traditional wellness apps create users. DAOasis creates stakeholders. An ongoing wellness ecosystem where daily habits become a Journey." />
 <meta property="og:title" content="DAOasis — Rest · Learn · Earn · Return" />
 <link rel="canonical" href="https://da-oasis-website.vercel.app/" />
 <meta property="og:url" content="https://da-oasis-website.vercel.app/" />
 <meta property="og:site_name" content="DAOasis" />
+<meta property="og:locale" content="en_GB" />
 <meta property="og:image" content="https://da-oasis-website.vercel.app/images/og-card.jpg" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
@@ -418,7 +419,15 @@
     transition:opacity 0.2s var(--ease);white-space:nowrap;}
   .nav-cta:hover{opacity:0.88;}
   @media(max-width:768px){.nav>.nav-cta{display:none;}}
-  .nav-burger{display:flex;align-items:center;gap:10px;cursor:pointer;padding:4px;background:none;border:none;}
+  
+/* The drawn bars are 20px wide and the button measures 28x23, under the
+   24px minimum target size. This pseudo-element enlarges the HIT AREA to
+   44x44 around the existing centre without moving or resizing anything
+   that is drawn. */
+.nav-burger{position:relative;}
+.nav-burger::before{content:'';position:absolute;top:50%;left:50%;
+  width:44px;height:44px;transform:translate(-50%,-50%);}
+.nav-burger{display:flex;align-items:center;gap:10px;cursor:pointer;padding:4px;background:none;border:none;}
   .nav-burger-bars{display:flex;flex-direction:column;gap:5px;}
   .nav-burger-bars i{display:block;width:20px;height:1.5px;background:var(--warm-white);transition:transform 0.3s var(--ease),opacity 0.3s var(--ease);font-style:normal;}
   .nav-burger.open .nav-burger-bars i:nth-child(1){transform:translateY(6.5px) rotate(45deg);}
@@ -2922,7 +2931,7 @@
     border-radius:16px;cursor:pointer;transition:background 0.2s var(--ease),border-color 0.2s var(--ease),color 0.2s var(--ease),transform 0.2s var(--ease);letter-spacing:0.04em;text-transform:uppercase;}
   .footer-toggle button.active{background:rgba(247,244,238,0.14);color:var(--warm-white);}
   .footer-col-label{font-size:var(--t-nano);letter-spacing:0.22em;text-transform:uppercase;color:#8f887d;margin-bottom:22px;}
-  .footer-col a{display:block;font-size:var(--t-note);color:#908978;text-decoration:none;margin-bottom:13px;
+  .footer-col a{display:block;font-size:var(--t-note);color:#908978;text-decoration:none;padding:4px 0;margin-bottom:5px;
     transition:color 0.2s var(--ease);}
   .footer-col a:hover{color:var(--warm-white);}
   .footer-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:4vh;
@@ -3293,9 +3302,49 @@ img{height:auto;}
 .on-light .wl-tagline { color: #9A6A3F; }
 </style>
 
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://da-oasis-website.vercel.app/#organization",
+      "name": "DAOasis",
+      "legalName": "DAOasis Global Ltd",
+      "url": "https://da-oasis-website.vercel.app/",
+      "logo": "https://da-oasis-website.vercel.app/images/og-card.jpg",
+      "description": "An ongoing wellness ecosystem where daily habits become a Journey.",
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "GB"
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "email": "info@daoasis.xyz",
+        "contactType": "customer support"
+      },
+      "sameAs": [
+        "https://instagram.com/thedaoasis",
+        "https://x.com/thedaoasis",
+        "https://linkedin.com/company/daoasis"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://da-oasis-website.vercel.app/#website",
+      "url": "https://da-oasis-website.vercel.app/",
+      "name": "DAOasis",
+      "publisher": {
+        "@id": "https://da-oasis-website.vercel.app/#organization"
+      },
+      "inLanguage": "en-GB"
+    }
+  ]
+}
+</script>
 </head>
 <body>
-<a class="skip-link" href="#pinContainer">Skip to content</a>
+<a class="skip-link" href="#mainContent">Skip to content</a>
 
   <div class="intro">
     <div class="logo"><img fetchpriority="high" decoding="async" width="1400" height="429" src="images/img-02.png" alt="DAOasis logo" /></div>
@@ -3333,7 +3382,8 @@ img{height:auto;}
     </div>
   </div>
 
-  <div class="pin-container" id="pinContainer" tabindex="-1" data-skip-target>
+  <main id="mainContent" tabindex="-1">
+<div class="pin-container" id="pinContainer" tabindex="-1" data-skip-target>
     <div class="hero">
       <!-- .bg (the full-bleed sunrise) was removed on 13 September when the
            hero became a contained product plate on ivory. The sunrise
@@ -3359,7 +3409,7 @@ img{height:auto;}
                appeared as a strip under the calls to action — that strip
                was removed on 13 September, so the objection is spent.) -->
           <div class="kicker">Rest &middot; Learn &middot; Earn &middot; Return</div>
-          <div class="h1" id="heroH1">A healthier tomorrow, <em>together</em></div>
+          <h1 class="h1" id="heroH1">A healthier tomorrow, <em>together</em></h1>
           <div class="sub">A behavioural wellness ecosystem combining daily habits, real-world experiences and a like-minded community.</div>
           <!-- The icon spans are MOBILE ONLY — hidden above 900px so the
                approved desktop hero is unchanged. See .ctas in the mobile
@@ -3934,6 +3984,8 @@ img{height:auto;}
     </div>
   </div>
 </section>
+
+</main>
 
 <footer class="site-footer">
   <div class="footer-top">

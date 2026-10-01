@@ -1320,6 +1320,9 @@ DAO.cine = (function(){
       for(var i = 0; i < tracks.length; i++){
         var t = tracks[i];
         if(!t.near) continue;
+        /* A section that already carries its own scroll cue opts out with
+           data-no-cue, so the two never print on top of each other. */
+        if(t.el && t.el.hasAttribute && t.el.hasAttribute('data-no-cue')) continue;
         var r; try { r = t.el.getBoundingClientRect(); } catch(e){ continue; }
         var cover = Math.min(r.bottom, vh) - Math.max(r.top, 0);
         if(cover > bestCover){ bestCover = cover; best = t; }

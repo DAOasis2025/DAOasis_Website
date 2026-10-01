@@ -12,11 +12,12 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>The Companion App — DAOasis</title>
-<meta name="description" content="The Companion App is the core operating environment of DAOasis — daily quests, learning and community turned into one Journey. Bangkok to Phuket is the launch Journey; completing one opens the next. Earn DAOasis Reward Credits (DRC), with a designed one-way conversion to $DVT." />
+<meta name="description" content="The Companion App is the core of DAOasis: daily quests, learning and community turned into one Journey, earning DAOasis Reward Credits (DRC)." />
 <meta property="og:title" content="The Companion App — DAOasis" />
 <link rel="canonical" href="https://da-oasis-website.vercel.app/app" />
 <meta property="og:url" content="https://da-oasis-website.vercel.app/app" />
 <meta property="og:site_name" content="DAOasis" />
+<meta property="og:locale" content="en_GB" />
 <meta property="og:image" content="https://da-oasis-website.vercel.app/images/og-card.jpg" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
@@ -117,6 +118,14 @@ body { overflow-x: clip; }
 }
 .nav-cta:hover { opacity: 0.88; }
 @media(max-width:768px){.nav>.nav-cta{display:none;}}
+
+/* The drawn bars are 20px wide and the button measures 28x23, under the
+   24px minimum target size. This pseudo-element enlarges the HIT AREA to
+   44x44 around the existing centre without moving or resizing anything
+   that is drawn. */
+.nav-burger{position:relative;}
+.nav-burger::before{content:'';position:absolute;top:50%;left:50%;
+  width:44px;height:44px;transform:translate(-50%,-50%);}
 .nav-burger { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 4px; background: none; border: none; }
 .nav-burger-bars { display: flex; flex-direction: column; gap: 5px; }
 .nav-burger-bars i { display: block; width: 20px; height: 1.5px; background: var(--warm-white); transition:transform 0.3s var(--ease), opacity 0.3s var(--ease); font-style: normal; }
@@ -287,7 +296,7 @@ body { overflow-x: clip; }
 .footer-tagline strong { display: block; color: #b8b1a4; font-weight: 500; }
 .footer-tagline em { font-style: italic; }
 .footer-col-label { font-size:var(--t-nano); letter-spacing: 0.12em; text-transform: uppercase; color: #8f887d; margin-bottom: 18px; }
-.footer-col a { display: block; font-size:var(--t-note); color: #908978; text-decoration: none; margin-bottom: 11px; transition:color 0.2s var(--ease); }
+.footer-col a { display: block; font-size:var(--t-note); color: #908978; text-decoration: none; padding: 4px 0; margin-bottom: 3px; transition:color 0.2s var(--ease); }
 .footer-col a:hover { color: var(--warm-white); }
 .footer-bottom { display: flex; justify-content: space-between; padding-top: 4vh; font-size:var(--t-small); color: #908978; }
 @media(max-width:768px) {
@@ -1400,7 +1409,7 @@ body { overflow-x: clip; }
   display: flex; flex-direction: column; gap: 16px; align-items: flex-end;
 }
 .market-nav-item {
-  font-size:var(--t-nano); letter-spacing: 0.16em; color: rgba(247,244,238,0.3);
+  font-size:var(--t-nano); letter-spacing: 0.16em; color: rgba(247,244,238,0.55);
   /* colour only. letter-spacing was also in this list and animates LAYOUT —
      a reflow of the nav on every frame of the transition — while .active
      changes nothing but the colour, so it was driving no visual result at
@@ -2143,7 +2152,7 @@ img{height:auto;}
 </style>
 </head>
 <body>
-<a class="skip-link" href="#heroOuter">Skip to content</a>
+<a class="skip-link" href="#mainContent">Skip to content</a>
 
 <!-- NAV -->
 <div class="scroll-prog" id="scrollProg"></div>
@@ -2179,14 +2188,15 @@ img{height:auto;}
 <!-- ══════════════════════════════
      SECTION 1 — HERO
 ══════════════════════════════ -->
-<div class="hero-outer" id="heroOuter" tabindex="-1" data-skip-target>
+<main id="mainContent" tabindex="-1">
+<div class="hero-outer" id="heroOuter" tabindex="-1" data-skip-target data-no-cue>
 
   <section class="hero" id="heroStage">
 
     <!-- "Meet the App" title card -->
     <div class="hero-title-card" id="heroTitleCard">
       <div class="hero-title-eyebrow">The Companion App</div>
-      <div class="hero-title-text" id="heroTitleText"></div>
+      <h1 class="hero-title-text" id="heroTitleText"></h1>
       <div class="hero-title-scroll-cue" id="heroTitleScrollCue" aria-hidden="true">Scroll to enter ↓</div>
     </div>
 
@@ -2963,6 +2973,8 @@ img{height:auto;}
 
 
 <!-- FOOTER -->
+</main>
+
 <footer class="site-footer">
   <div class="footer-top">
     <div>
@@ -3890,7 +3902,7 @@ function cine(el, o){
 
 </script>
 <!-- ══ PHONE FEATURE MODALS ══ -->
-<div class="phone-modal-overlay" id="phoneModalOverlay" aria-modal="true" role="dialog">
+<div class="phone-modal-overlay" id="phoneModalOverlay" aria-modal="true" role="dialog" aria-labelledby="phoneModalTitle">
   <div class="phone-modal" id="phoneModal">
     <button class="phone-modal-close" id="phoneModalClose" aria-label="Close">✕</button>
     <div class="phone-modal-icon" id="phoneModalIcon"></div>
