@@ -7,6 +7,11 @@
   (function(){
     var t = 'dark' /* light mode disabled */;
     if(t === 'light') document.documentElement.setAttribute('data-theme','light');
+    /* Below-the-fold photography is held back until it is nearly needed.
+       The CSS that holds it back is gated on this class, and only this
+       line adds it — so with no JS, or no IntersectionObserver, nothing is
+       suppressed and the page loads exactly as it used to. */
+    if('IntersectionObserver' in window) document.documentElement.classList.add('bgdefer');
   })();
 </script>
 
@@ -236,24 +241,24 @@ img { max-width: 100%; }
   position: fixed; top: 0; left: 0; bottom: 0; z-index: 89; width: min(420px,88vw);
   background: rgba(23,20,18,0.98); backdrop-filter: blur(16px);
   display: flex; flex-direction: column;
-  transform: translateX(-100%); transition:transform 0.4s var(--ease);
+  transform: translateX(-100%); visibility: hidden; transition:transform 0.4s var(--ease), visibility 0s linear 0.4s;
   border-right: 1px solid rgba(247,244,238,0.08); overflow-y: auto;
 }
-.nav-drawer.open { transform: translateX(0); }
+.nav-drawer.open { transform: translateX(0); visibility: visible; transition:transform 0.4s var(--ease), visibility 0s linear 0s; }
 .nav-drawer-head {
   display: flex; align-items: center; justify-content: space-between;
   padding: 22px 28px; border-bottom: 1px solid rgba(247,244,238,0.08); flex-shrink: 0;
 }
 .nav-drawer-head img { height: 22px; width: auto; opacity: 0.92; }
-.nav-drawer-close { background: none; border: none; color: #8a8377; font-size: 28px; line-height: 1; cursor: pointer; padding: 2px 6px; transition:color 0.2s var(--ease); }
+.nav-drawer-close { background: none; border: none; color: #908978; font-size: 28px; line-height: 1; cursor: pointer; padding: 2px 6px; transition:color 0.2s var(--ease); }
 .nav-drawer-close:hover { color: var(--warm-white); }
 .nav-drawer-list { display: flex; flex-direction: column; padding: 6px 28px 28px; }
 .nav-drawer a, .nav-drawer span.drawer-dead {
-  font-family: 'Cormorant Garamond', serif; font-size: 22px; color: #8a8377; text-decoration: none; transition:color 0.2s var(--ease);
+  font-family: 'Cormorant Garamond', serif; font-size: 22px; color: #908978; text-decoration: none; transition:color 0.2s var(--ease);
   padding: 16px 0; border-bottom: 1px solid rgba(247,244,238,0.08);
 }
 .nav-drawer a:hover, .nav-drawer a.active { color: var(--warm-white); }
-.nav-drawer .nav-cta { font-family: 'Frank Ruhl Libre', serif; font-size:var(--t-meta); margin: 24px 0 0; padding: 14px 32px; border-bottom: none; text-align: center; align-self: flex-start; }
+.nav-drawer .nav-cta { font-family: 'Frank Ruhl Libre', serif; color: var(--charcoal); font-size:var(--t-meta); margin: 24px 0 0; padding: 14px 32px; border-bottom: none; text-align: center; align-self: flex-start; }
 @media(max-width:520px) { .nav-drawer { width: 100vw; } }
 
 /* ══════════════════════════════════════════════
@@ -351,7 +356,7 @@ img { max-width: 100%; }
 .eyebrow::before { content: ''; display: block; width: 0; height: 1px; background: currentColor; opacity: 0.55; transition:width 1.1s var(--ease) 0.15s; }
 .rv.show .eyebrow::before, .eyebrow.show::before { width: 28px; }
 .eyebrow.centered { justify-content: center; }
-.on-light .eyebrow { color: #8a7f6d; }
+.on-light .eyebrow { color: #6A6256; }
 .on-dark  .eyebrow { color: var(--gold); }
 .on-green .eyebrow { color: rgba(247,244,238,0.66); }
 
@@ -370,7 +375,7 @@ img { max-width: 100%; }
 .on-green .copy { color: rgba(247,244,238,0.78); }
 
 .note-line { font-size:var(--t-small); letter-spacing: 0.16em; text-transform: uppercase; }
-.on-light .note-line { color: #8a7f6d; }
+.on-light .note-line { color: #6A6256; }
 .on-dark  .note-line { color: rgba(196,138,90,0.9); }
 .on-green .note-line { color: rgba(247,244,238,0.58); }
 
@@ -684,7 +689,7 @@ img { max-width: 100%; }
 .phil-line:last-child { border-bottom: 1px solid rgba(43,38,35,0.14); }
 .phil-num { font-size:var(--t-nano); letter-spacing: 0.2em; color: var(--gold); }
 .phil-a { font-family: 'Cormorant Garamond', serif; font-size: var(--t-sub); color: var(--charcoal); font-weight: 400; }
-.phil-b { font-size:var(--t-nano); letter-spacing: 0.22em; text-transform: uppercase; color: #8a7f6d; }
+.phil-b { font-size:var(--t-nano); letter-spacing: 0.22em; text-transform: uppercase; color: #6A6256; }
 .philosophy-close { max-width: 620px; margin: 8vh auto 0; font-size:var(--t-body); line-height: 1.9; color: #5c554c; }
 @media(max-width:720px){ .phil-line { grid-template-columns: auto 1fr; gap: 16px; } .phil-b { display: none; } }
 
@@ -924,6 +929,13 @@ img { max-width: 100%; }
   .found-item[data-found="3"]::before {
     background-image: var(--found-wash), var(--img-found-community);
     background-position: center 50%; }
+  /* The mobile foundations draw their photograph on this pseudo rather than
+     on .found-plate-layer, so the deferral needs its own rule here — and it
+     has to live INSIDE this media query, because on desktop the very same
+     pseudo is the live row's wash gradient and suppressing it there would
+     take that wash away. The plate is opacity:0 until `.in` anyway, so
+     there is nothing to see while it is held. */
+  html.bgdefer .found-outer:not(.bg-on) .found-item::before { background-image: none !important; }
   @media (prefers-reduced-motion: reduce){
     .found-item::before { transition:opacity 0.3s var(--ease); transform: none; }
   }
@@ -965,7 +977,7 @@ img { max-width: 100%; }
   transform: translateY(calc(18px * (1 - var(--w, 0))));
 }
 .seven-body { border-left: 1px solid rgba(43,38,35,0.16); padding-left: 6%; }
-.seven-label { font-size:var(--t-nano); letter-spacing: 0.26em; text-transform: uppercase; color: #8a7f6d; margin-bottom: 16px; }
+.seven-label { font-size:var(--t-nano); letter-spacing: 0.26em; text-transform: uppercase; color: #6A6256; margin-bottom: 16px; }
 .seven-verb {
   --sw: clamp(0, calc((var(--w, 0) - 0.12) / 0.88), 1);
   font-family: 'Cormorant Garamond', serif; font-weight: 400; font-style: italic;
@@ -990,7 +1002,7 @@ img { max-width: 100%; }
 .seven-close .sect-inner { max-width: 860px; }
 .seven-close-lead { max-width: none; font-size:var(--t-body); }
 .seven-rolling { margin-top: 5vh; padding-top: 4vh; border-top: 1px solid rgba(43,38,35,0.14);
-  max-width: none; font-size:var(--t-note); letter-spacing: 0.04em; color: #8a7f6d; line-height: 1.85; }
+  max-width: none; font-size:var(--t-note); letter-spacing: 0.04em; color: #6A6256; line-height: 1.85; }
 @media(max-width:900px){
   .seven-outer { height: auto; }
   .seven-sticky { position: relative; height: auto; overflow: visible; padding: 13vh 8% 0; }
@@ -1015,6 +1027,25 @@ img { max-width: 100%; }
    the reader has travelled through this entry. No transition — the plate's
    drift is the reader's own movement, so it can never finish early and sit
    as a still, and a fast scroll cannot queue nine dissolves. */
+/* ── DEFERRED PHOTOGRAPHY ──────────────────────────────────────────────
+   sanctuary.html carried nineteen plates and fetched all of them on
+   arrival — 4.8MB before the reader had scrolled a pixel — because a CSS
+   background cannot be marked loading="lazy". Each group below is held
+   until an observer arms it (`.bg-on`), about a viewport and a half ahead
+   of being needed. The hero's four plates are deliberately NOT in this
+   list: they are the first thing on screen.
+
+   These are suppression rules only. When `.bg-on` lands they stop
+   matching and each layer's own rule — including its measured
+   background-position — applies exactly as before. Nothing about the
+   design changes; only when the bytes are asked for. */
+html.bgdefer .day-outer:not(.bg-on)   .day-media-layer   { background-image: none !important; }
+html.bgdefer .found-outer:not(.bg-on) .found-plate-layer { background-image: none !important; }
+html.bgdefer .wide-photo:not(.bg-on)  .par-layer         { background-image: none !important; }
+html.bgdefer .immersion:not(.bg-on)   .par-layer         { background-image: none !important; }
+html.bgdefer .pilot:not(.bg-on)       .par-layer         { background-image: none !important; }
+html.bgdefer .place-map:not(.bg-on)                      { background-image: none !important; }
+
 .day-media-layer {
   position: absolute; inset: -4%;
   background-size: cover; background-position: center 55%;
@@ -1060,7 +1091,7 @@ img { max-width: 100%; }
 .day-title { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: var(--t-lead); color: var(--warm-white); line-height: 1.02; margin-bottom: 20px; }
 .day-desc { font-size:var(--t-body); line-height: 1.85; color: rgba(247,244,238,0.62); max-width: 46ch; margin-bottom: 26px; }
 .day-detail { display: flex; flex-wrap: wrap; gap: 8px 26px; }
-.day-detail span { font-size:var(--t-meta); color: #8a8377; }
+.day-detail span { font-size:var(--t-meta); color: #908978; }
 .day-foot { padding: 9vh 8% 0; max-width: 1360px; margin: 9vh auto 0; font-size:var(--t-note); color: #7a746a; line-height: 1.85; border-top: 1px solid rgba(247,244,238,0.08); }
 @media(max-width:900px){
   .day-grid { grid-template-columns: 1fr; }
@@ -1183,7 +1214,7 @@ img { max-width: 100%; }
 .ea-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 44px; }
 .ea-field { margin-bottom: 36px; }
 .ea-field.full { grid-column: 1 / -1; }
-.ea-label { display: block; font-size:var(--t-nano); letter-spacing: 0.24em; text-transform: uppercase; color: #8a7f6d; margin-bottom: 13px; }
+.ea-label { display: block; font-size:var(--t-nano); letter-spacing: 0.24em; text-transform: uppercase; color: #6A6256; margin-bottom: 13px; }
 .ea-input, .ea-select, .ea-textarea {
   width: 100%; background: transparent; border: none;
   border-bottom: 1px solid rgba(43,38,35,0.24);
@@ -1196,7 +1227,7 @@ img { max-width: 100%; }
 .ea-input::placeholder, .ea-textarea::placeholder { color: rgba(43,38,35,0.3); }
 .ea-select {
   appearance: none; -webkit-appearance: none; cursor: pointer;
-  background-image: linear-gradient(45deg, transparent 50%, #8a7f6d 50%), linear-gradient(135deg, #8a7f6d 50%, transparent 50%);
+  background-image: linear-gradient(45deg, transparent 50%, #6A6256 50%), linear-gradient(135deg, #6A6256 50%, transparent 50%);
   background-position: calc(100% - 12px) calc(50% + 1px), calc(100% - 7px) calc(50% + 1px);
   background-size: 5px 5px, 5px 5px; background-repeat: no-repeat;
 }
@@ -1209,7 +1240,7 @@ img { max-width: 100%; }
   font-size:var(--t-small); letter-spacing: 0.16em; text-transform: uppercase; transition:opacity 0.3s var(--ease);
 }
 .ea-button:hover { opacity: 0.86; }
-.ea-disclaimer { margin-top: 22px; font-size:var(--t-note); color: #8a7f6d; line-height: 1.8; max-width: 540px; }
+.ea-disclaimer { margin-top: 22px; font-size:var(--t-note); color: #6A6256; line-height: 1.8; max-width: 540px; }
 .ea-response { margin-top: 26px; padding: 22px 26px; border-left: 2px solid var(--gold); background: rgba(255,255,255,0.55); font-size:var(--t-meta); line-height: 1.8; color: #5c554c; display: none; }
 .ea-response.show { display: block; }
 @media(max-width:720px){ .ea-grid { grid-template-columns: 1fr; gap: 0; } }
@@ -1240,7 +1271,7 @@ img { max-width: 100%; }
 /* ══════════════════════════════════════════════
    FOOTER
 ══════════════════════════════════════════════ */
-.site-footer { background: var(--mineral); color: #8a8377; padding: 7vh 8% 4vh; border-top: 1px solid rgba(247,244,238,0.07); }
+.site-footer { background: var(--mineral); color: #908978; padding: 7vh 8% 4vh; border-top: 1px solid rgba(247,244,238,0.07); }
 .footer-top { display: grid; grid-template-columns: repeat(4,1fr); gap: 40px; padding-bottom: 5vh; border-bottom: 1px solid rgba(247,244,238,0.1); }
 .footer-brand-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
 .footer-brand-logo img { width: 28px; opacity: 0.9; }
@@ -1249,9 +1280,9 @@ img { max-width: 100%; }
 .footer-tagline strong { display: block; color: #b8b1a4; font-weight: 500; }
 .footer-tagline em { font-style: italic; }
 .footer-col-label { font-size:var(--t-nano); letter-spacing: 0.12em; text-transform: uppercase; color: #8f887d; margin-bottom: 18px; }
-.footer-col a, .footer-col span { display: block; font-size:var(--t-note); color: #8a8377; text-decoration: none; margin-bottom: 11px; transition:color 0.2s var(--ease); }
+.footer-col a, .footer-col span { display: block; font-size:var(--t-note); color: #908978; text-decoration: none; margin-bottom: 11px; transition:color 0.2s var(--ease); }
 .footer-col a:hover { color: var(--warm-white); }
-.footer-bottom { display: flex; justify-content: space-between; padding-top: 4vh; font-size:var(--t-small); color: #8a8377; }
+.footer-bottom { display: flex; justify-content: space-between; padding-top: 4vh; font-size:var(--t-small); color: #908978; }
 .footer-appearance { margin-top: 22px; }
 .footer-appearance-label { font-size:var(--t-nano); letter-spacing: 0.1em; text-transform: uppercase; color: #8f887d; margin-bottom: 8px; }
 .footer-toggle { display: inline-flex; background: rgba(247,244,238,0.08); border-radius: 20px; padding: 3px; }
@@ -1326,7 +1357,7 @@ input:focus-visible, select:focus-visible, textarea:focus-visible,
    for, so a new column would have meant re-laying out every page's footer. */
 .footer-social{margin-top:26px;}
 .footer-social .footer-col-label{margin-bottom:12px;}
-.footer-social-note{margin:12px 0 0;font-size:var(--t-nano,10.5px);line-height:1.6;color:#8a8377;max-width:26em;}
+.footer-social-note{margin:12px 0 0;font-size:var(--t-nano,10.5px);line-height:1.6;color:#908978;max-width:26em;}
 .footer-social-row{display:flex;align-items:center;gap:16px;}
 .fs-i{display:inline-flex;align-items:center;justify-content:center;
   width:34px;height:34px;border-radius:50%;
@@ -1510,6 +1541,21 @@ img{height:auto;}
 .simple .simple-step-d  { color: #5c554c; }
 .simple .simple-note    { color: #5A544A; border-top: 1px solid rgba(43,38,35,0.16); }
 </style>
+<style>
+/* ── GOLD AS INK ON A LIGHT GROUND ────────────────────────────────────────
+   --gold (#C48A5A) is the brand accent and reads correctly on every dark
+   section (5.1-6.9:1). On the light grounds it measures 2.25-2.87:1, so
+   wherever it is used as TEXT on ivory or warm stone it needs its own
+   weight. Two values, because the threshold differs by size:
+     #9A6A3F  3.55-4.54:1  — display italics (>=24px, AA large needs 3.0)
+     #7F4F22  5.26-6.72:1  — small labels and eyebrows (needs 4.5)
+   #7F4F22 is the value this project already settled on for gold on warm
+   stone. Dark sections are untouched: these rules are scoped to .on-light,
+   so --gold keeps its exact appearance everywhere it already passes. */
+.on-light .philosophy-italic, .on-light .transform-italic, .on-light .display em, .on-light .display-sm em { color: #9A6A3F; }
+.on-light .phil-num, .on-light .form-tag { color: #7F4F22; }
+</style>
+
 </head>
 <body>
 <a class="skip-link" href="#heroOuter">Skip to content</a>
@@ -1530,7 +1576,7 @@ img{height:auto;}
 </nav>
 
 <div class="nav-drawer-backdrop" id="navDrawerBackdrop"></div>
-<div class="nav-drawer" id="navDrawer">
+<div class="nav-drawer" id="navDrawer" role="dialog" aria-label="Menu" aria-hidden="true" inert>
   <div class="nav-drawer-head">
     <img decoding="async" width="465" height="492" src="images/img-09-white.png" alt="DAOasis" />
     <button class="nav-drawer-close" id="navDrawerClose" aria-label="Close menu">&times;</button>
@@ -2122,6 +2168,64 @@ img{height:auto;}
 
 <!-- Controlled Cinematic Scroll — shared pacing controller, see js/cine.js -->
 <script src="js/smooth.js"></script>
+<script>
+  /* ── ARM THE DEFERRED PHOTOGRAPHY ──────────────────────────────────────
+     Three layers, because a plate that never arrives is far worse than a
+     plate that arrives early:
+       1. IntersectionObserver with a 150% top/bottom margin — the plate is
+          requested about a viewport and a half before it is needed.
+       2. A scroll/resize fallback doing the same rect test, in case the
+          observer is throttled (a hidden tab freezes IO but not scroll).
+       3. No JS at all -> html.bgdefer is never set, so nothing is
+          suppressed in the first place.
+     There is deliberately no timer that reveals everything after N
+     seconds: that would hand the full payload to a reader who never
+     scrolled, which is the whole thing this is here to avoid. */
+  (function(){
+    var groups = [].slice.call(document.querySelectorAll(
+      '.day-outer, .found-outer, .wide-photo, .immersion, .pilot, .place-map'));
+    if(!groups.length) return;
+    function arm(el){ el.classList.add('bg-on'); }
+    var pending = groups.slice();
+
+    function sweep(){
+      if(!pending.length) return;
+      var h = window.innerHeight || 800, lead = h * 1.5;
+      pending = pending.filter(function(el){
+        var r = el.getBoundingClientRect();
+        if(r.top < h + lead && r.bottom > -lead){ arm(el); return false; }
+        return true;
+      });
+      if(!pending.length){
+        window.removeEventListener('scroll', onScroll);
+        window.removeEventListener('resize', onScroll);
+      }
+    }
+    var ticking = false;
+    function onScroll(){
+      if(ticking) return; ticking = true;
+      requestAnimationFrame(function(){ ticking = false; sweep(); });
+    }
+
+    if('IntersectionObserver' in window){
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(en){
+          if(!en.isIntersecting) return;
+          arm(en.target);
+          pending = pending.filter(function(x){ return x !== en.target; });
+          io.unobserve(en.target);
+        });
+      }, { root: null, rootMargin: '150% 0px 150% 0px', threshold: 0 });
+      groups.forEach(function(el){ io.observe(el); });
+    }
+    /* the fallback runs regardless — it is cheap, it self-removes once every
+       group is armed, and it covers an observer that never fires */
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    sweep();
+  })();
+</script>
+
 <script src="js/cine.js"></script>
 <script>
 /* ════════════════════════════════════════════
@@ -2201,11 +2305,24 @@ const lead = (window.DAO && DAO.cine && DAO.cine.lead) ? DAO.cine.lead
     if(backdrop) backdrop.classList.toggle('open', open);
     burger.setAttribute('aria-expanded', open ? 'true' : 'false');
     document.body.style.overflow = open ? 'hidden' : '';
-  }
-  burger.addEventListener('click', () => setOpen(!drawer.classList.contains('open')));
-  if(closeBtn) closeBtn.addEventListener('click', () => setOpen(false));
+  /* Closed, the drawer is only translated off screen — it stays in the
+     layout, so without this its seven controls keep their place in
+     the tab order and screen readers still announce the whole menu.
+     inert removes focusability and pointer events; aria-hidden
+     removes it from the accessibility tree where inert is not yet
+     supported. */
+  if(open){ drawer.removeAttribute('inert'); drawer.removeAttribute('aria-hidden'); }
+  else    { drawer.setAttribute('inert',''); drawer.setAttribute('aria-hidden','true'); }
+}
+  burger.addEventListener('click', () => {
+    const open = !drawer.classList.contains('open');
+    setOpen(open);
+    /* focus follows the panel: in on open, back to the button on close */
+    if(open && closeBtn) closeBtn.focus(); else burger.focus();
+  });
+  if(closeBtn) closeBtn.addEventListener('click', () => { setOpen(false); burger.focus(); });
   if(backdrop) backdrop.addEventListener('click', () => setOpen(false));
-  document.addEventListener('keydown', e => { if(e.key === 'Escape' && drawer.classList.contains('open')) setOpen(false); });
+  document.addEventListener('keydown', e => { if(e.key === 'Escape' && drawer.classList.contains('open')){ setOpen(false); burger.focus(); } });
   drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setOpen(false)));
 })();
 

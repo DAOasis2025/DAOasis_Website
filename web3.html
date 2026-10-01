@@ -161,24 +161,24 @@ img { max-width: 100%; }
   position: fixed; top: 0; left: 0; bottom: 0; z-index: 89; width: min(420px,88vw);
   background: rgba(23,20,18,0.98); backdrop-filter: blur(16px);
   display: flex; flex-direction: column;
-  transform: translateX(-100%); transition:transform 0.4s var(--ease);
+  transform: translateX(-100%); visibility: hidden; transition:transform 0.4s var(--ease), visibility 0s linear 0.4s;
   border-right: 1px solid rgba(247,244,238,0.08); overflow-y: auto;
 }
-.nav-drawer.open { transform: translateX(0); }
+.nav-drawer.open { transform: translateX(0); visibility: visible; transition:transform 0.4s var(--ease), visibility 0s linear 0s; }
 .nav-drawer-head {
   display: flex; align-items: center; justify-content: space-between;
   padding: 22px 28px; border-bottom: 1px solid rgba(247,244,238,0.08); flex-shrink: 0;
 }
 .nav-drawer-head img { height: 22px; width: auto; opacity: 0.92; }
-.nav-drawer-close { background: none; border: none; color: #8a8377; font-size: 28px; line-height: 1; cursor: pointer; padding: 2px 6px; transition:color 0.2s var(--ease); }
+.nav-drawer-close { background: none; border: none; color: #908978; font-size: 28px; line-height: 1; cursor: pointer; padding: 2px 6px; transition:color 0.2s var(--ease); }
 .nav-drawer-close:hover { color: var(--warm-white); }
 .nav-drawer-list { display: flex; flex-direction: column; padding: 6px 28px 28px; }
 .nav-drawer a, .nav-drawer span.drawer-dead {
-  font-family: 'Cormorant Garamond', serif; font-size: 22px; color: #8a8377; text-decoration: none; transition:color 0.2s var(--ease);
+  font-family: 'Cormorant Garamond', serif; font-size: 22px; color: #908978; text-decoration: none; transition:color 0.2s var(--ease);
   padding: 16px 0; border-bottom: 1px solid rgba(247,244,238,0.08);
 }
 .nav-drawer a:hover, .nav-drawer a.active { color: var(--warm-white); }
-.nav-drawer .nav-cta { font-family: 'Frank Ruhl Libre', serif; font-size:var(--t-meta); margin: 24px 0 0; padding: 14px 32px; border-bottom: none; text-align: center; align-self: flex-start; }
+.nav-drawer .nav-cta { font-family: 'Frank Ruhl Libre', serif; color: var(--charcoal); font-size:var(--t-meta); margin: 24px 0 0; padding: 14px 32px; border-bottom: none; text-align: center; align-self: flex-start; }
 @media(max-width:520px) { .nav-drawer { width: 100vw; } }
 
 /* ══════════════════════════════════════════════
@@ -229,7 +229,7 @@ img { max-width: 100%; }
 .eyebrow::before { content: ''; display: block; width: 0; height: 1px; background: currentColor; opacity: 0.55; transition:width 1.1s var(--ease) 0.15s; }
 .rv.show .eyebrow::before, .eyebrow.show::before { width: 28px; }
 .eyebrow.centered { justify-content: center; }
-.on-light .eyebrow { color: #8a7f6d; }
+.on-light .eyebrow { color: #6A6256; }
 .on-dark  .eyebrow { color: var(--gold); }
 .on-green .eyebrow { color: rgba(247,244,238,0.66); }
 
@@ -248,7 +248,7 @@ img { max-width: 100%; }
 .on-green .copy { color: rgba(247,244,238,0.78); }
 
 .note-line { font-size:var(--t-small); letter-spacing: 0.16em; text-transform: uppercase; }
-.on-light .note-line { color: #8a7f6d; }
+.on-light .note-line { color: #6A6256; }
 .on-dark  .note-line { color: rgba(196,138,90,0.9); }
 .on-green .note-line { color: rgba(247,244,238,0.58); }
 
@@ -479,7 +479,7 @@ img { max-width: 100%; }
      sub-label — two adjacent rows sit at 0.66 through the crossover */
   --sw: clamp(0, calc((var(--w, 0) - 0.62) / 0.38), 1);
   font-family: 'Frank Ruhl Libre', serif; font-size:var(--t-small); letter-spacing: 0.04em;
-  color: #8a7f6d; opacity: var(--sw); transform: translateX(calc(-8px * (1 - var(--sw))));
+  color: #6A6256; opacity: var(--sw); transform: translateX(calc(-8px * (1 - var(--sw))));
 }
 /* Its own closing beat on the same ivory ground, so the pin releases and the
    reader reads it in ordinary flow. The bottom padding is the divider tail:
@@ -488,7 +488,7 @@ img { max-width: 100%; }
    any viewport shorter than ~1300px — the defect already recorded against
    this page's #dvt section. */
 .part-close { background: var(--warm-white); padding: 9vh 8% calc(16vh + 60px); }
-.part-foot { max-width: 88ch; width: 100%; margin: 0 auto; font-size:var(--t-note); color: #8a7f6d; line-height: 1.8; }
+.part-foot { max-width: 88ch; width: 100%; margin: 0 auto; font-size:var(--t-note); color: #6A6256; line-height: 1.8; }
 .part-foot a { color: var(--charcoal); text-decoration: none; border-bottom: 1px solid rgba(43,38,35,0.3); padding-bottom: 2px; }
 .part-foot a:hover { border-bottom-color: var(--charcoal); }
 /* short viewports — the sticky frame is the constraint, not the width */
@@ -581,10 +581,10 @@ img { max-width: 100%; }
 .drc-marks i { display: block; width: 1.5px; height: 24px; background: var(--gold); opacity: 0; transform: scaleY(0.25); transform-origin: bottom; transition:opacity 0.5s var(--ease), transform 0.7s var(--ease); }
 .rv.show .drc-marks i { opacity: 0.9; transform: scaleY(1); }
 .rv.show .drc-marks i.faint { opacity: 0.3; }
-.drc-d { font-size:var(--t-note); line-height: 1.75; color: #8a8377; }
+.drc-d { font-size:var(--t-note); line-height: 1.75; color: #908978; }
 .drc-note { margin-top: 7vh; display: flex; flex-wrap: wrap; gap: 14px 40px; align-items: baseline; }
 .drc-note .note-line { color: rgba(196,138,90,0.9); }
-.drc-note p { font-size:var(--t-note); color: #8a8377; line-height: 1.8; max-width: 620px; }
+.drc-note p { font-size:var(--t-note); color: #908978; line-height: 1.8; max-width: 620px; }
 @media(max-width:1000px){
   .drc-grid { grid-template-columns: 1fr; gap: 40px; }
   .drc-rows { margin-top: 9vh; }
@@ -662,7 +662,7 @@ img { max-width: 100%; }
 .bridge-step.on { opacity: 1; }
 .bridge-step-i { font-size:var(--t-nano); letter-spacing: 0.2em; color: var(--gold); margin-bottom: 10px; }
 .bridge-step-n { font-size:var(--t-small); letter-spacing: 0.12em; text-transform: uppercase; color: rgba(247,244,238,0.9); }
-.bridge-foot { font-size:var(--t-note); line-height: 1.8; color: #8a8377; max-width: 640px; margin-top: 26px; }
+.bridge-foot { font-size:var(--t-note); line-height: 1.8; color: #908978; max-width: 640px; margin-top: 26px; }
 /* Conversion was the only utility on this page with no status label, while
    the marketplace, governance, staking and Stake to Create rows all carry
    one. It is also the mechanism with the least settled behind it — rate,
@@ -702,10 +702,10 @@ img { max-width: 100%; }
 .two-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-top: 9vh; }
 .two-card { border: 1px solid rgba(43,38,35,0.14); padding: 42px 40px; background: rgba(255,255,255,0.4); }
 .two-card.accent { border-color: rgba(196,138,90,0.4); }
-.two-tag { font-size:var(--t-nano); letter-spacing: 0.24em; text-transform: uppercase; color: #8a7f6d; margin-bottom: 22px; }
+.two-tag { font-size:var(--t-nano); letter-spacing: 0.24em; text-transform: uppercase; color: #6A6256; margin-bottom: 22px; }
 .two-card.accent .two-tag { color: #a07a4f; }
 .two-name { font-family: 'Cormorant Garamond', serif; font-size: clamp(30px,3.4vw,46px); font-weight: 300; color: var(--charcoal); line-height: 1; }
-.two-full { font-size:var(--t-small); letter-spacing: 0.14em; text-transform: uppercase; color: #8a7f6d; margin-top: 14px; }
+.two-full { font-size:var(--t-small); letter-spacing: 0.14em; text-transform: uppercase; color: #6A6256; margin-top: 14px; }
 .two-role { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: clamp(19px,1.9vw,25px); color: var(--gold); margin-top: 26px; }
 .two-lines { margin-top: 26px; border-top: 1px solid rgba(43,38,35,0.12); }
 .two-lines div { font-size:var(--t-note); color: #5c554c; padding: 12px 0; border-bottom: 1px solid rgba(43,38,35,0.08); line-height: 1.6; }
@@ -719,7 +719,7 @@ img { max-width: 100%; }
 .util-i { font-size:var(--t-nano); letter-spacing: 0.2em; color: var(--gold); padding-top: 10px; }
 .util-n { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: clamp(28px,3.4vw,50px); line-height: 1.04; color: var(--charcoal); }
 .util-b { font-size:var(--t-body-s); line-height: 1.9; color: #5c554c; }
-.util-q { display: inline-block; margin-top: 18px; font-size:var(--t-micro); letter-spacing: 0.16em; text-transform: uppercase; color: #8a7f6d; border: 1px solid rgba(43,38,35,0.16); border-radius: 30px; padding: 7px 16px; }
+.util-q { display: inline-block; margin-top: 18px; font-size:var(--t-micro); letter-spacing: 0.16em; text-transform: uppercase; color: #6A6256; border: 1px solid rgba(43,38,35,0.16); border-radius: 30px; padding: 7px 16px; }
 @media(max-width:900px){
   /* A divider overlays the tail of the section above it by its own full
      height, and here --divider-h is calc(14vh + 26px) against .sect's 16vh
@@ -791,7 +791,7 @@ img { max-width: 100%; }
 .gov-beat-b { font-size:var(--t-meta); line-height: 1.85; color: #5c554c; margin-top: 18px; }
 .gov-areas { margin-top: 9vh; display: flex; flex-wrap: wrap; gap: 10px; }
 .gov-areas span { font-size:var(--t-small); letter-spacing: 0.1em; color: #5c554c; border: 1px solid rgba(43,38,35,0.18); border-radius: 30px; padding: 9px 20px; }
-.gov-foot { margin-top: 5vh; font-size:var(--t-note); color: #8a7f6d; line-height: 1.8; max-width: 640px; }
+.gov-foot { margin-top: 5vh; font-size:var(--t-note); color: #6A6256; line-height: 1.8; max-width: 640px; }
 /* The four governance phases are published in the Tokenomics Paper §14 and
    the Whitepaper §13; this page previously said only "in stages", which was
    correct but vaguer than the documents an investor reads next. Numbered
@@ -898,7 +898,7 @@ img { max-width: 100%; }
   .loop-m-item { position: relative; padding: 2.4vh 0; }
   .loop-m-item::before { content: ''; position: absolute; left: -28px; top: calc(2.4vh + 9px); width: 7px; height: 7px; border-radius: 50%; background: var(--gold); }
   .loop-m-n { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 300; color: var(--warm-white); }
-  .loop-m-s { font-size: 12.5px; color: #8a8377; margin-top: 6px; line-height: 1.7; }
+  .loop-m-s { font-size: 12.5px; color: #908978; margin-top: 6px; line-height: 1.7; }
   .loop-m-end { margin-top: 3vh; font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 24px; color: var(--gold); }
 }
 
@@ -935,7 +935,7 @@ img { max-width: 100%; }
 .faq-a { overflow: hidden; max-height: 0; transition:max-height 0.55s var(--ease); }
 .faq-a-inner { padding: 0 12% 34px 0; font-size:var(--t-body-s); line-height: 1.95; color: #5c554c; }
 .faq-a-inner p + p { margin-top: 16px; }
-.faq-foot { max-width: 900px; margin: 6vh auto 0; font-size:var(--t-note); line-height: 1.85; color: #8a7f6d; }
+.faq-foot { max-width: 900px; margin: 6vh auto 0; font-size:var(--t-note); line-height: 1.85; color: #6A6256; }
 @media(max-width:900px){ .faq-a-inner { padding-right: 0; } }
 
 /* ══════════════════════════════════════════════
@@ -951,7 +951,7 @@ img { max-width: 100%; }
 /* ══════════════════════════════════════════════
    FOOTER
 ══════════════════════════════════════════════ */
-.site-footer { background: var(--mineral); color: #8a8377; padding: 7vh 8% 4vh; border-top: 1px solid rgba(247,244,238,0.07); }
+.site-footer { background: var(--mineral); color: #908978; padding: 7vh 8% 4vh; border-top: 1px solid rgba(247,244,238,0.07); }
 .footer-top { display: grid; grid-template-columns: repeat(4,1fr); gap: 40px; padding-bottom: 5vh; border-bottom: 1px solid rgba(247,244,238,0.1); }
 .footer-brand-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
 .footer-brand-logo img { width: 28px; opacity: 0.9; }
@@ -960,9 +960,9 @@ img { max-width: 100%; }
 .footer-tagline strong { display: block; color: #b8b1a4; font-weight: 500; }
 .footer-tagline em { font-style: italic; }
 .footer-col-label { font-size:var(--t-nano); letter-spacing: 0.12em; text-transform: uppercase; color: #8f887d; margin-bottom: 18px; }
-.footer-col a, .footer-col span { display: block; font-size:var(--t-note); color: #8a8377; text-decoration: none; margin-bottom: 11px; transition:color 0.2s var(--ease); }
+.footer-col a, .footer-col span { display: block; font-size:var(--t-note); color: #908978; text-decoration: none; margin-bottom: 11px; transition:color 0.2s var(--ease); }
 .footer-col a:hover { color: var(--warm-white); }
-.footer-bottom { display: flex; justify-content: space-between; padding-top: 4vh; font-size:var(--t-small); color: #8a8377; }
+.footer-bottom { display: flex; justify-content: space-between; padding-top: 4vh; font-size:var(--t-small); color: #908978; }
 .footer-appearance { margin-top: 22px; }
 .footer-appearance-label { font-size:var(--t-nano); letter-spacing: 0.1em; text-transform: uppercase; color: #8f887d; margin-bottom: 8px; }
 .footer-toggle { display: inline-flex; background: rgba(247,244,238,0.08); border-radius: 20px; padding: 3px; }
@@ -1042,7 +1042,7 @@ input:focus-visible, select:focus-visible, textarea:focus-visible,
    for, so a new column would have meant re-laying out every page's footer. */
 .footer-social{margin-top:26px;}
 .footer-social .footer-col-label{margin-bottom:12px;}
-.footer-social-note{margin:12px 0 0;font-size:var(--t-nano,10.5px);line-height:1.6;color:#8a8377;max-width:26em;}
+.footer-social-note{margin:12px 0 0;font-size:var(--t-nano,10.5px);line-height:1.6;color:#908978;max-width:26em;}
 .footer-social-row{display:flex;align-items:center;gap:16px;}
 .fs-i{display:inline-flex;align-items:center;justify-content:center;
   width:34px;height:34px;border-radius:50%;
@@ -1226,6 +1226,21 @@ img{height:auto;}
 .simple .simple-step-d  { color: #5c554c; }
 .simple .simple-note    { color: #5A544A; border-top: 1px solid rgba(43,38,35,0.16); }
 </style>
+<style>
+/* ── GOLD AS INK ON A LIGHT GROUND ────────────────────────────────────────
+   --gold (#C48A5A) is the brand accent and reads correctly on every dark
+   section (5.1-6.9:1). On the light grounds it measures 2.25-2.87:1, so
+   wherever it is used as TEXT on ivory or warm stone it needs its own
+   weight. Two values, because the threshold differs by size:
+     #9A6A3F  3.55-4.54:1  — display italics (>=24px, AA large needs 3.0)
+     #7F4F22  5.26-6.72:1  — small labels and eyebrows (needs 4.5)
+   #7F4F22 is the value this project already settled on for gold on warm
+   stone. Dark sections are untouched: these rules are scoped to .on-light,
+   so --gold keeps its exact appearance everywhere it already passes. */
+.on-light .two-role, .on-light .display em, .on-light .display-sm em { color: #9A6A3F; }
+.on-light .part-idx, .on-light .two-tag, .on-light .util-i, .on-light .gov-beat-i, .on-light .gov-ph-i { color: #7F4F22; }
+</style>
+
 </head>
 <body>
 <a class="skip-link" href="#heroOuter">Skip to content</a>
@@ -1246,7 +1261,7 @@ img{height:auto;}
 </nav>
 
 <div class="nav-drawer-backdrop" id="navDrawerBackdrop"></div>
-<div class="nav-drawer" id="navDrawer">
+<div class="nav-drawer" id="navDrawer" role="dialog" aria-label="Menu" aria-hidden="true" inert>
   <div class="nav-drawer-head">
     <img decoding="async" width="465" height="492" src="images/img-09-white.png" alt="DAOasis" />
     <button class="nav-drawer-close" id="navDrawerClose" aria-label="Close menu">&times;</button>
@@ -2068,11 +2083,24 @@ function rnd(i){ const s = Math.sin(i * 127.1 + 311.7) * 43758.5453; return s - 
     if(backdrop) backdrop.classList.toggle('open', open);
     burger.setAttribute('aria-expanded', open ? 'true' : 'false');
     document.body.style.overflow = open ? 'hidden' : '';
-  }
-  burger.addEventListener('click', () => setOpen(!drawer.classList.contains('open')));
-  if(closeBtn) closeBtn.addEventListener('click', () => setOpen(false));
+  /* Closed, the drawer is only translated off screen — it stays in the
+     layout, so without this its seven controls keep their place in
+     the tab order and screen readers still announce the whole menu.
+     inert removes focusability and pointer events; aria-hidden
+     removes it from the accessibility tree where inert is not yet
+     supported. */
+  if(open){ drawer.removeAttribute('inert'); drawer.removeAttribute('aria-hidden'); }
+  else    { drawer.setAttribute('inert',''); drawer.setAttribute('aria-hidden','true'); }
+}
+  burger.addEventListener('click', () => {
+    const open = !drawer.classList.contains('open');
+    setOpen(open);
+    /* focus follows the panel: in on open, back to the button on close */
+    if(open && closeBtn) closeBtn.focus(); else burger.focus();
+  });
+  if(closeBtn) closeBtn.addEventListener('click', () => { setOpen(false); burger.focus(); });
   if(backdrop) backdrop.addEventListener('click', () => setOpen(false));
-  document.addEventListener('keydown', e => { if(e.key === 'Escape' && drawer.classList.contains('open')) setOpen(false); });
+  document.addEventListener('keydown', e => { if(e.key === 'Escape' && drawer.classList.contains('open')){ setOpen(false); burger.focus(); } });
   drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setOpen(false)));
 })();
 
