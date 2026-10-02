@@ -12,11 +12,12 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>The Web3 Layer — DAOasis</title>
-<meta name="description" content="DAOasis recognises meaningful participation through DRC — DAOasis Reward Credits. Over time DRC is designed to convert into $DVT, the token that connects deeper participation to the wider DAOasis ecosystem. No wallet required to begin." />
+<meta name="description" content="DAOasis recognises participation through DRC — Reward Credits designed to convert into $DVT, the on-chain layer. No wallet required to begin." />
 <meta property="og:title" content="The Web3 Layer — DAOasis" />
 <link rel="canonical" href="https://da-oasis-website.vercel.app/web3" />
 <meta property="og:url" content="https://da-oasis-website.vercel.app/web3" />
 <meta property="og:site_name" content="DAOasis" />
+<meta property="og:locale" content="en_GB" />
 <meta property="og:image" content="https://da-oasis-website.vercel.app/images/og-card.jpg" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
@@ -135,6 +136,14 @@ img { max-width: 100%; }
 }
 .nav-cta:hover { opacity: 0.88; }
 @media(max-width:768px){.nav>.nav-cta{display:none;}}
+
+/* The drawn bars are 20px wide and the button measures 28x23, under the
+   24px minimum target size. This pseudo-element enlarges the HIT AREA to
+   44x44 around the existing centre without moving or resizing anything
+   that is drawn. */
+.nav-burger{position:relative;}
+.nav-burger::before{content:'';position:absolute;top:50%;left:50%;
+  width:44px;height:44px;transform:translate(-50%,-50%);}
 .nav-burger { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 4px; background: none; border: none; }
 .nav-burger-bars { display: flex; flex-direction: column; gap: 5px; }
 .nav-burger-bars i { display: block; width: 20px; height: 1.5px; background: var(--warm-white); transition:transform 0.3s var(--ease), opacity 0.3s var(--ease); font-style: normal; }
@@ -960,7 +969,7 @@ img { max-width: 100%; }
 .footer-tagline strong { display: block; color: #b8b1a4; font-weight: 500; }
 .footer-tagline em { font-style: italic; }
 .footer-col-label { font-size:var(--t-nano); letter-spacing: 0.12em; text-transform: uppercase; color: #8f887d; margin-bottom: 18px; }
-.footer-col a, .footer-col span { display: block; font-size:var(--t-note); color: #908978; text-decoration: none; margin-bottom: 11px; transition:color 0.2s var(--ease); }
+.footer-col a, .footer-col span { display: block; font-size:var(--t-note); color: #908978; text-decoration: none; padding: 4px 0; margin-bottom: 3px; transition:color 0.2s var(--ease); }
 .footer-col a:hover { color: var(--warm-white); }
 .footer-bottom { display: flex; justify-content: space-between; padding-top: 4vh; font-size:var(--t-small); color: #908978; }
 .footer-appearance { margin-top: 22px; }
@@ -1243,7 +1252,7 @@ img{height:auto;}
 
 </head>
 <body>
-<a class="skip-link" href="#heroOuter">Skip to content</a>
+<a class="skip-link" href="#mainContent">Skip to content</a>
 
 <div class="scroll-prog" id="scrollProg"></div>
 
@@ -1283,7 +1292,8 @@ img{height:auto;}
      camera pulls back and it turns out to be one
      thread in a much larger fabric.
 ══════════════════════════════════════════════ -->
-<div class="hero-outer" id="heroOuter" tabindex="-1" data-skip-target>
+<main id="mainContent" tabindex="-1">
+<div class="hero-outer" id="heroOuter" tabindex="-1" data-skip-target data-no-cue>
   <section class="hero-stage" id="heroStage">
     <canvas class="hero-canvas" id="heroCanvas" role="img" aria-label="An oasis in cross-section. A single drop of participation lands on the surface and percolates down through the eight layers of the ecosystem, naming each as it passes; then thousands of drops fall at once and the water table rises until the aquifer is full."></canvas>
 
@@ -1964,6 +1974,8 @@ img{height:auto;}
 
 
 <!-- ══ FOOTER ══ -->
+</main>
+
 <footer class="site-footer">
   <div class="footer-top">
     <div>
