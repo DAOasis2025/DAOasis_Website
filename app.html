@@ -312,7 +312,13 @@ body { overflow-x: clip; }
 
    This track is `states: 3` — two transitions — so two screens to move
    through and one to hold the settled frame. This one number is the dial. */
-.hero-outer { position: relative; height: 280vh; }
+/* 280 -> 500vh (2 October 2026). At 280 the whole product reveal — the
+   title, three phones arriving, the settled frame, the bridge line — had
+   180vh of scroll between it, so the settled three-phone frame got ~32vh
+   (three wheel notches) and the bridge reached full strength on the frame
+   the pin released. The distance is now allocated beat by beat in the
+   script (see HERO_ALLOT), so this number and that table move together. */
+.hero-outer { position: relative; height: 500vh; }
 
 .hero {
   position: sticky; top: 0; height: 100vh; overflow: hidden;
@@ -442,7 +448,10 @@ body { overflow-x: clip; }
      sets how much scrolling the reader spends getting there. 420vh gives
      each transition ~2.1 screens, so the bridge is something arrived at
      rather than passed through. Desktop stays 280vh. */
-  .hero-outer { height: 420vh; }
+  /* 420 -> 530vh, allocated by HERO_ALLOT_M in the script. A single
+     gentle swipe is ~500-800px on a phone; at 420 the settled frame was
+     ~460px of scroll, so one swipe carried a reader straight past it. */
+  .hero-outer { height: 530vh; }
   .hero { height: 100vh; }
   .hero-title-text { font-size: clamp(40px,12vw,64px); }
   /* Matches sanctuary's own mobile landing: the eyebrow spends tracking
@@ -767,7 +776,10 @@ body { overflow-x: clip; }
 
      FAIL-VISIBLE: every --w falls back to 1, so a thrown error or a
      missing cine.js leaves the habits legible rather than at 16% grey. */
-  .edy-outer { height: 430vh; }
+  /* 430 -> 525vh (2 October 2026): 66vh -> 85vh of scroll per screen. At
+     66vh one ordinary swipe (~560px) crossed a whole habit, so a reader
+     could pass a screen without it ever being still in front of them. */
+  .edy-outer { height: 525vh; }
   .edy-stage {
     position: sticky; top: 0; height: 100vh; overflow: hidden;
     display: flex; align-items: stretch;
@@ -1417,8 +1429,12 @@ body { overflow-x: clip; }
   /* The scene labels sat on top of the now full-width copy. On mobile the
      rail becomes a set of ticks — same progress cue, no collision. */
   .market-nav { right: 3%; gap: 12px; }
+  /* font-size 0 + overflow hidden: the label TEXT was never removed from
+     the tick, so "INTRO / SANC / PART / GOO" spilled out of a 14px box and
+     off the right edge of the stage on every phone (2 October 2026). */
   .market-nav-item {
-    font-size:var(--t-nano); width: 14px; height: 1px; background: rgba(247,244,238,0.28);
+    font-size: 0; line-height: 0; overflow: hidden; color: transparent;
+    width: 14px; height: 1px; background: rgba(247,244,238,0.28);
     transition:background 0.4s var(--ease), width 0.4s var(--ease);
   }
   .market-nav-item.active { background: var(--gold); width: 24px; }
@@ -3379,8 +3395,40 @@ function cine(el, o){
     get back(){ return window.innerWidth <= 900 ? 2600 : 1850; }
   });
 
+  /* ── SCROLL ALLOCATION (2 October 2026) ──────────────────────────────
+     applyFrame's ramps are untouched; this only decides how much scroll
+     each part of them gets. Each row is [track position, timeline
+     position]: the timeline is the 0..1 applyFrame was written against,
+     and the track position is where in the (taller) pin that moment now
+     falls. Boundaries sit on frames where nothing is moving, so changing
+     the rate there is invisible.
+
+       desktop, 400vh of travel (+ cine's 8% settle pad at each end)
+         title held ~40vh · title out 25 · phones arrive 130 ·
+         settled fan HELD 100 · bridge in 45 · bridge HELD ~60
+       mobile, 430vh of travel
+         title ~40 · out 25 · arrive 120 · fan HELD 110 ·
+         bridge slides in 80 · bridge HELD ~55
+
+     The bridge used to reach full strength at timeline 1.0 — the frame the
+     pin released — so "Your progress becomes a Journey" and its buttons
+     were never on screen at rest. The last row is that hold. If the pin
+     height changes, recompute this table with it. */
+  const HERO_ALLOT   = [[0,0],[0.024,0.13],[0.098,0.20],[0.485,0.62],[0.783,0.80],[0.917,1],[1,1]];
+  const HERO_ALLOT_M = [[0,0],[0.016,0.12],[0.085,0.20],[0.417,0.57],[0.721,0.74],[0.943,1],[1,1]];
+  function allot(v, pts){
+    if(v <= pts[0][0]) return pts[0][1];
+    for(let i = 1; i < pts.length; i++){
+      if(v <= pts[i][0]){
+        const a = pts[i-1], b = pts[i];
+        return a[1] + (b[1] - a[1]) * (v - a[0]) / (b[0] - a[0]);
+      }
+    }
+    return pts[pts.length-1][1];
+  }
+
   function tick(){
-    applyFrame(track.get());
+    applyFrame(allot(track.get(), window.innerWidth <= 900 ? HERO_ALLOT_M : HERO_ALLOT));
     requestAnimationFrame(tick);
   }
   requestAnimationFrame(tick);

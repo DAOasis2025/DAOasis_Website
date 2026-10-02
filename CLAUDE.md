@@ -6900,3 +6900,129 @@ and web3's complete loop. These were unpinned deliberately.
 
 `css/trust.css` is the one that fixes the live footer icons and has never been
 uploaded. No other image, and no other JS file, changed.
+
+---
+
+## Scroll pacing pass — 2 October 2026
+
+Pacing only: no design, copy, image or animation curve changed. `app.html` ·
+`sanctuary.html` · `web3.html` · `js/smooth.js`.
+
+### Audit — vh of scroll per visual state, 1440x900 (before)
+Every pinned sticky section sat at 93–170vh per state, which with cine's
+magnet plateaus is enough. **The three heroes were the outliers**, and all three
+reached their closing frame on the exact frame the pin released:
+
+| | travel | settled frame held | closing line held |
+|---|---|---|---|
+| app hero | 180vh | ~32vh | ~14vh (pad only) |
+| sanctuary hero | 220vh | ~37vh | ~19vh |
+| web3 hero | 500vh | (long descent) | ~40vh |
+
+Mobile: app's Living Ecosystem and web3's "Where it begins" were 66 / 72vh per
+screen — one ordinary swipe crossed a whole screen.
+
+### The real desktop bug — `smooth.js` re-enabled the escape
+`GOV.pushGain` is deliberately `0` (escape off), but smooth.js read it as
+`GOV.pushGain || 3`, and 0 is falsy. A firm wheel therefore lifted every paced
+section's speed cap 4x. Measured with a hard continuous wheel at 1440x900:
+
+| | before | after |
+|---|---|---|
+| app hero | 3.1s | 10.3s |
+| sanctuary hero | 2.9s | 10.1s |
+| web3 hero | **1.5s** | 9.1s |
+| app Living Ecosystem | 2.7s | 8.1s |
+
+Now `typeof … === 'number'`. **If paced sections ever feel like a wall on a
+mouse, `GOV.pushGain` in cine.js is the knob** (3 restores input-sensitive escape).
+
+### What changed
+- **app hero** 280 -> **500vh** desktop, 420 -> **530vh** mobile.
+- **sanctuary hero** 320 -> **520vh** desktop (mobile unchanged at 600).
+- **web3 hero** 600 -> 640 desktop, 420 -> 450 mobile, plus `passMs: 9000`
+  (it was the only hero with no wall-clock floor: 2 beats = 3.2s).
+- **app `.edy-outer`** and **web3 `.part-outer`** on mobile -> **525vh**
+  (85vh per screen).
+
+### Scroll ALLOCATION tables — the new mechanism
+The heroes' `applyFrame` ramps were not touched. Instead the track value passes
+through a piecewise-linear map (`HERO_ALLOT` / `HERO_ALLOT_M` in app.html,
+`HERO_ALLOT` in sanctuary.html, `HERO_END = 0.90` in web3.html): rows are
+`[track position, timeline position]`, with boundaries on frames where nothing
+moves. This lets each beat get its own share of the extra height — in
+particular a held closing frame — without rescaling a single ramp.
+**Change a hero's pin height and its table together.**
+
+### Verified (frame-by-frame sweep, 201 positions per hero)
+| | settled frame held | closing frame held |
+|---|---|---|
+| app 1440 | **~108vh** | **62vh** |
+| app 390 | **125vh** | **54vh** |
+| sanctuary 1440 | **~95vh** (its idle drift moves 1px/step) | **61vh** |
+| web3 1440 / 390 | — | **92 / 60vh** |
+
+78 checks (13 pages x 375/390/768/1280/1440/1920): 0 JS errors, 0 horizontal
+overflow. Plates-gone-before-statement rule on sanctuary preserved (timeline is
+stretched, never reordered). Page length: app desktop 32.9 -> 35.1 screens,
+mobile 46.7 -> 48.8; sanctuary desktop 35.6 -> 37.6; web3 mobile 38.3 -> 39.2.
+
+**Not changed, by judgement:** every other pinned section (already 93–170vh per
+state), sanctuary's mobile hero (~50vh full-strength per photograph inside a
+600vh pin — already long), and all ordinary text sections. No scroll-snapping
+exists anywhere on the site and none was added.
+
+---
+
+## Responsive layout pass — 2 October 2026
+
+Layout only. No copy, image, colour, animation sequence or pin height changed;
+the scroll-pacing pass above is intact (pins 500/520/640vh desktop, wheel
+crossing times 10.2 / 10.1 / 9.1 / 8.1s — identical to before).
+Changed: `index.html` · `web3.html` · `app.html` · `js/cine.js`.
+
+### Test real BROWSER viewports, not screen sizes
+The reported screenshots were a 1366x768 laptop — a **1347x597** viewport once
+the tabs and bookmarks bar are gone. Nothing on this site had been tested that
+short. Audit sizes now include 1347x597, 1536x730 (a 1920 screen at 125%),
+1280x600 and 1280x560 alongside the nominal list.
+
+### Genuine faults and causes
+| component | cause | fix |
+|---|---|---|
+| index "Track what matters" — callout cards overlapping in pairs | dots are % of a phone that is 64vh tall; cards are fixed height, so at ~600px the two dots on a flank were 160px apart against 175px cards | `layoutCallouts()` slides each card along its own leader line (`--cy`, on resize only) so pairs clear by 16px, stay under the running head and above the floor; padding/rhythm trimmed below 760px tall |
+| same — "Your journey" over the headline, **at every width incl. 1440** | when the dashboard became a phone, co1 moved to the LEFT flank but kept a window (0.02–0.20) that opened before the copy had stepped aside (0.16–0.32) | copy recedes 0.02–0.11, co1 arrives 0.10–0.20; stops unchanged |
+| index "Why now" — third stat card cut off | dock needed ~680px; stage clips | dock compresses below 820 / 680 / 620px tall (margins, padding, stat figure tracks vh); cards and copy unchanged |
+| same — palm mark over the headline (visible at 1440 too) | `placeLogo()` and `measurePanelHome()` repeated the CSS as constants and sized the mark to the viewport, not to the gap | both now MEASURE the copy's ink and the dock (`whyGap()`); the mark is sized to the gap (ink ≈ 0.68 of its box), floor 55% of ideal; dock eases 10%→6% offset and tracks 30vw below 1567px, so **1920 is unchanged** |
+| web3 Bridge on short laptops — marks into "to ownership.", "$DVT" on the rail | stage was 169px tall against ~270px needed; bank was a fixed 7-row grid | stage padding / display / rail spacing tighten below 720px tall (stage → 262px); bank row pitch fits the space; caption reserve uses the captions' real height |
+| web3 Bridge on phones — running caption into the headline | sat 2px under the head's line box; italic descenders hang below it | 14px, canvas top reserve grown to match |
+| app Marketplace nav on phones / 768 — "INTRO / SANC / PART / GOO" spilling off the edge | the mobile tick marks never hid their label text | `font-size:0; overflow:hidden` on the ticks (pre-existing) |
+| site-wide "Keep scrolling" cue on short screens and phones | a 66px block 26px off the floor landed on each pin's foot copy | hairline only, 8px off the edge, below 720px tall or 900px wide |
+
+### Verified
+182 runs (13 pages × 14 viewports: 1920x1080, 1680x1050, 1440x900, 1366x768,
+1280x800, 1280x720, 1024x768, 1347x597, 1536x730, 768x1024, 430x932, 390x844,
+375x812, 360x800), every page swept top to bottom: **0 text/text overlaps,
+0 text over a foreign card or image, 0 card/card overlaps, 0 clipped text,
+0 text pushed off a pinned stage, 0 horizontal overflow, 0 JS errors.**
+SVG diagram labels checked separately on six pages at six sizes: 0 collisions,
+0 escaping. Judged by eye via contact sheets of every pinned section at
+1366x768, 1347x597, 1024x768 and 375x812.
+
+### The audit harness — and three traps it needed
+- **Real fonts.** Chromium through the sandbox proxy fails some gstatic files
+  (`ERR_TOO_MANY_RETRIES`) and silently falls back to Times, so every text
+  measurement is wrong. Fetch CSS and woff2 with curl and serve them via
+  `route()`. three.js is blocked on cdnjs — `npm pack three@0.128.0`.
+- **Canvas and SVG text is invisible to a DOM overlap audit.** The Bridge
+  collision passed it clean; only the contact sheets found it.
+- **Exclude what is meant to be hidden**: collapsed FAQ panels (visible
+  portion < 35%), `.ln`/`.pr-w` masks, and anything with a running finite
+  animation — otherwise reveals mid-flight read as collisions.
+
+### Not changed, flagged
+- The ecosystem plates (index) and the marketplace scenes (app) cross-fade
+  stacked text, so mid-handover two headlines show at once at every size. A
+  transition-design question, not a layout fault.
+- The "Why now" centre-hold card deliberately overlaps the docked card above
+  it — that is the pop-to-centre choreography.

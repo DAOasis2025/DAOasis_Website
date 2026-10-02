@@ -1538,6 +1538,58 @@
   .panel.panel-active{border-color:rgba(107,90,68,0.28);
     box-shadow:0 30px 66px rgba(60,50,35,0.16);}
   .panel.panel-active .panel-num{color:rgba(107,90,68,0.8);}
+  /* RESPONSIVE COMPOSITION, 2 October 2026 — laptops.
+     The palm mark is meant to sit in the clear space BETWEEN the copy and the
+     card dock (that is the 1920 composition). Below ~1700px wide that space
+     shrank faster than the mark did, and placeLogo() parked a 400-600px mark
+     straight over the headline and lede — visible at 1440x900 and worse on
+     every shorter laptop. Two things give the gap back without touching the
+     1920 frame: the dock's right offset eases from 10% (1920) to 6% (1440 and
+     below), and its width tracks 30vw below 1567px; the copy measure tracks
+     34vw so a 1101-1300px screen keeps a gap at all. placeLogo() and
+     measurePanelHome() now MEASURE these boxes rather than repeating the
+     numbers, so changing them here is the only edit needed. */
+  @media (min-width:901px){
+    .body-copy{max-width:min(460px,34vw);}
+    .panels{right:clamp(6%, calc(6% + (100vw - 1440px) * 0.16), 10%);width:min(30vw,470px);}
+  }
+  /* 901-1100: the dock would be under 330px and every card wraps a line
+     more than it has height for — give it back a little width instead */
+  @media (min-width:901px) and (max-width:1100px){ .panels{right:5%;width:34vw;} }
+  /* SHORT LAPTOP SCREENS. Three cards stacked in the dock need ~680px at the
+     full vertical rhythm; a 1366x768 laptop gives a browser viewport of
+     ~600-660px, and the third card ran off the bottom of the stage (and the
+     stage clips). Below 820px tall the dock spends less on margins and the
+     stat figure tracks viewport height as well as width — the copy inside the
+     cards is unchanged. */
+  @media (min-width:901px) and (max-height:820px){
+    .panels{top:4.5%;bottom:4.5%;}
+    .panel{padding:clamp(14px,2.4vh,30px) clamp(22px,1.9vw,32px);}
+    .panel .bar{margin-bottom:clamp(7px,1.1vh,14px);}
+    .panel .stat{font-size:clamp(26px,min(3.05vw,5.8vh),48px);}
+    .panel .desc{line-height:1.52;margin-top:clamp(5px,0.9vh,10px);}
+    .panel .source{margin-top:clamp(6px,1vh,12px);padding-top:clamp(5px,0.8vh,9px);line-height:1.4;}
+    .panel-num{top:clamp(10px,1.6vh,18px);}
+    /* the copy column is the other thing that can run out of height */
+    .why-headline{font-size:clamp(36px,min(5.4vw,10.5vh),74px);margin-top:clamp(14px,2.6vh,28px);}
+    .lede{font-size:clamp(18px,min(2.1vw,3.9vh),26px);margin-top:clamp(14px,2.8vh,30px);}
+    .why-cta{margin-top:clamp(18px,3.6vh,38px);}
+  }
+  /* A 1366x768 laptop with a bookmarks bar is ~600px of viewport: one more
+     notch of rhythm, still no copy and no type size touched in the cards. */
+  @media (min-width:901px) and (max-height:680px){
+    .panels{top:3.5%;bottom:3.5%;}
+    .panel{padding:12px clamp(18px,1.7vw,28px);}
+    .panel .stat{font-size:clamp(24px,min(3.05vw,5.4vh),48px);}
+    .panel .desc{line-height:1.45;margin-top:4px;}
+    .panel .source{margin-top:6px;padding-top:5px;line-height:1.35;}
+    .panel-num{top:9px;}
+  }
+  @media (min-width:901px) and (max-height:620px){
+    .panels{top:2.6%;bottom:2.6%;}
+    .panel{padding-top:10px;padding-bottom:10px;}
+    .panel .bar{margin-bottom:6px;}
+  }
   /* The closing mark band is a MOBILE-ONLY beat. On desktop the mark lives
      in the sticky stage's own canvas, behind the cards, where it belongs. */
   .why-mark{display:none;}
@@ -1958,6 +2010,12 @@
     transform:translateY(calc((1 - var(--w,0)) * 16px))
               scale(calc(0.90 + 0.10 * var(--w,0)));
     transform-origin:center;}
+  /* --cy is written by layoutCallouts() in the section script: how far the
+     card slides along its own leader line so that two cards on one flank
+     never touch. The dot and the line stay on the feature they annotate;
+     only the card moves, and never by more than lets the line still meet
+     its side. 0 wherever there is room, i.e. on any tall screen. */
+  .co-card{position:relative;top:var(--cy,0px);}
   .co-label{font-size:var(--t-micro);letter-spacing:0.22em;color:var(--clay-ink);text-transform:uppercase;}
   .co-text{font-size:var(--t-body-s);color:#544d44;line-height:1.72;margin-top:14px;}
   /* .show now carries ONLY the arrival pulse (.co-dot::after). Opacity is
@@ -2036,6 +2094,14 @@
     .co-card{width:268px;padding:19px 21px;}
     .co-text{font-size:var(--t-body-s);line-height:1.66;margin-top:11px;}
     .co-label{font-size:var(--t-micro);}
+  }
+  /* SHORT LAPTOP SCREENS (a 1366x768 laptop is a ~600-660px viewport).
+     The phone is 64vh tall, so the two dots on each flank are 42% of 64vh
+     apart — ~160px at 600px tall — while a card is ~175px. Less padding and
+     rhythm here, and layoutCallouts() takes up whatever is left. */
+  @media (max-height:760px){
+    .co-card{padding:clamp(14px,2.6vh,23px) clamp(18px,1.8vw,26px);}
+    .co-text{line-height:1.6;margin-top:clamp(8px,1.4vh,14px);}
   }
   /* co4 no longer hangs below the image — it is a right-flank callout
      like co3 now, so the tight budget between the image foot and the
@@ -4959,6 +5025,28 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
      large and central. It sits left of centre because the card dock owns the
      right-hand side and the cards must land on a clean ground. */
   let logoPts = null, logoReady = false;
+  /* The copy column's real right edge (its INK, not its max-width box) and
+     the dock's real left edge, both relative to the stage. Shared by
+     placeLogo() and measurePanelHome() so the mark and the centred card are
+     placed against the same measured gap. */
+  function whyGap(w){
+    const stageEl = document.getElementById('stage');
+    const sl = stageEl ? stageEl.getBoundingClientRect().left : 0;
+    let copyRight = w * 0.08 + 460;
+    const ov = stageEl && stageEl.querySelector('.overlay');
+    if(ov){
+      let m = 0;
+      ov.querySelectorAll('.why-kicker,.why-headline,.lede,.body-copy p,.why-cta').forEach(el => {
+        const r = document.createRange(); r.selectNodeContents(el);
+        const b = r.getBoundingClientRect(); if(b.width) m = Math.max(m, b.right - sl);
+      });
+      if(m) copyRight = m;
+    }
+    let cardsLeft = w - w * 0.10 - Math.min(w * 0.34, 470);
+    const pn = stageEl && stageEl.querySelector('.panels');
+    if(pn){ const b = pn.getBoundingClientRect(); if(b.width) cardsLeft = b.left - sl; }
+    return { copyRight, cardsLeft };
+  }
   function placeLogo(){
     if(!logoPts) return;
     const w = Math.max(1, canvas.clientWidth), h = Math.max(1, canvas.clientHeight);
@@ -4989,10 +5077,28 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
          lets it sit over the copy instead, which is the right way round:
          .overlay::before already scrims the left 58% to protect that text,
          and nothing protects the cards. */
-      sizePx = Math.min(w * 0.44, h * 0.68);
-      const copyRight = w * 0.08 + 460;
-      const cardsLeft = w - w * 0.10 - Math.min(w * 0.34, 470);
-      centreXpx = Math.min((copyRight + cardsLeft) / 2, cardsLeft - sizePx / 2 - 12);
+      /* MEASURED, 2 October 2026. This repeated the CSS as constants
+         (copy = 8% + 460px, dock = 10% + min(34vw,470)), so it went wrong
+         the moment either changed, and it always sized the mark for the
+         viewport rather than for the space it has. Now the gap is read off
+         the real copy ink and the real dock, and the mark is sized to that
+         gap: full size where there is room (1920), scaled down to sit in
+         the gap on a laptop instead of being parked over the headline.
+         It never drops below 55% of its ideal size — under that the mark
+         stops reading as the section's subject — so on the narrowest
+         desktops it may still kiss the end of the copy, but no longer
+         covers it. */
+      const ideal = Math.min(w * 0.44, h * 0.68);
+      const g = whyGap(w);
+      const room = g.cardsLeft - g.copyRight;
+      /* sizePx is the mark's BOX; its drawn ink is ~0.68 of that across
+         (measured at 1920: 500px of ink in a 734px box). So the box that
+         fills the gap with ~20px of air either side is (room - 40) / 0.68. */
+      const INK = 0.68, fit = (room - 40) / INK;
+      sizePx = Math.min(ideal, Math.max(fit, ideal * 0.55));
+      centreXpx = sizePx <= fit + 0.5
+        ? (g.copyRight + g.cardsLeft) / 2
+        : Math.min((g.copyRight + g.cardsLeft) / 2, g.cardsLeft - sizePx / 2 - 12);
     }
 
     const scale = sizePx * perPx;
@@ -5112,7 +5218,7 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
        right of the copy column, since there is no card dock in the way any
        more once a card returns to its slot */
     const w = sr.width;
-    const copyRight = w * 0.08 + 460;
+    const copyRight = whyGap(w).copyRight;
     /* AS CENTRAL AS IT CAN GO WITHOUT COVERING THE COPY.
        This was (copyRight + w) / 2 — the midpoint of the whole right-hand
        area, which at 1440 is x=1007, i.e. 70% across. That is not a centred
@@ -5945,7 +6051,13 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
      hold in which nothing new arrives — the section simply sits finished.
      Previously callout four was still arriving as the sticky released, so
      the reader never saw the completed composition at all. */
-  const CO_TIMELINE = [{ inStart: 0.02, inEnd: 0.20 }, { inStart: 0.22, inEnd: 0.40 },
+  /* co1 starts at 0.10, not 0.02. When the dashboard became a phone, co1
+     moved to the LEFT flank — over the copy column — but kept a window that
+     opened before the copy had stepped aside (recede ran 0.16-0.32), so
+     "Your journey" printed across the headline at every width. The copy now
+     leaves across 0.02-0.11 and co1 arrives over 0.10-0.20: one transition,
+     the hand-over first and the annotation second. Stops are unchanged. */
+  const CO_TIMELINE = [{ inStart: 0.10, inEnd: 0.20 }, { inStart: 0.22, inEnd: 0.40 },
                        { inStart: 0.42, inEnd: 0.60 }, { inStart: 0.62, inEnd: 0.80 }];
   function computeT(){ const rect = pin3.getBoundingClientRect(); const scrollable = pin3.offsetHeight - window.innerHeight; if(scrollable <= 0) return 0; return Math.max(0, Math.min(1, -rect.top / scrollable)); }
 
@@ -5981,6 +6093,47 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
   window.addEventListener('load', measureShift);
   if(document.fonts && document.fonts.ready) document.fonts.ready.then(measureShift);
 
+  /* LAYOUT, NOT ANIMATION — run on resize, never per frame.
+     Each callout's dot is a percentage of the phone, and the phone's height
+     tracks the viewport, so on a short laptop screen the two dots on one
+     flank end up closer together than a card is tall and the cards print
+     over each other. This slides each card along its own leader line (--cy)
+     just far enough that the pair on each flank clears by GAP, stays below
+     the running head and above the stage floor, and never so far that the
+     line stops meeting the card's side. Everything is measured with offset*
+     so the scrubbed transforms on the cards and the phone do not skew it. */
+  const coCards = callouts.map(el => el && el.querySelector('.co-card'));
+  function layoutCallouts(){
+    if(!stage3El || !dashWrap || window.innerWidth <= 1100) return;
+    coCards.forEach(c => c && c.style.setProperty('--cy', '0px'));
+    const GAP = 16, EDGE = 14;
+    const stageH = stage3El.clientHeight;
+    const dashTop = dashWrap.offsetTop, dashH = dashWrap.offsetHeight;
+    const topLimit = runhead ? runhead.offsetTop + runhead.offsetHeight + EDGE : EDGE;
+    const dotsTop = trackDots ? trackDots.offsetTop - EDGE : stageH - EDGE;
+    const pct = el => parseFloat(getComputedStyle(el).top) / dashH;
+    [[0, 1, dotsTop], [2, 3, stageH - EDGE]].forEach(([a, b, floor]) => {
+      const A = callouts[a], B = callouts[b], cA = coCards[a], cB = coCards[b];
+      if(!A || !B || !cA || !cB) return;
+      const hA = cA.offsetHeight, hB = cB.offsetHeight;
+      const dA = dashTop + pct(A) * dashH, dB = dashTop + pct(B) * dashH;
+      let yA = dA, yB = dB;                      /* card centres */
+      const short = (yB - hB / 2) - (yA + hA / 2) - GAP;
+      if(short < 0){ yA += short / 2; yB -= short / 2; }
+      if(yA - hA / 2 < topLimit){ yA = topLimit + hA / 2; yB = Math.max(yB, yA + hA / 2 + GAP + hB / 2); }
+      if(yB + hB / 2 > floor){ yB = floor - hB / 2; yA = Math.min(yA, yB - hB / 2 - GAP - hA / 2); }
+      const lim = h => h / 2 - 16;               /* the line must still meet the card */
+      const offA = Math.max(-lim(hA), Math.min(lim(hA), yA - dA));
+      const offB = Math.max(-lim(hB), Math.min(lim(hB), yB - dB));
+      cA.style.setProperty('--cy', offA.toFixed(1) + 'px');
+      cB.style.setProperty('--cy', offB.toFixed(1) + 'px');
+    });
+  }
+  layoutCallouts();
+  window.addEventListener('resize', layoutCallouts, { passive: true });
+  window.addEventListener('load', layoutCallouts);
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(layoutCallouts);
+
   let cur = 0, target = 0;
   function tick(){
     if(track){ cur = track.get(); }
@@ -5989,7 +6142,7 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
        closes just as co2 — the one that lands on the copy column — starts
        to arrive at 0.28. At the widest point of the crossover the column is
        at 0.125 and the card at 0.09, so the two are never both legible. */
-    const rc = Math.max(0, Math.min(1, (cur - 0.16) / 0.16));
+    const rc = Math.max(0, Math.min(1, (cur - 0.02) / 0.09));
     const recede = rc * rc * (3 - 2 * rc);
     if(overlay) overlay.style.setProperty('--recede', recede.toFixed(4));
     if(dashWrap) dashWrap.style.setProperty('--recede', recede.toFixed(4));
