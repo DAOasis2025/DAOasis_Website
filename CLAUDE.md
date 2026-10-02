@@ -6900,3 +6900,74 @@ and web3's complete loop. These were unpinned deliberately.
 
 `css/trust.css` is the one that fixes the live footer icons and has never been
 uploaded. No other image, and no other JS file, changed.
+
+---
+
+## Scroll pacing pass — 2 October 2026
+
+Pacing only: no design, copy, image or animation curve changed. `app.html` ·
+`sanctuary.html` · `web3.html` · `js/smooth.js`.
+
+### Audit — vh of scroll per visual state, 1440x900 (before)
+Every pinned sticky section sat at 93–170vh per state, which with cine's
+magnet plateaus is enough. **The three heroes were the outliers**, and all three
+reached their closing frame on the exact frame the pin released:
+
+| | travel | settled frame held | closing line held |
+|---|---|---|---|
+| app hero | 180vh | ~32vh | ~14vh (pad only) |
+| sanctuary hero | 220vh | ~37vh | ~19vh |
+| web3 hero | 500vh | (long descent) | ~40vh |
+
+Mobile: app's Living Ecosystem and web3's "Where it begins" were 66 / 72vh per
+screen — one ordinary swipe crossed a whole screen.
+
+### The real desktop bug — `smooth.js` re-enabled the escape
+`GOV.pushGain` is deliberately `0` (escape off), but smooth.js read it as
+`GOV.pushGain || 3`, and 0 is falsy. A firm wheel therefore lifted every paced
+section's speed cap 4x. Measured with a hard continuous wheel at 1440x900:
+
+| | before | after |
+|---|---|---|
+| app hero | 3.1s | 10.3s |
+| sanctuary hero | 2.9s | 10.1s |
+| web3 hero | **1.5s** | 9.1s |
+| app Living Ecosystem | 2.7s | 8.1s |
+
+Now `typeof … === 'number'`. **If paced sections ever feel like a wall on a
+mouse, `GOV.pushGain` in cine.js is the knob** (3 restores input-sensitive escape).
+
+### What changed
+- **app hero** 280 -> **500vh** desktop, 420 -> **530vh** mobile.
+- **sanctuary hero** 320 -> **520vh** desktop (mobile unchanged at 600).
+- **web3 hero** 600 -> 640 desktop, 420 -> 450 mobile, plus `passMs: 9000`
+  (it was the only hero with no wall-clock floor: 2 beats = 3.2s).
+- **app `.edy-outer`** and **web3 `.part-outer`** on mobile -> **525vh**
+  (85vh per screen).
+
+### Scroll ALLOCATION tables — the new mechanism
+The heroes' `applyFrame` ramps were not touched. Instead the track value passes
+through a piecewise-linear map (`HERO_ALLOT` / `HERO_ALLOT_M` in app.html,
+`HERO_ALLOT` in sanctuary.html, `HERO_END = 0.90` in web3.html): rows are
+`[track position, timeline position]`, with boundaries on frames where nothing
+moves. This lets each beat get its own share of the extra height — in
+particular a held closing frame — without rescaling a single ramp.
+**Change a hero's pin height and its table together.**
+
+### Verified (frame-by-frame sweep, 201 positions per hero)
+| | settled frame held | closing frame held |
+|---|---|---|
+| app 1440 | **~108vh** | **62vh** |
+| app 390 | **125vh** | **54vh** |
+| sanctuary 1440 | **~95vh** (its idle drift moves 1px/step) | **61vh** |
+| web3 1440 / 390 | — | **92 / 60vh** |
+
+78 checks (13 pages x 375/390/768/1280/1440/1920): 0 JS errors, 0 horizontal
+overflow. Plates-gone-before-statement rule on sanctuary preserved (timeline is
+stretched, never reordered). Page length: app desktop 32.9 -> 35.1 screens,
+mobile 46.7 -> 48.8; sanctuary desktop 35.6 -> 37.6; web3 mobile 38.3 -> 39.2.
+
+**Not changed, by judgement:** every other pinned section (already 93–170vh per
+state), sanctuary's mobile hero (~50vh full-strength per photograph inside a
+600vh pin — already long), and all ordinary text sections. No scroll-snapping
+exists anywhere on the site and none was added.

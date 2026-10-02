@@ -345,7 +345,11 @@ img { max-width: 100%; }
    pulls back and it turns out to be one thread in a
    much larger fabric.
 ══════════════════════════════════════════════ */
-.hero-outer { position: relative; height: 600vh; }
+/* 600 -> 640vh (2 October 2026). The statement over the aquifer reached
+   full strength at exactly the end of the track, so it was only ever at
+   rest inside cine's settle pad (~40vh). The descent keeps the distance it
+   had; the extra 40vh is a held final frame (see HERO_END in the script). */
+.hero-outer { position: relative; height: 640vh; }
 .hero-stage {
   position: sticky; top: 0; height: 100vh; overflow: hidden;
   background: radial-gradient(ellipse at 50% 52%, #14110f 0%, #0a0806 58%, #040302 100%);
@@ -428,7 +432,7 @@ img { max-width: 100%; }
      that the reader is never left wondering whether the page is stuck.
      Desktop is still 600vh — 3 screens a beat — and is worth the same
      look, but desktop was explicitly signed off, so it is left alone. */
-  .hero-outer { height: 420vh; }
+  .hero-outer { height: 450vh; }   /* 420 -> 450: the held final frame, as desktop */
   .hero-title-eyebrow { letter-spacing: 0.3em; margin-bottom: 26px; }
   /* 9px was under the site's own 10px floor, and was only there so the
      nowrap line would fit. Tracking is the cheaper thing to spend — see
@@ -535,7 +539,10 @@ img { max-width: 100%; }
        Rhythm section on sanctuary was rebuilt for exactly this). Each
        row is full within 0.34 of its stop and gone by 0.5, so there is
        a brief clear frame between rows and never two legible at once. */
-  .part-outer { height: 460vh; }
+  /* 460 -> 525vh (2 October 2026): 72vh -> 85vh per screen, matching
+     app.html's Living Ecosystem — the same six-screens-one-row-at-a-time
+     shape, and at 72vh one ordinary swipe crossed a whole row. */
+  .part-outer { height: 525vh; }
   .part-sticky {
     position: sticky; top: 0; height: 100vh; overflow: hidden;
     display: flex; flex-direction: column; justify-content: flex-start;
@@ -2604,11 +2611,20 @@ function rnd(i){ const s = Math.sin(i * 127.1 + 311.7) * 43758.5453; return s - 
   /* GUIDED — the descent and the pull-back are one continuous camera move,
      so it is speed-capped rather than quantised. Three beats (card → the
      descent → the statement) set the pace; a flick cannot snap the fall. */
-  const track = cine(outer, { mode: 'guided', pace: 'epic', states: 3 });
+  /* passMs: the same wall-clock floor app.html (9s) and sanctuary.html
+     (10s) give their heroes. Without it a wheel was capped by beat
+     arithmetic alone — two beats, 3.2s — and the hero was the quickest
+     thing on the page to fling through. Desktop wheel only; touch is
+     native. */
+  const track = cine(outer, { mode: 'guided', pace: 'epic', states: 3, passMs: 9000 });
+  /* The whole sequence completes at 90% of the track and the last 10% is a
+     held frame on the statement, so it is read at rest before the pin
+     releases rather than arriving on the frame it leaves. */
+  const HERO_END = 0.90;
   (function tick(){
     requestAnimationFrame(tick);
     if(!visible) return;
-    const current = track.get();
+    const current = Math.min(1, track.get() / HERO_END);
     draw(current);
     chrome(current);
   })();
