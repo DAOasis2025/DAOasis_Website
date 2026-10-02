@@ -2695,7 +2695,16 @@ function rnd(i){ const s = Math.sin(i * 127.1 + 311.7) * 43758.5453; return s - 
       items.forEach(el => el.classList.remove('active'));
     }
     mob = false;
-    const pos = track.pos();
+    /* FINISHED STATES FIRST (2 October 2026, cinematic pacing pass). The
+       magnet alone held each row for ~25vh of the 600vh and spent ~59vh on
+       every handover, so a row was mid-change far longer than it was at
+       rest. ROW_HOLD flattens the outer part of each handover: same 600vh,
+       same cross-fade, now ~59vh at rest per row and a ~25vh handover.
+       Desktop only — the mobile stack above was already balanced. */
+    const ROW_HOLD = 0.2003;
+    const raw = track.pos(), rn = Math.floor(raw), rf = raw - rn;
+    const rt = Math.max(0, Math.min(1, (rf - ROW_HOLD) / (1 - 2 * ROW_HOLD)));
+    const pos = rf > 0 ? rn + rt * rt * (3 - 2 * rt) : raw;
     /* every row carries its own weight, so two rows hand over continuously —
        and the live row holds until the next arrives rather than meeting it
        at half strength, since all six rows are on screen together */

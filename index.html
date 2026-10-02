@@ -2765,7 +2765,10 @@
      the track takes its share. Below about 0.6 screens a beat is 3-4 wheel
      notches and the sequence reads as flashing past. See the pacing table in
      CLAUDE.md before changing this. */
-  .pin5{position:relative;height:435vh;}
+  /* 435 -> 540vh (2 October 2026, cinematic pacing pass). The extra
+     105vh is spent on the three statements at rest, not on slower motion
+     — see PR_ALLOT in the script, which moves with this height. */
+  .pin5{position:relative;height:540vh;}
   .stage5{position:sticky;top:0;height:100vh;overflow:hidden;
     background:linear-gradient(135deg,#FDFCF9 0%,#F4F0E7 58%,#E9E2D6 100%);
     display:flex;align-items:center;gap:6vw;padding:0 8%;}
@@ -6616,14 +6619,42 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
     ? DAO.cine.track(pin5, { mode: 'guided', pace: 'epic', states: 4 })
     : null;
 
+  /* ── SCROLL ALLOCATION (2 October 2026, cinematic pacing pass) ───────
+     render()'s timeline is untouched; this only decides how much scroll
+     each part of it gets. Rows are [track position, timeline position];
+     a flat row is a held frame, placed where nothing in the timeline is
+     moving. Over 440vh of travel (+ cine's 8% settle pad at each end):
+
+       headline arrives 45 · headline HELD 54 · first statement in 35 ·
+       first HELD 71 · second in 40 · second HELD 44 · third in 45 ·
+       third and the finished column HELD ~70
+
+     The second hold is set shorter on purpose: after it, only the column's
+     slow rise moves until the third statement begins, and that reads as
+     still — measured, each of the three statements rests for ~65-75vh. 
+     Each statement used to be at rest for 28-40vh. If the pin height
+     changes, recompute this table with it. */
+  const PR_ALLOT = [[0,0],[0.1216,0.20],[0.2676,0.20],[0.3622,0.40],[0.5541,0.40],
+                    [0.6622,0.66],[0.7811,0.66],[0.9027,0.88],[1,1]];
+  const allot = v => {
+    if(v <= 0) return 0;
+    for(let i = 1; i < PR_ALLOT.length; i++){
+      if(v <= PR_ALLOT[i][0]){
+        const a = PR_ALLOT[i-1], b = PR_ALLOT[i];
+        return a[1] + (b[1] - a[1]) * (v - a[0]) / (b[0] - a[0]);
+      }
+    }
+    return 1;
+  };
+
   if(track){
-    track.on(v => render(v));
+    track.on(v => render(allot(v)));
   } else {
     /* no controller: still a pure function of scroll, just unpaced */
     const rawT = () => {
       const s = pin5.offsetHeight - window.innerHeight;
       if(s <= 0) return pin5.getBoundingClientRect().top < 0 ? 1 : 0;
-      return cl01(-pin5.getBoundingClientRect().top / s);
+      return allot(cl01(-pin5.getBoundingClientRect().top / s));
     };
     let queued = false;
     const onScroll = () => {

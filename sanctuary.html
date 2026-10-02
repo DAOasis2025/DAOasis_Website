@@ -722,7 +722,9 @@ img { max-width: 100%; }
      the track takes its share. Below about 0.6 screens a beat is 3-4 wheel
      notches and the sequence reads as flashing past. See the pacing table in
      CLAUDE.md before changing this. */
-.found-outer { position: relative; height: 435vh; background: var(--sanctuary); }
+/* 435 -> 500vh (2 October 2026): the extra 65vh goes to the finished
+   foundations, not the handovers — see FOUND_HOLD in the script. */
+.found-outer { position: relative; height: 500vh; background: var(--sanctuary); }
 .found-sticky {
   position: sticky; top: 0; height: 100vh; overflow: hidden;
   display: flex; flex-direction: column; justify-content: center;
@@ -2883,7 +2885,16 @@ const lead = (window.DAO && DAO.cine && DAO.cine.lead) ? DAO.cine.lead
       return;
     }
     mob = false;
-    const pos = track.pos();
+    /* FINISHED STATES FIRST (2 October 2026, cinematic pacing pass). With
+       the magnet alone each foundation sat still for ~30-40vh and every
+       handover took ~60-65vh. FOUND_HOLD flattens the outer part of each
+       handover, so with the pin at 500vh a foundation — name, list and
+       photograph — rests for ~70vh and the change between two takes ~42vh.
+       The pin height and this value move together. */
+    const FOUND_HOLD = 0.1367;
+    const raw = track.pos(), rn = Math.floor(raw), rf = raw - rn;
+    const rt = Math.max(0, Math.min(1, (rf - FOUND_HOLD) / (1 - 2 * FOUND_HOLD)));
+    const pos = rf > 0 ? rn + rt * rt * (3 - 2 * rt) : raw;
     const i = Math.max(0, Math.min(items.length - 1, Math.round(pos)));
     items.forEach((el, n) => {
       /* live weight, and how far past this row we have travelled. The four
