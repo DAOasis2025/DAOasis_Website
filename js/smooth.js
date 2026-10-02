@@ -129,7 +129,13 @@
     if (caps) {
       var vh = window.innerHeight || 1;
       push = DAO.cine.escape(push, Math.abs(d) / vh, dt);
-      var gain = (DAO.cine.GOV && DAO.cine.GOV.pushGain) || 3;
+      /* typeof, not `|| 3`. GOV.pushGain is deliberately 0 (escape OFF —
+         see its note in cine.js), and 0 is falsy, so `|| 3` silently put the
+         escape back: a firm scroll lifted the cap 4x and crossed a paced
+         section in a quarter of its time — the "one gesture skips several
+         states" fault on desktop. 3 remains the fallback only if cine.js
+         does not say. */
+      var gain = (DAO.cine.GOV && typeof DAO.cine.GOV.pushGain === 'number') ? DAO.cine.GOV.pushGain : 3;
       var v = (d > 0 ? caps.fwd : caps.back) * (1 + push * gain);
       var capPx = v * dt;
       if (move >  capPx) move =  capPx;

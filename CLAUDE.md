@@ -7026,3 +7026,36 @@ SVG diagram labels checked separately on six pages at six sizes: 0 collisions,
   transition-design question, not a layout fault.
 - The "Why now" centre-hold card deliberately overlaps the docked card above
   it — that is the pop-to-centre choreography.
+
+---
+
+## Stale upload reverted · cinematic pacing pass — 2 October 2026 (later)
+
+### Restore
+Two browser uploads (`fdeeee9` before the PR #4 merge, `08a982b` after it)
+replaced `app.html`, `sanctuary.html`, `web3.html`, `js/cine.js`,
+`js/smooth.js` and `js/trust.js` with copies from before PRs #2–#4, and added
+a stray top-level `smooth.js`. All six were restored byte-for-byte from the
+approved PR #4 head `e04badf`; the stray file was removed. **`index.html` on
+main is still a blend from `fdeeee9`** (it keeps the responsive work but lost
+PR #2/#3's intro timing, `<main>`/`<h1>`, contrast and drawer fixes) — left
+alone by instruction. **Before uploading from the desktop folder, refresh it
+from GitHub, or this happens again.**
+
+### Pacing — shorter transitions, longer finished states
+Four sections, measured at 1920x1080 / 1440x900 / 1366x768 / 1280x720 /
+1347x597 / 390x844 (desktop figures are size-invariant within ±5vh):
+
+| section | runway | hold before → after | transition before → after |
+|---|---|---|---|
+| web3 Where it begins (desktop) | 600vh, unchanged | 24–28 → 52–68 | 56–60 → 24–28 |
+| sanctuary Four Foundations | 435 → 500vh | 32–44 → 68–73 | 60–64 → 36–40 |
+| index Principle | 435 → 540vh | statements 28–40 → 68–77 | 28–48 → 20–40 |
+| app Journey map | 600vh, unchanged | Ayutthaya 20, Khao Lak 32 → every waypoint 58–70 (phone 66–80) | longest leg ~110 → 36 |
+
+Mechanisms: a flat-topped remap of `track.pos()` per handover (`ROW_HOLD`,
+`FOUND_HOLD`), a scroll allocation table (`PR_ALLOT`), and for the map new
+scroll-space stops (`QSTOPS`/`QHOLD`) with `ROUTE_V` = the old stop values,
+so the route still reaches every waypoint at the same point on the path.
+**Each value moves with its section's pin height.** A firm wheel crosses each
+section in the same time as before (the cap is per beat, not per pixel).
