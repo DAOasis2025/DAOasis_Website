@@ -466,14 +466,7 @@ img { max-width: 100%; }
 
    If it wants to breathe more, this one number is the dial. Much past
    400vh and the complaint comes back. */
-/* 320 -> 520vh (2 October 2026), desktop only — mobile keeps its own 600vh.
-   At 320 the settled four-plate fan was held for ~37vh of scroll and the
-   closing statement reached full strength at 99% of the pin, so it was on
-   screen at rest for about one wheel notch before the pin released. The
-   extra distance is allocated beat by beat by HERO_ALLOT in the script —
-   change the two together. passMs on the track still bounds how long a
-   fast wheel can be held here, whatever this height is. */
-.hero-outer { position: relative; height: 520vh; }
+.hero-outer { position: relative; height: 320vh; }
 .hero-stage {
   position: sticky; top: 0; height: 100vh; overflow: hidden;
   display: flex; align-items: center; justify-content: center;
@@ -2402,32 +2395,6 @@ const lead = (window.DAO && DAO.cine && DAO.cine.lead) ? DAO.cine.lead
   const LIFT    = [ 0.085,-0.020,-0.020, 0.085];  /* × width, + is down     */
   const TILT    = [ 11,     3.6,  -3.6,  -11   ]; /* deg, turned inward     */
 
-  /* ── SCROLL ALLOCATION, DESKTOP (2 October 2026) ─────────────────────
-     applyFrame's ramps are untouched; this only decides how much of the
-     520vh pin each part of them gets. Rows are [track position, timeline
-     position], boundaries on frames where nothing is moving. Over 420vh of
-     travel (+ cine's 8% settle pad at each end):
-
-       title held ~38vh · title out 25 · plates emerge 90 ·
-       settled fan HELD 95 · departure 75 · black gap 6 ·
-       statement in 30 · statement HELD ~61
-
-     The plates-gone-before-statement rule is preserved exactly: the
-     timeline is only stretched, never reordered. Mobile is not remapped;
-     its one-photograph-at-a-time sequence was already paced for a phone. */
-  const HERO_ALLOT = [[0,0],[0.011,0.14],[0.082,0.21],[0.337,0.43],[0.606,0.60],
-                      [0.819,0.88],[0.836,0.90],[0.921,0.99],[1,1]];
-  function allot(v, pts){
-    if(v <= pts[0][0]) return pts[0][1];
-    for(let i = 1; i < pts.length; i++){
-      if(v <= pts[i][0]){
-        const a = pts[i-1], b = pts[i];
-        return a[1] + (b[1] - a[1]) * (v - a[0]) / (b[0] - a[0]);
-      }
-    }
-    return pts[pts.length-1][1];
-  }
-
   function applyFrame(raw){
     const isMobile = window.innerWidth <= 900;
     const vw = window.innerWidth, vh = window.innerHeight;
@@ -2687,7 +2654,7 @@ const lead = (window.DAO && DAO.cine && DAO.cine.lead) ? DAO.cine.lead
   }
 
   function tick(){
-    applyFrame(window.innerWidth <= 900 ? track.get() : allot(track.get(), HERO_ALLOT));
+    applyFrame(track.get());
     requestAnimationFrame(tick);
   }
   requestAnimationFrame(tick);
