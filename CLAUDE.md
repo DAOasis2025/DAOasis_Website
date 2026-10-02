@@ -6971,3 +6971,58 @@ mobile 46.7 -> 48.8; sanctuary desktop 35.6 -> 37.6; web3 mobile 38.3 -> 39.2.
 state), sanctuary's mobile hero (~50vh full-strength per photograph inside a
 600vh pin — already long), and all ordinary text sections. No scroll-snapping
 exists anywhere on the site and none was added.
+
+---
+
+## Responsive layout pass — 2 October 2026
+
+Layout only. No copy, image, colour, animation sequence or pin height changed;
+the scroll-pacing pass above is intact (pins 500/520/640vh desktop, wheel
+crossing times 10.2 / 10.1 / 9.1 / 8.1s — identical to before).
+Changed: `index.html` · `web3.html` · `app.html` · `js/cine.js`.
+
+### Test real BROWSER viewports, not screen sizes
+The reported screenshots were a 1366x768 laptop — a **1347x597** viewport once
+the tabs and bookmarks bar are gone. Nothing on this site had been tested that
+short. Audit sizes now include 1347x597, 1536x730 (a 1920 screen at 125%),
+1280x600 and 1280x560 alongside the nominal list.
+
+### Genuine faults and causes
+| component | cause | fix |
+|---|---|---|
+| index "Track what matters" — callout cards overlapping in pairs | dots are % of a phone that is 64vh tall; cards are fixed height, so at ~600px the two dots on a flank were 160px apart against 175px cards | `layoutCallouts()` slides each card along its own leader line (`--cy`, on resize only) so pairs clear by 16px, stay under the running head and above the floor; padding/rhythm trimmed below 760px tall |
+| same — "Your journey" over the headline, **at every width incl. 1440** | when the dashboard became a phone, co1 moved to the LEFT flank but kept a window (0.02–0.20) that opened before the copy had stepped aside (0.16–0.32) | copy recedes 0.02–0.11, co1 arrives 0.10–0.20; stops unchanged |
+| index "Why now" — third stat card cut off | dock needed ~680px; stage clips | dock compresses below 820 / 680 / 620px tall (margins, padding, stat figure tracks vh); cards and copy unchanged |
+| same — palm mark over the headline (visible at 1440 too) | `placeLogo()` and `measurePanelHome()` repeated the CSS as constants and sized the mark to the viewport, not to the gap | both now MEASURE the copy's ink and the dock (`whyGap()`); the mark is sized to the gap (ink ≈ 0.68 of its box), floor 55% of ideal; dock eases 10%→6% offset and tracks 30vw below 1567px, so **1920 is unchanged** |
+| web3 Bridge on short laptops — marks into "to ownership.", "$DVT" on the rail | stage was 169px tall against ~270px needed; bank was a fixed 7-row grid | stage padding / display / rail spacing tighten below 720px tall (stage → 262px); bank row pitch fits the space; caption reserve uses the captions' real height |
+| web3 Bridge on phones — running caption into the headline | sat 2px under the head's line box; italic descenders hang below it | 14px, canvas top reserve grown to match |
+| app Marketplace nav on phones / 768 — "INTRO / SANC / PART / GOO" spilling off the edge | the mobile tick marks never hid their label text | `font-size:0; overflow:hidden` on the ticks (pre-existing) |
+| site-wide "Keep scrolling" cue on short screens and phones | a 66px block 26px off the floor landed on each pin's foot copy | hairline only, 8px off the edge, below 720px tall or 900px wide |
+
+### Verified
+182 runs (13 pages × 14 viewports: 1920x1080, 1680x1050, 1440x900, 1366x768,
+1280x800, 1280x720, 1024x768, 1347x597, 1536x730, 768x1024, 430x932, 390x844,
+375x812, 360x800), every page swept top to bottom: **0 text/text overlaps,
+0 text over a foreign card or image, 0 card/card overlaps, 0 clipped text,
+0 text pushed off a pinned stage, 0 horizontal overflow, 0 JS errors.**
+SVG diagram labels checked separately on six pages at six sizes: 0 collisions,
+0 escaping. Judged by eye via contact sheets of every pinned section at
+1366x768, 1347x597, 1024x768 and 375x812.
+
+### The audit harness — and three traps it needed
+- **Real fonts.** Chromium through the sandbox proxy fails some gstatic files
+  (`ERR_TOO_MANY_RETRIES`) and silently falls back to Times, so every text
+  measurement is wrong. Fetch CSS and woff2 with curl and serve them via
+  `route()`. three.js is blocked on cdnjs — `npm pack three@0.128.0`.
+- **Canvas and SVG text is invisible to a DOM overlap audit.** The Bridge
+  collision passed it clean; only the contact sheets found it.
+- **Exclude what is meant to be hidden**: collapsed FAQ panels (visible
+  portion < 35%), `.ln`/`.pr-w` masks, and anything with a running finite
+  animation — otherwise reveals mid-flight read as collisions.
+
+### Not changed, flagged
+- The ecosystem plates (index) and the marketplace scenes (app) cross-fade
+  stacked text, so mid-handover two headlines show at once at every size. A
+  transition-design question, not a layout fault.
+- The "Why now" centre-hold card deliberately overlaps the docked card above
+  it — that is the pop-to-centre choreography.

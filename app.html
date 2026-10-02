@@ -1438,8 +1438,12 @@ body { overflow-x: clip; }
   /* The scene labels sat on top of the now full-width copy. On mobile the
      rail becomes a set of ticks — same progress cue, no collision. */
   .market-nav { right: 3%; gap: 12px; }
+  /* font-size 0 + overflow hidden: the label TEXT was never removed from
+     the tick, so "INTRO / SANC / PART / GOO" spilled out of a 14px box and
+     off the right edge of the stage on every phone (2 October 2026). */
   .market-nav-item {
-    font-size:var(--t-nano); width: 14px; height: 1px; background: rgba(247,244,238,0.28);
+    font-size: 0; line-height: 0; overflow: hidden; color: transparent;
+    width: 14px; height: 1px; background: rgba(247,244,238,0.28);
     transition:background 0.4s var(--ease), width 0.4s var(--ease);
   }
   .market-nav-item.active { background: var(--gold); width: 24px; }

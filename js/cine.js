@@ -1266,7 +1266,15 @@ DAO.cine = (function(){
         '.dao-cue-r::after{content:"";position:absolute;left:0;top:-34px;width:1px;height:34px;' +
         'background:linear-gradient(180deg,transparent,currentColor);animation:daoCueRun 2.1s var(--ease,cubic-bezier(.22,1,.36,1)) infinite;}' +
         '@keyframes daoCueRun{0%{transform:translateY(0)}60%,100%{transform:translateY(68px)}}' +
-        '@media (prefers-reduced-motion: reduce){.dao-cue-r::after{animation:none;transform:translateY(34px);}}';
+        '@media (prefers-reduced-motion: reduce){.dao-cue-r::after{animation:none;transform:translateY(34px);}}' +
+        /* SHORT SCREENS (2 October 2026). At 66px tall and 26px off the
+           floor the cue landed on the foot of whatever pinned stage it was
+           cueing on a ~600px laptop viewport — the Bridge's rail copy, for
+           one — and on every phone, whose pinned stages run to the floor.
+           There it is the hairline alone, 8px off the edge,
+           which is the form it takes after the first session anyway. */
+        '@media (max-height:720px),(max-width:900px){.dao-cue{bottom:8px;gap:0;}.dao-cue-t{display:none;}' +
+        '.dao-cue-r{height:22px;}.dao-cue-r::after{top:-22px;height:22px;}}';
       document.head.appendChild(css);
 
       el = document.createElement('div');
