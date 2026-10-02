@@ -38,12 +38,22 @@
     var closeBtn = document.getElementById('navDrawerClose');
     if (!burger || !drawer) return;
 
-    function close() {
+    /* Closed, the drawer is only translated off screen — it stays in the
+       layout, so without inert/aria-hidden its seven controls keep their
+       place in the tab order and screen readers announce the whole menu. */
+    function setAccessible(open) {
+      if (open) { drawer.removeAttribute('inert'); drawer.removeAttribute('aria-hidden'); }
+      else { drawer.setAttribute('inert', ''); drawer.setAttribute('aria-hidden', 'true'); }
+    }
+
+    function close(restoreFocus) {
       drawer.classList.remove('open');
       burger.classList.remove('open');
       if (backdrop) backdrop.classList.remove('open');
       burger.setAttribute('aria-expanded', 'false');
       document.body.style.overflow = '';
+      setAccessible(false);
+      if (restoreFocus !== false) burger.focus();
     }
 
     burger.addEventListener('click', function () {
@@ -52,13 +62,16 @@
       if (backdrop) backdrop.classList.toggle('open', open);
       burger.setAttribute('aria-expanded', open ? 'true' : 'false');
       document.body.style.overflow = open ? 'hidden' : '';
+      setAccessible(open);
+      if (open && closeBtn) closeBtn.focus(); else burger.focus();
     });
 
     if (closeBtn) closeBtn.addEventListener('click', close);
     if (backdrop) backdrop.addEventListener('click', close);
 
     drawer.querySelectorAll('a').forEach(function (a) {
-      a.addEventListener('click', close);
+      /* a link navigates away, so do not pull focus back to the burger */
+      a.addEventListener('click', function () { close(false); });
     });
 
     /* Escape closes it. The drawer is now a left panel with a backdrop, but

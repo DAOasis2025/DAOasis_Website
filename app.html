@@ -12,11 +12,12 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>The Companion App — DAOasis</title>
-<meta name="description" content="The Companion App is the core operating environment of DAOasis — daily quests, learning and community turned into one Journey. Bangkok to Phuket is the launch Journey; completing one opens the next. Earn DAOasis Reward Credits (DRC), with a designed one-way conversion to $DVT." />
+<meta name="description" content="The Companion App is the core of DAOasis: daily quests, learning and community turned into one Journey, earning DAOasis Reward Credits (DRC)." />
 <meta property="og:title" content="The Companion App — DAOasis" />
 <link rel="canonical" href="https://da-oasis-website.vercel.app/app" />
 <meta property="og:url" content="https://da-oasis-website.vercel.app/app" />
 <meta property="og:site_name" content="DAOasis" />
+<meta property="og:locale" content="en_GB" />
 <meta property="og:image" content="https://da-oasis-website.vercel.app/images/og-card.jpg" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
@@ -117,6 +118,14 @@ body { overflow-x: clip; }
 }
 .nav-cta:hover { opacity: 0.88; }
 @media(max-width:768px){.nav>.nav-cta{display:none;}}
+
+/* The drawn bars are 20px wide and the button measures 28x23, under the
+   24px minimum target size. This pseudo-element enlarges the HIT AREA to
+   44x44 around the existing centre without moving or resizing anything
+   that is drawn. */
+.nav-burger{position:relative;}
+.nav-burger::before{content:'';position:absolute;top:50%;left:50%;
+  width:44px;height:44px;transform:translate(-50%,-50%);}
 .nav-burger { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 4px; background: none; border: none; }
 .nav-burger-bars { display: flex; flex-direction: column; gap: 5px; }
 .nav-burger-bars i { display: block; width: 20px; height: 1.5px; background: var(--warm-white); transition:transform 0.3s var(--ease), opacity 0.3s var(--ease); font-style: normal; }
@@ -143,24 +152,24 @@ body { overflow-x: clip; }
   position: fixed; top: 0; left: 0; bottom: 0; z-index: 89; width: min(420px,88vw);
   background: rgba(23,20,18,0.98); backdrop-filter: blur(16px);
   display: flex; flex-direction: column;
-  transform: translateX(-100%); transition:transform 0.4s var(--ease);
+  transform: translateX(-100%); visibility: hidden; transition:transform 0.4s var(--ease), visibility 0s linear 0.4s;
   border-right: 1px solid rgba(247,244,238,0.08); overflow-y: auto;
 }
-.nav-drawer.open { transform: translateX(0); }
+.nav-drawer.open { transform: translateX(0); visibility: visible; transition:transform 0.4s var(--ease), visibility 0s linear 0s; }
 .nav-drawer-head {
   display: flex; align-items: center; justify-content: space-between;
   padding: 22px 28px; border-bottom: 1px solid rgba(247,244,238,0.08); flex-shrink: 0;
 }
 .nav-drawer-head img { height: 22px; width: auto; opacity: 0.92; }
-.nav-drawer-close { background: none; border: none; color: #8a8377; font-size: 28px; line-height: 1; cursor: pointer; padding: 2px 6px; transition:color 0.2s var(--ease); }
+.nav-drawer-close { background: none; border: none; color: #908978; font-size: 28px; line-height: 1; cursor: pointer; padding: 2px 6px; transition:color 0.2s var(--ease); }
 .nav-drawer-close:hover { color: var(--warm-white); }
 .nav-drawer-list { display: flex; flex-direction: column; padding: 6px 28px 28px; }
 .nav-drawer a, .nav-drawer span.drawer-dead {
-  font-family: 'Cormorant Garamond', serif; font-size: 22px; color: #8a8377; text-decoration: none; transition:color 0.2s var(--ease);
+  font-family: 'Cormorant Garamond', serif; font-size: 22px; color: #908978; text-decoration: none; transition:color 0.2s var(--ease);
   padding: 16px 0; border-bottom: 1px solid rgba(247,244,238,0.08);
 }
 .nav-drawer a:hover, .nav-drawer a.active { color: var(--warm-white); }
-.nav-drawer .nav-cta { font-family: 'Frank Ruhl Libre', serif; font-size:var(--t-meta); margin: 24px 0 0; padding: 14px 32px; border-bottom: none; text-align: center; align-self: flex-start; }
+.nav-drawer .nav-cta { font-family: 'Frank Ruhl Libre', serif; color: var(--charcoal); font-size:var(--t-meta); margin: 24px 0 0; padding: 14px 32px; border-bottom: none; text-align: center; align-self: flex-start; }
 @media(max-width:520px) { .nav-drawer { width: 100vw; } }
 
 /* ── SHARED SECTION STYLES ── */
@@ -171,7 +180,7 @@ body { overflow-x: clip; }
 
 .s-kicker { font-size:var(--t-micro); letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 18px; }
 .s-dark .s-kicker, .s-mid .s-kicker  { color: var(--gold); }
-.s-light .s-kicker    { color: #8a7f6d; }
+.s-light .s-kicker    { color: #6A6256; }
 .s-sanctuary .s-kicker { color: rgba(247,244,238,0.6); }
 
 .s-headline {
@@ -248,7 +257,7 @@ body { overflow-x: clip; }
 .phone-modal-overlay.open .phone-modal { transform: translateY(0) scale(1); }
 .phone-modal-close {
   position: absolute; top: 18px; right: 22px;
-  background: none; border: none; color: #5f5a52;
+  background: none; border: none; color: #908978;
   font-size: 22px; cursor: pointer; line-height: 1;
   transition:color 0.2s var(--ease);
 }
@@ -275,7 +284,7 @@ body { overflow-x: clip; }
 }
 
 /* ── FOOTER ── */
-.site-footer { background: var(--mineral); color: #8a8377; padding: 7vh 8% 4vh; border-top: 1px solid rgba(247,244,238,0.07); }
+.site-footer { background: var(--mineral); color: #908978; padding: 7vh 8% 4vh; border-top: 1px solid rgba(247,244,238,0.07); }
 .footer-top {
   display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px;
   padding-bottom: 5vh; border-bottom: 1px solid rgba(247,244,238,0.1);
@@ -287,9 +296,9 @@ body { overflow-x: clip; }
 .footer-tagline strong { display: block; color: #b8b1a4; font-weight: 500; }
 .footer-tagline em { font-style: italic; }
 .footer-col-label { font-size:var(--t-nano); letter-spacing: 0.12em; text-transform: uppercase; color: #8f887d; margin-bottom: 18px; }
-.footer-col a { display: block; font-size:var(--t-note); color: #8a8377; text-decoration: none; margin-bottom: 11px; transition:color 0.2s var(--ease); }
+.footer-col a { display: block; font-size:var(--t-note); color: #908978; text-decoration: none; padding: 4px 0; margin-bottom: 3px; transition:color 0.2s var(--ease); }
 .footer-col a:hover { color: var(--warm-white); }
-.footer-bottom { display: flex; justify-content: space-between; padding-top: 4vh; font-size:var(--t-small); color: #8a8377; }
+.footer-bottom { display: flex; justify-content: space-between; padding-top: 4vh; font-size:var(--t-small); color: #908978; }
 @media(max-width:768px) {
   .footer-top { grid-template-columns: 1fr 1fr; gap: 32px; }
   .footer-bottom { flex-direction: column; gap: 8px; }
@@ -312,7 +321,13 @@ body { overflow-x: clip; }
 
    This track is `states: 3` — two transitions — so two screens to move
    through and one to hold the settled frame. This one number is the dial. */
-.hero-outer { position: relative; height: 280vh; }
+/* 280 -> 500vh (2 October 2026). At 280 the whole product reveal — the
+   title, three phones arriving, the settled frame, the bridge line — had
+   180vh of scroll between it, so the settled three-phone frame got ~32vh
+   (three wheel notches) and the bridge reached full strength on the frame
+   the pin released. The distance is now allocated beat by beat in the
+   script (see HERO_ALLOT), so this number and that table move together. */
+.hero-outer { position: relative; height: 500vh; }
 
 .hero {
   position: sticky; top: 0; height: 100vh; overflow: hidden;
@@ -442,7 +457,10 @@ body { overflow-x: clip; }
      sets how much scrolling the reader spends getting there. 420vh gives
      each transition ~2.1 screens, so the bridge is something arrived at
      rather than passed through. Desktop stays 280vh. */
-  .hero-outer { height: 420vh; }
+  /* 420 -> 530vh, allocated by HERO_ALLOT_M in the script. A single
+     gentle swipe is ~500-800px on a phone; at 420 the settled frame was
+     ~460px of scroll, so one swipe carried a reader straight past it. */
+  .hero-outer { height: 530vh; }
   .hero { height: 100vh; }
   .hero-title-text { font-size: clamp(40px,12vw,64px); }
   /* Matches sanctuary's own mobile landing: the eyebrow spends tracking
@@ -691,7 +709,7 @@ body { overflow-x: clip; }
   font-family: 'Cormorant Garamond', serif; font-weight: 400;
   font-size: clamp(24px, 2.5vw, 34px); line-height: 1; color: var(--warm-white);
 }
-.edy-clock-s { font-size: var(--t-note); color: #8a8377; font-style: italic; }
+.edy-clock-s { font-size: var(--t-note); color: #908978; font-style: italic; }
 
 .edy-rows { list-style: none; margin: 0; padding: 0; }
 .edy-row {
@@ -711,7 +729,7 @@ body { overflow-x: clip; }
 }
 .edy-row-t {
   display: block; font-size: var(--t-note); line-height: 1.55;
-  color: #8a8377; margin-top: 3px;
+  color: #908978; margin-top: 3px;
 }
 .edy-row-r {
   grid-column: 2; width: 46px; height: 2px; margin-top: 10px;
@@ -722,7 +740,7 @@ body { overflow-x: clip; }
   margin-top: clamp(20px, 3.2vh, 36px);
   padding-top: clamp(14px, 2vh, 22px);
   border-top: 1px solid rgba(196,138,90,0.22);
-  font-size: var(--t-meta); line-height: 1.7; color: #8a8377;
+  font-size: var(--t-meta); line-height: 1.7; color: #908978;
   opacity: var(--cw, 1);
 }
 .edy-close strong { color: var(--warm-white); font-weight: 400; }
@@ -767,7 +785,10 @@ body { overflow-x: clip; }
 
      FAIL-VISIBLE: every --w falls back to 1, so a thrown error or a
      missing cine.js leaves the habits legible rather than at 16% grey. */
-  .edy-outer { height: 430vh; }
+  /* 430 -> 525vh (2 October 2026): 66vh -> 85vh of scroll per screen. At
+     66vh one ordinary swipe (~560px) crossed a whole habit, so a reader
+     could pass a screen without it ever being still in front of them. */
+  .edy-outer { height: 525vh; }
   .edy-stage {
     position: sticky; top: 0; height: 100vh; overflow: hidden;
     display: flex; align-items: stretch;
@@ -858,7 +879,7 @@ body { overflow-x: clip; }
   filter: drop-shadow(0 30px 70px rgba(0,0,0,0.7));
 }
 .scr figcaption {
-  font-size: var(--t-note); line-height: 1.7; color: #8a8377;
+  font-size: var(--t-note); line-height: 1.7; color: #908978;
   max-width: 34ch; margin: 0 auto;
 }
 .scr figcaption b {
@@ -986,8 +1007,8 @@ body { overflow-x: clip; }
 .wp-info-num { font-size:var(--t-nano); letter-spacing: 0.18em; color: var(--gold); text-transform: uppercase; margin-bottom: 6px; }
 .wp-info-name { font-family: 'Cormorant Garamond', serif; font-size: 30px; color: var(--warm-white); font-weight: 300; }
 .wp-info-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
-.wp-info-tag { font-size:var(--t-nano); letter-spacing: 0.1em; color: #5f5a52; text-transform: uppercase; }
-.wp-info-desc { font-size:var(--t-note); color: #8a8377; line-height: 1.55; }
+.wp-info-tag { font-size:var(--t-nano); letter-spacing: 0.1em; color: #908978; text-transform: uppercase; }
+.wp-info-desc { font-size:var(--t-note); color: #908978; line-height: 1.55; }
 .wp-info-bar { height: 1px; background: var(--gold); margin-top: 14px; transform: scaleX(0); transform-origin: left; transition:transform 0.6s var(--ease) 0.15s; }
 .wp-info-bar.animate { transform: scaleX(1); }
 
@@ -1054,7 +1075,7 @@ body { overflow-x: clip; }
 .booster-wrap { margin-bottom: 8vh; perspective: 1000px; }
 .booster-label {
   font-size:var(--t-micro); letter-spacing: 0.16em; text-transform: uppercase;
-  color: #5f5a52; margin-bottom: 24px; text-align: center;
+  color: #908978; margin-bottom: 24px; text-align: center;
 }
 .booster-grid {
   display: grid; grid-template-columns: repeat(4,1fr); gap: 2px;
@@ -1089,7 +1110,7 @@ body { overflow-x: clip; }
   max-width: 680px; margin: 0 auto;
   padding: 28px 32px; border: 1px solid rgba(247,244,238,0.08);
   border-radius: 4px; background: rgba(247,244,238,0.02);
-  font-size:var(--t-body-s); color: #8a8377; line-height: 1.75; text-align: center;
+  font-size:var(--t-body-s); color: #908978; line-height: 1.75; text-align: center;
 }
 .quest-note strong { color: var(--warm-white); }
 
@@ -1211,7 +1232,7 @@ body { overflow-x: clip; }
   font-size:var(--t-nano); letter-spacing: 0.14em; text-transform: uppercase;
 }
 .status-active { background: rgba(196,138,90,0.18); color: #E5AE7C; border: 1px solid rgba(196,138,90,0.42); }
-.status-coming { background: rgba(247,244,238,0.06); color: #8a8377; border: 1px solid rgba(247,244,238,0.12); }
+.status-coming { background: rgba(247,244,238,0.06); color: #908978; border: 1px solid rgba(247,244,238,0.12); }
 .quest-name { grid-column:2; grid-row:2;
   font-family: 'Cormorant Garamond', serif; font-size: clamp(21px,1.55vw,27px);
   color: var(--warm-white); font-weight: 400; line-height: 1.12; margin: 16px 0 6px; }
@@ -1223,7 +1244,7 @@ body { overflow-x: clip; }
   font-family: 'Cormorant Garamond', serif; line-height: 1;
   font-size: 34px; color: rgba(232,195,156,0.78); letter-spacing: -0.01em;
 }
-.quest-distance span { font-size: 12px; color: #8a8377; letter-spacing: 0.06em; vertical-align: middle; margin-left: 4px; }
+.quest-distance span { font-size: 12px; color: #908978; letter-spacing: 0.06em; vertical-align: middle; margin-left: 4px; }
 
 @media(max-width:900px) { .quests-grid { grid-template-columns: 1fr 1fr; } }
 @media(max-width:600px) {
@@ -1261,9 +1282,9 @@ body { overflow-x: clip; }
 .learn-track-number { font-family:'Cormorant Garamond',serif; font-size:clamp(54px,6vw,88px); font-weight:300; line-height:1; color:rgba(247,244,238,0.08); position:absolute; top:40px; right:44px; pointer-events:none; }
 .learn-track-tag { display:inline-block; padding:5px 14px; border-radius:24px; font-size:var(--t-nano); letter-spacing:0.14em; text-transform:uppercase; border:1px solid; margin-bottom:20px; }
 .learn-track-name { font-family:'Cormorant Garamond',serif; font-weight:300; font-size:clamp(32px,3.2vw,48px); color:var(--warm-white); line-height:1.08; margin-bottom:18px; }
-.learn-track-desc { font-size:var(--t-body-s); color:#8a8377; line-height:1.75; margin-bottom:32px; max-width:400px; }
+.learn-track-desc { font-size:var(--t-body-s); color:#908978; line-height:1.75; margin-bottom:32px; max-width:400px; }
 .learn-topic-pills { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:36px; }
-.learn-topic-pill { padding:7px 16px; border:1px solid rgba(247,244,238,0.1); border-radius:40px; font-size:var(--t-small); color:#8a8377; }
+.learn-topic-pill { padding:7px 16px; border:1px solid rgba(247,244,238,0.1); border-radius:40px; font-size:var(--t-small); color:#908978; }
 .learn-earn-callout { display:flex; align-items:center; gap:12px; padding-top:28px; border-top:1px solid rgba(247,244,238,0.08); }
 .learn-earn-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
 .learn-earn-text { font-size:var(--t-note); letter-spacing:0.06em; }
@@ -1272,7 +1293,7 @@ body { overflow-x: clip; }
 .learn-stat { flex:1; text-align:center; padding:32px 24px; border-right:1px solid rgba(247,244,238,0.07); }
 .learn-stat:last-child { border-right:none; }
 .learn-stat-num { font-family:'Cormorant Garamond',serif; font-size:clamp(32px,3.5vw,48px); color:var(--warm-white); font-weight:300; line-height:1; margin-bottom:8px; }
-.learn-stat-label { font-size:var(--t-micro); letter-spacing:0.14em; text-transform:uppercase; color:#5f5a52; }
+.learn-stat-label { font-size:var(--t-micro); letter-spacing:0.14em; text-transform:uppercase; color:#908978; }
 @media(max-width:900px) {
   .learn-track-grid { grid-template-columns:1fr; }
   .learn-track-card { padding:40px 32px; }
@@ -1400,7 +1421,7 @@ body { overflow-x: clip; }
   display: flex; flex-direction: column; gap: 16px; align-items: flex-end;
 }
 .market-nav-item {
-  font-size:var(--t-nano); letter-spacing: 0.16em; color: rgba(247,244,238,0.3);
+  font-size:var(--t-nano); letter-spacing: 0.16em; color: rgba(247,244,238,0.55);
   /* colour only. letter-spacing was also in this list and animates LAYOUT —
      a reflow of the nav on every frame of the transition — while .active
      changes nothing but the colour, so it was driving no visual result at
@@ -1417,8 +1438,12 @@ body { overflow-x: clip; }
   /* The scene labels sat on top of the now full-width copy. On mobile the
      rail becomes a set of ticks — same progress cue, no collision. */
   .market-nav { right: 3%; gap: 12px; }
+  /* font-size 0 + overflow hidden: the label TEXT was never removed from
+     the tick, so "INTRO / SANC / PART / GOO" spilled out of a 14px box and
+     off the right edge of the stage on every phone (2 October 2026). */
   .market-nav-item {
-    font-size:var(--t-nano); width: 14px; height: 1px; background: rgba(247,244,238,0.28);
+    font-size: 0; line-height: 0; overflow: hidden; color: transparent;
+    width: 14px; height: 1px; background: rgba(247,244,238,0.28);
     transition:background 0.4s var(--ease), width 0.4s var(--ease);
   }
   .market-nav-item.active { background: var(--gold); width: 24px; }
@@ -1495,10 +1520,10 @@ body { overflow-x: clip; }
   font-family: 'Cormorant Garamond', serif; font-size: 22px;
   color: var(--warm-white); font-weight: 300; margin-bottom: 8px;
 }
-/* #5f5a52 on the #211D1A card was 2.4:1 — the descriptions were decorative
+/* #908978 on the #211D1A card was 2.4:1 — the descriptions were decorative
    rather than readable, worst at 375px where they carry the section alone.
-   #8a8377 is the site's existing muted body tone and lands at ~4.5:1. */
-.int-card-desc { font-size:var(--t-note); color: #8a8377; line-height: 1.6; }
+   #908978 is the site's existing muted body tone and lands at ~4.5:1. */
+.int-card-desc { font-size:var(--t-note); color: #908978; line-height: 1.6; }
 .int-card-tag {
   margin-top: auto; padding-top: 20px; font-size:var(--t-nano);
   letter-spacing: 0.14em; text-transform: uppercase;
@@ -1668,7 +1693,7 @@ body { overflow-x: clip; }
     padding: 10vh 8%;
   }
   html[data-theme="light"] .s-dark .s-kicker {
-    color: #8a7f6d;
+    color: #6A6256;
   }
   html[data-theme="light"] .s-dark .s-headline {
     color: #171412;
@@ -1707,7 +1732,7 @@ body { overflow-x: clip; }
     padding: 10vh 8%;
   }
   html[data-theme="light"] .s-mid .s-kicker {
-    color: #8a7f6d;
+    color: #6A6256;
   }
   html[data-theme="light"] .s-mid .s-headline {
     color: #171412;
@@ -1724,7 +1749,7 @@ body { overflow-x: clip; }
     background: #E8E1D6;
   }
   html[data-theme="light"] .s-light .s-kicker {
-    color: #8a7f6d;
+    color: #6A6256;
   }
   html[data-theme="light"] .s-light .s-headline {
     color: #171412;
@@ -1807,13 +1832,13 @@ body { overflow-x: clip; }
     background: #F7F4EE;
   }
   html[data-theme="light"] .quest-intro-wrap .s-kicker {
-    color: #8a7f6d;
+    color: #6A6256;
   }
   html[data-theme="light"] .quest-intro-wrap .s-headline {
     color: #171412;
   }
   html[data-theme="light"] .quest-hd-kicker {
-    color: #8a7f6d;
+    color: #6A6256;
   }
   html[data-theme="light"] .quest-hd-title {
     color: #171412;
@@ -1831,7 +1856,7 @@ body { overflow-x: clip; }
     border-color: rgba(43,38,35,0.1);
   }
   html[data-theme="light"] .phone-modal-close {
-    color: #8a7f6d;
+    color: #6A6256;
   }
   html[data-theme="light"] .phone-modal-close:hover {
     color: #171412;
@@ -1958,7 +1983,7 @@ input:focus-visible, select:focus-visible, textarea:focus-visible,
    for, so a new column would have meant re-laying out every page's footer. */
 .footer-social{margin-top:26px;}
 .footer-social .footer-col-label{margin-bottom:12px;}
-.footer-social-note{margin:12px 0 0;font-size:var(--t-nano,10.5px);line-height:1.6;color:#8a8377;max-width:26em;}
+.footer-social-note{margin:12px 0 0;font-size:var(--t-nano,10.5px);line-height:1.6;color:#908978;max-width:26em;}
 .footer-social-row{display:flex;align-items:center;gap:16px;}
 .fs-i{display:inline-flex;align-items:center;justify-content:center;
   width:34px;height:34px;border-radius:50%;
@@ -2143,7 +2168,7 @@ img{height:auto;}
 </style>
 </head>
 <body>
-<a class="skip-link" href="#heroOuter">Skip to content</a>
+<a class="skip-link" href="#mainContent">Skip to content</a>
 
 <!-- NAV -->
 <div class="scroll-prog" id="scrollProg"></div>
@@ -2160,7 +2185,7 @@ img{height:auto;}
 </nav>
 
 <div class="nav-drawer-backdrop" id="navDrawerBackdrop"></div>
-<div class="nav-drawer" id="navDrawer">
+<div class="nav-drawer" id="navDrawer" role="dialog" aria-label="Menu" aria-hidden="true" inert>
   <div class="nav-drawer-head">
     <img decoding="async" width="465" height="492" src="images/img-09-white.png" alt="DAOasis" />
     <button class="nav-drawer-close" id="navDrawerClose" aria-label="Close menu">&times;</button>
@@ -2179,14 +2204,15 @@ img{height:auto;}
 <!-- ══════════════════════════════
      SECTION 1 — HERO
 ══════════════════════════════ -->
-<div class="hero-outer" id="heroOuter" tabindex="-1" data-skip-target>
+<main id="mainContent" tabindex="-1">
+<div class="hero-outer" id="heroOuter" tabindex="-1" data-skip-target data-no-cue>
 
   <section class="hero" id="heroStage">
 
     <!-- "Meet the App" title card -->
     <div class="hero-title-card" id="heroTitleCard">
       <div class="hero-title-eyebrow">The Companion App</div>
-      <div class="hero-title-text" id="heroTitleText"></div>
+      <h1 class="hero-title-text" id="heroTitleText"></h1>
       <div class="hero-title-scroll-cue" id="heroTitleScrollCue" aria-hidden="true">Scroll to enter ↓</div>
     </div>
 
@@ -2633,7 +2659,7 @@ img{height:auto;}
       </div>
       <div class="learn-earn-callout">
         <div class="learn-earn-dot" style="background:#A8B7A2;"></div>
-        <div class="learn-earn-text" style="color:#8a8377;">Every lesson earns</div>
+        <div class="learn-earn-text" style="color:#908978;">Every lesson earns</div>
         <div class="learn-earn-amount">Reward Credits</div>
       </div>
     </div>
@@ -2648,7 +2674,7 @@ img{height:auto;}
       </div>
       <div class="learn-earn-callout">
         <div class="learn-earn-dot" style="background:#7F97A2;"></div>
-        <div class="learn-earn-text" style="color:#8a8377;">Every lesson earns</div>
+        <div class="learn-earn-text" style="color:#908978;">Every lesson earns</div>
         <div class="learn-earn-amount">Reward Credits</div>
       </div>
     </div>
@@ -2947,7 +2973,7 @@ img{height:auto;}
 <section class="final-cta" id="waitlist">
   <div class="s-kicker" style="color:var(--gold);">Early Access</div>
   <h2 class="s-headline" style="color:var(--warm-white);">Your journey starts<br><em>when you decide it does.</em></h2>
-  <p class="s-body" style="color:#8a8377;text-align:center;margin:0 auto 40px;">Join a community building better habits one deliberate day at a time — and being recognised for doing it.</p>
+  <p class="s-body" style="color:#908978;text-align:center;margin:0 auto 40px;">Join a community building better habits one deliberate day at a time — and being recognised for doing it.</p>
   <!-- WAS `href="#"` — a dead link, and the only conversion moment on this
        page. index.html's equivalent was pointed at the inbox in September and
        this one was missed. Same destination and same subject line, so both
@@ -2963,6 +2989,8 @@ img{height:auto;}
 
 
 <!-- FOOTER -->
+</main>
+
 <footer class="site-footer">
   <div class="footer-top">
     <div>
@@ -3092,11 +3120,24 @@ function cine(el, o){
     if(backdrop) backdrop.classList.toggle('open', open);
     burger.setAttribute('aria-expanded', open ? 'true' : 'false');
     document.body.style.overflow = open ? 'hidden' : '';
-  }
-  burger.addEventListener('click', () => setOpen(!drawer.classList.contains('open')));
-  if(closeBtn) closeBtn.addEventListener('click', () => setOpen(false));
+  /* Closed, the drawer is only translated off screen — it stays in the
+     layout, so without this its seven controls keep their place in
+     the tab order and screen readers still announce the whole menu.
+     inert removes focusability and pointer events; aria-hidden
+     removes it from the accessibility tree where inert is not yet
+     supported. */
+  if(open){ drawer.removeAttribute('inert'); drawer.removeAttribute('aria-hidden'); }
+  else    { drawer.setAttribute('inert',''); drawer.setAttribute('aria-hidden','true'); }
+}
+  burger.addEventListener('click', () => {
+    const open = !drawer.classList.contains('open');
+    setOpen(open);
+    /* focus follows the panel: in on open, back to the button on close */
+    if(open && closeBtn) closeBtn.focus(); else burger.focus();
+  });
+  if(closeBtn) closeBtn.addEventListener('click', () => { setOpen(false); burger.focus(); });
   if(backdrop) backdrop.addEventListener('click', () => setOpen(false));
-  document.addEventListener('keydown', e => { if(e.key === 'Escape' && drawer.classList.contains('open')) setOpen(false); });
+  document.addEventListener('keydown', e => { if(e.key === 'Escape' && drawer.classList.contains('open')){ setOpen(false); burger.focus(); } });
   drawer.querySelectorAll('a').forEach(a => {
     a.addEventListener('click', () => {
       setOpen(false);
@@ -3379,8 +3420,40 @@ function cine(el, o){
     get back(){ return window.innerWidth <= 900 ? 2600 : 1850; }
   });
 
+  /* ── SCROLL ALLOCATION (2 October 2026) ──────────────────────────────
+     applyFrame's ramps are untouched; this only decides how much scroll
+     each part of them gets. Each row is [track position, timeline
+     position]: the timeline is the 0..1 applyFrame was written against,
+     and the track position is where in the (taller) pin that moment now
+     falls. Boundaries sit on frames where nothing is moving, so changing
+     the rate there is invisible.
+
+       desktop, 400vh of travel (+ cine's 8% settle pad at each end)
+         title held ~40vh · title out 25 · phones arrive 130 ·
+         settled fan HELD 100 · bridge in 45 · bridge HELD ~60
+       mobile, 430vh of travel
+         title ~40 · out 25 · arrive 120 · fan HELD 110 ·
+         bridge slides in 80 · bridge HELD ~55
+
+     The bridge used to reach full strength at timeline 1.0 — the frame the
+     pin released — so "Your progress becomes a Journey" and its buttons
+     were never on screen at rest. The last row is that hold. If the pin
+     height changes, recompute this table with it. */
+  const HERO_ALLOT   = [[0,0],[0.024,0.13],[0.098,0.20],[0.485,0.62],[0.783,0.80],[0.917,1],[1,1]];
+  const HERO_ALLOT_M = [[0,0],[0.016,0.12],[0.085,0.20],[0.417,0.57],[0.721,0.74],[0.943,1],[1,1]];
+  function allot(v, pts){
+    if(v <= pts[0][0]) return pts[0][1];
+    for(let i = 1; i < pts.length; i++){
+      if(v <= pts[i][0]){
+        const a = pts[i-1], b = pts[i];
+        return a[1] + (b[1] - a[1]) * (v - a[0]) / (b[0] - a[0]);
+      }
+    }
+    return pts[pts.length-1][1];
+  }
+
   function tick(){
-    applyFrame(track.get());
+    applyFrame(allot(track.get(), window.innerWidth <= 900 ? HERO_ALLOT_M : HERO_ALLOT));
     requestAnimationFrame(tick);
   }
   requestAnimationFrame(tick);
@@ -3877,7 +3950,7 @@ function cine(el, o){
 
 </script>
 <!-- ══ PHONE FEATURE MODALS ══ -->
-<div class="phone-modal-overlay" id="phoneModalOverlay" aria-modal="true" role="dialog">
+<div class="phone-modal-overlay" id="phoneModalOverlay" aria-modal="true" role="dialog" aria-labelledby="phoneModalTitle">
   <div class="phone-modal" id="phoneModal">
     <button class="phone-modal-close" id="phoneModalClose" aria-label="Close">✕</button>
     <div class="phone-modal-icon" id="phoneModalIcon"></div>
