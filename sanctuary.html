@@ -400,6 +400,21 @@ img { max-width: 100%; }
 .ln { display: block; overflow: hidden;
   padding-top: 0.14em; margin-top: -0.14em;
   padding-bottom: 0.14em; margin-bottom: -0.14em; }
+
+/* Adjacent masks: the two -0.14em margins COLLAPSE to one, so without this
+   every authored line break carried 0.14em more leading than a natural wrap
+   inside a line (measured 63/71/63px at 1102). -0.28em restores the true
+   line-height between masks. text-wrap:balance stops a long authored line
+   wrapping to a single orphaned word ("doesn't") on narrow columns. */
+.ln + .ln { margin-top: -0.28em; }
+.ln > i { text-wrap: balance; }
+
+/* A headline built from .ln masks already has its measure: the authored
+   lines. A max-width in ch on top of that forced a SECOND set of breaks
+   ("Three connected / experiences.", "The digital layer / doesn't"), which
+   is what read as broken spacing. Authored lines win; a narrow column still
+   wraps them, balanced. (4 October 2026) */
+:is(h1,h2,h3,.display):has(> .ln) { max-width: none !important; }
 .ln > i {
   display: block; font-style: inherit; color: inherit;
   transform: translateY(108%);
@@ -1140,7 +1155,10 @@ html.bgdefer .place-map:not(.bg-on)                      { background-image: non
 .immersion .par-layer { background-image: var(--img-immersion); background-position: center 52%; }
 .immersion-veil {
   position: absolute; inset: 0; z-index: 1;
-  background: linear-gradient(180deg, rgba(10,8,6,0.6) 0%, rgba(10,8,6,0.1) 30%, rgba(10,8,6,0.28) 58%, rgba(10,8,6,0.9) 100%);
+  /* the copy band (58-100%) deepened 4 Oct 2026: the eyebrow measured 1.25:1
+     over the bright sand; the sky above it is left open */
+  background: linear-gradient(180deg, rgba(10,8,6,0.6) 0%, rgba(10,8,6,0.1) 30%, rgba(10,8,6,0.42) 56%, rgba(10,8,6,0.78) 76%, rgba(10,8,6,0.94) 100%),
+              linear-gradient(90deg, rgba(10,8,6,0.4) 0%, rgba(10,8,6,0) 55%);
 }
 .immersion-inner { position: relative; z-index: 3; padding: 0 8% 15vh; max-width: 1360px; margin: 0 auto; width: 100%; }
 .immersion .display { max-width: 12ch; }
@@ -1574,6 +1592,31 @@ img{height:auto;}
 .on-light .phil-num, .on-light .form-tag { color: #7F4F22; }
 </style>
 
+<style>
+/* ══ VISIBILITY PASS — 4 October 2026 ═══════════════════════════════════
+   Every value here came from a pixel audit: each line of text measured
+   against the REAL rendered background (photographs included) at 1440x900
+   and 390x844, worst 5% of samples, WCAG AA (4.5:1 body, 3:1 large). Kept in
+   one block, last in the cascade, so every change is in one place. Large
+   decorative numerals and deliberately dimmed "not yet reached" states in
+   scrubbed sequences were left as designed. */
+.immersion .eyebrow { color: #E8B88A; }
+.immersion-copy { color: rgba(247,244,238,0.88); }
+.immersion-triplet span { color: rgba(247,244,238,0.8); }
+@media(max-width:900px){
+  .immersion-veil { background: linear-gradient(180deg, rgba(10,8,6,0.5) 0%, rgba(10,8,6,0.18) 26%, rgba(10,8,6,0.62) 46%, rgba(10,8,6,0.86) 66%, rgba(10,8,6,0.95) 100%); }
+}
+/* the early-access ghost button sits on a photograph on a phone */
+.on-dark .btn-ghost, .par .btn-ghost { text-shadow: 0 1px 10px rgba(10,8,6,0.7); }
+@media(max-width:900px){
+  .pilot .btn-ghost { background: rgba(10,8,6,0.45); }
+  .immersion .eyebrow { color: #F7E4CC; text-shadow: 0 0 12px rgba(10,8,6,0.9), 0 1px 3px rgba(10,8,6,0.8); }
+}
+.immersion-inner { text-shadow: 0 1px 16px rgba(10,8,6,0.65); }
+.day-foot { color: #a39b8e; }
+.hero-title-eyebrow { color: rgba(247,244,238,0.64); }
+.day-clock { text-shadow: 0 2px 24px rgba(10,8,6,0.6); }
+</style>
 </head>
 <body>
 <a class="skip-link" href="#mainContent">Skip to content</a>

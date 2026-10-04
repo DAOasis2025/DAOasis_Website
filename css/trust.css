@@ -201,6 +201,9 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
    if trust.js never reports ready, so a script that loads but dies still
    ends with a legible page. */
 .ln { display: block; overflow: hidden; padding-bottom: 0.14em; margin-bottom: -0.14em; }
+.ln > i { text-wrap: balance; }
+/* authored .ln lines are the measure; a ch cap on top forced second breaks */
+:is(h1,h2,h3,.display):has(> .ln) { max-width: none !important; }
 .ln > i { display: block; font-style: inherit; color: inherit; transition:transform 1.15s var(--ease); }
 html.js .ln > i { transform: translateY(108%); }
 html.js .rv.show .ln > i { transform: translateY(0); }
@@ -338,7 +341,7 @@ html.js .rv.show .th-kick::before { width: 28px; }
   font-size: 12.5px; line-height: 1.5; color: #6b6459; text-decoration: none;
   transition:color 0.25s var(--ease);
 }
-.doc-rail a span.n { flex-shrink: 0; font-variant-numeric: tabular-nums; color: #736c60; transition:color 0.25s var(--ease); }
+.doc-rail a span.n { flex-shrink: 0; font-variant-numeric: tabular-nums; color: #615a4f; transition:color 0.25s var(--ease); }
 .doc-rail a:hover { color: var(--charcoal); }
 .doc-rail a.on { color: var(--charcoal); }
 .doc-rail a.on span.n { color: #8a5f34; }
@@ -354,8 +357,8 @@ html.js .rv.show .th-kick::before { width: 28px; }
 .doc-toc-m > summary::after { content: '+'; font-size: 15px; color: var(--gold); line-height: 1; }
 .doc-toc-m[open] > summary::after { content: '\2212'; }
 .doc-toc-m ol { list-style: none; padding: 0 2px 20px; }
-.doc-toc-m a { display: flex; gap: 11px; padding: 8px 0; font-size: 14px; color: #6b6459; text-decoration: none; }
-.doc-toc-m a span.n { color: #736c60; font-variant-numeric: tabular-nums; }
+.doc-toc-m a { display: flex; gap: 11px; padding: 8px 0; font-size: 14px; color: #4f493f; text-decoration: none; }
+.doc-toc-m a span.n { color: #4f493f; font-variant-numeric: tabular-nums; }
 
 /* ── THE READING COLUMN ── */
 .doc { max-width: var(--measure); }
@@ -364,7 +367,7 @@ html.js .rv.show .th-kick::before { width: 28px; }
   font-size: clamp(21px, 2.1vw, 27px); line-height: 1.52; color: var(--charcoal);
   padding-bottom: 7vh; border-bottom: 1px solid var(--rule-strong);
 }
-.doc-lead em { font-style: italic; color: #9a6a3c; }
+.doc-lead em { font-style: italic; color: #86582c; }
 .doc-lead p + p { margin-top: 20px; }
 
 .doc-s { padding-top: 7vh; }
@@ -379,7 +382,7 @@ html.js .rv.show .th-kick::before { width: 28px; }
   font-size: clamp(27px, 3.1vw, 40px); line-height: 1.14; letter-spacing: -0.006em;
   color: var(--charcoal);
 }
-.doc-s h2 em { font-style: italic; color: #9a6a3c; }
+.doc-s h2 em { font-style: italic; color: #86582c; }
 .doc-s h3 {
   margin-top: 42px;
   font-family: 'Cormorant Garamond', serif; font-weight: 400;
