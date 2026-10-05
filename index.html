@@ -1486,14 +1486,16 @@
   .wn-origin{fill:#E8B88A;opacity:0.75;}
   .wn-journey{fill:none;stroke:#E8B88A;stroke-width:2;stroke-linecap:butt;}
   .wn-ring{fill:rgba(16,14,12,0.85);stroke:rgba(232,184,138,0.7);stroke-width:1;}
-  .wn-mark{position:absolute;left:0;top:0;width:28px;height:auto;pointer-events:none;
-    transform:translate(-50%,-52%);opacity:1;}
+  /* 4 Oct: 28px read as lost inside the ring — the mark is the payoff of the
+     section, so it is the size of a headline, and centred exactly */
+  .wn-mark{position:absolute;left:0;top:0;width:58px;height:auto;pointer-events:none;
+    transform:translate(-50%,-50%);opacity:1;}
   .wn-journey-l{position:absolute;left:0;top:0;transform:translate(0,-170%);white-space:nowrap;
     font-size:var(--t-nano);letter-spacing:0.24em;text-transform:uppercase;color:#D49B69;}
   .wn-shifts{list-style:none;margin:0;padding:0;}
   .wn-shift{position:absolute;left:0;top:0;transform:translateY(-14px);
     display:grid;grid-template-columns:auto 1fr;column-gap:12px;align-items:baseline;}
-  .wn-n{font-size:var(--t-nano);letter-spacing:0.18em;color:#D49B69;}
+  .wn-n{font-size:13px;letter-spacing:0.16em;color:#D49B69;}
   .wn-t{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:clamp(19px,min(1.6vw,3vh),25px);
     line-height:1.1;color:var(--warm-white);}
   .wn-d{grid-column:2;margin-top:4px;font-size:var(--t-note);line-height:1.5;color:rgba(247,244,238,0.68);}
@@ -1545,7 +1547,7 @@
     .wn-t{font-size:clamp(17px,4.6vw,21px);}
     .wn-d{display:none;}
     .wn-shift{column-gap:9px;}
-    .wn-mark{width:22px;}
+    .wn-mark{width:40px;}
     .wn-journey-l{display:none;}   /* no room beside the node on a phone */
     .wn-after{display:block;background:#100E0C;padding:6vh 6% calc(14vh + 26px);}
     .wn-after .wn-evidence{margin-top:0;font-size:var(--t-meta);}
@@ -4481,13 +4483,15 @@ img{height:auto;}
     return 1;
   };
 
-  const S0 = 0.10, ST = 0.06, SD = 0.05;        /* strand i draws over [S0+i*ST, +SD] */
+  const S0 = 0.10, ST = 0.06, SD = 0.075;        /* strand i draws over [S0+i*ST, +SD] */
   const C0 = 0.64, CS = 0.012, CD = 0.11;       /* convergence */
   const WIN = {
-    desk: { p0:[0,0.085], p1:[0.12,0.50], p2:[0.54,0.66], p3:[0.80,1] },
-    mob:  { p0:[0,0.07],  p1:[0.47,0.53], p2:[0.565,0.66], p3:[0.82,1] }
+    /* windows sit F apart so each beat fully leaves before the next arrives;
+       F was 0.014 (~8vh of scroll), which read as a cut, not a fade */
+    desk: { p0:[0,0.075], p1:[0.145,0.49], p2:[0.565,0.64], p3:[0.79,1] },
+    mob:  { p0:[0,0.06],  p1:[0.49,0.53], p2:[0.60,0.65], p3:[0.82,1] }
   };
-  const F = 0.014;
+  const F = 0.035;
 
   let geo = null;              /* { strands:[{el,dot,L,Lp}], nx, ny, W, jl } */
   let mobile = mq.matches;
@@ -4543,14 +4547,15 @@ img{height:auto;}
     const jl = W + 2 - nx;
     journey.style.strokeDasharray = jl + ' ' + jl;
     ring.setAttribute('cx', nx); ring.setAttribute('cy', ny);
-    ring.setAttribute('r', mobile ? 22 : 30);
+    const RR = mobile ? 32 : 50;
+    ring.setAttribute('r', RR);
     glow.setAttribute('cx', nx); glow.setAttribute('cy', ny);
-    glow.setAttribute('r', mobile ? 70 : 110);
+    glow.setAttribute('r', mobile ? 100 : 170);
     mark.style.left = nx + 'px'; mark.style.top = ny + 'px';
     /* never past the field's right edge — on a phone the line from the
        node to the edge is short, so the label right-aligns to the edge */
     const jlw = jLabel.offsetWidth || 90;
-    jLabel.style.left = Math.min(nx + (mobile ? 30 : 44), W - jlw - 10) + 'px';
+    jLabel.style.left = Math.min(nx + RR + 16, W - jlw - 10) + 'px';
     jLabel.style.top = ny + 'px';
     geo = { strands, nx, ny, W, jl };
     lastT = -1;
@@ -4570,7 +4575,7 @@ img{height:auto;}
       const drawn = s.Lp * d1 + (s.L - s.Lp) * d2;
       s.el.style.strokeDashoffset = (s.L - drawn).toFixed(2);
       /* the strand being drawn is the live one; the rest step back */
-      const e = cl(1 - Math.abs(t - (a + SD * 0.6)) / 0.055);
+      const e = sm(1 - Math.abs(t - (a + SD * 0.55)) / 0.07);
       const before = 0.48 + 0.52 * e;
       const op = mix(before, 0.82, conv);
       s.el.style.opacity = (d1 > 0.001 ? op : 0).toFixed(3);
@@ -4598,7 +4603,7 @@ img{height:auto;}
     const setP = (el, o) => {
       if(!el) return;
       el.style.opacity = o.toFixed(3);
-      el.style.transform = 'translateY(' + ((1 - o) * 10).toFixed(1) + 'px)';
+      el.style.transform = 'translateY(' + ((1 - o) * 16).toFixed(1) + 'px)';
       el.style.visibility = o < 0.002 ? 'hidden' : 'visible';
       el.style.pointerEvents = o > 0.5 ? 'auto' : 'none';
     };
@@ -4611,8 +4616,8 @@ img{height:auto;}
         let o = 0, idx = liveIdx;
         for(let i = 0; i < N; i++){
           const a = S0 + i * ST;
-          const oi = win(t, a + 0.006, a + 0.044, 0.008);
-          if(t >= a - 0.008 && t <= a + 0.052){ o = oi; idx = i; }
+          const oi = win(t, a + 0.014, a + 0.036, 0.016);
+          if(t >= a - 0.002 && t <= a + 0.052){ o = oi; idx = i; }
         }
         /* the windows leave a clear gap between shifts, so a change of
            index lands while the line is (near) invisible */
