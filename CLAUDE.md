@@ -7059,3 +7059,148 @@ scroll-space stops (`QSTOPS`/`QHOLD`) with `ROUTE_V` = the old stop values,
 so the route still reaches every waypoint at the same point on the path.
 **Each value moves with its section's pin height.** A firm wheel crosses each
 section in the same time as before (the cap is per beat, not per pixel).
+
+---
+
+## Second refinement pass — 4 October 2026
+
+`index.html` · `app.html` · `web3.html` · `investors.html` · `about.html` ·
+`sanctuary.html` · `css/trust.css` · seven new images `images/journey-m-01..07.jpg`.
+
+### 1. The intro holds now (index.html)
+It was ~2.0s end to end and the statement left **80ms** after its last word
+landed. Now ~5.9s: mark arrives 0.15–1.65s and is held alone, the statement
+builds from 1.9s (word stagger 85ms, 0.62s per word) and is **held 1.5s at full
+strength** (`TAIL_HOLD`), flies into the hero at ~4.9s (0.95s transform) and
+hands over by ~5.9s. **The hero's kicker / sub / CTAs / scroll hint are CSS
+animation-delays from page load (6.0 / 6.0 / 6.15 / 6.3 / 6.55s)** — before
+this they arrived at 6.3–6.9s, i.e. four seconds after a 2s intro, which is
+the "reaches the hero and then settles" the brief described. **Move those
+delays with the timeline.** Nothing else on the site was slowed.
+
+### 2. Why Now — rebuilt from scratch (index.html)
+The three.js palm, the three docking stat cards, the mobile statistic beats
+and the 2D sand mark are **gone, with all their CSS and script (~1,500
+lines)**. **three.js is no longer loaded on index.html** — its only user was
+that scene (~600KB saved). `.pin`, `.stage`, `.panel*`, `.why-*`, `#canvas`,
+`initPalm`, `whyMobile` no longer exist.
+
+**The idea, drawn:** six shifts — Wellness · Behaviour · Digital life ·
+Learning · Community · Real world — run as separate gold lines, sit side by
+side WITHOUT meeting, then bend into one point (the DAOasis mark) and leave as
+one line, "One Journey". `#whyNow` (`.wn`, 760vh desktop / 720vh mobile) is the
+runway, `.wn-stage` the sticky frame; `wnRender(t)` is a pure function of one
+guided `cine` value. Left column carries four beats in ONE grid cell (claim /
+"each one is growing — separately" / "and none of them talk to each other" /
+"DAOasis is built where they meet" + evidence + CTA), each fully gone before
+the next arrives. Timeline is in the `WN_T` comment in the script.
+
+- **No new statistics.** The $6.8T / 2× / ~9 hours figures and their two
+  sources are the ones the old section carried, now set as a footnoted
+  evidence line, not cards.
+- **Desktop:** each shift's one-line description sits beside its strand and
+  STAYS — they accumulate, so six shifts can arrive ~0.4 screens apart.
+- **Mobile is its own composition:** headline top, field middle (labels
+  only), one line beneath carrying the live shift's sentence (`.wn-live`,
+  swapped by index), then the beats. The evidence moves to `.wn-after` in
+  flow after the pin — a phone frame cannot hold conclusion + evidence + CTA.
+- **Geometry is measured, never constant:** `layout()` places labels, strand
+  origins, node, mark and journey label from the field's own box on resize.
+  The strand leaves at the TITLE's centre line (`li._dy`), not the label box.
+- **Fail-visible:** CSS resting state is the finished frame (all strands
+  drawn, node lit, conclusion up); any throw restores it.
+- **Ground is a deep ink (#100E0C) with one warm bloom** — deliberately
+  distinct from the hero photograph above and warm-white Ecosystem below. So
+  the divider after it is now `dark` / white mark, and the mobile
+  `.divider-hero` band is mineral → ink (was ivory).
+
+### 3. The Bridge on phones (web3.html)
+At 360x640 the drawing had ~170px and printed over its own captions and the
+rail. Mobile only: the rail is five numbered stops on one line with the live
+step named under it (`#bridgeNow`); the paragraph and status move after the
+pin (`.bridge-after`); marks/bar scaled up in `geo()`. Desktop untouched.
+
+### 4. The mobile Journey has a photograph per stage (index.html)
+Seven plates (`.jm-plate`, `images/journey-m-01..07.jpg`, square crops of
+existing photography: app-in-hand, beach walk, fire circle, footprints,
+ownership surf, overlook at dawn, Sanctuary terrace). Plates are stacked;
+plate i fades IN across the clear frame between stage i-1 and i (sp
+i-0.62..i-0.38), so a stage's type always sits on its own picture. Push-in is
+on the plates INSIDE the clipped band (scaling the band leaked a strip below
+the veil). Plates 2–7 load via an observer at 150% rootMargin; the section is
+display:none on desktop so they are never fetched there.
+
+### 5. Headline spacing, site-wide
+Two separate faults behind "text spacing issues":
+1. **Adjacent `.ln` masks' -0.14em margins COLLAPSE to one**, so every
+   authored break carried 0.14em more leading than a natural wrap (63/71/63px
+   at 1102). `.ln + .ln{margin-top:-0.28em}` on all five pages using
+   symmetric masks. Re-measured: line gaps within 3% on every page.
+2. **Authored `.ln` lines plus a `max-width` in ch = two sets of breaks.**
+   "The digital layer doesn't / replace the real world." under a 15ch cap
+   rendered four ragged lines with "doesn't" alone. Rule on every page:
+   `:is(h1,h2,h3,.display):has(> .ln){max-width:none!important}` — the
+   authored lines are the measure — plus `text-wrap:balance` on `.ln>i`.
+   `.spread .display` steps down to `clamp(36px,4.6vw,66px)` on desktop
+   (investors/about) so its authored lines fit the ~480px head column.
+   Desktop single-word wraps: 29 → 0 (index's closing headline wraps by
+   design in its narrow column, balanced into four even lines).
+
+### 6. app.html Journey map card
+The waypoint card was absolute with a fixed `min(300px,34vh)` reserve and
+rode over Bangkok / Hua Hin / Khao Lak on laptop-height windows. It is in the
+flow under the route now; the route takes `max-height:max(200px,100vh-430px)`
+and the card compacts below 760px tall. Stat labels 9px@0.4 → 10px@0.66,
+sub-stats #6f6a62 → #a39b8e, SVG city/km labels 10/9 → 11/10 units.
+
+### App imagery
+**The G: drive mockup folder is not reachable from a cloud session.** The
+site's 16 `images/app-*.webp` ARE the 2026 blueprint export (16 Sept); every
+app screen on the site was audited: 0 distorted, all ≥2× sharp. **Open
+question:** `hero.jpg` / `hero-mobile.jpg` / `eco-app*.jpg` photographs show a
+home screen ("Walk to the hidden bay", six action tiles, vertical waypoint
+list) that differs from `app-home-morning.webp` ("A brighter tomorrow…").
+Whichever is the newer design, the other should be re-exported to match.
+
+### 7. Visibility pass — measured against the real pixels
+`scratchpad/contrast.js` (session scratchpad, not in the repo): every page at
+1440x900 and 390x844, scrolled a screen at a time; at each stop the text is
+made transparent, the frame is captured, and every text line is measured
+against the actual pixels behind it (photographs included), worst 5% of
+samples, AA (4.5 body / 3 large). **113 failing styles on the first run.**
+Fixes sit in ONE block per page — a `<style>` headed "VISIBILITY PASS — 4
+October 2026" placed last in `<head>` — plus three veils raised at source
+(index hero left scrim, app `.market-scene-veil`, web3 `.sanct-veil`,
+sanctuary `.immersion-veil`) and `css/trust.css` (`.doc-lead em`, `.doc-s h2
+em` → #86582c; rail/toc numbers → #615a4f).
+
+Worst real faults: app's "Free to join. No crypto knowledge required." was
+#4a4540 on a dark ground (1.9:1, effectively invisible); the gold eyebrows on
+photographs (web3 "The Sanctuary" 1.3:1, sanctuary "Immersion" 1.25:1, app
+"Partner Offers" 1.3:1); every #7a746a / #6f6a61 grey on the dark surfaces
+(3.0–3.5:1) → #a39b8e; every #a8a093 numeral on ivory (2.4:1) → #6f685b.
+
+**Deliberately left:** large decorative ghost numerals (sanctuary
+`.seven-numeral`, app `.learn-track-number` / `.how-step`), and "not yet
+reached" states in scrubbed sequences (index `.j-*` upcoming stages) —
+dimmed by design and documented as such above.
+
+> **Audit traps found:** a link with a gold `border-bottom` counts its own
+> border as background (trust cover links read 2.7 with a 8.3 median — false);
+> text sitting under an image in the stacking order (about's monogram under a
+> real portrait) reads ~1.0 — false. Median vs worst separates them.
+
+### Verified
+- 13 pages × 8 sizes (1920x1080 → 360x640, each loaded fresh and swept):
+  **0 horizontal overflow, 0 JS errors, viewport 1:1, no unexpected 404s.**
+- Why Now driven frame by frame at 1440 / 1347x597 / 1101 / 1920 / 768 /
+  390 / 375x667 and judged by eye; JS off shows every beat unpinned.
+- Bridge at 390x844 and 360x640: no overlap between drawing, captions, rail.
+- Mobile Journey: 7 plates, each stage on its own photograph.
+- app.html map card clears all six city labels at 1366x600.
+- Intro captured at 1.2 / 2.6 / 4.2 / 5.3 / 6.2 / 7.6s on a fresh arrival.
+
+### Upload
+`index.html` · `app.html` · `sanctuary.html` · `web3.html` · `investors.html`
+· `about.html` · **`css/trust.css`** · **`images/journey-m-01.jpg` …
+`journey-m-07.jpg` (NEW, 7 files)**. No JS file changed.

@@ -52,18 +52,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Frank+Ruhl+Libre:wght@300;400;500&display=swap" rel="stylesheet">
-<!-- DEFERRED, and that is load-bearing. This is ~600KB from a CDN and it was
-     a render-blocking script in <head>: nothing on the page — not the hero,
-     not the copy — could paint until it had downloaded and parsed. On a phone
-     that is seconds of blank screen, during which the reader keeps scrolling;
-     the pinned sections then became ready somewhere in the middle of their own
-     scroll range and snapped to that frame, which is why they appeared to
-     "rush past". Deferring it lets the whole page paint and scroll normally
-     while three.js arrives in the background.
-     Everything that uses THREE now waits for it — search initPalm / whenTHREE.
-     If this is ever changed back to a blocking tag those guards become
-     no-ops rather than breaking, but the stall returns. -->
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<!-- three.js is no longer loaded on this page: its only user was the Why Now
+     palm scene, removed in the 4 October rebuild (~600KB saved). -->
 <style>
   :root{
     --warm-white:#F7F6F2; --charcoal:#17150F; --mineral:#171412;
@@ -167,6 +157,11 @@
      could lose the top of a tall ascender — measured 6px at 1280 and 9px at 1920
      (it scales with font-size). Keep the two paddings equal. */
   .ln{display:block;overflow:hidden;padding-top:0.14em;margin-top:-0.14em;padding-bottom:0.14em;margin-bottom:-0.14em;}
+  /* collapsing -0.14em margins added 0.14em at every authored break; see web3.html */
+  .ln + .ln{margin-top:-0.28em;}
+  .ln>i{text-wrap:balance;}
+  /* authored .ln lines are the measure; a ch cap on top forced second breaks */
+  :is(h1,h2,h3,.display):has(> .ln){max-width:none !important;}
   .ln>i{display:block;font-style:inherit;color:inherit;
     transform:translateY(108%);transition:transform 1.15s var(--ease);}
   .rv.show .ln>i{transform:translateY(0);}
@@ -229,7 +224,7 @@
   .intro{position:fixed;inset:0;background:var(--mineral);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:100;
     opacity:1;transition:opacity 0.6s var(--ease);}
   .intro.fade-out{opacity:0;}
-  .logo{width:min(52vw,680px);opacity:0;transform:scale(0.4);filter:blur(10px);animation:logoIn 0.9s var(--ease-soft) forwards;animation-delay:0.1s;}
+  .logo{width:min(52vw,680px);opacity:0;transform:scale(0.4);filter:blur(10px);animation:logoIn 1.5s var(--ease-soft) forwards;animation-delay:0.15s;}
   .logo img{width:100%;height:auto;display:block;}
   @keyframes logoIn{0%{opacity:0;transform:scale(0.4);filter:blur(16px);}28%{opacity:1;transform:scale(1.02);filter:blur(0px);}40%{transform:scale(1);}100%{opacity:1;transform:scale(1);filter:blur(0px);}}
   .headline{position:relative;max-width:900px;text-align:center;padding:0 2rem;opacity:0;filter:blur(6px);
@@ -248,9 +243,9 @@
     padding:0.06em 0.04em 0.16em;margin:-0.06em -0.04em -0.16em;}
   .headline .tw-w > i{display:inline-block;font-style:inherit;
     transform:translateY(108%);opacity:0;filter:blur(8px);
-    transition:transform 0.38s var(--ease-soft),
-               filter 0.38s var(--ease-soft),
-               opacity 0.3s var(--ease);}
+    transition:transform 0.62s var(--ease-soft),
+               filter 0.62s var(--ease-soft),
+               opacity 0.5s var(--ease);}
   .headline .tw-w.in > i{transform:translateY(0);opacity:1;filter:blur(0px);}
   @media (prefers-reduced-motion: reduce){
     .headline .tw-w > i{transform:none;opacity:1;filter:none;transition:none;}
@@ -347,7 +342,7 @@
      page on this site. The plate was added on 13 September and omitting it
      made the hero photograph permanently invisible. */
   body.intro-skipped .kicker, body.intro-skipped .h1, body.intro-skipped .sub,
-  body.intro-skipped .ctas, body.intro-skipped .hero-plate,
+  body.intro-skipped .ctas, body.intro-skipped .hero-plate, body.intro-skipped .hero-social,
   body.intro-skipped .scroll-hint{animation:none !important;opacity:1 !important;transform:none !important;}
   body.intro-skipped #heroH1{opacity:1 !important;}
 
@@ -358,7 +353,7 @@
      path (and the JS handoff) relies on. */
   html.return-visit .intro{display:none !important;}
   html.return-visit .kicker, html.return-visit .h1, html.return-visit .sub,
-  html.return-visit .ctas, html.return-visit .hero-plate,
+  html.return-visit .ctas, html.return-visit .hero-plate, html.return-visit .hero-social,
   html.return-visit .scroll-hint{animation:none !important;opacity:1 !important;transform:none !important;}
   html.return-visit #heroH1{opacity:1 !important;}
 
@@ -536,11 +531,13 @@
          The old 0.90-to-64% ramp was a panel; this reaches 0.62 at the very
          edge and is gone by 48%, which still measures 6.5:1 for white type
          over the brightest part of the frame it covers. */
+      /* raised 4 October 2026: the sub-copy measured 2.97:1 and the gold
+         "together" 2.76:1 over the brightest sky behind them at 1440 */
       linear-gradient(100deg,
-        rgba(8,7,6,0.62) 0%,
-        rgba(8,7,6,0.50) 20%,
-        rgba(8,7,6,0.26) 34%,
-        rgba(8,7,6,0.07) 42%,
+        rgba(8,7,6,0.76) 0%,
+        rgba(8,7,6,0.64) 20%,
+        rgba(8,7,6,0.36) 34%,
+        rgba(8,7,6,0.10) 42%,
         rgba(8,7,6,0.00) 48%),
       /* top: lets the navigation read as its own dark band without a bar.
          bottom: the photograph melts into the NEXT section's ground rather
@@ -575,7 +572,7 @@
   .kicker{font-size:var(--t-micro);letter-spacing:0.22em;color:rgba(247,246,242,0.88);
     text-transform:uppercase;white-space:nowrap;opacity:0;
     display:flex;align-items:center;gap:13px;
-    animation:fadeUp 1.3s ease-out forwards;animation-delay:6.3s;}
+    animation:fadeUp 1.3s ease-out forwards;animation-delay:6.0s;}
   .kicker::before{content:'';display:block;width:26px;height:1px;
     background:currentColor;opacity:0.5;flex:none;}
   /* Both the type and the measure scale with vw, so each sentence holds a
@@ -596,7 +593,7 @@
   .h1{font-family:'Cormorant Garamond',serif;font-weight:300;color:var(--warm-white);
     font-size:clamp(38px,min(4.6vw,8.4vh),78px);line-height:1.0;letter-spacing:-0.022em;
     max-width:none;margin-top:clamp(14px,2vh,26px);
-    opacity:0;animation:fadeUp 1.3s ease-out forwards;animation-delay:6.3s;
+    opacity:0;animation:fadeUp 1.3s ease-out forwards;animation-delay:6.0s;
     text-shadow:0 2px 40px rgba(10,8,6,0.45);}
   .h1 .nowrap{display:block;}
   /* inline, not display:block — "together" continues the line rather than
@@ -604,7 +601,7 @@
   .h1 em{font-style:italic;color:#E8B88A;}
   .sub{color:rgba(247,244,238,0.80);font-size:var(--t-body);line-height:1.62;
     max-width:30ch;margin-top:clamp(14px,2vh,24px);
-    opacity:0;animation:fadeUp 1.3s ease-out forwards;animation-delay:6.5s;}
+    opacity:0;animation:fadeUp 1.3s ease-out forwards;animation-delay:6.15s;}
   /* ONE button and ONE text link, not two buttons. Two buttons need ~430px
      side by side and the column is 320px at 1280, so they either wrapped to
      two rows of unequal width or forced the column over the phone. A filled
@@ -616,7 +613,7 @@
      opposite of integrating them into the photograph. */
   .ctas{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-start;
     gap:12px;margin-top:clamp(20px,3vh,34px);
-    opacity:0;animation:fadeUp 1.3s ease-out forwards;animation-delay:6.65s;}
+    opacity:0;animation:fadeUp 1.3s ease-out forwards;animation-delay:6.3s;}
   .ctas .btn{padding:15px 30px;font-size:var(--t-micro);letter-spacing:0.14em;white-space:nowrap;}
   /* Desktop keeps the hero exactly as it was signed off: no icons, no
      pills. The spans exist in the markup for the mobile composition only. */
@@ -642,7 +639,7 @@
      fill-mode forwards would replace a centring translateX. */
   .scroll-hint{position:absolute;bottom:calc(3vh + 26px + 34px);left:6%;right:auto;z-index:10;
     text-align:left;color:rgba(247,244,238,0.5);font-size:var(--t-nano);letter-spacing:0.28em;text-transform:uppercase;
-    opacity:0;animation:fadeUp 1.3s ease-out forwards;animation-delay:6.9s;}
+    opacity:0;animation:fadeUp 1.3s ease-out forwards;animation-delay:6.55s;}
 
   /* The hero route map (.journey-wrap, .wp-label, .wp-sub, #routeMaskPath,
      .wp-group and its five states) was removed on 3 September along with the
@@ -1425,439 +1422,139 @@
   .divider.light .divider-line{background:rgba(43,38,35,0.2);}
   .divider.shown.light .divider-mark{opacity:0.55;}
 
-  /* WHY DAOASIS */
-  /* 516vh, for a true 30% slowdown.
+  /* ══ WHY NOW — CONVERGENCE (4 October 2026) ═════════════════════════════
+     Rebuilt from scratch. The old section (three.js palm, three stat cards
+     docking right, a 2D sand mark on mobile) is gone with all of its CSS
+     and script. See the markup comment for the idea.
 
-     What paces a scrubbed section is its SCROLLABLE distance — height minus
-     one viewport, because the first viewport-height is consumed pinning it —
-     not its raw height. 420vh gave 320vh of scroll; 30% more is 416vh, so the
-     height is 516vh. Setting 546vh (420 + 30%) instead would have slowed it
-     by 39%, since the fixed 100vh subtraction inflates the ratio. Every
-     timeline fraction below is unchanged; they all just take proportionally
-     longer to cross. */
-  /* Heights are set from SCROLLABLE TRAVEL PER TRANSITION, not from total
-     height per beat — the 100vh the sticky viewport occupies is not scroll
-     spent on the animation, so height = 100vh + (transitions * rate).
-     The rate is 55vh. Reference points from this site's own sections:
-     web3's loop runs at 36vh/transition and is the smoothest thing here
-     (41/41 distinct frames); sanctuary's loop runs at 60. The site median
-     was ~90 and the three heroes were 208-260, which is why they read as
-     empty. 6 states = 5 transitions -> 100 + 275 = 375vh. */
-  /* 560vh, not 375. See the CARD_WINS note for the arithmetic: this section
-     has more happening per beat than any other on the page — three cards
-     each with a four-phase path, the palm assembling behind them and the
-     copy receding — and at 55vh per transition those phases ran into one
-     another and the whole thing skimmed past. 92vh per transition is the
-     site median and is what this one actually needs. */
-  /* HEIGHT SET BY BEATS. 6 beats x 83.33vh + 100vh of sticky, so each
-     beat gets ~0.70 screens of scroll AFTER the 8% settle pad at each end of
-     the track takes its share. Below about 0.6 screens a beat is 3-4 wheel
-     notches and the sequence reads as flashing past. See the pacing table in
-     CLAUDE.md before changing this. */
-  .pin{position:relative;height:600vh;}
-  .pin.reduced-static{height:auto;}
-  /* SAND, NOT SPACE.
-     This was a deep-space radial with a starfield canvas over it and warm
-     gold dust resolving into the mark — which is a beautiful effect and also
-     the single most "crypto landing page" frame on the site: stars, gold,
-     glass. It is now a warm paper ground and the same mark assembles out of
-     DARK grains, so it reads as sand settling into shape rather than a
-     constellation. Same choreography, same particle system, same timing —
-     only the material changed. Sand is already one of the brand's own
-     metaphors (foundation), which the space treatment never was. */
-  .stage{position:sticky;top:0;height:100vh;overflow:hidden;
-    background:radial-gradient(ellipse at 45% 26%, #FDFCF9 0%, #F6F3EC 50%, #E9E2D6 100%);}
-  .pin.reduced-static .stage{position:relative;}
-  /* FULL BLEED. The noise field has to fill the whole frame — that is the
-     "mess" the section resolves out of. The resolved mark is kept clear of
-     the copy and the card dock by placing it in WORLD space at runtime
-     (see placeLogo() in the particle script), not by shrinking this canvas.
+     A deliberately different ground from both neighbours: the hero is a
+     photograph and the Ecosystem below is warm-white, so this is a deep ink
+     with one warm bloom where the lines meet — an editorial feature, not a
+     panel. Gold and ivory only; no new colour.
 
-     Width and height are explicit and must stay that way. <canvas> is a
-     REPLACED element: given `left:0; right:376px` with `width:auto`, CSS
-     resolves the width to the intrinsic 300x150 and silently drops the
-     `right` constraint, leaving a 300x150 canvas in the top-left corner.
-     `inset:0` fails the same way. Do not convert these to insets. */
-  #canvas{position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;}
+     HEIGHT. 10 beats (claim, six shifts, not-enough, converge, conclusion).
+     The six shifts share one left-hand beat because each shift's own line
+     sits beside its strand and STAYS — they accumulate rather than swap, so
+     they can arrive ~0.4 screens apart without anything being lost. The
+     holds that matter (the claim, the parallel-but-unmet frame, the
+     conclusion) each get a full screen or more. Timeline in WN_T below. */
+  .wn{position:relative;height:760vh;background:#100E0C;}
+  .wn-stage{position:sticky;top:0;height:100vh;overflow:hidden;
+    display:grid;grid-template-columns:minmax(0,0.92fr) minmax(0,1.58fr);
+    align-items:center;column-gap:3vw;padding-left:8%;
+    background:
+      radial-gradient(ellipse 46% 58% at 80% 50%, rgba(196,138,90,0.13) 0%, rgba(196,138,90,0.04) 48%, rgba(196,138,90,0) 72%),
+      linear-gradient(180deg,#0E0C0A 0%,#13110F 52%,#100E0C 100%);}
+  .wn-copy{position:relative;z-index:3;max-width:450px;padding:clamp(70px,11vh,120px) 0 5vh;}
+  .wn-kicker{display:flex;align-items:center;gap:12px;
+    font-size:var(--t-micro);letter-spacing:0.24em;text-transform:uppercase;color:#D49B69;}
+  .wn-kicker::before{content:'';display:block;width:28px;height:1px;background:currentColor;opacity:0.6;}
+  .wn-head{font-family:'Cormorant Garamond',serif;font-weight:300;color:var(--warm-white);
+    font-size:clamp(40px,min(4.5vw,8.6vh),76px);line-height:1.02;letter-spacing:-0.018em;
+    margin-top:clamp(14px,2.2vh,24px);}
+  .wn-head em{font-style:italic;color:#E8B88A;}
+  /* two lines, always broken in the same place: on a short laptop the
+     clamp let "now." fall to a line of its own */
+  @media (min-width:901px){ .wn-head em{display:block;} }
+  /* The phases share ONE grid cell, so the stack is exactly as tall as its
+     tallest phase and nothing reflows as they hand over. */
+  .wn-phases{display:grid;margin-top:clamp(18px,3.4vh,38px);}
+  .wn-phase{grid-area:1/1;opacity:0;}
+  .wn-phase-end{opacity:1;}            /* resting state = the finished frame */
+  .wn-live{display:none;}
+  .wn-lede{font-family:'Cormorant Garamond',serif;font-weight:300;color:rgba(247,244,238,0.95);
+    font-size:clamp(22px,min(2.05vw,3.8vh),33px);line-height:1.22;letter-spacing:-0.006em;max-width:20ch;text-wrap:balance;}
+  .wn-lede-i{font-style:italic;color:#E8B88A;}
+  .wn-body{margin-top:clamp(10px,1.6vh,16px);font-size:var(--t-body);line-height:1.68;
+    color:rgba(247,244,238,0.76);max-width:38ch;}
+  .wn-evidence{margin-top:clamp(14px,2.4vh,24px);padding-top:clamp(12px,2vh,18px);
+    border-top:1px solid rgba(232,184,138,0.22);
+    font-size:var(--t-meta);line-height:1.62;color:rgba(247,244,238,0.68);max-width:40ch;}
+  .wn-evidence strong{font-weight:400;color:#E8B88A;}
+  .wn-evidence sup,.wn-src sup{font-size:0.72em;vertical-align:0.45em;line-height:0;}
+  .wn-src{margin-top:8px;font-size:var(--t-nano);line-height:1.55;letter-spacing:0.02em;
+    color:rgba(247,244,238,0.56);max-width:46ch;}
+  .wn-cta{margin-top:clamp(16px,2.8vh,28px);}
+  .wn-cta .btn{padding:15px 32px;}
 
-  .overlay{position:relative;z-index:10;height:100%;display:flex;flex-direction:column;justify-content:center;
-    padding:0 8%;pointer-events:none;}
-  /* The copy stays visible for the whole section, so it needs a guard
-     against the grains resolving underneath it — inverted with the ground:
-     a soft paper wash lifting the type off the sand, confined to the left
-     ~55% so it never touches the mark or the dock. */
-  .overlay::before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;
-    background:linear-gradient(90deg, rgba(253,252,249,0.92) 0%, rgba(253,252,249,0.68) 26%, transparent 45%);}
+  /* THE FIELD. Every coordinate in it is written by the script from the
+     field's own measured box (wnLayout), so labels, strand origins, the node
+     and the mark cannot drift apart at any size. */
+  .wn-field{position:relative;height:100%;min-width:0;}
+  .wn-svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;}
+  .wn-strand{fill:none;stroke:#E8B88A;stroke-width:1.3;stroke-linecap:butt;opacity:0.75;}
+  .wn-origin{fill:#E8B88A;opacity:0.75;}
+  .wn-journey{fill:none;stroke:#E8B88A;stroke-width:2;stroke-linecap:butt;}
+  .wn-ring{fill:rgba(16,14,12,0.85);stroke:rgba(232,184,138,0.7);stroke-width:1;}
+  .wn-mark{position:absolute;left:0;top:0;width:28px;height:auto;pointer-events:none;
+    transform:translate(-50%,-52%);opacity:1;}
+  .wn-journey-l{position:absolute;left:0;top:0;transform:translate(0,-170%);white-space:nowrap;
+    font-size:var(--t-nano);letter-spacing:0.24em;text-transform:uppercase;color:#D49B69;}
+  .wn-shifts{list-style:none;margin:0;padding:0;}
+  .wn-shift{position:absolute;left:0;top:0;transform:translateY(-14px);
+    display:grid;grid-template-columns:auto 1fr;column-gap:12px;align-items:baseline;}
+  .wn-n{font-size:var(--t-nano);letter-spacing:0.18em;color:#D49B69;}
+  .wn-t{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:clamp(19px,min(1.6vw,3vh),25px);
+    line-height:1.1;color:var(--warm-white);}
+  .wn-d{grid-column:2;margin-top:4px;font-size:var(--t-note);line-height:1.5;color:rgba(247,244,238,0.68);}
 
-  .why-kicker{font-size:var(--t-micro);letter-spacing:0.22em;color:var(--clay-ink);text-transform:uppercase;
-    display:flex;align-items:center;gap:14px;padding-left:0.22em;
-    opacity:1;transition:opacity 0.5s var(--ease);}
-  .why-kicker::before{content:'';display:block;width:28px;height:1px;background:currentColor;opacity:0.55;}
-  .why-headline{font-family:'Cormorant Garamond',serif;font-weight:300;color:var(--charcoal);
-    font-size:clamp(36px,5.4vw,74px);line-height:1.06;letter-spacing:-0.008em;margin-top:28px;max-width:13ch;
-    opacity:1;transition:opacity 0.5s var(--ease);}
-  .why-headline em{font-style:italic;color:var(--clay-ink);}
-  .lede{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;color:#4a443c;
-    font-size:clamp(19px,2.1vw,26px);line-height:1.45;margin-top:30px;max-width:22ch;
-    opacity:1;transition:opacity 0.5s var(--ease);}
-  .body-copy{margin-top:22px;max-width:460px;opacity:1;}
-  .body-copy p{font-size:var(--t-body);color:#5c554c;line-height:1.7;margin-bottom:0;}
-  .why-cta{margin-top:38px;pointer-events:auto;}
-  .why-cta .btn{padding:15px 34px;}
-
-  /* The dock. Every internal measurement is vh-relative with a clamp — the
-     binding constraint is HEIGHT, not width, at the shortest supported
-     viewport. Redesigned for more presence: a bigger stat figure carries the
-     card the way a Whoop metric does, a quiet index numeral replaces the
-     citation-heavy footer as the thing that gives each card its identity,
-     and the glass is cleaner — less blur, a crisper hairline — so it reads
-     as one confident object instead of a translucent smear. */
-  /* Wider and further in from the edge than it was (was right:6% and
-     min(31vw,400px)). The cards are the evidence in this section and they
-     were reading as a sidebar. placeLogo() derives the palm's centre from
-     these same two numbers — if they change, change them there too. */
-  .panels{position:absolute;top:7%;bottom:7%;right:10%;left:auto;width:min(34vw,470px);z-index:15;
-    pointer-events:none;display:flex;flex-direction:column;justify-content:space-between;}
-  /* Paper, not glass. Backdrop-blur over a light ground is just a grey
-     smudge, and the brief rules glassmorphism out anyway — so the cards are
-     now flat warm paper with a hairline and a soft, wide, low-opacity
-     shadow. That reads as a physical card lying on the sand rather than a
-     translucent UI panel floating over it. */
-  .panel{position:relative;width:100%;
-    background:#FDFCF9;
-    border:1px solid rgba(23,21,15,0.09);border-radius:4px;
-    padding:clamp(22px,3vh,34px) clamp(24px,2vw,34px);color:var(--charcoal);
-    box-shadow:0 18px 44px rgba(60,50,35,0.10);
-    opacity:0;pointer-events:auto;will-change:transform,opacity;
-    transition:box-shadow 0.55s var(--ease), border-color 0.55s var(--ease);}
-  .panel-num{position:absolute;top:clamp(14px,1.9vh,20px);right:clamp(18px,1.5vw,24px);
-    font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;
-    font-size:15px;color:rgba(107,90,68,0.45);letter-spacing:0.02em;}
-  .panel .bar{width:22px;height:1px;background:var(--clay-ink);opacity:0.7;
-    margin-bottom:clamp(10px,1.5vh,17px);}
-  .panel .stat{font-family:'Cormorant Garamond',serif;font-weight:300;
-    font-size:clamp(31px,3.05vw,48px);line-height:1.02;letter-spacing:-0.014em;color:var(--charcoal);}
-  .panel .desc{font-size:var(--t-meta);color:#5c554c;line-height:1.66;
-    margin-top:clamp(8px,1.2vh,13px);}
-  .panel .source{font-size:var(--t-nano);letter-spacing:0.1em;text-transform:uppercase;color:#8b8478;
-    margin-top:clamp(9px,1.4vh,15px);padding-top:clamp(7px,1vh,11px);
-    border-top:1px solid rgba(23,21,15,0.09);line-height:1.55;}
-  /* the card currently taking its turn — lifted, never a colour change big
-     enough to look like a different component */
-  .panel.panel-active{border-color:rgba(107,90,68,0.28);
-    box-shadow:0 30px 66px rgba(60,50,35,0.16);}
-  .panel.panel-active .panel-num{color:rgba(107,90,68,0.8);}
-  /* RESPONSIVE COMPOSITION, 2 October 2026 — laptops.
-     The palm mark is meant to sit in the clear space BETWEEN the copy and the
-     card dock (that is the 1920 composition). Below ~1700px wide that space
-     shrank faster than the mark did, and placeLogo() parked a 400-600px mark
-     straight over the headline and lede — visible at 1440x900 and worse on
-     every shorter laptop. Two things give the gap back without touching the
-     1920 frame: the dock's right offset eases from 10% (1920) to 6% (1440 and
-     below), and its width tracks 30vw below 1567px; the copy measure tracks
-     34vw so a 1101-1300px screen keeps a gap at all. placeLogo() and
-     measurePanelHome() now MEASURE these boxes rather than repeating the
-     numbers, so changing them here is the only edit needed. */
-  @media (min-width:901px){
-    .body-copy{max-width:min(460px,34vw);}
-    .panels{right:clamp(6%, calc(6% + (100vw - 1440px) * 0.16), 10%);width:min(30vw,470px);}
+  /* Short laptops: the conclusion phase is the tallest thing in the copy
+     column. Measured to fit at 1347x597 with these. */
+  @media (min-width:901px) and (max-height:760px){
+    .wn-copy{padding-top:clamp(64px,10vh,90px);padding-bottom:3vh;}
+    .wn-body{font-size:15.5px;line-height:1.6;}
+    .wn-evidence{font-size:13.5px;line-height:1.55;}
+    .wn-d{font-size:12.5px;line-height:1.42;}
   }
-  /* 901-1100: the dock would be under 330px and every card wraps a line
-     more than it has height for — give it back a little width instead */
-  @media (min-width:901px) and (max-width:1100px){ .panels{right:5%;width:34vw;} }
-  /* SHORT LAPTOP SCREENS. Three cards stacked in the dock need ~680px at the
-     full vertical rhythm; a 1366x768 laptop gives a browser viewport of
-     ~600-660px, and the third card ran off the bottom of the stage (and the
-     stage clips). Below 820px tall the dock spends less on margins and the
-     stat figure tracks viewport height as well as width — the copy inside the
-     cards is unchanged. */
-  @media (min-width:901px) and (max-height:820px){
-    .panels{top:4.5%;bottom:4.5%;}
-    .panel{padding:clamp(14px,2.4vh,30px) clamp(22px,1.9vw,32px);}
-    .panel .bar{margin-bottom:clamp(7px,1.1vh,14px);}
-    .panel .stat{font-size:clamp(26px,min(3.05vw,5.8vh),48px);}
-    .panel .desc{line-height:1.52;margin-top:clamp(5px,0.9vh,10px);}
-    .panel .source{margin-top:clamp(6px,1vh,12px);padding-top:clamp(5px,0.8vh,9px);line-height:1.4;}
-    .panel-num{top:clamp(10px,1.6vh,18px);}
-    /* the copy column is the other thing that can run out of height */
-    .why-headline{font-size:clamp(36px,min(5.4vw,10.5vh),74px);margin-top:clamp(14px,2.6vh,28px);}
-    .lede{font-size:clamp(18px,min(2.1vw,3.9vh),26px);margin-top:clamp(14px,2.8vh,30px);}
-    .why-cta{margin-top:clamp(18px,3.6vh,38px);}
+  @media (min-width:901px) and (max-height:640px){
+    .wn-src{display:none;}
+    .wn-head{font-size:clamp(36px,min(4.2vw,8vh),60px);}
   }
-  /* A 1366x768 laptop with a bookmarks bar is ~600px of viewport: one more
-     notch of rhythm, still no copy and no type size touched in the cards. */
-  @media (min-width:901px) and (max-height:680px){
-    .panels{top:3.5%;bottom:3.5%;}
-    .panel{padding:12px clamp(18px,1.7vw,28px);}
-    .panel .stat{font-size:clamp(24px,min(3.05vw,5.4vh),48px);}
-    .panel .desc{line-height:1.45;margin-top:4px;}
-    .panel .source{margin-top:6px;padding-top:5px;line-height:1.35;}
-    .panel-num{top:9px;}
-  }
-  @media (min-width:901px) and (max-height:620px){
-    .panels{top:2.6%;bottom:2.6%;}
-    .panel{padding-top:10px;padding-bottom:10px;}
-    .panel .bar{margin-bottom:6px;}
-  }
-  /* The closing mark band is a MOBILE-ONLY beat. On desktop the mark lives
-     in the sticky stage's own canvas, behind the cards, where it belongs. */
-  .why-mark{display:none;}
-  /* ══ MOBILE: A DIFFERENT SECTION, NOT THE DESKTOP ONE STACKED ══════════
-     Rewritten from scratch, 13 September.
 
-     Desktop is three paper cards flying to the centre of a sticky stage and
-     docking to the right of a mark assembling out of sand. That composition
-     needs two columns and a 100vh frame and has neither on a handset. Every
-     previous attempt kept it and shrank it, which is why this section has
-     read as broken on a phone for as long as it has existed:
-
-       1. the mark rendered into a 172px band — a ~120px smudge of dust, so
-          the one piece of motion in the whole section was too small to
-          register as motion at all;
-       2. the three statistics were 24px figures inside bordered plates, so
-          the evidence arrived looking like UI rather than like the argument
-          it actually is;
-       3. all of it depended on a WebGL scene compiling on a phone, and a
-          section that can render as NOTHING when that fails is not an
-          acceptable shape for the page's central claim.
-
-     It is now four beats in ordinary flow: the statement, then one statistic
-     per screen at display size, then the mark resolving on its own as the
-     close. A spine down the left fills as the reader descends, so three
-     separate screens read as one argument with three parts. Nothing is
-     pinned, nothing overlaps anything, and no part of it needs WebGL. */
+  /* ══ MOBILE: the same idea, composed for a portrait frame ════════════════
+     Not the desktop layout stacked. The headline sits at the top, the field
+     takes the middle of the frame with the labels down its left edge, and
+     ONE line of text below it carries whichever beat is live — the live
+     shift's own sentence during the shifts (.wn-live, mobile only), then
+     the claim, the not-enough and the conclusion. The two footnoted
+     figures move to a short block in ordinary flow after the pin
+     (.wn-after), because a phone frame cannot hold the conclusion, the
+     evidence and a button at a readable size. */
+  .wn-after{display:none;}
   @media (max-width:900px){
-    .pin{height:auto;}
-    /* A vertical wash, not the desktop radial. The stage is ~3.5 screens
-       tall here; an ellipse centred at 45%/26% stretched over that distance
-       reads as a blotch. Descending warmth also gives the scroll somewhere
-       to be going. It opens on #FDFCF9 — the exact colour pin3 above closes
-       on — so the join stays invisible. */
-    /* The last stop returns to --warm-white (#F7F6F2), which is the
-       Ecosystem section's own ground, so the join below is invisible. An
-       earlier version ended on #EAE3D7 and drew a hard horizontal band edge
-       straight across the frame the divider sits in. */
-    /* The tail is load-bearing, not spacing. The divider below overlays the
-       section by its own full height (margin-top: calc(-1 * --divider-h)),
-       so with a 6vh tail the divider's palm mark landed 0 to 7px INSIDE the
-       assembled mark — one palm printed on another. The fixed 34px is what
-       carries the short viewports: 6vh alone is 38px at 640 tall and 56px
-       at 932, and the divider's own geometry does not scale with vh. */
-    /* 0, not calc(6vh + 34px). That tail existed to clear the palm mark of
-       the divider below, and that divider is display:none on mobile now (see
-       "two palm marks in a row"). The section closes on the mark filling the
-       screen and hands straight to the Ecosystem section, which is the same
-       ground — so any tail here is a gap in the middle of the hand-over. */
-    .stage{position:static;height:auto;display:flex;flex-direction:column;
-      overflow:visible;padding-bottom:0;
-      background:linear-gradient(180deg,#FDFCF9 0%,#F6F2EA 34%,#EFE9DD 72%,#F1ECE1 88%,#F7F6F2 100%);}
-    .overlay{position:static;order:1;}
-    /* The WebGL scene does not run below 900px AT ALL — initPalm returns
-       before it builds a renderer (see the note there). It was the most
-       expensive thing on the site running on the least capable device, to
-       produce a mark too small to read. */
-    #canvas{display:none;}
-
-    /* ── THE ARGUMENT: one statistic per screen ────────────────────────
-       Not cards. A bordered plate with a 24px figure inside it is a piece
-       of interface; these three numbers ARE the section's argument, so they
-       are set at display size, full column, with nothing around them. */
-    .panels{position:relative;order:2;width:auto;left:auto;right:auto;top:auto;bottom:auto;
-      transform:none;margin:0;padding:0 8% 0 calc(8% + 26px);display:block;gap:0;}
-    /* THE SPINE. Three statistics on three separate screens otherwise read
-       as three unrelated slides; the line is what makes them one argument,
-       and it is how the reader knows how much is left. One pseudo-element,
-       two stacked gradients — the track, and a fill whose height is the
-       scrubbed value. The fill head tracks the middle of the screen, so it
-       sits level with whatever is being read. */
-    .panels::before{content:'';position:absolute;left:8%;top:8vh;bottom:8vh;width:1px;
+    .wn{height:720vh;}
+    .wn-stage{display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;
+      padding:clamp(68px,10vh,96px) 6% clamp(18px,3vh,30px);
       background:
-        linear-gradient(180deg,var(--clay-ink),var(--clay-ink)) top left / 1px calc(var(--fill,1) * 100%) no-repeat,
-        linear-gradient(180deg,rgba(23,21,15,0.16),rgba(23,21,15,0.16));}
-
-    /* 68vh, not 100, and NOT the 106vh this carried until 19 September.
-       A statistic is ~230-290px of content; giving it a whole viewport puts
-       ~270px of empty column between one statement and the next, which
-       reads as the section having ended.
-
-       THE COMMENT ABOVE WAS RIGHT AND THE VALUE WAS WRONG. The 15 September
-       "everything x1.6" pass took this 66 -> 106 and left the reasoning
-       stranded underneath it, so each beat became an 895px box around 230px
-       of type — about 640px of nothing, three times over. Reported as
-       "huge blank space", and it was. 68vh keeps a little of that pass's
-       intent over the original 66 and returns the gap to a breath.
-
-       If the section is ever slowed again, slow the SCRUB, not the box. */
-    .panel{position:relative;width:auto;min-height:68vh;
-      display:flex;flex-direction:column;justify-content:center;
-      background:none;border:0;border-radius:0;box-shadow:none;
-      padding:3.5vh 0;margin:0;opacity:1;transform:none;transition:none;will-change:auto;}
-
-    /* Every part is a pure function of --b, the beat's own 0-1 scrub value,
-       read through its own window. Two properties of this are deliberate
-       and load-bearing:
-
-       · There is NO CSS transition on any of it. A transition on a scrubbed
-         property is a second clock running against the reader's scroll —
-         the same fault the 1 September pass removed site-wide.
-       · Every window falls back to --b:1. If the script never runs, throws,
-         is blocked, or the browser does something unexpected, all of these
-         resolve to 1 and the section is simply fully visible. The animation
-         is an enhancement; it is never a precondition for the content
-         existing. That is the one property this section has to have,
-         because it has rendered as a blank screen on a phone before. */
-    .panel .bar   { --a:clamp(0, calc( var(--b,1)         / 0.22), 1); }
-    /* The node belongs on the RULE, not at the beat's own mid-height. The
-       beat is a 70vh box with its content optically centred inside it, so
-       `top:50%` put the node level with the description — which reads as an
-       arbitrary dot rather than as the mark of where this statistic starts
-       and the rule runs out from. */
-    .panel .bar::before{content:'';position:absolute;left:-29.5px;top:-3px;
-      width:7px;height:7px;border-radius:50%;background:var(--clay-ink);
-      opacity:var(--a,1);transform:scale(calc(0.34 + 0.66 * var(--a,1)));}
-    .panel-num    { --a:clamp(0, calc((var(--b,1) - 0.04) / 0.22), 1); }
-    .panel .stat  { --a:clamp(0, calc((var(--b,1) - 0.10) / 0.34), 1); }
-    .panel .desc  { --a:clamp(0, calc((var(--b,1) - 0.30) / 0.34), 1); }
-    .panel .source{ --a:clamp(0, calc((var(--b,1) - 0.50) / 0.30), 1); }
-
-    .panel-num{position:static;display:block;font-size:var(--t-body);
-      color:var(--clay-ink);letter-spacing:0.04em;margin:0 0 clamp(9px,1.3vh,13px);
-      opacity:calc(var(--a,1) * 0.8);transform:translateY(calc((1 - var(--a,1)) * 8px));}
-    /* The rule draws across the column and the figure then writes itself
-       along the same axis — one movement, left to right, rather than two
-       unrelated ones. A left-to-right wipe is also the only true mask this
-       can have without a wrapper element around the type. */
-    /* The rule draws by BACKGROUND SIZE, not by scaleX. A transform on the
-       bar would also scale the node hanging off its left end — at --a 0.1
-       the dot would be a tenth of a pixel wide. Sizing the gradient instead
-       leaves the pseudo untouched, and avoids putting a transform on a 1px
-       line, which shimmers under sub-pixel AA anyway. */
-    .panel .bar{position:relative;width:100%;height:1px;transform:none;opacity:1;
-      margin:0 0 clamp(16px,2.4vh,24px);background:
-        linear-gradient(90deg,rgba(107,90,68,0.42),rgba(107,90,68,0.42))
-        no-repeat left center / calc(var(--a,1) * 100%) 1px;}
-    .panel .stat{font-size:clamp(37px,11.2vw,54px);line-height:1.04;letter-spacing:-0.018em;
-      clip-path:inset(-0.18em calc((1 - var(--a,1)) * 100%) -0.22em -0.04em);
-      transform:translateY(calc((1 - var(--a,1)) * 9px));}
-    .panel .desc{font-size:var(--t-body);line-height:1.66;color:#5c554c;
-      margin-top:clamp(14px,2vh,20px);max-width:33ch;
-      opacity:var(--a,1);transform:translateY(calc((1 - var(--a,1)) * 14px));}
-    /* opacity on the element carries its own border-top with it, so the
-       rule above the citation arrives WITH the citation rather than sitting
-       there on its own beforehand */
-    .panel .source{font-size:var(--t-nano);letter-spacing:0.1em;
-      margin-top:clamp(17px,2.4vh,24px);padding-top:clamp(10px,1.4vh,14px);
-      border-top:1px solid rgba(23,21,15,0.11);line-height:1.55;max-width:38ch;
-      opacity:calc(var(--a,1) * 0.95);}
-    /* .compact-hidden is the desktop dock's overflow mechanism; there is no
-       dock here and every statistic carries its evidence */
-    .panel .desc.compact-hidden,.panel .source.compact-hidden{display:block;}
-    .panel.panel-active{border-color:transparent;box-shadow:none;}
-
-    /* ── THE CLOSE ─────────────────────────────────────────────────────
-       The section used to end on the third card, with the mark stranded in
-       a band between the statement and the evidence. It ends on the mark
-       now: the argument is made, and then the thing being argued for
-       assembles out of the sand, alone and wordless, before the divider.
-
-       The PNG is the RESTING state and the canvas is the enhancement, so
-       the band can never be empty paper. The script adds .live only once it
-       has actually drawn a frame, and that is what swaps the two over. */
-    /* THE MARK IS A PINNED STAGE, NOT A BAND (15 September). It used to be
-       a 330px band in the flow: the assembly therefore started the moment
-       the band's top edge crossed the fold — while it was still 330px of
-       dust at the very bottom of the screen — and it was over before the
-       band reached the middle. Reported as starting too early and finishing
-       too fast, and both were the same cause: the animation was keyed to a
-       small element travelling past, not to a frame the reader is held in.
-       .why-mark is now the RUNWAY (300vh) and the canvas is the STAGE: it
-       sticks to the top at a full 100vh, so nothing moves until the mark is
-       the whole screen, and then it has two viewport-heights of scroll to
-       spend. See drawMark for how that runway is divided.
-       The resting PNG moves onto the CANVAS's own background rather than
-       the wrapper's — on a 300vh wrapper a centred background would sit a
-       viewport and a half down the page. A canvas paints its background
-       behind its drawn content, so this keeps the fail-visible guarantee
-       exactly as it was: no script, no frame drawn, the mark still shows. */
-    /* 200vh, down from 300 on 19 September. The canvas sticks at 100vh, so
-       the runway minus that viewport IS the scrub: 300 gave two full screens
-       of scrolling for one mark to assemble, and with the three statistic
-       beats above it the section ran to 6.6 screens. 200vh leaves a whole
-       screen of scroll across assemble / hold / pop, which is still a real
-       sequence with a real pause in it — see drawMark for the division. */
-    .why-mark{order:3;position:relative;display:block;width:100%;
-      height:200vh;margin:2.4vh 0 0;background:none;}
-    .why-mark canvas{position:sticky;top:0;display:block;width:100%;height:100vh;
-      background:url('images/img-09.png') center center / auto 30% no-repeat;}
-    .why-mark.live canvas{background-image:none;}
+        radial-gradient(ellipse 80% 34% at 72% 46%, rgba(196,138,90,0.14) 0%, rgba(196,138,90,0) 70%),
+        linear-gradient(180deg,#0E0C0A 0%,#13110F 52%,#100E0C 100%);}
+    .wn-copy{display:contents;}
+    .wn-kicker{order:1;font-size:10.5px;}
+    .wn-kicker::before{width:20px;}
+    .wn-head{order:2;font-size:clamp(28px,min(8.2vw,4.6vh),40px);margin-top:12px;}
+    .wn-field{order:3;flex:1 1 auto;height:auto;min-height:0;margin:clamp(10px,2vh,22px) -6% 0 0;}
+    .wn-phases{order:4;flex:none;margin-top:clamp(8px,1.6vh,16px);min-height:clamp(150px,27vh,240px);}
+    .wn-lede{font-size:clamp(20px,5.6vw,25px);max-width:none;}
+    .wn-body{font-size:15.5px;line-height:1.6;max-width:none;}
+    .wn-phase-end .wn-evidence,.wn-phase-end .wn-src{display:none;}
+    .wn-cta{margin-top:16px;}
+    .wn-cta .btn{display:block;text-align:center;padding:15px 20px;}
+    .wn-live{display:block;}
+    .wn-live .wn-n{display:block;margin-bottom:8px;}
+    .wn-live .wn-lede{font-size:clamp(20px,5.6vw,25px);}
+    .wn-t{font-size:clamp(17px,4.6vw,21px);}
+    .wn-d{display:none;}
+    .wn-shift{column-gap:9px;}
+    .wn-mark{width:22px;}
+    .wn-journey-l{display:none;}   /* no room beside the node on a phone */
+    .wn-after{display:block;background:#100E0C;padding:6vh 6% calc(14vh + 26px);}
+    .wn-after .wn-evidence{margin-top:0;font-size:var(--t-meta);}
   }
-  /* SHORT HANDSETS (iPhone SE, and any window under 740px tall). A beat is
-     sized as a fraction of the viewport, so it scales on its own — what has
-     to change here is the figure, which at 11.2vw takes three lines of a
-     375px column, and the statement above it. */
-  @media (max-width:900px) and (max-height:740px){
-    .lede{font-size:15px;line-height:1.34;margin-top:14px;}
-    .body-copy{margin-top:12px;}
-    .body-copy p{font-size:var(--t-body);line-height:1.6;}
-    .why-cta{margin-top:16px;}
-    /* A short viewport makes the band height-constrained, so the mark very
-       nearly fills it and the empty margin inside the band that carries the
-       clearance to the divider below all but disappears. Measured, ink to
-       divider mark was 35px at 390x659 against the site's 49px floor; the
-       extra tail here takes it to 53. */
-    .stage{padding-bottom:0;}
-    .panel{min-height:76vh;padding:3vh 0;}
-    .panel .stat{font-size:clamp(32px,9.4vw,42px);}
-    .panel .desc{line-height:1.56;margin-top:13px;}
-    .panel .source{margin-top:15px;padding-top:10px;}
-    /* the runway is already in vh, so it scales on its own — only the
-       resting PNG needs to come down on a short screen */
-    .why-mark{height:180vh;}
-    .why-mark canvas{background-size:auto 26%;}
-  }
-  /* Short handsets (iPhone SE and similar, 667px tall). The clear band above
-     the product is only 142px there rather than 198px, and measured the
-     stack finished flush against the phone at both ends — 2px at the top and
-     2px at the foot. Everything tightens rather than anything being dropped;
-     both calls to action survive. */
-  @media (min-width:481px) and (max-width:900px) and (max-height:700px){
-    .kicker{font-size:var(--t-micro);letter-spacing:0.16em;gap:9px;}
-    .kicker::before{width:16px;}
-    /* 30px, not 26. Pushing the plate down 6.5vh handed this band 38-48px
-       it did not have before; the headline gets ~4 of them and still holds
-       one line at 320 (measured: 30 characters at ~0.365em is 274px inside a
-       275px column), which is the point of keeping it here — two lines and
-       an orphan on a 640px screen is worse than one clean line. */
-    .h1{font-size:clamp(27px,7.8vw,31px);margin-top:0.8vh;}
-    /* the sentence is what the 161px budget cannot carry on a 667px screen —
-       the headline says the same thing and is the one that has to survive */
-    .sub{display:none;}
-    .ctas{margin-top:1.4vh;gap:8px;width:min(80%,282px);}
-    .ctas .btn{padding:12px 18px;font-size:var(--t-micro);letter-spacing:0.09em;}
-    .ctas .btn-i{width:19px;height:19px;font-size:11px;}
-  }
-
-  @media (max-width:900px){
-    /* NOT calc(var(--nav-h) + 3.5vh) any more. That was written when this
-       stage was a sticky 100vh frame whose top edge really did sit under the
-       fixed bar; here .stage is position:static and the section opens
-       several hundred pixels down the page, so the nav's height was buying
-       dead space at the top of a section that is nowhere near the nav. It
-       was also live: the 15 September header rebuild took --nav-h from 61px
-       to 90px, and this gap silently grew by 29px with it. 8vh is the
-       section's own opening, and the hero divider above now carries the
-       breath between the two. */
-    .overlay{padding:8vh 8% 0;align-items:flex-start;justify-content:flex-start;text-align:left;}
-    .why-kicker::before{width:18px;}
-    .why-headline{font-size:clamp(28px,7.4vw,38px);margin-top:18px;max-width:11ch;}
-    .lede{font-size:16px;line-height:1.4;margin-top:18px;max-width:100%;}
-    .body-copy{margin-top:16px;max-width:100%;}
-    .body-copy p{font-size:var(--t-body);line-height:1.7;}
-    /* The cards own the lower half of the stage here (see .panels), so the
-       CTA — which has no fixed spot to reserve on a stacked mobile layout —
-       stays desktop-only. The waitlist is one scroll away either way: the
-       Ecosystem section right below carries its own entry points. */
-    .why-cta{display:none;}
+  @media (max-width:900px) and (max-height:700px){
+    .wn-stage{padding-top:clamp(60px,9vh,80px);}
+    .wn-head{font-size:clamp(26px,7.4vw,32px);}
+    .wn-lede,.wn-live .wn-lede{font-size:20px;}
+    .wn-body{font-size:14.5px;line-height:1.55;}
   }
 
   /* TRACK WHAT MATTERS */
@@ -2216,21 +1913,27 @@
        the top of the stage with the type below it on clean ground.
        --p is the section's own 0-1 progress, so the push-in runs once
        across all seven stages rather than resetting at each. */
+    /* the veil only, since the stage photographs became seven plates; it
+       sits above them so every plate melts into the ground the same way */
     .jm-list::before{content:'';position:absolute;left:0;right:0;top:0;
-      height:var(--jm-band);z-index:0;pointer-events:none;
-      background-image:
-        linear-gradient(180deg,
-          rgba(23,20,18,0.42) 0%,
-          rgba(23,20,18,0.30) 26%,
-          rgba(23,20,18,0.52) 62%,
-          rgba(23,20,18,0.92) 86%,
-          var(--mineral) 100%),
-        url('images/journey-image-mobile.jpg');
-      background-size:100% 100%, 100% auto;
-      background-position:center top, center top;
-      background-repeat:no-repeat;
-      transform:scale(calc(1 + 0.085 * var(--p,0)));
-      transform-origin:52% 22%;}
+      height:var(--jm-band);z-index:1;pointer-events:none;
+      background:linear-gradient(180deg,
+          rgba(23,20,18,0.34) 0%,
+          rgba(23,20,18,0.10) 26%,
+          rgba(23,20,18,0.40) 62%,
+          rgba(23,20,18,0.92) 88%,
+          var(--mineral) 100%);}
+    /* --p is the section's own 0-1 progress, so the slow push-in runs once
+       across all seven plates rather than resetting at each */
+    .jm-plates{position:absolute;left:0;right:0;top:0;height:var(--jm-band);z-index:0;
+      overflow:hidden;pointer-events:none;}
+    /* the push-in is on the PLATES, inside the clipped band — scaled on the
+       band itself, overflow:hidden scaled with it and a strip of photograph
+       showed below the veil */
+    .jm-plate{position:absolute;inset:0;background-size:cover;background-position:center;
+      background-repeat:no-repeat;opacity:0;
+      transform:scale(calc(1 + 0.06 * var(--p,0)));transform-origin:50% 30%;}
+    .jm-plate:first-child{opacity:1;}   /* fail-visible: stage one's picture */
 
     /* every stage occupies the same box, below the photograph */
     /* THE STAGE ITSELF IS NEVER FADED — its three pieces of type are.
@@ -3117,7 +2820,9 @@
     .ctas{margin-bottom:calc(var(--hero-melt) + 14px);}
     .divider-hero{display:block;
       margin-top:0;padding:7.5vh 8%;
-      background:linear-gradient(180deg,var(--warm-white) 0%,#FDFCF9 100%);}
+      /* dark since the 4 October Why Now rebuild: the band now folds the
+         hero's mineral plinth into Why Now's ink, dark to dark */
+      background:linear-gradient(180deg,var(--mineral) 0%,#0E0C0A 100%);}
   }
 
   /* ── 2. THE ECOSYSTEM PLATE SEAMS ──────────────────────────────────────
@@ -3208,21 +2913,6 @@
     .divider.shown.light .divider-mark{opacity:0.72;}
   }
 
-  /* ── 4. TWO PALM MARKS IN A ROW ───────────────────────────────────────
-     Below 900px the 'Why now' section closes on the palm mark assembling
-     out of sand at ~250px — and the very next thing on the page was the
-     divider that follows .pin, whose own 26px mark is the same palm. Two
-     of the same mark inside ~100px, the second a twentieth the size of the
-     first, which reads as a mistake rather than as punctuation.
-     The divider goes, not the mark: the assembled mark IS the punctuation
-     at that join, and it is the better one. Nothing else changes — that
-     divider is transparent and takes no flow height, so removing it moves
-     no geometry, and the grounds either side of it are both #F7F6F2 in any
-     case, so it was never marking a change of ground. Desktop keeps it;
-     .why-mark is display:none there and the doubling does not exist. */
-  @media (max-width:900px){
-    .pin + .divider{display:none;}
-  }
 
   /* ── 5. ONE DIVIDER IS CLASSED FOR A SECTION THAT IS NOT THERE ─────────
      A DEFECT, NOT A TASTE CALL, AND IT IS NOT MOBILE-SPECIFIC.
@@ -3261,10 +2951,13 @@
   .cm-header, .cm-who-item, .cm-body-image, .cm-body-text, .cm-pillars,
   .eco-kicker, .eco-headline, .eco-sub, .eco-for, .click-cue, .card,
   .closing-eyebrow, .closing-headline, .closing-body, .closing-tagline,
-  .tm-dash, .tm-item, .pr-para,
-  /* the mobile statistic cards start hidden and are revealed by an observer */
-  .panel { opacity: 1 !important; transform: none !important; }
-  .panel .desc, .panel .source { display: block !important; }
+  .tm-dash, .tm-item, .pr-para { opacity: 1 !important; transform: none !important; }
+  /* Why now: unpin and show every beat in order rather than only the
+     finished frame */
+  .wn { height: auto !important; }
+  .wn-stage { position: relative !important; height: auto !important; min-height: 100vh; }
+  .wn-phases { display: block !important; }
+  .wn-phase:not(.wn-live) { opacity: 1 !important; margin-bottom: 26px; }
   /* the Journey header is scrubbed by pin4's paced value via --jh; without
      script it would render at opacity 0 and the section would lose its
      headline entirely */
@@ -3278,7 +2971,7 @@
   .pr-spine { transform: scaleY(1) !important; }
   .intro { display: none !important; }
   .hero { opacity: 1 !important; }
-  #heroH1, .kicker, .h1, .sub, .ctas, .scroll-hint { opacity: 1 !important; animation: none !important; }
+  #heroH1, .kicker, .h1, .sub, .ctas, .hero-social, .scroll-hint { opacity: 1 !important; animation: none !important; }
   .nav.nav-waiting { opacity: 1 !important; pointer-events: auto !important; }
 </style></noscript>
 
@@ -3330,7 +3023,7 @@ input:focus-visible, select:focus-visible, textarea:focus-visible,
    directly above it. LinkedIn is an investor/partner channel and lives in
    the footer with the other two. */
 .hero-social{display:flex;align-items:center;gap:13px;margin-top:26px;
-  position:relative;z-index:10;}
+  position:relative;z-index:10;opacity:0;animation:fadeUp 1.3s ease-out forwards;animation-delay:6.45s;}
 .hero-social-l{font-family:'Frank Ruhl Libre',Georgia,serif;
   font-size:var(--t-nano);letter-spacing:0.22em;text-transform:uppercase;
   color:rgba(247,246,242,0.5);margin-right:3px;}
@@ -3411,6 +3104,25 @@ img{height:auto;}
   ]
 }
 </script>
+<style>
+/* ══ VISIBILITY PASS — 4 October 2026 ═══════════════════════════════════
+   Every value here came from a pixel audit: each line of text measured
+   against the REAL rendered background (photographs included) at 1440x900
+   and 390x844, worst 5% of samples, WCAG AA (4.5:1 body, 3:1 large). Kept in
+   one block, last in the cascade, so every change is in one place. Large
+   decorative numerals and deliberately dimmed "not yet reached" states in
+   scrubbed sequences were left as designed. */
+  .hero .sub,.hero .kicker,.hero-social-l{text-shadow:0 1px 14px rgba(8,7,6,0.55);}
+  @media (min-width:901px){ .hero .sub{color:rgba(247,244,238,0.9);} }
+  .hero-social-l{color:rgba(247,246,242,0.74);}
+  @media (min-width:901px){ .h1 em{text-shadow:0 2px 26px rgba(8,7,6,0.6);} }
+  .journey-mobile-section .eco-kicker{color:#E8B88A;text-shadow:0 1px 10px rgba(8,7,6,0.7);}
+  .on-light .wl-tagline,.wl-tagline{color:#6e4320;}
+  .journey-mobile-section .eco-kicker{color:#F0C79B;}
+  .closing-eyebrow{color:#E8B88A;}
+  .cm-open-not{color:#6f685b;}
+  .wn-journey-l{color:#E8B88A;}
+</style>
 </head>
 <body>
 <a class="skip-link" href="#mainContent">Skip to content</a>
@@ -3525,74 +3237,98 @@ img{height:auto;}
        It is also the one divider on the page that does NOT overlay the
        section above it — see .divider-hero in the stylesheet for why the
        overlay geometry cannot be used here. -->
-  <div class="divider light divider-hero" aria-hidden="true">
+  <div class="divider dark divider-hero" aria-hidden="true">
     <div class="divider-inner">
       <div class="divider-line"></div>
-      <img loading="lazy" decoding="async" width="465" height="492" src="images/img-09.png" alt="" class="divider-mark" />
+      <img loading="lazy" decoding="async" width="465" height="492" src="images/img-09-white.png" alt="" class="divider-mark" />
       <div class="divider-line"></div>
     </div>
   </div>
 
-  <div class="pin">
-  <div class="stage grain" id="stage">
-    <!-- The starfield canvas was removed with the move from a night sky to a
-         paper ground. Its script self-disables on the missing element. -->
-    <canvas id="canvas"></canvas>
+  <!-- ══ WHY NOW — CONVERGENCE (rebuilt 4 October 2026) ══════════════════
+       Replaces the three.js palm assembly and the three docking stat cards.
+       One idea, drawn: six shifts that grew up as separate markets run as
+       separate lines, sit side by side without meeting, then bend into one
+       point — the DAOasis mark — and leave as a single line, the Journey.
 
-    <div class="overlay">
-      <div class="why-kicker" id="oKicker">Why now</div>
-      <div class="why-headline" id="oHeadline">Why DAOasis <em>matters now.</em></div>
-      <div class="lede" id="oLede">The average person spends nine hours a day on a screen — and almost none of it pays them back.</div>
-      <div class="body-copy" id="oBody">
-        <p>DAOasis turns the time you already spend on rest, movement and learning into a Journey that rewards you for showing up.</p>
+       .wn is the runway, .wn-stage the sticky 100vh frame. Everything moving
+       is a pure function of one paced value (wnRender in the script), so
+       scrolling back up reverses it exactly and nothing can be stranded.
+
+       FAIL-VISIBLE: with no script the CSS resting state is the FINISHED
+       frame — every strand drawn, the node lit, the conclusion up. The
+       script only ever takes things away and puts them back.
+
+       No statistic here is new. $6.8T / 2x / ~9 hours are the three figures
+       this section already carried, with the same two sources. -->
+  <section class="wn" id="whyNow" aria-labelledby="wnHead">
+    <div class="wn-stage" id="wnStage">
+      <div class="wn-copy">
+        <div class="wn-kicker">Why now</div>
+        <h2 class="wn-head" id="wnHead">Why DAOasis <em>matters now.</em></h2>
+        <div class="wn-phases">
+          <!-- MOBILE ONLY: carries the live shift's own sentence, which on a
+               phone cannot sit beside its strand. Text swapped by the script
+               only while this phase is invisible. -->
+          <div class="wn-phase wn-live" aria-hidden="true"><span class="wn-n" id="wnLiveN">01</span><p class="wn-lede" id="wnLiveD">Health is shifting from treatment to everyday prevention.</p></div>
+          <div class="wn-phase" data-p="0">
+            <p class="wn-lede">Six shifts that grew up as separate markets are now arriving at the same person, on the same day.</p>
+            <p class="wn-body">Nobody has built for the place where they meet.</p>
+          </div>
+          <div class="wn-phase" data-p="1">
+            <p class="wn-lede">Each one is growing — separately.</p>
+            <p class="wn-body">Every shift has its own apps, its own courses, its own retreats. Each asks for a little more of the same day and the same attention.</p>
+          </div>
+          <div class="wn-phase" data-p="2">
+            <p class="wn-lede wn-lede-i">And none of them talk to each other.</p>
+            <p class="wn-body">A tracker here, a course there, a retreat once a year. Nothing connects them — so nothing compounds.</p>
+          </div>
+          <div class="wn-phase wn-phase-end" data-p="3">
+            <p class="wn-lede">DAOasis is built where they meet.</p>
+            <p class="wn-body">One Journey that daily habits, learning and community all move forward — recognised through participation, with a real place to arrive.</p>
+            <p class="wn-evidence">The wellness economy reached <strong>$6.8 trillion</strong> in 2024, and mental wellness is growing at roughly <strong>twice</strong> its pace.<sup>1</sup> Gen Z averages <strong>around nine hours</strong> of screen time a day.<sup>2</sup></p>
+            <p class="wn-src"><sup>1</sup> Global Wellness Institute, Global Wellness Economy Monitor 2025 · <sup>2</sup> Cross-referenced screen-time research, 2025</p>
+            <div class="wn-cta"><a class="btn btn-light" href="#waitlistSection">Join the waitlist</a></div>
+          </div>
+        </div>
       </div>
-      <div class="why-cta" id="oCta"><a class="btn btn-dark" href="#waitlistSection">Join the waitlist</a></div>
+
+      <div class="wn-field" id="wnField">
+        <svg class="wn-svg" id="wnSvg" aria-hidden="true" focusable="false">
+          <defs>
+            <radialGradient id="wnGlow"><stop offset="0" stop-color="#E8B88A" stop-opacity="0.55"/><stop offset="1" stop-color="#E8B88A" stop-opacity="0"/></radialGradient>
+          </defs>
+          <circle class="wn-glow" id="wnGlowC" r="90" fill="url(#wnGlow)"/>
+          <g id="wnStrands"></g>
+          <path class="wn-journey" id="wnJourney"/>
+          <circle class="wn-ring" id="wnRing" r="30"/>
+        </svg>
+        <img class="wn-mark" id="wnMark" src="images/img-09-white.png" width="465" height="492" alt="" decoding="async" />
+        <div class="wn-journey-l" id="wnJourneyL">One Journey</div>
+        <ol class="wn-shifts" id="wnShifts">
+          <li class="wn-shift"><span class="wn-n">01</span><span class="wn-t">Wellness</span><span class="wn-d">Health is shifting from treatment to everyday prevention.</span></li>
+          <li class="wn-shift"><span class="wn-n">02</span><span class="wn-t">Behaviour</span><span class="wn-d">Knowing what to do was never the hard part. Doing it consistently is.</span></li>
+          <li class="wn-shift"><span class="wn-n">03</span><span class="wn-t">Digital life</span><span class="wn-d">Around nine hours a day on a screen, and almost none of it pays you back.</span></li>
+          <li class="wn-shift"><span class="wn-n">04</span><span class="wn-t">Learning</span><span class="wn-d">Knowledge that changes behaviour, in lessons short enough to finish.</span></li>
+          <li class="wn-shift"><span class="wn-n">05</span><span class="wn-t">Community</span><span class="wn-d">Accountability holds better shared than carried alone.</span></li>
+          <li class="wn-shift"><span class="wn-n">06</span><span class="wn-t">Real world</span><span class="wn-d">Real experiences are the part no screen replaces.</span></li>
+        </ol>
+      </div>
     </div>
-
-    <div class="panels">
-      <div class="panel panel1" id="p1">
-        <div class="panel-num">01</div>
-        <div class="bar"></div>
-        <div class="stat">$6.8 Trillion</div>
-        <div class="desc">Wellness is now bigger than IT, tourism, and pharma — the wellness economy hit a record $6.8T in 2024.</div>
-        <div class="source">Global Wellness Institute, Global Wellness Economy Monitor 2025</div>
-      </div>
-      <div class="panel panel2" id="p2">
-        <div class="panel-num">02</div>
-        <div class="bar"></div>
-        <div class="stat">2× Faster Growth</div>
-        <div class="desc">Mental wellness is growing at roughly 2x the pace of the wellness economy overall — the exact space our Companion App and Sanctuary experience are designed around.</div>
-        <div class="source">Global Wellness Institute, Global Wellness Economy Monitor 2025</div>
-      </div>
-      <div class="panel panel3" id="p3">
-        <div class="panel-num">03</div>
-        <div class="bar"></div>
-        <div class="stat">~9 Hours a Day</div>
-        <div class="desc">Average daily screen time for Gen Z — most of it not working for their wellbeing. DAOasis is built to turn some of that time into behaviour that actually compounds.</div>
-        <div class="source">Cross-referenced screen-time research, 2025</div>
-      </div>
-    </div>
-
-    <!-- MOBILE CLOSE. Hidden above 900px. The mark assembles out of sand in
-         a 2D canvas here rather than in the WebGL scene above, which does
-         not run on a handset at all. The PNG behind it is the resting
-         state: if the canvas cannot draw for any reason the band still
-         shows the mark, and .live (added by the script only after a frame
-         has actually been painted) is what hands over to the canvas. -->
-    <div class="why-mark" id="whyMark" aria-hidden="true"><canvas id="whyMarkCanvas"></canvas></div>
-
+  </section>
+  <!-- MOBILE ONLY (display:none above 900px, where the same two lines sit
+       inside the conclusion phase). -->
+  <div class="wn-after">
+    <p class="wn-evidence">The wellness economy reached <strong>$6.8 trillion</strong> in 2024, and mental wellness is growing at roughly <strong>twice</strong> its pace.<sup>1</sup> Gen Z averages <strong>around nine hours</strong> of screen time a day.<sup>2</sup></p>
+    <p class="wn-src"><sup>1</sup> Global Wellness Institute, Global Wellness Economy Monitor 2025 · <sup>2</sup> Cross-referenced screen-time research, 2025</p>
   </div>
-</div>
 
-<!-- Divider: Why DAOasis (now paper) → Ecosystem (warm-white).
-     Dividers are transparent and overlay the TAIL of the section above, so
-     the mark has to contrast with that section, not with the one below.
-     This one used the white mark against deep space; the section above it is
-     now ivory, so it takes the black mark. -->
-<div class="divider light bg-ivory">
+<!-- Divider: Why now (dark) → Ecosystem (warm-white). Overlays the tail of
+     Why now, which is dark since the 4 October rebuild — so the WHITE mark. -->
+<div class="divider dark bg-mineral">
   <div class="divider-inner">
     <div class="divider-line"></div>
-    <img loading="lazy" decoding="async" width="465" height="492" src="images/img-09.png" alt="" class="divider-mark" />
+    <img loading="lazy" decoding="async" width="465" height="492" src="images/img-09-white.png" alt="" class="divider-mark" />
     <div class="divider-line"></div>
   </div>
 </div>
@@ -3846,6 +3582,12 @@ img{height:auto;}
   <div class="eco-kicker">The journey</div>
   <div class="eco-headline">A path that unfolds <em>at your own pace.</em></div>
   <div class="jm-list" id="jmList">
+    <!-- One photograph per stage (4 October 2026). Mobile only — the whole
+         section is display:none above 1100px, so desktop never fetches them.
+         Each dissolves in across the clear frame BETWEEN two stages, so a
+         stage's type always sits on its own picture. Squares cropped from
+         existing project photography (journey-m-01..07.jpg). -->
+    <div class="jm-plates" id="jmPlates" aria-hidden="true"><div class="jm-plate" style="background-image:url('images/journey-m-01.jpg')"></div><div class="jm-plate" data-bg="images/journey-m-02.jpg"></div><div class="jm-plate" data-bg="images/journey-m-03.jpg"></div><div class="jm-plate" data-bg="images/journey-m-04.jpg"></div><div class="jm-plate" data-bg="images/journey-m-05.jpg"></div><div class="jm-plate" data-bg="images/journey-m-06.jpg"></div><div class="jm-plate" data-bg="images/journey-m-07.jpg"></div></div>
     <div class="jm-line-base"></div>
     <div class="jm-line-fill" id="jmLineFill"></div>
     <div class="jm-item"><div class="jm-dot"></div><div class="jm-label">Download the App</div><div class="jm-text">Your journey starts with a single tap.</div></div>
@@ -4293,9 +4035,9 @@ img{height:auto;}
 
        Timing note: the reveal is tuned to finish at roughly the same moment
        the old typewriter did (~2.9s), because the hero's own entrance is on
-       CSS animation-delays of 6.3s–6.9s from page load and the hand-off has
+       CSS animation-delays of 6.0s–6.55s from page load and the hand-off has
        to arrive inside that window. */
-    const WORD_STAGGER = 38, WORD_DUR = 380, TAIL_HOLD = 60;
+    const WORD_STAGGER = 85, WORD_DUR = 620, TAIL_HOLD = 1500;
 
     function buildWords(){
       el.innerHTML = '';
@@ -4345,7 +4087,7 @@ img{height:auto;}
       logoEl.style.width = curRect.width + 'px';
       logoEl.getBoundingClientRect();
       requestAnimationFrame(() => {
-        logoEl.style.transition = 'width 0.5s var(--ease), margin-bottom 0.5s var(--ease)';
+        logoEl.style.transition = 'width 0.9s var(--ease-soft), margin-bottom 0.9s var(--ease-soft)';
         logoEl.style.width = (curRect.width * 0.5) + 'px';
         logoEl.style.marginBottom = '22px';
       });
@@ -4360,7 +4102,7 @@ img{height:auto;}
         dockLogo();
         el.classList.add('show');
         revealWords(() => { setTimeout(flyToHero, 80); });
-      }, 430);
+      }, 1900);
     }
 
     /* The hand-off from the intro headline to the hero headline.
@@ -4414,7 +4156,7 @@ img{height:auto;}
       el.getBoundingClientRect();
 
       requestAnimationFrame(() => {
-        el.style.transition = 'transform 0.62s var(--ease), opacity 0.3s var(--ease) 0.36s';
+        el.style.transition = 'transform 0.95s var(--ease-soft), opacity 0.42s var(--ease) 0.52s';
         el.style.transform = 'translate(' + dx + 'px,' + dy + 'px) scale(' + scale + ')';
         /* set in the same frame as the transform — the opacity transition
            carries its own 0.36s delay, so the type holds at full strength
@@ -4423,20 +4165,27 @@ img{height:auto;}
       });
 
       /* The two headlines cross over rather than one leaving before the
-         other arrives — #heroH1 fades in over 0.5s, so starting it at 0.38s
-         while the clone fades from 0.36s means there is never a gap and
-         never a doubled image. The whole intro was rescaled from ~7.7s to
-         ~2.3s on 1 October 2026; every beat kept its gesture and its order,
-         only its duration changed. Scale them together or the crossover
-         above will show a gap or a doubled headline. */
-      setTimeout(() => { introEl.style.transition = 'opacity 0.6s var(--ease)'; introEl.classList.add('fade-out'); }, 60);
-      setTimeout(() => { heroH1.classList.add('settled'); }, 380);
+         other arrives — #heroH1 fades in over 0.5s from 0.56s while the
+         clone fades from 0.52s, so there is never a gap and never a doubled
+         image. Scale these together or the crossover shows a gap.
+
+         TIMELINE (4 October 2026). It was ~2.0s, cut from ~7.7s on 1
+         October, and read as a loading screen: the statement was gone 80ms
+         after its last word landed. Now: the mark arrives (0.15-1.65s) and
+         is held alone, the statement builds from 1.9s and is HELD for 1.5s
+         at full strength (TAIL_HOLD), then flies into the hero at ~4.9s and
+         hands over by ~5.9s. The hero's kicker / sub / calls to action come
+         up on CSS delays from 6.0s, so they arrive just after the headline
+         settles rather than four seconds later. If this timeline moves,
+         move those delays with it. */
+      setTimeout(() => { introEl.style.transition = 'opacity 0.95s var(--ease)'; introEl.classList.add('fade-out'); }, 60);
+      setTimeout(() => { heroH1.classList.add('settled'); }, 560);
       setTimeout(() => {
         introEl.style.visibility = 'hidden';
         introEl.style.pointerEvents = 'none';
         el.style.display = 'none';
         unlockScroll();
-      }, 680);
+      }, 1000);
     }
   })();
 </script>
@@ -4675,1443 +4424,250 @@ img{height:auto;}
 </script>
 
 <script>
-(function initPalm(){
-  /* three.js is deferred in <head>, so it has NOT executed yet when this
-     inline script runs. Deferred scripts finish before DOMContentLoaded, so
-     re-arming there is enough — and when three.js is warm in cache THREE is
-     already defined and this runs straight through, exactly as before.
-     If three.js fails outright, this returns and the section keeps its CSS
-     resting state, where all the copy is opacity:1. It degrades to readable
-     type, never to a blank 516vh pin. */
-  if(typeof THREE === 'undefined'){
-    if(document.readyState === 'loading'){
-      document.addEventListener('DOMContentLoaded', initPalm, { once: true });
+/* ══ WHY NOW — CONVERGENCE ═══════════════════════════════════════════════
+   One pure function of one paced value: wnRender(t), t 0→1 over the pin.
+   Reads nothing per frame but t (geometry is measured on resize only),
+   writes only inline styles and SVG attributes. Scrolling back up reverses
+   it exactly; whatever frame is on screen when the pin releases is the
+   frame that belongs there.
+
+   TIMELINE (t)                     desktop                 mobile
+     the claim                       0.00 – 0.085            0.00 – 0.07
+     six strands draw (parallel)     0.10 + i·0.06, 0.05 each
+     "each one is growing"           0.12 – 0.50             0.47 – 0.53 *
+     "none of them talk"             0.54 – 0.66             0.565 – 0.66
+     strands bend into the node      0.64 + i·0.012, 0.11 each
+     node + mark                     0.74 – 0.82
+     the Journey line                0.78 – 0.88
+     conclusion (held)               0.80 – 1.00             0.82 – 1.00
+   * on mobile the shifts' own sentences take the line under the field
+     (.wn-live) while they draw, so the fragmentation beat follows them.
+
+   Every text phase is fully gone before the next arrives (a short clear
+   frame between them) — stacked type must never cross-fade.
+
+   Fail-visible: the CSS resting state is the finished frame. If anything
+   here throws, the catch restores that state and stops. */
+(function wnInit(){
+  const wn = document.getElementById('whyNow');
+  const stage = document.getElementById('wnStage');
+  const field = document.getElementById('wnField');
+  const svg = document.getElementById('wnSvg');
+  if(!wn || !stage || !field || !svg) return;
+  const gStrands = document.getElementById('wnStrands');
+  const journey = document.getElementById('wnJourney');
+  const ring = document.getElementById('wnRing');
+  const glow = document.getElementById('wnGlowC');
+  const mark = document.getElementById('wnMark');
+  const jLabel = document.getElementById('wnJourneyL');
+  const shifts = Array.prototype.slice.call(document.querySelectorAll('#wnShifts .wn-shift'));
+  const phases = {};
+  wn.querySelectorAll('.wn-phase[data-p]').forEach(el => { phases[el.dataset.p] = el; });
+  const live = wn.querySelector('.wn-live');
+  const liveN = document.getElementById('wnLiveN');
+  const liveD = document.getElementById('wnLiveD');
+  const liveTexts = shifts.map(li => { const d = li.querySelector('.wn-d'); return d ? d.textContent : ''; });
+  const N = shifts.length;
+  const SVGNS = 'http://www.w3.org/2000/svg';
+  const mq = window.matchMedia('(max-width:900px)');
+
+  const cl = v => v < 0 ? 0 : v > 1 ? 1 : v;
+  const sm = v => { v = cl(v); return v * v * (3 - 2 * v); };
+  const mix = (a, b, k) => a + (b - a) * k;
+  /* full between a and b, fading over f either side */
+  const win = (t, a, b, f) => {
+    if(t < a) return a <= 0 ? 1 : sm((t - (a - f)) / f);
+    if(t > b) return b >= 1 ? 1 : 1 - sm((t - b) / f);
+    return 1;
+  };
+
+  const S0 = 0.10, ST = 0.06, SD = 0.05;        /* strand i draws over [S0+i*ST, +SD] */
+  const C0 = 0.64, CS = 0.012, CD = 0.11;       /* convergence */
+  const WIN = {
+    desk: { p0:[0,0.085], p1:[0.12,0.50], p2:[0.54,0.66], p3:[0.80,1] },
+    mob:  { p0:[0,0.07],  p1:[0.47,0.53], p2:[0.565,0.66], p3:[0.82,1] }
+  };
+  const F = 0.014;
+
+  let geo = null;              /* { strands:[{el,dot,L,Lp}], nx, ny, W, jl } */
+  let mobile = mq.matches;
+  let lastT = -1;
+  let liveIdx = 0;
+
+  function layout(){
+    mobile = mq.matches;
+    const r = field.getBoundingClientRect();
+    const W = r.width, H = r.height;
+    if(W < 10 || H < 10) return;
+    svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+    /* label column: as wide as the widest label needs, within limits */
+    let labW = 0;
+    shifts.forEach(li => { li.style.width = ''; labW = Math.max(labW, li.offsetWidth); });
+    const labMax = mobile ? Math.min(W * 0.46, 170) : Math.min(Math.max(W * 0.34, 210), 300);
+    labW = Math.min(labW, labMax);
+    if(!mobile) shifts.forEach(li => { li.style.width = labW + 'px'; });
+    const x0 = labW + (mobile ? 14 : 26);
+    const nx = x0 + (W - x0) * (mobile ? 0.64 : 0.62);
+    /* desktop stops at 0.81: the divider below overlays this frame's tail */
+    const top = H * (mobile ? 0.08 : 0.13), bot = H * (mobile ? 0.92 : 0.81);
+    const ny = (top + bot) / 2;
+    const xp = x0 + (nx - x0) * 0.40;     /* end of the parallel, unmet run */
+    gStrands.textContent = '';
+    const strands = [];
+    for(let i = 0; i < N; i++){
+      const y = top + (bot - top) * i / (N - 1);
+      const k1 = (nx - xp) * 0.45, k2 = (nx - xp) * 0.42;
+      const d = 'M' + x0 + ',' + y + ' L' + xp + ',' + y +
+                ' C' + (xp + k1) + ',' + y + ' ' + (nx - k2) + ',' + ny + ' ' + nx + ',' + ny;
+      const p = document.createElementNS(SVGNS, 'path');
+      p.setAttribute('class', 'wn-strand');
+      p.setAttribute('d', d);
+      gStrands.appendChild(p);
+      const dot = document.createElementNS(SVGNS, 'circle');
+      dot.setAttribute('class', 'wn-origin');
+      dot.setAttribute('cx', x0); dot.setAttribute('cy', y); dot.setAttribute('r', 2.4);
+      gStrands.appendChild(dot);
+      const L = p.getTotalLength();
+      p.style.strokeDasharray = L + ' ' + L;
+      strands.push({ el: p, dot, L, Lp: xp - x0 });
+      /* the strand leaves at the TITLE's centre line, not the label's
+         box centre — otherwise it appears to come out of the sentence */
+      const li = shifts[i];
+      const tt = li.querySelector('.wn-t');
+      li._dy = tt ? tt.offsetTop + tt.offsetHeight / 2 : li.offsetHeight / 2;
+      li.style.left = '0px';
+      li.style.top = y + 'px';
     }
-    return;
+    const jd = 'M' + nx + ',' + ny + ' L' + (W + 2) + ',' + ny;
+    journey.setAttribute('d', jd);
+    const jl = W + 2 - nx;
+    journey.style.strokeDasharray = jl + ' ' + jl;
+    ring.setAttribute('cx', nx); ring.setAttribute('cy', ny);
+    ring.setAttribute('r', mobile ? 22 : 30);
+    glow.setAttribute('cx', nx); glow.setAttribute('cy', ny);
+    glow.setAttribute('r', mobile ? 70 : 110);
+    mark.style.left = nx + 'px'; mark.style.top = ny + 'px';
+    /* never past the field's right edge — on a phone the line from the
+       node to the edge is short, so the label right-aligns to the edge */
+    const jlw = jLabel.offsetWidth || 90;
+    jLabel.style.left = Math.min(nx + (mobile ? 30 : 44), W - jlw - 10) + 'px';
+    jLabel.style.top = ny + 'px';
+    geo = { strands, nx, ny, W, jl };
+    lastT = -1;
   }
-  /* ── THIS SCENE DOES NOT RUN ON A HANDSET ────────────────────────────
-     Below 900px the section is a different composition entirely — four
-     beats in ordinary flow with a 2D canvas for the mark; see the mobile
-     block in the stylesheet and the whyMobile script further down. Running
-     thirty thousand WebGL points into a 172px band was the most expensive
-     thing on the site executing on the least capable device it has, and it
-     produced a mark too small to read as anything. Worse, it made the
-     page's central claim depend on a WebGL context compiling.
-     The bail is here — before the renderer is constructed — so a phone
-     never creates the context at all. Re-armed if the viewport ever grows
-     past the breakpoint, so a desktop browser resized up still gets it. */
-  if(window.innerWidth <= 900){
-    const up = window.matchMedia('(min-width:901px)');
-    const rearm = function(){
-      if(!up.matches) return;
-      if(up.removeEventListener) up.removeEventListener('change', rearm);
-      else if(up.removeListener) up.removeListener(rearm);
-      initPalm();
-    };
-    if(up.addEventListener) up.addEventListener('change', rearm);
-    else if(up.addListener) up.addListener(rearm);
-    return;
-  }
-  const canvas = document.getElementById('canvas');
-  const pin = document.querySelector('.pin');
-  const stage = document.getElementById('stage');
-  /* Reduced motion is honoured by removing every AUTONOMOUS movement — the
-     idle drift, the slow rotation, the chaos swirl. The resolve itself stays
-     tied to scroll, because it only moves while the reader is actively
-     scrolling and stops the instant they stop: it is their own input played
-     back, not motion the page decides to perform on its own.
-
-     This matters more than it looks. "Show animations in Windows = off"
-     reports prefers-reduced-motion, and a great many people have it set
-     without ever intending to opt out of scroll-linked storytelling — a
-     fully static fallback reads to them as a broken section, not a
-     considerate one. To get the fully static resolved mark instead, flip
-     STATIC_WHEN_REDUCED to true; nothing else needs to change. */
-  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const STATIC_WHEN_REDUCED = false;
-  const staticMode = reducedMotion && STATIC_WHEN_REDUCED;
-  if(staticMode) pin.classList.add('reduced-static');
-  const mobileNow = window.innerWidth <= 900;
-
-  function hash01(n){ const x = Math.sin(n * 12.9898) * 43758.5453; return x - Math.floor(x); }
-  function clamp01(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }
-  function rampT(t, a, b){ if(b <= a) return t >= b ? 1 : 0; return clamp01((t - a) / (b - a)); }
-  function easeOutCubic(x){ return 1 - Math.pow(1 - x, 3); }
-  function easeInOut(x){ return x < 0.5 ? 4*x*x*x : 1 - Math.pow(-2*x + 2, 3) / 2; }
-  /* Small overshoot then a precise stop — not a loose scatter-to-target
-     radius. f(0)=0, f(1)=1 exactly, with a subtle bump above 1 just before
-     arrival so the settle reads as a snap, not a drift. c1 kept low (stock
-     easeOutBack uses ~1.7) because the fronds sit close to the ring and a
-     bigger overshoot would blur that gap shut mid-transition. */
-  function easeSettle(x){
-    if(x <= 0) return 0; if(x >= 1) return 1;
-    const c1 = 1.12, c3 = c1 + 1, m = x - 1;
-    return 1 + c3 * m * m * m + c1 * m * m;
-  }
-
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(55, 1, 0.1, 100);
-  camera.position.z = 24;
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-  const pixelRatio = Math.min(window.devicePixelRatio, 2);
-  renderer.setPixelRatio(pixelRatio);
-
-  /* The canvas element's own box (not window size) — CSS insets it clear of
-     the card dock, so sizing the renderer off window dimensions would draw
-     into space the dock occupies and the aspect ratio would be wrong.
-
-     Returns whether the box actually changed. This is measured, never
-     assumed: at parse time the element can still report the 300x150 HTML
-     default (layout not yet settled, webfonts still loading), and a single
-     render baked at that size leaves the mark drawn tiny and off-centre with
-     nothing to correct it. A ResizeObserver below re-measures for real. */
-  let boxW = 0, boxH = 0;
-  function sizeToBox(){
-    const w = Math.max(1, canvas.clientWidth), h = Math.max(1, canvas.clientHeight);
-    if(w === boxW && h === boxH) return false;
-    boxW = w; boxH = h;
-    renderer.setSize(w, h, false);
-    camera.aspect = w / h;
-    camera.updateProjectionMatrix();
-    return true;
-  }
-  sizeToBox();
-
-  /* Normal blending removed the saturation ceiling that used to cap this —
-     with additive, more dots just meant a whiter blob, so the count had to
-     stay low. Now density only ever sharpens the mark, so desktop can afford
-     a much finer grain. Mobile stays modest for fill-rate on mid-range
-     handsets; the mark is physically smaller there so it still reads. */
-  const COUNT = mobileNow ? 3000 : 8200;
-  const positions = new Float32Array(COUNT * 3);
-  const chaosPositions = new Float32Array(COUNT * 3);
-  const orderPositions = new Float32Array(COUNT * 3);
-  const colorsArr = new Float32Array(COUNT * 3);
-  const sizesArr = new Float32Array(COUNT);
-  const opacitiesArr = new Float32Array(COUNT);
-  const phasesArr = new Float32Array(COUNT);
-  const shimmerArr = new Float32Array(COUNT * 2);
-  const assemblyStart = new Float32Array(COUNT);
-  const assemblyEnd = new Float32Array(COUNT);
-  /* Grains on paper, not dust in space. These three are lerped per particle
-     (see the mix below) so the field spans ink -> clay -> deep green, all
-     dark enough to read on the ivory ground. They were #D9A566 / #3F6E5B /
-     #F4F1EA — a gold-and-cream palette that only worked against near-black.
-     NormalBlending is what makes the inversion viable: under additive,
-     overlapping dark dots would have summed toward white and the mark would
-     have dissolved as it densified. */
-  const colGold = new THREE.Color('#8A7355');
-  const colGreen = new THREE.Color('#35564A');
-  const colCream = new THREE.Color('#2A2521');
-
-  /* Spread wide enough to overfill the frustum at any aspect ratio. The
-     noise has to read as filling the entire frame — a cloud sitting politely
-     in the middle is not "a mess of dots". Anything outside the view simply
-     never gets drawn, so overfilling costs nothing. */
-  for(let i = 0; i < COUNT; i++){
-    chaosPositions[i*3]   = (Math.random() - 0.5) * 58;
-    chaosPositions[i*3+1] = (Math.random() - 0.5) * 34;
-    chaosPositions[i*3+2] = (Math.random() - 0.5) * 16;
-    positions[i*3] = chaosPositions[i*3]; positions[i*3+1] = chaosPositions[i*3+1]; positions[i*3+2] = chaosPositions[i*3+2];
-    orderPositions[i*3] = chaosPositions[i*3]; orderPositions[i*3+1] = chaosPositions[i*3+1]; orderPositions[i*3+2] = chaosPositions[i*3+2];
-    const mix = hash01(i * 7.77 + 1.3);
-    const c = mix < 0.5 ? colGold.clone().lerp(colCream, mix * 2) : colGreen.clone().lerp(colGold, (mix - 0.5) * 2);
-    colorsArr[i*3] = c.r; colorsArr[i*3+1] = c.g; colorsArr[i*3+2] = c.b;
-    /* a MULTIPLIER on the shader's uDotPx, not an absolute size — kept in a
-       tight band so the mark reads as one material rather than as confetti */
-    sizesArr[i] = 0.8 + hash01(i * 3.41 + 8.2) * 0.45;
-    opacitiesArr[i] = 0.62 + hash01(i * 5.19 + 0.4) * 0.38;
-    phasesArr[i] = hash01(i * 9.13 + 4.7);
-    assemblyStart[i] = 0; assemblyEnd[i] = 1;
-  }
-
-  const geometry = new THREE.BufferGeometry();
-  geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-  geometry.setAttribute('aColor', new THREE.BufferAttribute(colorsArr, 3));
-  geometry.setAttribute('aSize', new THREE.BufferAttribute(sizesArr, 1));
-  geometry.setAttribute('aOpacity', new THREE.BufferAttribute(opacitiesArr, 1));
-  geometry.setAttribute('aPhase', new THREE.BufferAttribute(phasesArr, 1));
-
-  /* Soft circular sprites, drawn in-shader — the default THREE.PointsMaterial
-     has no sprite texture, so WebGL falls back to hard-edged square points.
-     A per-vertex "size" geometry attribute also does nothing on PointsMaterial
-     (it only reads a single material.size uniform), which is why the old
-     particles all read as one uniform blocky size.
-
-     BLENDING IS NORMAL, NOT ADDITIVE, AND THAT IS THE WHOLE POINT. Additive
-     looks gorgeous while the dots are sparse noise, but the resolved mark
-     packs ~2800 of them into a small area, and additive means every overlap
-     sums toward white. The mark stopped being a logo made of dots and became
-     a solid white silhouette with a glowing fringe — detail gone, negative
-     space between the fronds and the ring filled in. Normal blending keeps
-     every dot a discrete dot no matter how dense the shape gets. */
-  const material = new THREE.ShaderMaterial({
-    uniforms: {
-      uPixelRatio: { value: pixelRatio }, uOpacity: { value: 0.95 },
-      uDotPx: { value: 2.0 }, uTime: { value: 0 }, uResolved: { value: 0 }
-    },
-    vertexShader: `
-      attribute float aSize;
-      attribute float aOpacity;
-      attribute vec3 aColor;
-      attribute float aPhase;
-      varying float vOpacity;
-      varying vec3 vColor;
-      uniform float uPixelRatio;
-      uniform float uDotPx;
-      uniform float uTime;
-      uniform float uResolved;
-      void main(){
-        vColor = aColor;
-        /* A slow twinkle so the field never looks like a frozen bitmap. It
-           stays gentle once resolved: the mark has to read as a mark. */
-        float tw = 0.82 + 0.18 * sin(uTime * 1.7 + aPhase * 6.2831);
-        vOpacity = aOpacity * mix(1.0, tw, 0.55);
-        vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-        /* uDotPx is the target diameter in CSS pixels, set from the mark's
-           actual on-screen size, so density reads the same at every viewport.
-           Dots tighten slightly as the shape resolves, which is what makes
-           the silhouette sharpen rather than just stop moving. */
-        float sizePx = uDotPx * aSize * mix(1.25, 1.0, uResolved);
-        gl_PointSize = sizePx * uPixelRatio;
-        gl_Position = projectionMatrix * mvPosition;
-      }
-    `,
-    fragmentShader: `
-      /* No precision statement here on purpose. three.js prepends its own
-         (highp) to BOTH shaders; redeclaring mediump only in the fragment
-         shader makes the shared varyings mismatch across the two stages,
-         which fails the program link and leaves the renderer setting uniform
-         locations against a stale program - WebGL then logs
-         "uniformMatrix4fv: location is not from the associated program".
-         NOTE: this comment lives inside a JS template literal, so it must
-         never contain a backtick or a dollar-brace. */
-      varying float vOpacity;
-      varying vec3 vColor;
-      uniform float uOpacity;
-      void main(){
-        float d = length(gl_PointCoord - vec2(0.5)) * 2.0;
-        float alpha = smoothstep(1.0, 0.1, d);
-        if(alpha <= 0.003) discard;
-        gl_FragColor = vec4(vColor, alpha * vOpacity * uOpacity);
-      }
-    `,
-    transparent: true, depthWrite: false, depthTest: false,
-    blending: THREE.NormalBlending
-  });
-  const points = new THREE.Points(geometry, material);
-  scene.add(points);
-
-  /* ── Sample the actual logo mark's fill, via the browser's own SVG
-     rasteriser, rather than re-tracing/approximating the shape. Path data
-     copied verbatim from daoasis-palm-icon.svg, which moved to
-     images-unused/ on 19 September — the path below is the only thing
-     that ever used it, and it is inlined here. */
-  const LOGO_PATH_D = `M3254 8899 c-104 -21 -167 -45 -144 -53 86 -31 159 -61 232 -94 l88
--41 57 19 58 20 -39 -36 c-21 -20 -34 -39 -28 -43 5 -3 44 -33 86 -66 75 -58
-79 -60 149 -65 l72 -5 -48 -22 -49 -23 131 -137 c131 -139 364 -413 357 -421
--2 -2 -55 37 -118 87 -169 134 -321 213 -506 262 -119 32 -338 37 -463 11
--326 -67 -613 -290 -758 -586 -24 -48 -41 -90 -38 -92 2 -3 58 15 123 40 66
-24 172 60 236 80 124 39 175 70 250 154 21 23 40 42 43 42 3 0 -11 -31 -30
--70 -19 -38 -35 -72 -35 -76 0 -4 46 -5 103 -2 73 3 115 10 148 25 55 25 120
-81 151 131 33 54 33 22 -1 -59 -31 -74 -30 -88 9 -89 72 -1 379 -45 475 -69
-131 -32 304 -88 319 -102 6 -5 -41 -6 -115 -3 -516 26 -994 -265 -1145 -698
--58 -164 -78 -359 -53 -521 17 -114 65 -297 78 -297 4 0 13 17 20 38 40 113
-147 300 256 447 81 109 91 138 83 245 -6 88 10 65 42 -56 l10 -42 100 103
-c110 113 136 158 170 290 11 43 22 81 25 83 3 3 5 -43 5 -101 l0 -107 93 64
-c93 64 240 143 357 190 35 14 65 26 67 26 2 0 -48 -51 -109 -112 -201 -201
--292 -400 -305 -668 -12 -240 47 -421 194 -605 l48 -60 3 40 c1 22 12 97 23
-166 l22 127 -27 107 c-15 59 -25 109 -23 111 2 3 20 -33 40 -78 21 -49 38 -77
-41 -68 11 31 55 227 65 290 6 36 11 107 11 159 0 52 3 91 6 88 4 -4 14 -39 24
--78 l16 -71 33 78 c64 155 242 448 249 410 2 -9 -3 -59 -12 -109 -107 -638
--114 -1588 -16 -2287 29 -202 74 -448 115 -625 19 -82 35 -152 35 -156 0 -4
--44 -10 -97 -14 -737 -50 -1329 -164 -1917 -369 -172 -60 -373 -143 -382 -158
--3 -5 26 -62 64 -126 132 -221 289 -431 449 -602 l80 -85 189 63 c612 201
-1144 286 1804 286 599 1 916 -57 1845 -337 270 -82 477 -137 703 -187 l142
--32 78 70 c235 214 428 444 592 707 l81 130 -73 7 c-40 3 -138 11 -218 17
--390 30 -633 83 -1220 266 -599 187 -899 260 -1309 319 -96 14 -178 29 -183
-34 -16 16 -146 349 -202 517 -159 483 -246 937 -308 1605 -14 158 -16 874 -2
-995 l9 80 57 -76 c73 -95 147 -220 195 -326 20 -46 40 -83 43 -83 3 0 16 32
-29 70 12 39 23 70 24 70 1 0 2 -62 2 -137 0 -109 4 -150 19 -193 26 -77 68
--170 76 -170 4 0 19 26 33 58 29 63 32 54 16 -47 -10 -60 -9 -81 11 -172 12
--57 28 -140 34 -184 l12 -80 40 60 c176 257 206 520 95 824 -58 158 -139 280
--289 434 -53 53 -92 97 -88 97 34 0 378 -181 424 -223 27 -25 27 -22 -2 88
--13 50 -23 92 -21 93 4 4 14 -11 81 -127 36 -61 73 -107 138 -167 49 -46 93
--84 99 -84 6 0 8 30 3 87 -7 95 0 98 28 13 32 -96 74 -162 167 -267 50 -57 95
--103 100 -103 5 0 9 24 10 53 0 28 4 72 8 97 9 51 8 53 37 -84 10 -52 33 -112
-66 -175 134 -255 177 -343 195 -397 19 -56 20 -58 32 -36 48 91 75 369 52 532
--30 200 -111 393 -236 558 -148 198 -327 323 -578 407 -154 51 -268 69 -444
-70 -84 0 -153 1 -153 2 0 1 51 18 113 37 195 62 391 103 580 121 41 4 67 11
-67 18 0 7 -11 39 -25 71 -13 33 -23 61 -22 62 1 2 27 -18 57 -43 95 -79 185
--105 313 -89 l54 7 -33 62 c-19 34 -34 66 -34 71 0 5 30 -20 68 -56 37 -36 76
--70 88 -76 12 -6 90 -29 175 -51 85 -21 189 -53 232 -70 43 -17 80 -31 83 -31
-11 0 -58 115 -114 190 -149 200 -356 345 -579 407 -87 24 -115 27 -243 27
--123 -1 -160 -5 -241 -27 -218 -58 -405 -167 -593 -346 -89 -85 -88 -82 22 89
-152 237 369 452 632 625 55 36 100 68 100 69 0 2 -35 12 -77 22 -96 22 -66 30
-54 14 l84 -11 104 41 c57 22 127 46 157 54 l53 13 -35 18 c-160 83 -431 118
--617 79 -221 -45 -431 -196 -576 -413 -94 -140 -185 -358 -232 -556 l-21 -90
--19 75 c-97 401 -321 739 -585 883 -87 48 -189 86 -278 103 -105 20 -297 17
--408 -7z M4580 8450 c-123 -23 -180 -39 -180 -49 0 -5 32 -74 70 -152 39 -79
-70 -151 70 -159 0 -8 18 31 39 86 21 56 61 145 88 198 58 111 65 105 -87 76z
-M5472 8444 c-92 -24 -206 -112 -333 -255 l-62 -70 104 55 c307 162 585 194
-868 100 170 -56 289 -133 427 -276 115 -119 188 -226 258 -380 l35 -76 -103
-43 c-126 53 -310 109 -436 135 -113 22 -458 31 -500 13 -14 -6 -72 -17 -130
--23 -112 -12 -289 -48 -305 -62 -5 -4 11 -8 35 -8 52 0 220 -40 300 -70 108
--42 237 -116 357 -205 67 -49 186 -126 263 -170 532 -302 899 -746 1098 -1330
-148 -431 166 -916 52 -1364 -49 -194 -126 -404 -205 -562 -19 -38 -35 -73 -35
--78 0 -11 283 -66 470 -91 196 -25 460 -42 600 -38 l115 3 48 120 c161 402
-240 827 240 1300 1 268 -15 435 -63 675 -91 455 -311 944 -595 1325 -298 399
--751 768 -1210 986 -482 229 -1064 365 -1293 303z M3135 7750 c-27 -5 -98 -11
--157 -15 -127 -8 -141 -16 -286 -151 -471 -440 -833 -1138 -956 -1844 -42
--239 -51 -350 -50 -625 0 -340 26 -556 104 -851 32 -121 106 -341 145 -428
-l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
-133 -89 259 -125 460 -134 735 -20 644 174 1199 592 1694 42 50 83 105 92 124
-9 19 45 77 80 129 35 52 62 96 61 97 -2 2 -36 -16 -75 -39 -261 -149 -516
--395 -696 -671 -56 -86 -172 -306 -204 -385 -10 -24 -11 -23 -32 25 -77 168
--115 338 -115 510 0 305 97 553 302 767 87 91 176 160 283 217 78 42 281 113
-359 126 62 10 82 22 50 29 -87 20 -205 37 -321 46 -74 7 -141 16 -151 21 -19
-10 -22 10 -93 -1z M4545 2473 c-305 -18 -536 -45 -825 -94 -201 -34 -581 -117
--593 -129 -5 -4 49 -46 120 -93 455 -302 966 -483 1533 -543 193 -21 700 -15
-874 10 419 60 766 166 1101 334 204 102 252 130 235 136 -8 3 -87 23 -175 44
--88 22 -302 76 -475 120 -664 170 -1045 224 -1540 220 -113 -1 -227 -3 -255
--5z`;
-
-  const RASTER_RES = 900;
-  function rasterizeLogo(count, onReady){
-    const svgNS = 'http://www.w3.org/2000/svg';
-    const svg = document.createElementNS(svgNS, 'svg');
-    svg.setAttribute('xmlns', svgNS);
-    svg.setAttribute('viewBox', '0 0 1024 1024');
-    svg.setAttribute('width', String(RASTER_RES));
-    svg.setAttribute('height', String(RASTER_RES));
-    const g = document.createElementNS(svgNS, 'g');
-    g.setAttribute('transform', 'translate(0,1024) scale(0.1,-0.1)');
-    g.setAttribute('fill', '#ffffff');
-    g.setAttribute('stroke', 'none');
-    const path = document.createElementNS(svgNS, 'path');
-    path.setAttribute('d', LOGO_PATH_D);
-    g.appendChild(path); svg.appendChild(g);
-    const svgStr = new XMLSerializer().serializeToString(svg);
-    const blob = new Blob([svgStr], { type: 'image/svg+xml;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const img = new Image();
-    img.onload = function(){
-      const off = document.createElement('canvas');
-      off.width = RASTER_RES; off.height = RASTER_RES;
-      const octx = off.getContext('2d');
-      octx.drawImage(img, 0, 0, RASTER_RES, RASTER_RES);
-      URL.revokeObjectURL(url);
-      const R = RASTER_RES;
-      const data = octx.getImageData(0, 0, R, R).data;
-      const mask = new Uint8Array(R * R);
-      let filledCount = 0;
-      for(let i = 0; i < R * R; i++){
-        if(data[i * 4 + 3] > 150){ mask[i] = 1; filledCount++; }
-      }
-      if(!filledCount){ onReady(null); return; }
-
-      /* Split the mask into its OUTLINE and its INTERIOR and sample them
-         separately.
-
-         Uniform-random sampling of the filled pixels — which is what this
-         did before — clumps. Random points land three-deep in one spot and
-         leave gaps elsewhere, so the silhouette comes out lumpy and the fine
-         gaps (frond tip to inner ring) close up. Putting a fixed share of the
-         points on the boundary and spreading the rest one-per-grid-cell gives
-         an even interior and, more importantly, a clean edge — which is what
-         the eye actually reads as "that is the logo". */
-      const solid = (x, y) => (x < 0 || y < 0 || x >= R || y >= R) ? 0 : mask[y * R + x];
-      const edge = [], inner = [];
-      for(let y = 0; y < R; y++){
-        for(let x = 0; x < R; x++){
-          if(!mask[y * R + x]) continue;
-          if(!solid(x-1,y) || !solid(x+1,y) || !solid(x,y-1) || !solid(x,y+1)) edge.push(y * R + x);
-          else inner.push(y * R + x);
-        }
-      }
-
-      let cx = 0, cy = 0;
-      for(let i = 0; i < R * R; i++){ if(mask[i]){ cx += i % R; cy += (i / R) | 0; } }
-      cx /= filledCount; cy /= filledCount;
-      let maxR = 1;
-      for(let i = 0; i < edge.length; i++){
-        const dx = (edge[i] % R) - cx, dy = ((edge[i] / R) | 0) - cy;
-        const r = Math.sqrt(dx*dx + dy*dy); if(r > maxR) maxR = r;
-      }
-
-      /* 0.26, down from 0.38. The outline only needs enough points to stay
-         unbroken; every point spent there is one not filling the body, and
-         over-weighting the edge is part of what left the mark looking hollow. */
-      const EDGE_SHARE = 0.26;
-      const nEdge = Math.min(edge.length, Math.round(count * EDGE_SHARE));
-      const nInner = count - nEdge;
-      const picks = [];
-      /* even stride around the outline */
-      for(let i = 0; i < nEdge; i++) picks.push(edge[Math.floor(i * edge.length / nEdge)]);
-      /* one point per grid cell across the interior */
-      if(nInner > 0 && inner.length){
-        const cell = Math.max(1, Math.sqrt(inner.length / nInner));
-        const buckets = new Map();
-        for(let i = 0; i < inner.length; i++){
-          const px = inner[i] % R, py = (inner[i] / R) | 0;
-          const key = (((py / cell) | 0) << 12) | ((px / cell) | 0);
-          let b = buckets.get(key); if(!b){ b = []; buckets.set(key, b); }
-          b.push(inner[i]);
-        }
-        const keys = [...buckets.keys()];
-        /* STRIDE the cell list, do not walk it from the front.
-           `keys[i % keys.length]` looks equivalent but is not: a Map keeps
-           insertion order, the cells are inserted in raster scan order, and
-           when there are fewer points than cells the loop simply stops
-           partway down the mark and never reaches the rest. Measured, the
-           bottom band held 8.4% of the mark's area and received 1.6% of the
-           points — which is the blank space at the base of the logo.
-           Striding covers top to bottom evenly whether points outnumber
-           cells or not. */
-        for(let i = 0; i < nInner; i++){
-          const b = buckets.get(keys[Math.floor(i * keys.length / nInner)]);
-          picks.push(b[(i * 7919) % b.length]);
-        }
-      }
-      while(picks.length < count) picks.push(edge[picks.length % edge.length]);
-
-      /* Kept NORMALISED (-0.5..0.5). The mark's world size and position
-         depend on the viewport, so the scale is applied later in placeLogo()
-         and re-applied on resize. */
-      const out = new Array(count);
-      for(let i = 0; i < count; i++){
-        const idx = picks[i];
-        const px = idx % R, py = (idx / R) | 0;
-        const dx = px - cx, dy = py - cy;
-        out[i] = {
-          nx: (px / R) - 0.5,
-          ny: -((py / R) - 0.5),
-          role: clamp01(Math.sqrt(dx*dx + dy*dy) / maxR)
-        };
-      }
-      onReady(out);
-    };
-    img.onerror = function(){ URL.revokeObjectURL(url); onReady(null); };
-    img.src = url;
-  }
-
-  /* Where the resolved mark sits, in world space.
-
-     The canvas is full-bleed so the noise can fill the frame, which means
-     nothing in the layout stops the mark landing on top of the copy.
-
-     Squeezing the mark into the clear channel BETWEEN the copy and the dock
-     was tried and does not work: at 1280 that channel is only ~259px wide,
-     which renders the mark at ~116px — a logo so small it reads as an
-     afterthought rather than the thing the whole section resolves into.
-
-     So the copy and the mark take turns instead, which is the device this
-     page already uses on mobile: the copy holds the frame while it is being
-     read, then hands it over as the mark resolves. That frees the mark to be
-     large and central. It sits left of centre because the card dock owns the
-     right-hand side and the cards must land on a clean ground. */
-  let logoPts = null, logoReady = false;
-  /* The copy column's real right edge (its INK, not its max-width box) and
-     the dock's real left edge, both relative to the stage. Shared by
-     placeLogo() and measurePanelHome() so the mark and the centred card are
-     placed against the same measured gap. */
-  function whyGap(w){
-    const stageEl = document.getElementById('stage');
-    const sl = stageEl ? stageEl.getBoundingClientRect().left : 0;
-    let copyRight = w * 0.08 + 460;
-    const ov = stageEl && stageEl.querySelector('.overlay');
-    if(ov){
-      let m = 0;
-      ov.querySelectorAll('.why-kicker,.why-headline,.lede,.body-copy p,.why-cta').forEach(el => {
-        const r = document.createRange(); r.selectNodeContents(el);
-        const b = r.getBoundingClientRect(); if(b.width) m = Math.max(m, b.right - sl);
-      });
-      if(m) copyRight = m;
-    }
-    let cardsLeft = w - w * 0.10 - Math.min(w * 0.34, 470);
-    const pn = stageEl && stageEl.querySelector('.panels');
-    if(pn){ const b = pn.getBoundingClientRect(); if(b.width) cardsLeft = b.left - sl; }
-    return { copyRight, cardsLeft };
-  }
-  function placeLogo(){
-    if(!logoPts) return;
-    const w = Math.max(1, canvas.clientWidth), h = Math.max(1, canvas.clientHeight);
-    const visH = 2 * camera.position.z * Math.tan(camera.fov * Math.PI / 360);
-    const perPx = (visH * (w / h)) / w;          // world units per CSS pixel
-    const mobile = window.innerWidth <= 900;
-
-    let centreXpx, sizePx;
-    if(mobile){
-      /* the dock owns the lower half, so the mark sits high and centred */
-      centreXpx = w / 2;
-      /* h * 0.32 was sized for the old full-height sticky stage, where the
-         canvas was the whole viewport and the dock sat over its lower half.
-         The canvas is now a 31vh band of its own with nothing else in it, so
-         the mark takes most of it — at 0.32 it rendered 84px in a 262px band
-         and read as a detail floating in empty paper. */
-      sizePx = Math.min(w * 0.62, h * 0.96);
-    } else {
-      /* The mark is centred in the space it actually has, measured from the
-         same numbers the layout uses. The dock is pinned to the right edge
-         at min(31vw,400px) with a 6% offset (see .panels).
-
-           copy right edge = 8% pad + .body-copy max-width (460px)
-           card left edge  = 100% - 6% offset - .panels width (min(31vw,400))
-
-         Below the gap being narrower than the mark, centring it there would
-         push it under the cards. The clamp keeps it 12px clear of them and
-         lets it sit over the copy instead, which is the right way round:
-         .overlay::before already scrims the left 58% to protect that text,
-         and nothing protects the cards. */
-      /* MEASURED, 2 October 2026. This repeated the CSS as constants
-         (copy = 8% + 460px, dock = 10% + min(34vw,470)), so it went wrong
-         the moment either changed, and it always sized the mark for the
-         viewport rather than for the space it has. Now the gap is read off
-         the real copy ink and the real dock, and the mark is sized to that
-         gap: full size where there is room (1920), scaled down to sit in
-         the gap on a laptop instead of being parked over the headline.
-         It never drops below 55% of its ideal size — under that the mark
-         stops reading as the section's subject — so on the narrowest
-         desktops it may still kiss the end of the copy, but no longer
-         covers it. */
-      const ideal = Math.min(w * 0.44, h * 0.68);
-      const g = whyGap(w);
-      const room = g.cardsLeft - g.copyRight;
-      /* sizePx is the mark's BOX; its drawn ink is ~0.68 of that across
-         (measured at 1920: 500px of ink in a 734px box). So the box that
-         fills the gap with ~20px of air either side is (room - 40) / 0.68. */
-      const INK = 0.68, fit = (room - 40) / INK;
-      sizePx = Math.min(ideal, Math.max(fit, ideal * 0.55));
-      centreXpx = sizePx <= fit + 0.5
-        ? (g.copyRight + g.cardsLeft) / 2
-        : Math.min((g.copyRight + g.cardsLeft) / 2, g.cardsLeft - sizePx / 2 - 12);
-    }
-
-    const scale = sizePx * perPx;
-    const offX = (centreXpx - w / 2) * perPx;
-    /* on mobile the mark is raised to sit at ~27% of the stage height, which
-       is the band above the card dock; on desktop it is vertically centred */
-    const offY = mobile ? (h * 0.23) * perPx : 0;
-
-    /* Dot diameter follows the mark's on-screen size so density reads the
-       same everywhere. The mark's own drawn area is ~68% of its bounding box
-       and carries COUNT dots, so mean spacing is about
-       sqrt(0.68 * sizePx^2 / COUNT); a diameter a little under that spacing
-       fills the shape without dots merging into a solid mass. */
-    /* 1.25, so a dot is slightly WIDER than the gap to its neighbour. Under
-       additive blending that would have been suicide; under normal blending
-       overlapping dots just composite, so the solid parts of the mark read as
-       solid instead of as a screen door. At 0.92 the dots sat inside their
-       own spacing and the mark looked under-filled — the trunk and the ring
-       in particular showed through. The outline sampling keeps the edge
-       crisp regardless of how solid the interior gets. */
-    const spacingPx = Math.sqrt((0.68 * sizePx * sizePx) / COUNT);
-    material.uniforms.uDotPx.value = Math.max(1.15, Math.min(3.4, spacingPx * 1.25));
-
-    /* Sub-pixel shimmer: enough to keep the mark alive, far too small to
-       blur an edge. Held under half a pixel deliberately — the fine gap
-       between the frond tips and the inner ring is only a few px wide. */
-    const shimmerWorld = 0.42 * perPx;
-    for(let i = 0; i < COUNT; i++){
-      const p = logoPts[i];
-      /* target jitter is a fraction of a pixel: the resolved state must be
-         the true mark, not an approximation of it */
-      const jx = (hash01(i * 3.3 + 9.0) - 0.5) * perPx * 0.35;
-      const jy = (hash01(i * 4.4 + 2.0) - 0.5) * perPx * 0.35;
-      orderPositions[i*3]   = offX + p.nx * scale + jx;
-      orderPositions[i*3+1] = offY + p.ny * scale + jy;
-      orderPositions[i*3+2] = (hash01(i * 5.7 + 3.0) - 0.5) * 0.30;
-      shimmerArr[i*2]   = shimmerWorld * (0.4 + hash01(i * 6.1 + 1.9) * 0.6);
-      shimmerArr[i*2+1] = shimmerWorld * (0.4 + hash01(i * 8.3 + 5.2) * 0.6);
-    }
-  }
-
-  rasterizeLogo(COUNT, function(pts){
-    if(!pts) return;
-    logoPts = pts;
-    for(let i = 0; i < COUNT; i++){
-      // stagger the resolve outward from the badge's own centre, so the
-      // frame/horizon area settles first and frond tips last
-      const jitter = (hash01(i * 0.37 + 2.1) - 0.5) * 0.14;
-      const winStart = clamp01(pts[i].role * 0.72 + jitter * 0.5);
-      const winLen = 0.3 + hash01(i * 1.11 + 5.5) * 0.24;
-      assemblyStart[i] = winStart;
-      assemblyEnd[i] = Math.min(1, Math.max(winStart + 0.08, winStart + winLen));
-    }
-    placeLogo();
-    logoReady = true;
-    if(staticMode) renderStatic();
-  });
-
-  const posAttr = geometry.attributes.position;
-  const p1 = document.getElementById('p1'), p2 = document.getElementById('p2'), p3 = document.getElementById('p3');
-
-  const panelEls = [p1, p2, p3];
-
-  /* THE STAGING.
-
-     The mark resolves slowly across most of the section, and the three cards
-     arrive THROUGHOUT that resolve rather than queueing up after it — the
-     first lands while the dots are still finding their shape, so the section
-     is doing two things at once and never has a dead stretch.
-
-     EACH CARD TAKES THE CENTRE OF THE FRAME, IS HELD THERE LONG ENOUGH TO BE
-     READ, AND THEN SETTLES INTO ITS OWN SLOT IN THE RIGHT-HAND DOCK. Four
-     phases per card:
-
-       inStart -> inEnd    flies in from the right and lands at centre
-       inEnd   -> holdEnd  HELD at centre, full size — this is the reading beat
-       holdEnd -> setEnd   travels out to its slot and scales back to rest
-       after               sits in the dock with the others
-
-     `centredK` below dims the dust while a card holds the frame, so the two
-     never compete for the same attention. The mark comes back up to full as
-     the card leaves.
-
-     The hold is 12% of the section's scrub — about 340px of scrolling at
-     1440x900, roughly three wheel notches. It is the whole point of the
-     change, so if this section is ever shortened again, shorten the travel
-     phases and leave the holds alone. */
-  const SHAPE_END = 0.56;
-  /* Retimed 13 September. The third card used to settle at 0.92, which left
-     0.08 of the scroll as a tail — 22px at the old height. There was no
-     pause: the section finished and was gone in the same movement.
-     It now completes at 0.78, so the last 0.22 (~100vh at 560vh) is a hold
-     in which all three cards, the resolved palm and the copy simply sit
-     there finished. The reader gets to look at the completed frame before
-     the page moves on. */
-  const CARD_WINS = [
-    { inStart: 0.08, inEnd: 0.17, holdEnd: 0.27, setEnd: 0.34 },
-    { inStart: 0.30, inEnd: 0.39, holdEnd: 0.49, setEnd: 0.56 },
-    { inStart: 0.52, inEnd: 0.61, holdEnd: 0.71, setEnd: 0.78 }
-  ];
-
-  /* Per-card translation from its settled slot to the centre of the frame.
-     MEASURED, not assumed — the dock is a space-between flex column, so the
-     three cards sit at different heights and each needs its own dy.
-
-     Measured with the card's transform cleared, because getBoundingClientRect
-     reports the TRANSFORMED box and every one of these cards is mid-transform
-     for most of the section. Re-measured on resize; never read per frame. */
-  let panelHome = [null, null, null];
-  function measurePanelHome(){
-    const stageEl = document.getElementById('stage');
-    if(!stageEl) return;
-    const sr = stageEl.getBoundingClientRect();
-    if(!sr.width) return;
-    if(window.innerWidth <= 900){ panelHome = [null, null, null]; return; }
-    /* the same free-gap centre placeLogo now uses for the mark — the space
-       right of the copy column, since there is no card dock in the way any
-       more once a card returns to its slot */
-    const w = sr.width;
-    const copyRight = whyGap(w).copyRight;
-    /* AS CENTRAL AS IT CAN GO WITHOUT COVERING THE COPY.
-       This was (copyRight + w) / 2 — the midpoint of the whole right-hand
-       area, which at 1440 is x=1007, i.e. 70% across. That is not a centred
-       card, it is a card that has moved a little left, and it is why the
-       centre-hold never read as the card taking the frame.
-       The target is now weighted well to the left and the clamp below does
-       the real work: the card sits 28px clear of the copy column's right
-       edge, which is the most central position available while the copy is
-       still on screen. 1440 -> 867 (60% across), 1920 -> 980 (51%). */
-    const gapCentre = copyRight + (w - copyRight) * 0.28;
-    panelHome = panelEls.map(el => {
-      const prev = el.style.transform;
-      el.style.transform = 'none';
-      const r = el.getBoundingClientRect();
-      el.style.transform = prev;
-      if(!r.width) return null;
-      const half = r.width / 2;
-      /* never let a centred card hang off either edge of the stage */
-      const cx = Math.max(sr.left + copyRight + 28 + half,
-                          Math.min(sr.left + gapCentre, sr.right - half - 16));
-      return { dx: cx - (r.left + half), dy: (sr.top + sr.height / 2) - (r.top + r.height / 2) };
-    });
-  }
-
-  /* how much of the frame is currently owned by a centred card, 0-1. Read by
-     the render function to dim the dust underneath it. */
-  let centredK = 0;
-
-  function setPanel(el, win, t, mobile, isCurrent, home){
-    /* MOBILE: this function does nothing. The cards are no longer docked in
-       a sticky stage — they are three blocks in ordinary flow revealed by
-       an IntersectionObserver on the site's standard reveal line (see the
-       CSS note above). Writing inline opacity/transform here would fight
-       that reveal, and the compact-hidden collapse it used to apply has no
-       purpose once there is no dock to overflow. */
-    if(mobile) return;
-    const inP  = easeOutCubic(rampT(t, win.inStart, win.inEnd));   // arrival
-    const setP = easeInOut(rampT(t, win.holdEnd, win.setEnd));     // departure to slot
-    const k = home ? inP * (1 - setP) : 0;                         // 1 = holding the centre
-    if(k > centredK) centredK = k;
-    const slide = (1 - inP) * (mobile ? 26 : 54);
-    const dx = home ? home.dx * k : 0;
-    const dy = home ? home.dy * k : 0;
-    const sc = 1 + (mobile ? 0.012 : 0.125) * k;
-    el.style.opacity = inP;
-    el.style.transform = 'translate(' + (slide + dx).toFixed(1) + 'px, ' + dy.toFixed(1) + 'px) scale(' + sc.toFixed(4) + ')';
-    /* only the card that currently owns the centre lifts above its siblings */
-    el.style.zIndex = k > 0.02 ? '40' : '';
-    el.classList.toggle('panel-active', mobile ? !!isCurrent : k > 0.45);
-    const desc = el.querySelector('.desc'), source = el.querySelector('.source');
-    /* MOBILE: three fully-expanded cards are ~557px against ~300px of dock,
-       so the stack ran 200px off the bottom of the screen. Only the card
-       that most recently arrived carries its detail; the earlier ones fall
-       back to rule + stat. "Most recent" rather than "currently featured"
-       deliberately — the last card must keep its detail through the closing
-       hold, or the section ends on three headlines and no substance. */
-    if(mobile){
-      if(desc) desc.classList.toggle('compact-hidden', !isCurrent);
-      if(source) source.classList.toggle('compact-hidden', !isCurrent);
-    } else {
-      if(desc) desc.classList.remove('compact-hidden');
-      if(source) source.classList.remove('compact-hidden');
-    }
-  }
-
-  function assembleParticles(assemblyT, time, motion){
-    for(let i = 0; i < COUNT; i++){
-      const idx = i * 3;
-      const ws = assemblyStart[i], we = assemblyEnd[i];
-      const localRaw = we > ws ? clamp01((assemblyT - ws) / (we - ws)) : (assemblyT >= we ? 1 : 0);
-      const local = easeSettle(localRaw);
-      let cx = chaosPositions[idx], cy = chaosPositions[idx+1], cz = chaosPositions[idx+2];
-      if(motion && local < 1){
-        /* free drift while it is still noise, fading out as it commits */
-        const driftAmt = 1.35 * (1 - local);
-        cx += Math.sin(time * 2.2 + i) * driftAmt;
-        cy += Math.cos(time * 2.6 + i * 1.7) * driftAmt;
-      }
-      const ox = orderPositions[idx], oy = orderPositions[idx+1], oz = orderPositions[idx+2];
-      let x = cx + (ox - cx) * local;
-      let y = cy + (oy - cy) * local;
-      const z = cz + (oz - cz) * local;
-      if(motion && local > 0){
-        /* Sub-pixel shimmer, scaled IN as the dot arrives. The field is never
-           a still image, but the movement at rest is small enough that the
-           silhouette stays exact — which is the whole balance this section
-           needs: alive, but unmistakably the mark. */
-        const ph = phasesArr[i] * 6.2831;
-        x += Math.sin(time * 1.9 + ph) * shimmerArr[i*2] * local;
-        y += Math.cos(time * 2.3 + ph * 1.3) * shimmerArr[i*2+1] * local;
-      }
-      posAttr.array[idx] = x; posAttr.array[idx+1] = y; posAttr.array[idx+2] = z;
-    }
-    posAttr.needsUpdate = true;
-  }
-
-  function renderStatic(){
-    sizeToBox();
-    placeLogo();
-    material.uniforms.uResolved.value = 1;
-    material.uniforms.uTime.value = 0;
-    assembleParticles(1, 0, false);
-    points.rotation.set(0, 0, 0);
-    points.position.set(0, 0, 0);
-    camera.position.set(0, 0, 24);
-    camera.lookAt(0, 0, 0);
-    const mobile = window.innerWidth <= 900;
-    document.getElementById('oKicker').style.opacity = 1;
-    document.getElementById('oHeadline').style.opacity = 1;
-    document.getElementById('oLede').style.opacity = 1;
-    document.getElementById('oBody').style.opacity = 1;
-    document.getElementById('oCta').style.opacity = 1;
-    canvas.style.opacity = 1;
-    /* t = 1: every card fully arrived and settled in its slot. panelHome is
-       not passed, so k is 0 throughout and nothing is centred — which is the
-       correct still frame for the no-WebGL fallback. */
-    panelEls.forEach((el, i) => setPanel(el, CARD_WINS[i], 1, mobile, i === CARD_WINS.length - 1));
-    renderer.render(scene, camera);
-  }
-
-  if(staticMode){
-    const paint = () => { renderStatic(); };
-    paint();
-    window.addEventListener('resize', paint);
-    window.addEventListener('load', paint);
-    if('ResizeObserver' in window) new ResizeObserver(paint).observe(canvas);
-    return;
-  }
-
-  /* No mouse parallax here — this section isn't hover-based, and once the
-     mark is resolved it should hold a true, still, upright frame like the
-     brand mark it is, not drift. */
-  camera.position.set(0, 0, 24);
-  camera.lookAt(0, 0, 0);
 
   function render(t){
-    /* two clocks: a slow one for positional drift, a faster one the shader
-       uses for the twinkle */
-    const now = performance.now();
-    const time = reducedMotion ? 0 : now * 0.0002;
-    const assemblyT = logoReady ? clamp01(t / SHAPE_END) : 0;
-    assembleParticles(assemblyT, time, !reducedMotion);
-    material.uniforms.uTime.value = reducedMotion ? 0 : now * 0.001;
-    material.uniforms.uResolved.value = assemblyT;
-    /* the field turns slowly while it is still noise and comes to true
-       upright as it resolves, so the mark is never rendered off-axis */
-    points.rotation.y = reducedMotion ? 0 : time * 0.25 * (1 - assemblyT);
-
-    const kicker = document.getElementById('oKicker'), headline = document.getElementById('oHeadline'), lede = document.getElementById('oLede'), body = document.getElementById('oBody'), cta = document.getElementById('oCta');
-    const mobile = window.innerWidth <= 900;
-
-    /* The statement only recedes to a still-legible floor as the mark
-       resolves, never to zero — it has to stay readable through the whole
-       card sequence.
-       On MOBILE it does not recede at all: the mark now has its own band
-       below the copy instead of assembling behind it, so there is nothing
-       to yield to. Receding here is what made the headline and the lede
-       unreadable under the grains. */
-    const copyA = mobile ? 1 : 1 - 0.32 * rampT(t, 0.10, 0.26);
-    kicker.style.opacity = copyA; headline.style.opacity = copyA; lede.style.opacity = copyA; body.style.opacity = copyA; cta.style.opacity = copyA;
-
-    /* the most recently arrived card — the one that owns the detail slot */
-    let currentIdx = -1;
-    for(let i = 0; i < CARD_WINS.length; i++) if(t >= CARD_WINS[i].inStart) currentIdx = i;
-
-    /* Two passes, and the first one writes nothing.
-       A card travelling to the centre passes straight over the ones already
-       docked. On the old dark glass that read as depth; on paper it reads as
-       a stacking bug — a white card half-hidden behind another white card.
-       So: work out who owns the centre FIRST, then recede everyone else
-       while they are being covered. It cannot be done in a single pass
-       because panel 0 is placed before panel 2's k is known. */
-    const ks = panelEls.map((el, i) => {
-      const w = CARD_WINS[i];
-      if(!panelHome[i]) return 0;
-      return easeOutCubic(rampT(t, w.inStart, w.inEnd)) * (1 - easeInOut(rampT(t, w.holdEnd, w.setEnd)));
-    });
-    const leadK = Math.max(0, ...ks);
-    const leadIdx = ks.indexOf(leadK);
-
-    /* setPanel raises centredK; reset before the pass, read after it */
-    centredK = 0;
-    panelEls.forEach((el, i) => {
-      setPanel(el, CARD_WINS[i], t, mobile, i === currentIdx, panelHome[i]);
-      if(leadK > 0.02 && i !== leadIdx){
-        el.style.opacity = (parseFloat(el.style.opacity) || 0) * (1 - 0.72 * leadK);
-      }
-    });
-
-    /* The grains yield while a card holds the frame — this is what makes the
-       centre-pop legible instead of a collision. Written AFTER the panel pass
-       because centredK is not known until every card has been placed.
-       Floor and ceiling both raised for the paper ground: dark grains on
-       ivory carry far less apparent weight than light ones did on near
-       black, so the same alpha that read as a confident mark before read as
-       a ghost after the inversion. */
-    const dustA = 0.46 + 0.54 * rampT(t, 0.08, 0.26);
-    canvas.style.opacity = dustA * (1 - 0.45 * centredK);
-
-    renderer.render(scene, camera);
-  }
-
-  /* The paced value. cine settles the track on the true scroll position
-     whenever the section leaves the viewport, so re-entry from either
-     direction always starts from the frame that belongs there — and there is
-     no forward-only latch, so scrolling back up unwinds the shape and cards
-     instead of freezing them for the rest of the pin.
-
-     render() itself is driven by a persistent rAF loop rather than cine's
-     own emit — cine only emits when the paced value actually changes, which
-     would freeze the unresolved dust field's idle drift the moment scrolling
-     stops. The loop just reads whatever t was last emitted. */
-  const track = (window.DAO && DAO.cine)
-    ? DAO.cine.track(pin, { mode: 'guided', pace: 'epic', states: 6 })
-    : null;
-
-  let currentT = 0;
-  if(track){
-    track.on(v => { currentT = v; });
-  } else {
-    const rawT = () => {
-      const rect = pin.getBoundingClientRect();
-      const s = pin.offsetHeight - window.innerHeight;
-      if(s <= 0) return rect.top < 0 ? 1 : 0;
-      return clamp01(-rect.top / s);
-    };
-    currentT = rawT();
-    window.addEventListener('scroll', () => { currentT = rawT(); }, { passive: true });
-    window.addEventListener('resize', () => { currentT = rawT(); }, { passive: true });
-  }
-
-  /* Re-measure on real box changes rather than polling clientWidth in the
-     loop, which would force a layout read every single frame. The mark's
-     world placement and its dot size both depend on the box, so both are
-     re-solved whenever it actually changes. The cards need no measurement —
-     they travel by transform from wherever CSS puts them. */
-  let dirty = true;
-  function remeasure(force){
-    const changed = sizeToBox();
-    if(changed || force === true){ placeLogo(); measurePanelHome(); dirty = true; }
-  }
-  /* The dock's slot positions are only final once the cards have their real
-     type in them, so measure again after fonts land and after load. Cheap,
-     and it is the difference between a card flying to the right place and to
-     wherever the fallback metrics put it. */
-  measurePanelHome();
-  window.addEventListener('load', measurePanelHome);
-  if(document.fonts && document.fonts.ready) document.fonts.ready.then(measurePanelHome);
-  if('ResizeObserver' in window) new ResizeObserver(() => remeasure()).observe(canvas);
-  window.addEventListener('resize', () => remeasure(true));
-  /* webfonts land after parse and reflow the copy column, which moves the
-     channel the mark sits in */
-  window.addEventListener('load', () => remeasure(true));
-  if(document.fonts && document.fonts.ready) document.fonts.ready.then(() => remeasure(true));
-
-  /* Paint once synchronously, right here, rather than waiting for the first
-     requestAnimationFrame tick. rAF is throttled or fully paused for a tab
-     that hasn't been composited yet (backgrounded on open, restored by the
-     browser, still prerendering) — on a page where this section's copy,
-     panels and canvas all start at opacity:0 in CSS and are only ever
-     revealed inline by this script, waiting on rAF for the very first paint
-     means the whole 580vh section can sit permanently blank if that first
-     tick is delayed. This call guarantees a correct frame exists the
-     instant the script finishes running, independent of compositing.
-
-     Painted at 0, not at currentT: the raster is always still in flight at
-     this point (it waits on an Image decode), so 0 is the only frame this
-     section can honestly show yet — copy up, cards out, rail empty. The
-     catch-up in the loop below takes it from here to the reader's real
-     position once the palm can actually be drawn. */
-  render(0);
-
-  /* ── THE READINESS CATCH-UP ───────────────────────────────────────────
-     rasterizeLogo() is asynchronous: it serialises an SVG, waits on an
-     Image decode, then reads back 810,000 pixels. Until it finishes,
-     logoReady is false and the palm CANNOT assemble.
-
-     What used to happen: only assemblyT was gated on logoReady, so the rest
-     of the section ran anyway — the copy faded out, the cards flew in, the
-     progress rail filled. The reader was told the section had started while
-     the one thing it is about could not appear, so they kept scrolling. Then
-     logoReady flipped and assemblyT jumped straight to clamp01(t/SHAPE_END),
-     which by then was often already 1: the palm popped fully formed and the
-     whole story had been skipped. That is the reported "it rushes past".
-
-     Now the SECTION's clock, not just the palm's, waits for readiness, and
-     when it starts it eases from 0 up to the reader's true position instead
-     of snapping. The duration scales with how far behind it is but is capped,
-     so the common case (ready in well under a second, gap ~0) is invisible,
-     and the worst case is a controlled ~1.3s catch-up that actually SHOWS the
-     assembly rather than cutting to the end of it. */
-  const CATCH_MAX_MS = 1300;
-  let catchFrom = 0, catchStart = 0, catchDur = 0, catching = false, started = false;
-  /* There is no mobile branch here any more. This whole script returns
-     before it builds anything below 900px (see the bail at the top), so
-     the old mobileT() band driver had nothing left to drive. */
-  function effectiveT(){
-    if(!logoReady) return 0;
-    if(!started){
-      /* first frame after the raster landed — begin from a standing start
-         and travel to wherever the reader actually is */
-      started = true;
-      const gap = clamp01(currentT);
-      if(gap > 0.012){
-        catching = true; catchFrom = 0; catchStart = performance.now();
-        catchDur = Math.min(CATCH_MAX_MS, 380 + gap * 1400);
-      }
-    }
-    if(!catching) return currentT;
-    const k = clamp01((performance.now() - catchStart) / catchDur);
-    if(k >= 1){ catching = false; return currentT; }
-    /* ease-out: answers immediately, arrives softly. Re-based on the LIVE
-       currentT each frame, so if the reader is still scrolling during the
-       catch-up the target moves with them rather than landing stale. */
-    return catchFrom + (currentT - catchFrom) * easeOutCubic(k);
-  }
-
-  /* This scene used to render every frame for the WHOLE page — a full
-     three.js draw of the palm, the dust field and the depth pass, sixty
-     times a second, while the section itself was twenty thousand pixels
-     away. It is the single largest piece of work on the page and it was
-     competing with every other section's scroll handling for the frame
-     budget the entire time. It now paints only while it is near enough to
-     be seen; the generous margin means it is already live before it
-     arrives, so nothing is ever caught mid-build. */
-  let near = true;
-  if('IntersectionObserver' in window){
-    near = false;
-    new IntersectionObserver(function(list){
-      list.forEach(function(e){ near = e.isIntersecting; });
-    }, { rootMargin: '60% 0px 60% 0px', threshold: 0 }).observe(pin);
-  }
-
-  /* Warm the pipeline while the browser is idle, so the first frame this
-     section actually paints is not also the frame that compiles every
-     shader and uploads every buffer. Measured, that first draw was a
-     ~200ms stall arriving right as the section came into view. */
-  let warmed = false;
-  function warmPalm(){
-    if(warmed) return;
-    warmed = true;
-    try {
-      const w = canvas.width, h = canvas.height;
-      renderer.compile(scene, camera);
-      renderer.setSize(2, 2, false);
-      renderer.render(scene, camera);
-      renderer.setSize(w, h, false);
-      dirty = true;
-    } catch(err){ /* a warm-up must never be able to break the page */ }
-  }
-  const idlePalm = window.requestIdleCallback || function(f){ return setTimeout(f, 240); };
-  if(document.readyState === 'complete') idlePalm(warmPalm);
-  else window.addEventListener('load', function(){ idlePalm(warmPalm); }, { once: true });
-
-  let lastT = -1;
-  /* The mobile card reveal that used to live here is gone with the rest of
-     the mobile path. The three statistics are scrubbed from their own beat
-     position by the whyMobile script, and their CSS resting state is
-     visible rather than hidden — there is nothing left to arm. */
-
-  function loop(){
-    requestAnimationFrame(loop);
-    if(!near) return;
-    warmPalm();                   /* if the reader beat the idle callback */
-    const t = effectiveT();
-    /* Under reduced motion there is no idle drift, so an identical frame is
-       not worth repainting 60x a second — only paint when the scroll value
-       actually moved or the box changed. Full motion always paints, because
-       the unresolved dust drifts on its own clock. */
-    if(!reducedMotion || dirty || catching || t !== lastT){
-      lastT = t; dirty = false;
-      render(t);
-    }
-  }
-  requestAnimationFrame(loop);
-})();
-</script>
-
-<script>
-/* ══ "WHY DAOASIS MATTERS NOW" — THE MOBILE SECTION ══════════════════════
-   Written from scratch, 13 September. Runs ONLY below 900px; the WebGL
-   scene above returns before it builds anything at that width.
-
-   What this drives, and nothing else:
-     · --b  on each .panel — that beat's own 0-1 arrival value
-     · --fill on .panels   — how far down the spine the reader has come
-     · the closing mark's 2D sand assembly
-
-   Three rules it is built around, all of them learned on this exact
-   section:
-
-   1. NO IntersectionObserver. An observer that exists but whose callback
-      never fires leaves everything it gates invisible, permanently, with
-      no error — which is exactly how this section came to render as a
-      blank screen on a phone. A scroll listener cannot fail that way: it
-      either runs, or the page is not scrolling and there is nothing to
-      reveal. It is rAF-throttled, so it costs one rect read per frame
-      while the reader is moving and nothing at all when they stop.
-
-   2. NOTHING HERE IS REQUIRED. Every CSS window falls back to --b:1, so
-      the section's resting state is fully visible and this script only
-      ever takes things away and puts them back. If it throws on its first
-      frame it un-writes what it wrote and gives up, leaving the section
-      readable.
-
-   3. Reduced motion keeps its animation. This is scroll-LINKED — it moves
-      only while the reader is scrolling and stops the instant they stop,
-      so it is their own input played back, not motion the page performs by
-      itself. Switching it off leaves a dead section, not a calmer one.
-      (Same position as js/cine.js; see the 3 September note.) */
-(function whyMobile(){
-  const panelsEl = document.querySelector('.pin .panels');
-  const stage = document.getElementById('stage');
-  if(!panelsEl || !stage) return;
-  const beats = Array.prototype.slice.call(panelsEl.querySelectorAll('.panel'));
-  if(!beats.length) return;
-
-  const mark = document.getElementById('whyMark');
-  const cvs = document.getElementById('whyMarkCanvas');
-  const ctx = cvs && cvs.getContext ? cvs.getContext('2d') : null;
-
-  const mq = window.matchMedia('(max-width:900px)');
-  function clamp01(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }
-  function hash01(n){ const x = Math.sin(n * 12.9898) * 43758.5453; return x - Math.floor(x); }
-  /* small overshoot then a precise stop — the same settle the desktop
-     assembly uses, so a grain arriving reads identically on both */
-  function settle(x){
-    if(x <= 0) return 0; if(x >= 1) return 1;
-    const c1 = 1.12, c3 = c1 + 1, m = x - 1;
-    return 1 + c3 * m * m * m + c1 * m * m;
-  }
-
-  /* ── THE MARK ─────────────────────────────────────────────────────────
-     Points are sampled out of images/img-09.png, the site's own palm mark.
-     getImageData throws on a canvas that has had a file:// image drawn into
-     it, so the sample is wrapped: over http (which is what ships) the full
-     sand assembly runs; opened as a bare local file the same band still
-     animates, by scale and fade, using the image directly. The one thing
-     that cannot happen is an empty band. */
-  let grains = null;      /* the sampled point cloud, or null */
-  let img = null;         /* the decoded mark, for the fallback draw */
-  let live = false;       /* has a frame actually been painted */
-  /* 3400, matching the desktop scene's own mobile COUNT. At 1150 the
-     resolved mark was measurably correct — ring, trunk and horizon all in
-     the right places — and still read as a scatter of dots rather than as
-     the mark, because the mean spacing was 5.2px against a 2.3px grain. */
-  const GRAINS = 6800;
-
-  function sample(image){
-    /* 320, NOT 160. The sample grid is what quantises every grain's resting
-       position, and the mark is drawn at ~500 device px — so at 160 the mask
-       was being upscaled 3.1x and every fine feature of the logo was thrown
-       away BEFORE a single grain was placed. THAT is what read as dithering:
-       not the grain size, the source resolution. 320 puts the grid at or
-       above the drawn size at every band height this page uses, so the frond
-       tips and the gap to the inner ring survive sampling. */
-    const R = 320;
-    const off = document.createElement('canvas');
-    off.width = R; off.height = R;
-    const octx = off.getContext('2d');
-    if(!octx) return null;
-    const s = Math.min(R / image.width, R / image.height);
-    const dw = image.width * s, dh = image.height * s;
-    octx.drawImage(image, (R - dw) / 2, (R - dh) / 2, dw, dh);
-    const data = octx.getImageData(0, 0, R, R).data;   /* throws if tainted */
-    const mask = new Uint8Array(R * R);
-    let filled = 0;
-    for(let i = 0; i < R * R; i++){ if(data[i * 4 + 3] > 140){ mask[i] = 1; filled++; } }
-    if(filled < 80) return null;
-
-    /* ONE GRAIN PER GRID CELL, not every k-th filled pixel in scan order.
-       Scan order walks a whole row before moving down, so taking every
-       third hit puts grains 3px apart horizontally and 1px apart
-       vertically — and the mark rendered as a field of short vertical
-       DASHES rather than as sand. A square stride gives equal spacing in
-       both axes; the stride is fractional so the grid never lands on an
-       exact pixel lattice and moirés against the mark's own edges. */
-    const stride = Math.max(1, Math.sqrt(filled / GRAINS));
-    const hits = [];
-    for(let gy = 0; gy < R; gy += stride){
-      const y = Math.round(gy); if(y >= R) break;
-      for(let gx = 0; gx < R; gx += stride){
-        const x = Math.round(gx);
-        if(x < R && mask[y * R + x]) hits.push([x / R - 0.5, y / R - 0.5]);
-      }
-    }
-    if(hits.length < 80) return null;
-    const N = hits.length;
-    const pts = new Array(N);
-    /* a jitter of up to half a cell, so the grid does not read as a screen
-       door where the mark is solid */
-    const jit = stride / R * 0.5;
+    if(!geo) return;
+    if(Math.abs(t - lastT) < 0.0004) return;
+    lastT = t;
+    const w = mobile ? WIN.mob : WIN.desk;
+    const conv = sm((t - C0) / 0.14);                 /* 0 → 1 across the bend */
     for(let i = 0; i < N; i++){
-      const h0 = hits[i];
-      const h = [h0[0] + (hash01(i * 9.1 + 0.7) - 0.5) * jit,
-                 h0[1] + (hash01(i * 11.3 + 3.4) - 0.5) * jit];
-      /* chaos start: a ring outside the mark, flattened slightly so the
-         field reads as sand lying on a surface rather than a sphere */
-      const ang = hash01(i * 1.7 + 0.3) * 6.2831853;
-      const rad = 0.62 + hash01(i * 3.1 + 1.9) * 0.9;
-      /* Staggered outward from the mark's own centre, so the badge frame
-         settles first and the frond tips last — the shape becomes legible
-         early and then sharpens, instead of appearing all at once. */
-      const d = Math.min(1, Math.sqrt(h[0] * h[0] + h[1] * h[1]) / 0.5);
-      /* Landing by ~0.95 rather than trailing past 1.0, because the last
-         beat of this animation is no longer the grains arriving — it is the
-         sharpen below, and a sharpen has nothing to sharpen if the sand is
-         still in the air underneath it. */
-      const st = clamp01(d * 0.55 + (hash01(i * 5.3 + 4.4) - 0.5) * 0.14);
-      const len = 0.22 + hash01(i * 7.7 + 2.2) * 0.18;
-      pts[i] = { ox: h[0], oy: h[1],
-                 cx: Math.cos(ang) * rad, cy: Math.sin(ang) * rad * 0.78,
-                 s: st, e: Math.min(1, st + len) };
+      const s = geo.strands[i];
+      const a = S0 + i * ST;
+      const d1 = sm((t - a) / SD);
+      const d2 = sm((t - (C0 + i * CS)) / CD);
+      const drawn = s.Lp * d1 + (s.L - s.Lp) * d2;
+      s.el.style.strokeDashoffset = (s.L - drawn).toFixed(2);
+      /* the strand being drawn is the live one; the rest step back */
+      const e = cl(1 - Math.abs(t - (a + SD * 0.6)) / 0.055);
+      const before = 0.48 + 0.52 * e;
+      const op = mix(before, 0.82, conv);
+      s.el.style.opacity = (d1 > 0.001 ? op : 0).toFixed(3);
+      s.el.style.strokeWidth = (1.2 + 0.6 * e * (1 - conv)).toFixed(2);
+      s.dot.style.opacity = (d1 * op).toFixed(3);
+      const li = shifts[i];
+      /* labels wait as faint ghosts before their strand arrives, so the
+         opening frame reads as six things about to happen, not an empty
+         field */
+      const lo = mix(0.2, mix(0.68 + 0.32 * e, 0.9, conv), d1);
+      li.style.opacity = lo.toFixed(3);
+      li.style.transform = 'translate(' + ((1 - d1) * -6).toFixed(1) + 'px,' + (-(li._dy || 0)).toFixed(1) + 'px)';
     }
-    return pts;
-  }
+    const nk = sm((t - 0.74) / 0.08);
+    ring.style.opacity = nk.toFixed(3);
+    ring.style.transform = 'scale(' + (0.6 + 0.4 * nk).toFixed(3) + ')';
+    ring.style.transformOrigin = geo.nx + 'px ' + geo.ny + 'px';
+    glow.style.opacity = (nk * 0.9).toFixed(3);
+    mark.style.opacity = nk.toFixed(3);
+    const dj = sm((t - 0.78) / 0.10);
+    journey.style.strokeDashoffset = (geo.jl * (1 - dj)).toFixed(2);
+    journey.style.opacity = dj > 0.001 ? '1' : '0';
+    jLabel.style.opacity = sm((t - 0.86) / 0.06).toFixed(3);
 
-  /* ── THE SHARPEN ──────────────────────────────────────────────────────
-     WHY THE ANIMATION NOW ENDS ON THE ARTWORK ITSELF.
-     A point cloud can only ever approximate the mark — at 6800 grains the
-     silhouette is right but the frond tips and the inner ring are still
-     rendered as a spray of squares, and next to a logo the reader has just
-     seen at full crispness in the navigation it reads as a low-resolution
-     copy. So the sand does not finish the job: across the last fifth of the
-     scrub the real PNG is cross-faded in over the settled field, and what
-     the mark RESTS as is the artwork, pixel for pixel.
-
-     It is tinted rather than drawn black. The grains are rgb(58,50,38), a
-     warm dark that belongs to the sand, and img-09.png is a near-black
-     silhouette — cross-fading straight to it shifts colour as well as
-     sharpness, which reads as the mark changing rather than resolving.
-     `source-in` keeps the PNG's alpha and replaces its colour, so the two
-     are the same ink and only the resolution changes.
-
-     Built once and cached against its own pixel size: this is a
-     compositing operation, not something to redo per frame. */
-  const MARK_INK = 'rgb(58,50,38)';
-  let tinted = null, tintedFor = 0;
-  function tintedMark(px){
-    if(!img) return null;
-    const want = Math.max(16, Math.round(px));
-    if(tinted && tintedFor === want) return tinted;
-    try {
-      const c = document.createElement('canvas');
-      const ar = img.width / img.height;
-      c.width = Math.round(want * (ar >= 1 ? 1 : ar));
-      c.height = Math.round(want * (ar >= 1 ? 1 / ar : 1));
-      const x = c.getContext('2d');
-      if(!x) return null;
-      x.drawImage(img, 0, 0, c.width, c.height);
-      x.globalCompositeOperation = 'source-in';
-      x.fillStyle = MARK_INK;
-      x.fillRect(0, 0, c.width, c.height);
-      tinted = c; tintedFor = want;
-      return tinted;
-    } catch(e){ return null; }
-  }
-
-  let cw = 0, ch = 0, dpr = 1;
-  function sizeCanvas(){
-    if(!cvs) return false;
-    const w = cvs.clientWidth, h = cvs.clientHeight;
-    if(!w || !h) return false;
-    dpr = Math.min(window.devicePixelRatio || 1, 2);
-    const nw = Math.round(w * dpr), nh = Math.round(h * dpr);
-    if(nw !== cvs.width || nh !== cvs.height){ cvs.width = nw; cvs.height = nh; }
-    cw = nw; ch = nh;
-    return true;
-  }
-
-  /* ── HOW THE RUNWAY IS DIVIDED ────────────────────────────────────────
-     `t` is the reader's progress through .why-mark's 300vh, so 0 is the
-     moment the stage pins and 1 is the moment it releases. Two viewport
-     heights of scroll, spent in three beats:
-
-        0.00 - 0.42   ASSEMBLE   the sand gathers and resolves into the mark
-        0.42 - 0.62   HOLD       nothing moves. The mark simply is.
-        0.62 - 1.00   POP        it comes forward and fills the screen
-
-     The HOLD is the point. An animation that resolves and is immediately
-     taken away never gets looked at — the reader is still catching up with
-     it when it leaves. Twenty per cent of the runway is ~40vh of scroll at
-     390x844, which is a real pause rather than a frame or two.
-     The POP then hands the frame to the Ecosystem section at full size,
-     rather than the mark shrinking away to nothing first. */
-  const ASSEMBLE_END = 0.42, POP_FROM = 0.62;
-
-  function drawMark(t){
-    if(!ctx || !sizeCanvas()) return;
-    ctx.clearRect(0, 0, cw, ch);
-    /* the assembly runs on its own clock inside the first beat, so every
-       window below (the per-grain stagger, the sharpen) keeps meaning what
-       it meant when the whole scrub was the assembly */
-    const aT = clamp01(t / ASSEMBLE_END);
-    const pop = clamp01((t - POP_FROM) / (1 - POP_FROM));
-    const popE = pop * pop * (3 - 2 * pop);
-    /* Resting size is unchanged — ch is the viewport now rather than a
-       330px band, so the cap moves from 0.92 to 0.32 to land on the same
-       number. Full size takes the mark's WIDTH just past the frame
-       (0.945 is its own aspect), which is what makes it read as coming
-       forward rather than merely growing. */
-    const base = Math.min(cw * 0.66, ch * 0.32);
-    const full = Math.min(cw * 1.12, ch * 0.92);
-    const size = base + (full - base) * popE;
-    if(!grains){
-      if(!img) return;
-      const ar = img.width / img.height;
-      const sc = 0.88 + 0.12 * aT;
-      const dh = size * sc, dw = dh * ar;
-      ctx.globalAlpha = 0.12 + 0.88 * aT;
-      ctx.drawImage(img, cw / 2 - dw / 2, ch / 2 - dh / 2, dw, dh);
-      ctx.globalAlpha = 1;
-      live = true;
-      return;
-    }
-    /* A grain a little WIDER than the mean spacing, so the solid parts of
-       the badge read as solid rather than as a screen door. Same formula as
-       the desktop uDotPx and derived from the same numbers: the mark's own
-       drawn area is ~68% of its bounding box and carries `grains.length`
-       points, so mean spacing is sqrt(0.68 * size^2 / N). Computing it
-       rather than hard-coding it is what keeps the density identical at
-       every band height and pixel ratio. */
-    const g = Math.max(1.3 * dpr,
-      Math.min(6 * dpr, 1.25 * Math.sqrt(0.68 * size * size / grains.length)));
-    ctx.fillStyle = 'rgb(58,50,38)';
-    /* The band has hard edges against the ivory, and the scattered phase
-       reaches ~1.5x the mark's own radius — so without this the cloud was
-       sliced off in mid-air at the top, bottom and both sides, which reads
-       as a clipping bug rather than as dust. Fading the grains out over the
-       outer 14% makes the field dissolve into the paper instead, and it is
-       what hides the band's edges entirely. */
-    const fadeX = cw * 0.14, fadeY = ch * 0.14;
-    /* THE SAND LEAVES AS THE ARTWORK ARRIVES. Drawing the crisp mark over a
-       field still at full strength leaves a ~1px fringe of grain around the
-       silhouette — each grain carries up to half a sample cell of jitter, so
-       the ones on the edge settle just outside the artwork's own ink and are
-       never covered by it. Measured, that fringe is the whole of the
-       difference between this and the logo: 3.98 against the artwork's own
-       2.57 on the same window at the same resolution.
-       Squared, so the sand holds its density through most of the cross-fade
-       and only clears at the end — a linear pair would thin the mark in the
-       middle of the hand-over, which is the one moment it must not. */
-    const shA = clamp01((aT - 0.80) / 0.20);
-    const sharpen = shA * shA * (3 - 2 * shA);
-    const grainK = 1 - sharpen * sharpen;
-    for(let i = 0; i < grains.length; i++){
-      const p = grains[i];
-      const k = p.e > p.s ? clamp01((aT - p.s) / (p.e - p.s)) : (aT >= p.e ? 1 : 0);
-      const e = settle(k);
-      const x = cw / 2 + (p.cx + (p.ox - p.cx) * e) * size;
-      const y = ch / 2 + (p.cy + (p.oy - p.cy) * e) * size;
-      const edge = Math.min(1, Math.min(x, cw - x) / fadeX, Math.min(y, ch - y) / fadeY);
-      if(edge <= 0) continue;
-      ctx.globalAlpha = (0.22 + 0.72 * clamp01(k)) * edge * grainK;
-      if(ctx.globalAlpha <= 0.004) continue;
-      ctx.fillRect(x - g / 2, y - g / 2, g, g);
-    }
-    ctx.globalAlpha = 1;
-
-    /* the last beat: the sand resolves into the artwork. Eased, so it
-       arrives rather than switches — a linear cross-fade of a silhouette
-       over its own point cloud reads as a dissolve, which is the one thing
-       this must not look like. */
-    if(sharpen > 0){
-      /* Cached at the POPPED size, which is stable per viewport, and drawn
-         DOWN to the current one. Keyed on the live size it would rebuild a
-         whole canvas on every frame of the pop; built at the resting size
-         and scaled UP it would soften as it grew, which is the opposite of
-         coming forward. */
-      const tm = tintedMark(full);
-      if(tm){
-        const a = sharpen;
-        const dh = size, dw = size * (tm.width / tm.height);
-        ctx.globalAlpha = a;
-        ctx.drawImage(tm, cw / 2 - dw / 2, ch / 2 - dh / 2, dw, dh);
-        ctx.globalAlpha = 1;
-      }
-    }
-    live = true;
-  }
-
-  if(ctx){
-    const im = new Image();
-    im.onload = function(){
-      img = im;
-      try { grains = sample(im); }
-      catch(err){ grains = null; }   /* tainted canvas — fall back to the image */
-      request();
+    const setP = (el, o) => {
+      if(!el) return;
+      el.style.opacity = o.toFixed(3);
+      el.style.transform = 'translateY(' + ((1 - o) * 10).toFixed(1) + 'px)';
+      el.style.visibility = o < 0.002 ? 'hidden' : 'visible';
+      el.style.pointerEvents = o > 0.5 ? 'auto' : 'none';
     };
-    im.onerror = function(){ /* the CSS background stays; nothing to do */ };
-    im.src = 'images/img-09.png';
-  }
-
-  /* ── THE SCRUB ────────────────────────────────────────────────────────
-     One rect read per element per frame, only while the reader is moving.
-
-     A beat's value is driven by its own CENTRE crossing the screen, not by
-     its top: a beat is 74vh and the viewport is 100vh, so keying off the
-     top would have a beat finish arriving before it was properly in frame.
-     Measured at 390x844 the window below is ~455px of scroll per beat with
-     the statistic on screen for all of it. */
-  /* declared above frame() and request() on purpose: the image's onload can
-     call request(), and a `let` read from inside its own temporal dead zone
-     throws rather than reading undefined */
-  let wrote = false, ticking = false, dead = false;
-  function frame(){
-    ticking = false;
-    if(!mq.matches){
-      if(wrote) clear();
-      return;
+    setP(phases['0'], win(t, w.p0[0], w.p0[1], F));
+    setP(phases['1'], win(t, w.p1[0], w.p1[1], F));
+    setP(phases['2'], win(t, w.p2[0], w.p2[1], F));
+    setP(phases['3'], win(t, w.p3[0], w.p3[1], F));
+    if(live){
+      if(mobile){
+        let o = 0, idx = liveIdx;
+        for(let i = 0; i < N; i++){
+          const a = S0 + i * ST;
+          const oi = win(t, a + 0.006, a + 0.044, 0.008);
+          if(t >= a - 0.008 && t <= a + 0.052){ o = oi; idx = i; }
+        }
+        /* the windows leave a clear gap between shifts, so a change of
+           index lands while the line is (near) invisible */
+        if(idx !== liveIdx){
+          liveIdx = idx;
+          liveN.textContent = String(idx + 1).padStart(2, '0') + ' · ' + shifts[idx].querySelector('.wn-t').textContent;
+          liveD.textContent = liveTexts[idx];
+        }
+        setP(live, idx === liveIdx ? o : 0);
+      } else setP(live, 0);
     }
-    const vh = window.innerHeight || 1;
-    const from = vh * 1.00, to = vh * 0.46;
-    for(let i = 0; i < beats.length; i++){
-      const r = beats[i].getBoundingClientRect();
-      const centre = r.top + r.height / 2;
-      const b = clamp01((from - centre) / (from - to));
-      /* smoothstep, so a beat does not start and stop abruptly at the ends
-         of its own window */
-      beats[i].style.setProperty('--b', (b * b * (3 - 2 * b)).toFixed(4));
-    }
-    /* The spine's fill head sits on the middle of the screen, so the line
-       is always filled to exactly where the reader is looking. */
-    const pr = panelsEl.getBoundingClientRect();
-    const inset = vh * 0.08;
-    const span = pr.height - inset * 2;
-    if(span > 0){
-      panelsEl.style.setProperty('--fill',
-        clamp01((vh * 0.5 - (pr.top + inset)) / span).toFixed(4));
-    }
-    if(mark){
-      const mr = mark.getBoundingClientRect();
-      /* 0 the moment the band's top crosses the fold, 1 when that top
-         reaches 0.08vh — 776px of scroll at 390x844 against the 600px this
-         ran in before, which is the 'completes too quick' report. It cannot
-         simply be widened further: the band is 330px in an 844px viewport,
-         so a window longer than ~0.92vh finishes the assembly after the
-         mark has already left the top of the screen. The rest of the extra
-         duration comes from the sharpen, which is a second beat rather than
-         a longer first one. */
-      /* progress through the RUNWAY: 0 the moment the stage pins, 1 the
-         moment it releases. Before it pins mr.top is positive, so t is 0 and
-         the reader sees the scattered field arrive — the assembly itself
-         cannot begin until the mark has the whole screen. */
-      const run = mr.height - vh;
-      const t = run > 0 ? clamp01(-mr.top / run) : (mr.top <= 0 ? 1 : 0);
-      if(mr.bottom > -vh * 0.4 && mr.top < vh * 1.4) drawMark(t);
-      if(live && !mark.classList.contains('live')) mark.classList.add('live');
-    }
-    wrote = true;
   }
 
-  function clear(){
-    wrote = false;
-    for(let i = 0; i < beats.length; i++) beats[i].style.removeProperty('--b');
-    panelsEl.style.removeProperty('--fill');
-    if(mark) mark.classList.remove('live');
+  function restore(){
+    /* back to the CSS resting state: the finished frame */
+    wn.querySelectorAll('.wn-phase, .wn-shift').forEach(el => el.removeAttribute('style'));
+    [ring, glow, mark, jLabel, journey].forEach(el => el.removeAttribute('style'));
+    gStrands.querySelectorAll('path, circle').forEach(el => el.removeAttribute('style'));
   }
 
-  /* If the very first frame throws, put everything back and stop. The
-     section is fully visible without this script; it must never be left
-     half-written. */
-  const raf = window.requestAnimationFrame || function(f){ return setTimeout(f, 16); };
-  function safeFrame(){
-    if(dead){ ticking = false; return; }
-    try { frame(); }
-    catch(err){ dead = true; ticking = false; try { clear(); } catch(e){} }
-  }
-  function request(){
-    if(dead || ticking) return;
-    ticking = true;
-    raf(safeFrame);
-  }
+  let track = null;
+  try {
+    layout();
+    liveN.textContent = '01 · ' + shifts[0].querySelector('.wn-t').textContent;
+    const onResize = () => { layout(); render(track ? track.get() : rawT()); };
+    window.addEventListener('resize', onResize, { passive: true });
+    window.addEventListener('load', onResize, { once: true });
+    if(document.fonts && document.fonts.ready) document.fonts.ready.then(onResize);
+    if(mq.addEventListener) mq.addEventListener('change', onResize);
 
-  /* ── THE SAFETY NET ──────────────────────────────────────────────────
-     Replacing the IntersectionObserver with a scroll listener removed the
-     "observer that never fires" failure and quietly re-created it one layer
-     down: if scroll events never reach the window — a scroll container in
-     the way, an extension, an engine quirk — then --b is written exactly
-     once, at load, where it is 0, and all three statistics stay invisible
-     forever. Reproduced by suppressing window scroll events: stats
-     0.00/0.00/0.00 permanently, no error. It is the same bug wearing a
-     different hat, and a fallback that depends on the thing it is a
-     fallback FOR is not a fallback.
+    track = (window.DAO && DAO.cine)
+      ? DAO.cine.track(wn, { mode: 'guided', pace: 'epic', states: 10 })
+      : null;
+  } catch(err){ restore(); return; }
 
-     So the section is pumped on rAF from load until three scroll events
-     have actually been seen — proof that the cheap path works — and then
-     the pump retires and the listeners carry it with no idle cost. If the
-     listeners never work the pump simply never retires, which is exactly
-     the right trade in the one case where it matters. */
-  let scrollsSeen = 0;
-  function onScroll(){ scrollsSeen++; request(); }
-  function pump(){
-    if(dead) return;
-    request();
-    if(scrollsSeen < 3) raf(pump);
+  function rawT(){
+    const s = wn.offsetHeight - window.innerHeight;
+    if(s <= 0) return wn.getBoundingClientRect().top < 0 ? 1 : 0;
+    return cl(-wn.getBoundingClientRect().top / s);
   }
-  raf(pump);
-  window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', request, { passive: true });
-  window.addEventListener('orientationchange', request, { passive: true });
-  window.addEventListener('load', request);
-  if(document.fonts && document.fonts.ready) document.fonts.ready.then(request);
-  if(mq.addEventListener) mq.addEventListener('change', request);
-  else if(mq.addListener) mq.addListener(request);
-  request();
+  const safe = t => { try { render(t); } catch(err){ restore(); } };
+  if(track){
+    track.on(safe);
+  } else {
+    let queued = false;
+    const onScroll = () => {
+      if(queued) return;
+      queued = true;
+      requestAnimationFrame(() => { queued = false; safe(rawT()); });
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    safe(rawT());
+  }
 })();
+
 </script>
 
 <script>
@@ -6306,6 +4862,13 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
      20 August. This reverses exactly. */
   const items = [...section.querySelectorAll('.jm-item')];
   const lineFill = document.getElementById('jmLineFill');
+  const plates = [...section.querySelectorAll('.jm-plate')];
+  /* plates 2-7 load as the reader approaches, not with the page (~780KB) */
+  const loadPlates = () => plates.forEach(el => { if(el.dataset.bg){ el.style.backgroundImage = "url('" + el.dataset.bg + "')"; delete el.dataset.bg; } });
+  if('IntersectionObserver' in window){
+    const po = new IntersectionObserver(es => { if(es.some(e => e.isIntersecting)){ loadPlates(); po.disconnect(); } }, { rootMargin: '150% 0px 150% 0px' });
+    po.observe(section);
+  } else loadPlates();
   const list = document.getElementById('jmList');
   if(!items.length || !list) return;
   const mqJ = window.matchMedia('(max-width:1100px)');
@@ -6333,12 +4896,20 @@ l24 -55 62 30 c295 143 708 283 1041 354 60 13 112 25 114 28 3 2 -15 62 -39
       items[i].style.setProperty('--dy', (c01(sp - i + 0.5) * -22 + 11).toFixed(2));
       items[i].classList.toggle('on', d < 0.5);
     }
+    /* plates are stacked in order, so plate i only has to fade IN — over
+       the clear frame between stage i-1 and stage i (sp i-0.62 .. i-0.38),
+       which keeps each stage's own picture steady under its type */
+    for(let i = 1; i < plates.length; i++){
+      const k = c01((sp - (i - 0.62)) / 0.24);
+      plates[i].style.opacity = (k * k * (3 - 2 * k)).toFixed(4);
+    }
     jWrote = true;
   }
   function jClear(){
     jWrote = false;
     list.style.removeProperty('--p');
     items.forEach(el => { el.style.removeProperty('--w'); el.style.removeProperty('--dy'); el.classList.remove('on'); });
+    plates.forEach(el => el.style.removeProperty('opacity'));
   }
   const jraf = window.requestAnimationFrame || function(f){ return setTimeout(f, 16); };
   function jSafe(){ if(jDead){ jTick = false; return; } try { jFrame(); } catch(err){ jDead = true; jTick = false; try { jClear(); } catch(e){} } }

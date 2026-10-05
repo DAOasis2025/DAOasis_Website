@@ -299,6 +299,25 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--gold); outline-
 .ln { display: block; overflow: hidden;
   padding-top: 0.14em; margin-top: -0.14em;
   padding-bottom: 0.14em; margin-bottom: -0.14em; }
+
+/* Adjacent masks: the two -0.14em margins COLLAPSE to one, so without this
+   every authored line break carried 0.14em more leading than a natural wrap
+   inside a line (measured 63/71/63px at 1102). -0.28em restores the true
+   line-height between masks. text-wrap:balance stops a long authored line
+   wrapping to a single orphaned word ("doesn't") on narrow columns. */
+.ln + .ln { margin-top: -0.28em; }
+.ln > i { text-wrap: balance; }
+
+/* A headline built from .ln masks already has its measure: the authored
+   lines. A max-width in ch on top of that forced a SECOND set of breaks
+   ("Three connected / experiences.", "The digital layer / doesn't"), which
+   is what read as broken spacing. Authored lines win; a narrow column still
+   wraps them, balanced. (4 October 2026) */
+:is(h1,h2,h3,.display):has(> .ln) { max-width: none !important; }
+/* The .spread head column is ~480px at 1440: at the shared display size
+   its authored lines ("The infrastructure", "becomes recognised.") wrapped
+   to a single word. One step down holds them whole on desktop. */
+@media (min-width:901px){ .spread .display { font-size: clamp(36px,4.6vw,66px); } }
 .ln > i { display: block; font-style: inherit; color: inherit; transform: translateY(108%); transition:transform 1.15s var(--ease); }
 .rv.show .ln > i { transform: translateY(0); }
 .rv .ln:nth-child(2) > i { transition-delay: 0.09s; }
@@ -841,6 +860,23 @@ img{height:auto;}
 .on-light .display em, .on-light .display-sm em { color: #9A6A3F; }
 </style>
 
+<style>
+/* ══ VISIBILITY PASS — 4 October 2026 ═══════════════════════════════════
+   Every value here came from a pixel audit: each line of text measured
+   against the REAL rendered background (photographs included) at 1440x900
+   and 390x844, worst 5% of samples, WCAG AA (4.5:1 body, 3:1 large). Kept in
+   one block, last in the cascade, so every change is in one place. Large
+   decorative numerals and deliberately dimmed "not yet reached" states in
+   scrubbed sequences were left as designed. */
+.stage-arrow { color: #7F4F22; }
+.disc-n, .pr-n { color: #6f685b; }
+.ah em { color: #7c5430; }
+.ah .eyebrow, .ah-hint { color: #4f493f; }
+.ah-sub { color: #3f3a33; }
+.sys-k, .sys-hub-s { color: #D49B69; }
+.on-light .pf-role, .stage-s { color: #6e4320; }
+.ah i { text-shadow: 0 0 18px rgba(231,224,212,0.7); }
+</style>
 </head>
 <body>
 
@@ -1260,7 +1296,7 @@ img{height:auto;}
         <div class="par" data-par="0.12" style="height:min(58vh,540px);">
           <div class="par-layer" style="background-image:linear-gradient(180deg,rgba(20,26,23,0.3),rgba(20,26,23,0.48)),var(--img-hospitality);"></div>
         </div>
-        <div style="margin-top:20px;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(247,244,238,0.5);">
+        <div style="margin-top:20px;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(247,244,238,0.72);">
           The Sanctuary · Phuket · Planned for 2027
         </div>
       </div>

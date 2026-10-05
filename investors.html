@@ -347,6 +347,25 @@ input:focus-visible, textarea:focus-visible {
 .ln { display: block; overflow: hidden;
   padding-top: 0.14em; margin-top: -0.14em;
   padding-bottom: 0.14em; margin-bottom: -0.14em; }
+
+/* Adjacent masks: the two -0.14em margins COLLAPSE to one, so without this
+   every authored line break carried 0.14em more leading than a natural wrap
+   inside a line (measured 63/71/63px at 1102). -0.28em restores the true
+   line-height between masks. text-wrap:balance stops a long authored line
+   wrapping to a single orphaned word ("doesn't") on narrow columns. */
+.ln + .ln { margin-top: -0.28em; }
+.ln > i { text-wrap: balance; }
+
+/* A headline built from .ln masks already has its measure: the authored
+   lines. A max-width in ch on top of that forced a SECOND set of breaks
+   ("Three connected / experiences.", "The digital layer / doesn't"), which
+   is what read as broken spacing. Authored lines win; a narrow column still
+   wraps them, balanced. (4 October 2026) */
+:is(h1,h2,h3,.display):has(> .ln) { max-width: none !important; }
+/* The .spread head column is ~480px at 1440: at the shared display size
+   its authored lines ("The infrastructure", "becomes recognised.") wrapped
+   to a single word. One step down holds them whole on desktop. */
+@media (min-width:901px){ .spread .display { font-size: clamp(36px,4.6vw,66px); } }
 .ln > i {
   display: block; font-style: inherit; color: inherit;
   transform: translateY(108%);
@@ -1108,6 +1127,35 @@ img{height:auto;}
 .on-light .display em, .on-light .display-sm em { color: #9A6A3F; }
 </style>
 
+<style>
+/* ══ VISIBILITY PASS — 4 October 2026 ═══════════════════════════════════
+   Every value here came from a pixel audit: each line of text measured
+   against the REAL rendered background (photographs included) at 1440x900
+   and 390x844, worst 5% of samples, WCAG AA (4.5:1 body, 3:1 large). Kept in
+   one block, last in the cascade, so every change is in one place. Large
+   decorative numerals and deliberately dimmed "not yet reached" states in
+   scrubbed sequences were left as designed. */
+.pm-n, .row-n, .on-light .row-n { color: #5f594f; }
+.on-dark .row-n { color: #D49B69; }
+.on-green .row-n { color: rgba(247,244,238,0.86); }
+.cap-u-n, .mx-arrow { color: #7F4F22; }
+#investorHero em { color: #E8B88A; }
+#investorHero .eyebrow { color: #F0C79B; text-shadow: 0 0 12px rgba(10,8,6,0.9), 0 1px 3px rgba(10,8,6,0.8); }
+#investorHero { text-shadow: 0 1px 18px rgba(10,8,6,0.5); }
+.doc-k, .doc-a.soon, .doc-a.hold, .docs-cta-note { color: #a39b8e; }
+#finalContact, #finalContact a { color: #E8B88A; }
+.on-light .disclose b { color: #6e4320; }
+.on-dark .disclose b { color: #D49B69; }
+.jr-li-km span { color: #a39b8e; }
+.lp-step-n, .lay-s, .lay-k, .wp-n, .tri-f, .lay-b b { color: #D49B69; }
+#journey .jr-li-r { color: rgba(247,244,238,0.64); }
+.legal p { color: #9a9285; }
+.chip-future { color: #a99fbd; }
+.pm thead th.pm-us, .pm-p, .on-light .chip-building, .chip-building { color: #6e4320; }
+.pm-y { color: #3f5a3f; }
+#vision p, #vision .disclose { color: #c4bcae; }
+#vision .vs-inner { text-shadow: 0 1px 14px rgba(10,8,6,0.7); }
+</style>
 </head>
 <body>
 
@@ -1154,7 +1202,7 @@ img{height:auto;}
 <header class="ih grain" id="investorHero">
   <div class="ih-bg"></div>
   <div class="ih-inner rv">
-    <div class="eyebrow" style="color:var(--gold)">Investor Overview</div>
+    <div class="eyebrow">Investor Overview</div>
     <h1 class="ih-h1">
       <span class="ln"><i>A wellness ecosystem</i></span>
       <span class="ln"><i>where <em>participation</em></i></span>
@@ -2174,19 +2222,19 @@ img{height:auto;}
     <div class="spread-tight rv" style="margin-top:11vh;">
       <div class="soft d1">
         <div class="rows" style="border-color:rgba(247,244,238,0.2);">
-          <div class="row" style="border-color:rgba(247,244,238,0.2);"><div class="row-n" style="color:rgba(247,244,238,0.55)">01</div><div>
+          <div class="row" style="border-color:rgba(247,244,238,0.2);"><div class="row-n">01</div><div>
             <div class="row-t" style="color:var(--warm-white)">Phuket, planned for 2027</div>
             <div class="row-b" style="color:rgba(247,244,238,0.72)">An established global wellness-tourism destination with mature hospitality
             infrastructure and strong international access — 7.6M+ visitors between January and July 2025, per Tourism Authority of Thailand data.</div></div></div>
-          <div class="row" style="border-color:rgba(247,244,238,0.2);"><div class="row-n" style="color:rgba(247,244,238,0.55)">02</div><div>
+          <div class="row" style="border-color:rgba(247,244,238,0.2);"><div class="row-n">02</div><div>
             <div class="row-t" style="color:var(--warm-white)">16 rooms. Adults only.</div>
             <div class="row-b" style="color:rgba(247,244,238,0.72)">Designed around an experiential sweet spot of 10–15 guests. The capacity
             ceiling is physical and real, which is precisely what makes access to it worth competing for.</div></div></div>
-          <div class="row" style="border-color:rgba(247,244,238,0.2);"><div class="row-n" style="color:rgba(247,244,238,0.55)">03</div><div>
+          <div class="row" style="border-color:rgba(247,244,238,0.2);"><div class="row-n">03</div><div>
             <div class="row-t" style="color:var(--warm-white)">A seven-day rolling programme</div>
             <div class="row-b" style="color:rgba(247,244,238,0.72)">No fixed cohort start date. Guests arrive on any day and join a rhythm
             already in motion — structured, but not regimented.</div></div></div>
-          <div class="row" style="border-color:rgba(247,244,238,0.2);"><div class="row-n" style="color:rgba(247,244,238,0.55)">04</div><div>
+          <div class="row" style="border-color:rgba(247,244,238,0.2);"><div class="row-n">04</div><div>
             <div class="row-t" style="color:var(--warm-white)">Asset-light by intent</div>
             <div class="row-b" style="color:rgba(247,244,238,0.72)">Leased or partnership-based hospitality models rather than owned
             infrastructure, to be operated through a separate Thai entity once that side is live, so the digital ecosystem never carries hospitality risk.</div></div></div>
