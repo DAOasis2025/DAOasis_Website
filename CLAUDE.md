@@ -7359,3 +7359,20 @@ so photo, fade and text share one height.
 screen. Now the October HM-01 screen on a blurred, darkened version of the same
 scene. `hero.jpg` / `hero-mobile.jpg` / `eco-app*.jpg` (index) still
 photograph the old design and need re-rendered photography.
+
+## Home hero photographs replaced with the October render — 7 October 2026
+
+`images/hero.jpg` (desktop, 1672x941, 314KB) and `images/hero-mobile.jpg`
+(941x1672, 265KB) now show the October app design (HM-01) between the band and
+the watch. References bumped to `?v=20261007`.
+
+- **Mobile** re-measured: products at source y **40.97%–88.16%** (was
+  35.5–88.3). Row 4's floor is now **83.9vw** (0.4719 × 1.7768) and the anchor
+  offset **21vw** (0.1184 × 1.7768). Judged by eye at 390x844 and 375x667.
+- **Desktop is an interim.** The render is 16:9 and the phone fills y 8%–97%,
+  so any window wider than 16:9 must crop it (at 1348x601 ~31% of the height).
+  `background-position` y is **18%**, which keeps the phone's header and
+  greeting and gives the crop to the tab bar and plinth. The real fix is a
+  wider re-render: ~21:9, 2400px+ wide, phone centred near 60–62% across with
+  its top at ~20% and base at ~85% of the height, the left ~40% open sky and
+  sea for the headline. When it arrives, re-measure and reset the 18%.
