@@ -319,7 +319,7 @@
      window — but it makes the hero TALLER than the viewport exactly where
      the problem bites: at 1917x920 it computes to 1093px, so the phone was
      whole and 173px of it sat below the fold, which is worse than a crop.
-     The real constraint is the source image, not this rule. images/hero.jpg
+     The real constraint is the source image, not this rule. images/hero.jpg?v=20261006
      is 1.777:1 and its phone fills y 3.0%-95.5%, leaving 7.5% of croppable
      height; a maximised laptop viewport is ~2.08:1 and needs ~15% removed.
      Until the photograph is re-rendered wider with real headroom around the
@@ -364,7 +364,7 @@
      across the sky and the water so the photograph reads as morning, and
      only gathering under the CTAs where white type needs a floor. The
      vignette and the centre bloom (below) carry the rest. */
-  .bg{position:absolute;inset:0;z-index:0;background-image:linear-gradient(180deg, rgba(15,13,11,0.34) 0%, rgba(15,13,11,0.24) 30%, rgba(15,13,11,0.34) 62%, rgba(15,13,11,0.72) 100%), url('images/img-01.jpg');background-size:cover;background-position:center 30%;
+  .bg{position:absolute;inset:0;z-index:0;background-image:linear-gradient(180deg, rgba(15,13,11,0.34) 0%, rgba(15,13,11,0.24) 30%, rgba(15,13,11,0.34) 62%, rgba(15,13,11,0.72) 100%), url('images/img-01.jpg?v=20261006');background-size:cover;background-position:center 30%;
     opacity:0;transform:translateY(var(--py,0px)) scale(var(--bgs,1.045));
     transition:opacity 1.8s var(--ease), transform 2.1s var(--ease);
     will-change:transform,opacity;}
@@ -476,7 +476,7 @@
 
   /* HERO — full bleed, type in a strong left column.
      The placement is measured, not chosen by eye. At cover, the phone in
-     images/hero.jpg occupies source x 34%-58%, which lands on screen at:
+     images/hero.jpg?v=20261006 occupies source x 34%-58%, which lands on screen at:
 
          1280  x 435-742      1440  x 463-847      1920  x 652-1113
 
@@ -552,7 +552,7 @@
         rgba(20,17,15,0.30) 88%,
         rgba(247,246,242,0.35) 97%,
         var(--warm-white) 100%),
-      url('images/hero.jpg');
+      url('images/hero.jpg?v=20261006');
     background-size:cover,cover,cover;
     background-position:center,center,center 62%;
     background-repeat:no-repeat,no-repeat,no-repeat;}
@@ -687,7 +687,7 @@
   @media (max-width:800px){
     .content{padding:calc(var(--nav-h) + 2vh) 7% 9vh;justify-content:center;}
     /* MOBILE — full bleed too, type in the upper band.
-       A different PHOTOGRAPH, not a crop: images/hero-mobile.jpg is
+       A different PHOTOGRAPH, not a crop: images/hero-mobile.jpg?v=20261006 is
        941x1672 portrait with the products recomposed vertically. Cover-
        cropping the landscape frame into a phone showed only its centre
        third and lost the band and the watch entirely.
@@ -700,7 +700,7 @@
     /* MOBILE — the same composition, made for a portrait frame rather
        than shrunk from the desktop one. Full bleed, copy over the
        photograph, no panel and no split.
-       images/hero-mobile.jpg is 941x1672 with the products at source y
+       images/hero-mobile.jpg?v=20261006 is 941x1672 with the products at source y
        35.5%-88.3%. Scaled to the WIDTH and anchored bottom it renders
        390x693, which puts the phone's top edge at 47% of the screen and its
        base at 92% — the phone, the band and the watch all whole, and 336px
@@ -773,8 +773,8 @@
           rgba(20,17,15,0.26) 90%,
           rgba(247,246,242,0.30) 97%,
           var(--warm-white) 100%),
-        url('images/hero-mobile.jpg'),
-        url('images/hero-mobile.jpg');
+        url('images/hero-mobile.jpg?v=20261006'),
+        url('images/hero-mobile.jpg?v=20261006');
       background-size:cover,100% auto,cover;
       /* THE PLATE IS PUSHED DOWN 5vh, AND THAT IS WHERE THE ROOM CAME FROM.
          The type block had exactly ZERO clearance above the phone at
@@ -1026,8 +1026,8 @@
           rgba(23,20,18,0.00) 89%,
           rgba(23,20,18,0.50) 96.5%,
           var(--mineral) 100%),
-        url('images/hero-mobile.jpg'),
-        url('images/hero-mobile.jpg');
+        url('images/hero-mobile.jpg?v=20261006'),
+        url('images/hero-mobile.jpg?v=20261006');
       background-size:cover,100% auto,cover;
       background-position:center, center bottom calc(var(--hero-ground) - 20.8vw), center top;
       background-repeat:no-repeat,no-repeat,no-repeat;}
@@ -1231,7 +1231,7 @@
        0.52 phone box shows only its centre 24%, which is the phone alone.
        Items two and three have no portrait variant, so their crop is aimed
        by hand at the subject instead. */
-    .eco-item:nth-child(1) .eco-plate{background-image:url('images/eco-app-mobile.jpg')!important;
+    .eco-item:nth-child(1) .eco-plate{background-image:url('images/eco-app-mobile.jpg?v=20261006')!important;
       background-position:center 50%;}
     .eco-item:nth-child(2) .eco-plate{background-position:32% 46%;}
     .eco-item:nth-child(3) .eco-plate{background-position:56% 52%;}
@@ -1510,8 +1510,8 @@
   .wn-ring{fill:rgba(16,14,12,0.85);stroke:rgba(232,184,138,0.7);stroke-width:1;}
   /* 4 Oct: 28px read as lost inside the ring — the mark is the payoff of the
      section, so it is the size of a headline, and centred exactly */
-  /* placed in whole pixels by layout(), on the mark's visual centre — the
-     palm's weight sits 1.5% left and 0.8% above its image box */
+  /* placed in whole pixels by layout(), with the artwork's round outline
+     centred on the ring (see layout) */
   .wn-mark{position:absolute;left:0;top:0;width:60px;height:auto;pointer-events:none;opacity:1;}
   .wn-journey-l{position:absolute;left:0;top:0;transform:translate(0,-170%);white-space:nowrap;
     font-size:var(--t-nano);letter-spacing:0.24em;text-transform:uppercase;color:#D49B69;}
@@ -2045,8 +2045,13 @@
     .jm-item:nth-child(3) .jm-label,.jm-item:nth-child(3) .jm-text{opacity:var(--w,1);}
 
     @media (max-height:700px){
-      .jm-list::before{height:46vh;}
-      .jm-item{top:46vh;bottom:12vh;}
+      /* ONE height for the photo, its fade and the text below it. This used
+         to set only the fade (46vh) while the photo band stayed at
+         min(52vh,100vw), so on any phone under 700px tall the bottom
+         ~40px of every photograph ended unfaded on a hard line, with the
+         stage title printed across it. */
+      .jm-list{--jm-band:min(46vh, 100vw);}
+      .jm-item{bottom:12vh;}
       .jm-item::before{font-size:clamp(48px,13vw,68px);}
       .jm-label{font-size:clamp(26px,7.4vw,34px);}
     }
@@ -2057,7 +2062,7 @@
        exact fault the 1 September pass removed everywhere else. This motion
        is scroll-LINKED: it moves only while the reader moves and stops when
        they stop, so it is kept under reduced motion, the same position
-       js/cine.js takes. */
+       js/cine.js?v=20261006 takes. */
   }
 
   /* THE JOURNEY */
@@ -2118,7 +2123,7 @@
         rgba(16,13,11,0.72) 100%),
       radial-gradient(ellipse 130% 62% at 50% 44%,
         rgba(78,60,44,0.42) 0%, rgba(46,36,28,0.20) 46%, rgba(23,20,18,0) 76%),
-      url('images/journey-image.jpg');
+      url('images/journey-image.jpg?v=20261006');
     background-size:cover;background-position:center;background-repeat:no-repeat;
     display:grid;grid-template-rows:auto minmax(0,1fr);
     padding:clamp(46px,7vh,76px) 5% clamp(34px,5vh,56px);}
@@ -2327,7 +2332,7 @@
           rgba(23,20,18,1) 100%),
         radial-gradient(ellipse 140% 45% at 50% 18%,
           rgba(78,60,44,0.40) 0%, rgba(23,20,18,0) 72%),
-        url('images/journey-image-mobile.jpg');
+        url('images/journey-image-mobile.jpg?v=20261006');
       background-size:100% 100%, 100% 100%, 100% auto;
       background-position:center top;
       background-repeat:no-repeat;background-attachment:scroll;}
@@ -2619,7 +2624,7 @@
   /* CLOSING — full-bleed photograph with real scroll parallax */
   .closing-section{position:relative;min-height:106vh;display:flex;align-items:center;overflow:hidden;background:var(--mineral);}
   .closing-bg{position:absolute;inset:-12% 0;z-index:0;
-    background-image:url('images/Sunrise.jpg');
+    background-image:url('images/Sunrise.jpg?v=20261006');
     background-size:cover;background-position:center left;will-change:transform;}
   .closing-veil{position:absolute;inset:0;z-index:1;pointer-events:none;
     background:linear-gradient(to right,
@@ -2752,7 +2757,7 @@
   html[data-theme="light"] .headline {color: #2B2623;}
   html[data-theme="light"] .headline em {color: #C48A5A;}
   html[data-theme="light"] .type-cursor {background: #C48A5A;}
-  html[data-theme="light"] .bg {background-image:linear-gradient(180deg,rgba(10,8,6,0.45) 0%,rgba(10,8,6,0.35) 30%,rgba(10,8,6,0.32) 55%,rgba(10,8,6,0.62) 100%), url('images/img-01.jpg');}
+  html[data-theme="light"] .bg {background-image:linear-gradient(180deg,rgba(10,8,6,0.45) 0%,rgba(10,8,6,0.35) 30%,rgba(10,8,6,0.32) 55%,rgba(10,8,6,0.62) 100%), url('images/img-01.jpg?v=20261006');}
   html[data-theme="light"] .nav {background: rgba(247,244,238,0.94);border-bottom-color: rgba(43,38,35,0.1);}
   html[data-theme="light"] .nav-brand span {color: #171412;}
   html[data-theme="light"] .nav-brand img {filter: invert(1) brightness(0.3);}
@@ -3160,7 +3165,7 @@ img{height:auto;}
 <a class="skip-link" href="#mainContent">Skip to content</a>
 
   <div class="intro">
-    <div class="logo"><img fetchpriority="high" decoding="async" width="1400" height="429" src="images/img-02.png" alt="DAOasis logo" /></div>
+    <div class="logo"><img fetchpriority="high" decoding="async" width="1400" height="429" src="images/img-02.png?v=20261006" alt="DAOasis logo" /></div>
     <div class="headline" id="headline"></div>
     <button type="button" id="skipIntroBtn" class="intro-skip">Skip intro</button>
   </div>
@@ -3173,7 +3178,7 @@ img{height:auto;}
       <span class="nav-burger-label">Menu</span>
     </button>
     <a class="nav-brand" href="index.html" id="navBrand">
-      <img decoding="async" width="465" height="492" src="images/img-09-white.png" alt="DAOasis" />
+      <img decoding="async" width="465" height="492" src="images/img-09-white.png?v=20261006" alt="DAOasis" />
       <span>DAOasis</span>
     </a>
     <a class="nav-cta" href="#waitlistSection">Join the waitlist</a>
@@ -3182,7 +3187,7 @@ img{height:auto;}
   <div class="nav-drawer-backdrop" id="navDrawerBackdrop"></div>
   <div class="nav-drawer" id="navDrawer" role="dialog" aria-label="Menu" aria-hidden="true" inert>
     <div class="nav-drawer-head">
-      <img loading="lazy" decoding="async" width="1400" height="429" src="images/img-02.png" alt="DAOasis" />
+      <img loading="lazy" decoding="async" width="1400" height="429" src="images/img-02.png?v=20261006" alt="DAOasis" />
       <button class="nav-drawer-close" id="navDrawerClose" aria-label="Close menu">&times;</button>
     </div>
     <div class="nav-drawer-list">
@@ -3272,7 +3277,7 @@ img{height:auto;}
   <div class="divider dark divider-hero" aria-hidden="true">
     <div class="divider-inner">
       <div class="divider-line"></div>
-      <img loading="lazy" decoding="async" width="465" height="492" src="images/img-09-white.png" alt="" class="divider-mark" />
+      <img loading="lazy" decoding="async" width="465" height="492" src="images/img-09-white.png?v=20261006" alt="" class="divider-mark" />
       <div class="divider-line"></div>
     </div>
   </div>
@@ -3326,7 +3331,7 @@ img{height:auto;}
       </div>
 
       <div class="wn-field" id="wnField">
-        <svg class="wn-svg" id="wnSvg" aria-hidden="true" focusable="false">
+        <svg class="wn-svg" id="wnSvg" aria-hidden="true" focusable="false" preserveAspectRatio="xMinYMin meet">
           <defs>
             <radialGradient id="wnGlow"><stop offset="0" stop-color="#E8B88A" stop-opacity="0.55"/><stop offset="1" stop-color="#E8B88A" stop-opacity="0"/></radialGradient>
           </defs>
@@ -3335,7 +3340,7 @@ img{height:auto;}
           <path class="wn-journey" id="wnJourney"/>
           <circle class="wn-ring" id="wnRing" r="30"/>
         </svg>
-        <img class="wn-mark" id="wnMark" src="images/img-09-white.png" width="465" height="492" alt="" decoding="async" />
+        <img class="wn-mark" id="wnMark" src="images/img-09-white.png?v=20261006" width="465" height="492" alt="" decoding="async" />
         <div class="wn-journey-l" id="wnJourneyL">One Journey</div>
         <ol class="wn-shifts" id="wnShifts">
           <li class="wn-shift"><span class="wn-n">01</span><span class="wn-t">Wellness</span><span class="wn-d">Health is shifting from treatment to everyday prevention.</span></li>
@@ -3360,7 +3365,7 @@ img{height:auto;}
 <div class="divider dark bg-mineral">
   <div class="divider-inner">
     <div class="divider-line"></div>
-    <img loading="lazy" decoding="async" width="465" height="492" src="images/img-09-white.png" alt="" class="divider-mark" />
+    <img loading="lazy" decoding="async" width="465" height="492" src="images/img-09-white.png?v=20261006" alt="" class="divider-mark" />
     <div class="divider-line"></div>
   </div>
 </div>
@@ -3389,7 +3394,7 @@ img{height:auto;}
 <div class="eco-outer" id="ecoOuter">
   <div class="eco-stage" id="ecoStage">
       <div class="eco-item">
-        <div class="eco-plate" style="background-image:url('images/eco-app.jpg');background-position:center 52%;" role="img" aria-label="Companion App"></div>
+        <div class="eco-plate" style="background-image:url('images/eco-app.jpg?v=20261006');background-position:center 52%;" role="img" aria-label="Companion App"></div>
         <div class="eco-veil" aria-hidden="true"></div>
         <div class="eco-panel">
           <div class="eco-step">Step one</div>
@@ -3400,7 +3405,7 @@ img{height:auto;}
         </div>
       </div>
       <div class="eco-item">
-        <div class="eco-plate" style="background-image:url('images/img-07.jpg');background-position:38% 55%;" role="img" aria-label="DAOasis Sanctuaries"></div>
+        <div class="eco-plate" style="background-image:url('images/img-07.jpg?v=20261006');background-position:38% 55%;" role="img" aria-label="DAOasis Sanctuaries"></div>
         <div class="eco-veil" aria-hidden="true"></div>
         <div class="eco-panel">
           <div class="eco-step">Step two</div>
@@ -3411,7 +3416,7 @@ img{height:auto;}
         </div>
       </div>
       <div class="eco-item">
-        <div class="eco-plate" style="background-image:url('images/eco-ownership.jpg');background-position:center 50%;" role="img" aria-label="Digital Ownership"></div>
+        <div class="eco-plate" style="background-image:url('images/eco-ownership.jpg?v=20261006');background-position:center 50%;" role="img" aria-label="Digital Ownership"></div>
         <div class="eco-veil" aria-hidden="true"></div>
         <div class="eco-panel">
           <div class="eco-step">Step three</div>
@@ -3459,7 +3464,7 @@ img{height:auto;}
     </div>
 
     <div class="dash-wrap" id="dashWrap">
-      <img fetchpriority="low" decoding="async" class="dash-img" src="images/app-home-morning.webp" width="758" height="1600" alt="The DAOasis Companion App home screen: the day's journey, and six habits as tiles." />
+      <img fetchpriority="low" decoding="async" class="dash-img" src="images/app-home-morning.webp?v=20261006" width="758" height="1600" alt="The DAOasis Companion App home screen: the day's journey, and six habits as tiles." />
 
       <div class="callout co-dir-left co1" id="co1">
         <div class="co-dot"></div><div class="co-line"></div>
@@ -3502,7 +3507,7 @@ img{height:auto;}
   <div class="eco-kicker">The daily experience</div>
   <div class="eco-headline">Track what matters. <em>Thrive every day.</em></div>
   <div class="eco-sub">Your whole day on one screen. Every habit here moves the same marker down the same road.</div>
-  <div class="tm-dash"><img loading="lazy" decoding="async" src="images/app-home-morning.webp" width="758" height="1600" alt="The DAOasis Companion App home screen: the day's journey, and six habits as tiles." /></div>
+  <div class="tm-dash"><img loading="lazy" decoding="async" src="images/app-home-morning.webp?v=20261006" width="758" height="1600" alt="The DAOasis Companion App home screen: the day's journey, and six habits as tiles." /></div>
   <div class="tm-list">
     <div class="tm-item"><div class="tm-label">Where you are</div><div class="tm-text">It opens on the day and the road ahead rather than a number — the direction you are going, not yesterday's total.</div></div>
     <div class="tm-item"><div class="tm-label">Your journey</div><div class="tm-text">One marker, nine hundred kilometres. Every habit you complete today moves it forward.</div></div>
@@ -3516,7 +3521,7 @@ img{height:auto;}
 <div class="divider light bg-ivory">
   <div class="divider-inner">
     <div class="divider-line"></div>
-    <img loading="lazy" decoding="async" width="465" height="492" src="images/img-09.png" alt="" class="divider-mark" />
+    <img loading="lazy" decoding="async" width="465" height="492" src="images/img-09.png?v=20261006" alt="" class="divider-mark" />
     <div class="divider-line"></div>
   </div>
 </div>
@@ -3619,7 +3624,7 @@ img{height:auto;}
          Each dissolves in across the clear frame BETWEEN two stages, so a
          stage's type always sits on its own picture. Squares cropped from
          existing project photography (journey-m-01..07.jpg). -->
-    <div class="jm-plates" id="jmPlates" aria-hidden="true"><div class="jm-plate" style="background-image:url('images/journey-m-01.jpg')"></div><div class="jm-plate" data-bg="images/journey-m-02.jpg"></div><div class="jm-plate" data-bg="images/journey-m-03.jpg"></div><div class="jm-plate" data-bg="images/journey-m-04.jpg"></div><div class="jm-plate" data-bg="images/journey-m-05.jpg"></div><div class="jm-plate" data-bg="images/journey-m-06.jpg"></div><div class="jm-plate" data-bg="images/journey-m-07.jpg"></div></div>
+    <div class="jm-plates" id="jmPlates" aria-hidden="true"><div class="jm-plate" style="background-image:url('images/journey-m-01.jpg?v=20261006')"></div><div class="jm-plate" data-bg="images/journey-m-02.jpg?v=20261006"></div><div class="jm-plate" data-bg="images/journey-m-03.jpg?v=20261006"></div><div class="jm-plate" data-bg="images/journey-m-04.jpg?v=20261006"></div><div class="jm-plate" data-bg="images/journey-m-05.jpg?v=20261006"></div><div class="jm-plate" data-bg="images/journey-m-06.jpg?v=20261006"></div><div class="jm-plate" data-bg="images/journey-m-07.jpg?v=20261006"></div></div>
     <div class="jm-line-base"></div>
     <div class="jm-line-fill" id="jmLineFill"></div>
     <div class="jm-item"><div class="jm-dot"></div><div class="jm-label">Download the App</div><div class="jm-text">Your journey starts with a single tap.</div></div>
@@ -3636,7 +3641,7 @@ img{height:auto;}
 <div class="divider dark bg-mineral">
   <div class="divider-inner">
     <div class="divider-line"></div>
-    <img loading="lazy" decoding="async" width="465" height="492" src="images/img-09-white.png" alt="" class="divider-mark" />
+    <img loading="lazy" decoding="async" width="465" height="492" src="images/img-09-white.png?v=20261006" alt="" class="divider-mark" />
     <div class="divider-line"></div>
   </div>
 </div>
@@ -3684,7 +3689,7 @@ img{height:auto;}
 
   <div class="cm-body">
     <div class="cm-body-image par" data-par="0.12" role="img" aria-label="A DAOasis sanctuary terrace at last light">
-      <div class="par-layer" style="background-image:url('images/img-01.jpg');background-position:60% 58%;"></div>
+      <div class="par-layer" style="background-image:url('images/img-01.jpg?v=20261006');background-position:60% 58%;"></div>
       <div class="cm-body-image-caption">The people who build this, own this.</div>
     </div>
     <div class="cm-body-text">
@@ -3719,7 +3724,7 @@ img{height:auto;}
 <div class="divider light bg-ivory">
   <div class="divider-inner">
     <div class="divider-line"></div>
-    <img loading="lazy" decoding="async" width="465" height="492" src="images/img-09.png" alt="" class="divider-mark" />
+    <img loading="lazy" decoding="async" width="465" height="492" src="images/img-09.png?v=20261006" alt="" class="divider-mark" />
     <div class="divider-line"></div>
   </div>
 </div>
@@ -3745,7 +3750,7 @@ img{height:auto;}
 
     <!-- RIGHT: large image — always visible on entry -->
     <div class="pr-image-col" id="prImageCol">
-      <img fetchpriority="low" decoding="async" width="1672" height="941" class="pr-clarity-image" id="prClarityImage" src="images/clarity.jpg" alt="Clarity" />
+      <img fetchpriority="low" decoding="async" width="1672" height="941" class="pr-clarity-image" id="prClarityImage" src="images/clarity.jpg?v=20261006" alt="Clarity" />
     </div>
   </div>
 </div>
@@ -3765,7 +3770,7 @@ img{height:auto;}
 <div class="divider light bg-ivory divider-after-principle">
   <div class="divider-inner">
     <div class="divider-line"></div>
-    <img loading="lazy" decoding="async" width="465" height="492" src="images/img-09.png" alt="" class="divider-mark" />
+    <img loading="lazy" decoding="async" width="465" height="492" src="images/img-09.png?v=20261006" alt="" class="divider-mark" />
     <div class="divider-line"></div>
   </div>
 </div>
@@ -3786,7 +3791,7 @@ img{height:auto;}
 <div class="divider dark bg-mineral">
   <div class="divider-inner">
     <div class="divider-line"></div>
-    <img loading="lazy" decoding="async" width="465" height="492" src="images/img-09-white.png" alt="" class="divider-mark" />
+    <img loading="lazy" decoding="async" width="465" height="492" src="images/img-09-white.png?v=20261006" alt="" class="divider-mark" />
     <div class="divider-line"></div>
   </div>
 </div>
@@ -3834,7 +3839,7 @@ img{height:auto;}
   <div class="footer-top">
     <div class="footer-brand">
       <div class="footer-brand-logo">
-        <img loading="lazy" decoding="async" width="465" height="492" src="images/img-09-white.png" alt="DAOasis mark" />
+        <img loading="lazy" decoding="async" width="465" height="492" src="images/img-09-white.png?v=20261006" alt="DAOasis mark" />
         <span>DAOasis</span>
       </div>
       <div class="footer-tagline">
@@ -3877,9 +3882,9 @@ img{height:auto;}
   </div>
 </footer>
 
-<!-- Controlled Cinematic Scroll — shared pacing controller, see js/cine.js -->
-<script src="js/smooth.js"></script>
-<script src="js/cine.js"></script>
+<!-- Controlled Cinematic Scroll — shared pacing controller, see js/cine.js?v=20261006 -->
+<script src="js/smooth.js?v=20261006"></script>
+<script src="js/cine.js?v=20261006"></script>
 <script>
   /* ── HERO ────────────────────────────────────────────────────────────
      The route map, its five waypoints, the measured label-placement pass,
@@ -4588,8 +4593,12 @@ img{height:auto;}
     glow.setAttribute('cx', nx); glow.setAttribute('cy', ny);
     glow.setAttribute('r', mobile ? 100 : 170);
     const mw = mark.offsetWidth || 60, mh = mw * 492 / 465;
-    mark.style.left = Math.round(nx - mw * 225.4 / 465) + 'px';
-    mark.style.top  = Math.round(ny - mh * 242 / 492) + 'px';
+    /* centre the artwork's own ROUND OUTLINE on the ring — that is the
+       shape the eye lines up. In the 465x492 PNG the circle is 465 across
+       and sits at the bottom (the palm crown pokes above it), so its centre
+       is (232, 259), not the box centre (232, 246). */
+    mark.style.left = Math.round(nx - mw * 232 / 465) + 'px';
+    mark.style.top  = Math.round(ny - mh * 259 / 492) + 'px';
     /* never past the field's right edge — on a phone the line from the
        node to the edge is short, so the label right-aligns to the edge */
     const jlw = jLabel.offsetWidth || 90;
@@ -4685,6 +4694,21 @@ img{height:auto;}
     window.addEventListener('load', onResize, { once: true });
     if(document.fonts && document.fonts.ready) document.fonts.ready.then(onResize);
     if(mq.addEventListener) mq.addEventListener('change', onResize);
+    /* THE FIELD CAN CHANGE SIZE WITHOUT A WINDOW RESIZE. On Windows the
+       scrollbar arrives after first layout and narrows the page by ~17px;
+       no 'resize' fires, the SVG (viewBox fixed at the old width) scales
+       down from its own origin, and the ring slid ~11px left of the HTML
+       mark — the "logo not centred" report. Headless tests hide scrollbars,
+       so they never saw it. Re-measure whenever the field itself resizes. */
+    if(window.ResizeObserver){
+      let lastW = 0, lastH = 0;
+      new ResizeObserver(entries => {
+        const cr = entries[0].contentRect;
+        if(Math.abs(cr.width - lastW) < 0.5 && Math.abs(cr.height - lastH) < 0.5) return;
+        lastW = cr.width; lastH = cr.height;
+        onResize();
+      }).observe(field);
+    }
 
     track = (window.DAO && DAO.cine)
       ? DAO.cine.track(wn, { mode: 'guided', pace: 'epic', states: 10 })
@@ -4901,7 +4925,7 @@ img{height:auto;}
 
      NOT ONE-WAY. The old version latched furthestActive and could only
      ever go forwards, so scrolling back up left the section showing its
-     finished state — the same fault that was removed from js/cine.js on
+     finished state — the same fault that was removed from js/cine.js?v=20261006 on
      20 August. This reverses exactly. */
   const items = [...section.querySelectorAll('.jm-item')];
   const lineFill = document.getElementById('jmLineFill');
