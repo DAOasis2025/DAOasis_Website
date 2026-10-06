@@ -7426,3 +7426,10 @@ top band, scaled and blurred, blended in over 340px. The plate is anchored
 `100% 100%`. Whole phones, clear of the copy column, at 1024x768, 1280x800,
 1348x601, 1440x900, 1920x1080 and 2560x1080. Generator: `scratchpad/ecocomp.js`
 — rebuild from the source if the render changes, do not edit the JPEG.
+
+## Mobile home hero — new portrait render — 6 October 2026
+`images/hero-mobile.jpg` replaced (941x1671, 310KB, `?v=20261009`). Products at
+source y ~43.9%–86.9%, so row 4's floor is now **76.5vw** and the anchor offset
+**23.3vw** (re-measure both if the image changes). Checked by eye at 360x740,
+375x667, 390x844, 430x932: phone, band and watch whole, clear of the type and
+buttons, 0 overflow, 0 errors.
