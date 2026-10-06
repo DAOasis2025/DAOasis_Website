@@ -12,11 +12,11 @@
     } catch(e) { /* private mode: fall through to the dark default */ }
 
     /* ── FAIL-VISIBLE GATE ──
-       Every hidden reveal start-state in css/trust.css is scoped to
+       Every hidden reveal start-state in css/trust.css?v=20261006 is scoped to
        `html.js`. Adding the class here — inline, in the same file as the
        markup, so it cannot 404 — is what switches the animation on.
 
-       If js/trust.js never runs (blocked, stripped, 404, or it throws
+       If js/trust.js?v=20261006 never runs (blocked, stripped, 404, or it throws
        before attaching its observer) the class is dropped 2.5s later and
        the whole document paints at full strength. A privacy policy must
        never be able to render as invisible type. */
@@ -56,7 +56,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Frank+Ruhl+Libre:wght@300;400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="css/trust.css" />
+<link rel="stylesheet" href="css/trust.css?v=20261006" />
 <style>
 /* ── THE STRETCH GUARD ────────────────────────────────────────────────
    width/height on an <img> are presentational hints that set a real CSS
@@ -83,7 +83,7 @@ img{height:auto;}
     <span class="nav-burger-label">Menu</span>
   </button>
   <a class="nav-brand" href="index.html">
-    <img decoding="async" width="465" height="492" src="images/img-09-white.png" alt="DAOasis" />
+    <img decoding="async" width="465" height="492" src="images/img-09-white.png?v=20261006" alt="DAOasis" />
     <span>DAOasis</span>
   </a>
   <a class="nav-cta" href="index.html#waitlistSection">Join the waitlist</a>
@@ -92,7 +92,7 @@ img{height:auto;}
 <div class="nav-drawer-backdrop" id="navDrawerBackdrop"></div>
 <div class="nav-drawer" id="navDrawer" role="dialog" aria-label="Menu" aria-hidden="true" inert>
   <div class="nav-drawer-head">
-    <img decoding="async" width="465" height="492" src="images/img-09-white.png" alt="DAOasis" />
+    <img decoding="async" width="465" height="492" src="images/img-09-white.png?v=20261006" alt="DAOasis" />
     <button class="nav-drawer-close" id="navDrawerClose" aria-label="Close menu">&times;</button>
   </div>
   <div class="nav-drawer-list">
@@ -584,7 +584,7 @@ img{height:auto;}
 <footer class="site-footer">
   <div class="footer-top">
     <div>
-      <div class="footer-brand-logo"><img loading="lazy" decoding="async" width="465" height="492" src="images/img-09-white.png" alt="DAOasis mark" /><span>DAOasis</span></div>
+      <div class="footer-brand-logo"><img loading="lazy" decoding="async" width="465" height="492" src="images/img-09-white.png?v=20261006" alt="DAOasis mark" /><span>DAOasis</span></div>
       <div class="footer-tagline"><strong>Wellness meets Web3.</strong><em>Rest · Learn · Earn · Return</em></div>
       <div class="footer-social">
         <div class="footer-col-label">Community</div>
@@ -616,7 +616,7 @@ img{height:auto;}
   <div class="footer-bottom"><span>© 2026 DAOasis Global Ltd. All rights reserved.</span><span>Phuket · Global</span></div>
 </footer>
 
-<script src="js/smooth.js"></script>
-<script src="js/trust.js"></script>
+<script src="js/smooth.js?v=20261006"></script>
+<script src="js/trust.js?v=20261006"></script>
 </body>
 </html>

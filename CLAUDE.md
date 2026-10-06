@@ -7332,3 +7332,30 @@ Reproduced by narrowing `<html>` 17px after load (old: +7.4px off, ring
 artwork's round outline (PNG centre 232,259), not its box or its mass.
 > **Test with a forced width change** — any SVG-plus-HTML composition here
 > can drift the same way; window `resize` is not enough.
+
+## Mobile showed old screens — it was the cache — 6 October 2026
+
+`vercel.json` served every image, script and stylesheet with
+`max-age=31536000, immutable`, and screens were replaced **under the same
+filenames**. Any phone that had visited kept its year-long copy of the old
+screens (desktop Ctrl+Shift+R bypasses that; a phone cannot). Also true of
+every earlier same-name replacement of `js/cine.js`, `js/smooth.js`,
+`js/trust.js` and `css/trust.css`.
+
+- **Every** `images/` / `js/` / `css/` reference on all 13 pages now carries
+  `?v=20261006` (262 references), so existing caches miss once.
+- `vercel.json`: images, js and css are now `public, max-age=0,
+  must-revalidate` (fonts stay immutable). A browser now revalidates with a
+  cheap 304, so **a file replaced under the same name via the GitHub upload
+  shows up on the next load**. If the site ever goes back to long-lived
+  caching, bump the `?v=` token whenever a file is replaced.
+
+**Mobile Journey photos** ended on a hard unfaded edge on any phone under
+700px tall: the max-height:700 block set the fade to 46vh while the photo
+band stayed `min(52vh,100vw)`. Now that block sets `--jm-band:min(46vh,100vw)`
+so photo, fade and text share one height.
+
+**`journey-m-01.jpg` rebuilt**: it was a hand holding a phone with the OLD home
+screen. Now the October HM-01 screen on a blurred, darkened version of the same
+scene. `hero.jpg` / `hero-mobile.jpg` / `eco-app*.jpg` (index) still
+photograph the old design and need re-rendered photography.
