@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<script>/*JV2-SLASH: opened without a trailing slash, relative links would resolve one folder up*/if(/\/app$/.test(location.pathname))location.replace(location.pathname+"/"+location.search+location.hash);</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex,nofollow" />
+<title>App V2 Journey Screens</title>
+<meta name="description" content="DAOasis Companion App — Journey V2 screens, for review only." />
+<link rel="icon" href="/favicon.ico" sizes="any" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@400;500;600&family=Frank+Ruhl+Libre:wght@300;400&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="app-v2.css" />
+</head>
+<body>
+<header class="rv-head">
+  <span class="rv-tag">Journey V2 · For review only</span>
+  <h1>The Companion App, <em>where your Journey lives.</em></h1>
+  <p>Seven screens: two updated (Home and Journey) and five new. Every other screen in the app stays exactly as it is. Every screen is drawn from one Journey data file, so choosing a different Journey below re-renders all seven with no special case. That is the architecture: Journey 1 and Journey 20 use the same screens.</p>
+  <div class="rv-switch" id="switch"><span>Render with</span></div>
+</header>
+<p class="rv-note">Figures on these screens are illustrative demo states, not a scoring model. Route maps are drawn from each stage's real coordinates; mountain plates are generated artwork, not photography. Back to the <a href="../" style="color:inherit">V2 review hub</a>.</p>
+<main class="rv-grid" id="grid"></main>
+<script src="../journeys/journeys-data.js"></script>
+<script src="../tools/journey-art.js"></script>
+<script src="app-v2.js"></script>
+</body>
+</html>

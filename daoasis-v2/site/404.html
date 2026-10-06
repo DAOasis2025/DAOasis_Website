@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="robots" content="noindex,nofollow" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Page not found | DAOasis</title>
+<meta name="description" content="That page could not be found. Return to DAOasis — Rest · Learn · Earn · Return" />
+<meta name="robots" content="noindex, follow" />
+<link rel="icon" href="/favicon.ico" sizes="any" />
+<link rel="icon" href="/favicon-32.png" type="image/png" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Frank+Ruhl+Libre:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --warm-white:#F7F4EE; --charcoal:#2B2623; --mineral:#171412;
+    --gold:#C48A5A; --dark-surface:#211D1A;
+    --ink-dim:#A49C90;          /* 6.0:1 on --mineral */
+    --ease:cubic-bezier(0.22,1,0.36,1);
+  }
+  *,*::before,*::after{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    background:var(--mineral); color:var(--warm-white);
+    font-family:'Frank Ruhl Libre',Georgia,serif;
+    min-height:100vh; min-height:100dvh;
+    display:flex; flex-direction:column;
+    /* a single quiet warm bloom, the same gesture the home hero uses */
+    background-image:radial-gradient(120% 80% at 50% 8%, rgba(196,138,90,0.10), rgba(196,138,90,0) 60%);
+    background-repeat:no-repeat;
+  }
+  a{color:inherit;}
+  :focus-visible{outline:2px solid var(--gold); outline-offset:3px; border-radius:2px;}
+
+  .skip{position:absolute; left:-9999px; top:0;}
+  .skip:focus{left:16px; top:16px; z-index:10; background:var(--warm-white); color:var(--charcoal);
+    padding:10px 18px; border-radius:2px; font-size:13px; text-decoration:none;}
+
+  .brand{padding:28px 7% 0;}
+  .brand a{display:inline-flex; align-items:center; gap:10px; text-decoration:none;}
+  .brand img{width:26px; height:auto; display:block;}
+  .brand span{font-family:'Cormorant Garamond',Georgia,serif; font-size:18px; letter-spacing:0.01em;}
+
+  main{flex:1 1 auto; display:flex; align-items:center; justify-content:center; padding:10vh 7% 8vh;}
+  .card{max-width:34em; text-align:center;}
+
+  .code{
+    font-family:'Frank Ruhl Libre',Georgia,serif; font-size:10.5px;
+    letter-spacing:0.24em; text-transform:uppercase; color:var(--gold);
+  }
+  h1{
+    font-family:'Cormorant Garamond',Georgia,serif; font-weight:300;
+    font-size:clamp(34px,7vw,62px); line-height:1.08; margin:18px 0 0;
+  }
+  h1 em{font-style:italic; color:var(--gold);}
+  .lede{
+    margin:22px auto 0; max-width:30em;
+    font-size:clamp(15.5px,2.2vw,17px); line-height:1.78; color:var(--ink-dim);
+  }
+  .rule{width:34px; height:1px; background:var(--gold); opacity:0.85; margin:30px auto 0;}
+
+  .routes{
+    margin:30px auto 0; display:flex; flex-wrap:wrap; gap:12px;
+    justify-content:center; align-items:stretch;
+  }
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center;
+    min-height:48px; padding:13px 28px; border-radius:26px;
+    font-size:13.5px; letter-spacing:0.03em; text-decoration:none;
+    transition:opacity 0.2s var(--ease), border-color 0.2s var(--ease);
+  }
+  .btn-primary{background:var(--warm-white); color:var(--charcoal);}
+  .btn-primary:hover{opacity:0.88;}
+  .btn-ghost{border:1px solid rgba(247,244,238,0.34); color:var(--warm-white);}
+  .btn-ghost:hover{border-color:var(--warm-white);}
+
+  nav.more{margin:38px auto 0; padding-top:26px; border-top:1px solid rgba(247,244,238,0.1);}
+  .more-k{
+    font-size:10.5px; letter-spacing:0.2em; text-transform:uppercase;
+    color:var(--ink-dim); margin-bottom:14px;
+  }
+  .more ul{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:10px 26px; justify-content:center;}
+  .more a{
+    /* inline-block + padding so each route clears the 24px minimum target
+       size without changing how the row reads */
+    display:inline-block; font-size:14.5px; color:var(--warm-white); text-decoration:none;
+    border-bottom:1px solid rgba(196,138,90,0.5); padding:4px 0 5px; min-height:24px;
+    transition:border-color 0.2s var(--ease);
+  }
+  .more a:hover{border-bottom-color:var(--warm-white);}
+
+  footer{
+    padding:0 7% 34px; text-align:center;
+    font-size:10.5px; letter-spacing:0.2em; text-transform:uppercase; color:var(--ink-dim);
+  }
+
+  @media (max-width:480px){
+    main{padding:7vh 6% 6vh;}
+    .brand{padding:22px 6% 0;}
+    .routes{flex-direction:column;}
+    .btn{width:100%;}
+    footer{padding:0 6% 28px;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{transition:none !important;}
+  }
+</style>
+</head>
+<body>
+<a class="skip" href="#content">Skip to content</a>
+
+<div class="brand">
+  <a href="/" aria-label="DAOasis home">
+    <img src="/images/img-09-white.png" width="26" height="28" alt="" decoding="async" />
+    <span>DAOasis</span>
+  </a>
+</div>
+
+<main id="content">
+  <div class="card">
+    <p class="code">Error 404</p>
+    <h1>This page has <em>wandered off.</em></h1>
+    <p class="lede">
+      The address you followed does not exist, or the page has moved since the link
+      was made. Nothing is lost — the rest of DAOasis is exactly where you left it.
+    </p>
+    <div class="rule" role="presentation"></div>
+
+    <div class="routes">
+      <a class="btn btn-primary" href="/">Return to the home page</a>
+      <a class="btn btn-ghost" href="/contact">Tell us what broke</a>
+    </div>
+
+    <nav class="more" aria-labelledby="more-k">
+      <p class="more-k" id="more-k">Or go straight to</p>
+      <ul>
+        <li><a href="/app">The Companion App</a></li>
+        <li><a href="/sanctuary">The Sanctuary</a></li>
+        <li><a href="/web3">The Web3 Layer</a></li>
+        <li><a href="/about">About Us</a></li>
+        <li><a href="/investors">Investors</a></li>
+      </ul>
+    </nav>
+  </div>
+</main>
+
+<footer>Rest · Learn · Earn · Return</footer>
+<!--JV2-TAG--><a href="../" class="jv2-tag" style="position:fixed;right:14px;bottom:14px;z-index:9999;font:500 10.5px/1 'Frank Ruhl Libre',Georgia,serif;letter-spacing:.16em;text-transform:uppercase;color:#171412;background:#E3B98C;padding:8px 12px;border-radius:99px;text-decoration:none;box-shadow:0 6px 18px rgba(0,0,0,.25)">Journey V2 · review copy</a><!--/JV2-TAG-->
+</body>
+</html>
