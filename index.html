@@ -1510,8 +1510,8 @@
   .wn-ring{fill:rgba(16,14,12,0.85);stroke:rgba(232,184,138,0.7);stroke-width:1;}
   /* 4 Oct: 28px read as lost inside the ring — the mark is the payoff of the
      section, so it is the size of a headline, and centred exactly */
-  /* placed in whole pixels by layout(), on the mark's visual centre — the
-     palm's weight sits 1.5% left and 0.8% above its image box */
+  /* placed in whole pixels by layout(), with the artwork's round outline
+     centred on the ring (see layout) */
   .wn-mark{position:absolute;left:0;top:0;width:60px;height:auto;pointer-events:none;opacity:1;}
   .wn-journey-l{position:absolute;left:0;top:0;transform:translate(0,-170%);white-space:nowrap;
     font-size:var(--t-nano);letter-spacing:0.24em;text-transform:uppercase;color:#D49B69;}
@@ -3326,7 +3326,7 @@ img{height:auto;}
       </div>
 
       <div class="wn-field" id="wnField">
-        <svg class="wn-svg" id="wnSvg" aria-hidden="true" focusable="false">
+        <svg class="wn-svg" id="wnSvg" aria-hidden="true" focusable="false" preserveAspectRatio="xMinYMin meet">
           <defs>
             <radialGradient id="wnGlow"><stop offset="0" stop-color="#E8B88A" stop-opacity="0.55"/><stop offset="1" stop-color="#E8B88A" stop-opacity="0"/></radialGradient>
           </defs>
@@ -4588,8 +4588,12 @@ img{height:auto;}
     glow.setAttribute('cx', nx); glow.setAttribute('cy', ny);
     glow.setAttribute('r', mobile ? 100 : 170);
     const mw = mark.offsetWidth || 60, mh = mw * 492 / 465;
-    mark.style.left = Math.round(nx - mw * 225.4 / 465) + 'px';
-    mark.style.top  = Math.round(ny - mh * 242 / 492) + 'px';
+    /* centre the artwork's own ROUND OUTLINE on the ring — that is the
+       shape the eye lines up. In the 465x492 PNG the circle is 465 across
+       and sits at the bottom (the palm crown pokes above it), so its centre
+       is (232, 259), not the box centre (232, 246). */
+    mark.style.left = Math.round(nx - mw * 232 / 465) + 'px';
+    mark.style.top  = Math.round(ny - mh * 259 / 492) + 'px';
     /* never past the field's right edge — on a phone the line from the
        node to the edge is short, so the label right-aligns to the edge */
     const jlw = jLabel.offsetWidth || 90;
@@ -4685,6 +4689,21 @@ img{height:auto;}
     window.addEventListener('load', onResize, { once: true });
     if(document.fonts && document.fonts.ready) document.fonts.ready.then(onResize);
     if(mq.addEventListener) mq.addEventListener('change', onResize);
+    /* THE FIELD CAN CHANGE SIZE WITHOUT A WINDOW RESIZE. On Windows the
+       scrollbar arrives after first layout and narrows the page by ~17px;
+       no 'resize' fires, the SVG (viewBox fixed at the old width) scales
+       down from its own origin, and the ring slid ~11px left of the HTML
+       mark — the "logo not centred" report. Headless tests hide scrollbars,
+       so they never saw it. Re-measure whenever the field itself resizes. */
+    if(window.ResizeObserver){
+      let lastW = 0, lastH = 0;
+      new ResizeObserver(entries => {
+        const cr = entries[0].contentRect;
+        if(Math.abs(cr.width - lastW) < 0.5 && Math.abs(cr.height - lastH) < 0.5) return;
+        lastW = cr.width; lastH = cr.height;
+        onResize();
+      }).observe(field);
+    }
 
     track = (window.DAO && DAO.cine)
       ? DAO.cine.track(wn, { mode: 'guided', pace: 'epic', states: 10 })

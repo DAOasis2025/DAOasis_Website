@@ -7319,3 +7319,16 @@ headline is `nowrap` above 900px so "Why DAOasis" never breaks. At 1348 the
 list moved 590 → 522px and the node 1168 → 1115px; at 1920 the list moved
 840 → 607px. 0 label overlaps at nine sizes, headline clears the list by
 26–43px.
+
+### The mark really was off centre on Windows — 6 October 2026 (later still)
+Measured from the user's screenshot: mark 11px right of the ring, ring 98px
+not 100. Cause: the Windows scrollbar arrives AFTER first layout and narrows
+the page ~17px with **no `resize` event**, so the SVG kept its old viewBox
+and scaled down from its origin while the HTML mark stayed put. Headless
+Chrome hides scrollbars, so every earlier check measured it centred.
+Reproduced by narrowing `<html>` 17px after load (old: +7.4px off, ring
+98.7px). Fixed with a `ResizeObserver` on `.wn-field` that re-runs
+`layout()`; after: 0.1px / 0.4px off. The mark is now centred on the
+artwork's round outline (PNG centre 232,259), not its box or its mass.
+> **Test with a forced width change** — any SVG-plus-HTML composition here
+> can drift the same way; window `resize` is not enough.
