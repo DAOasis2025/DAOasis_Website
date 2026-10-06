@@ -7246,12 +7246,14 @@ co2 14%/65% next waypoint, co3 78%/24% day card, co4 80%/84% tiles).
 Verified 0 card/card, card/image and card/running-head overlap at six desktop
 sizes.
 
-### STILL THE OLD DESIGN — not in the upload
-`app-module` (LE-02), `app-lesson` (LE-03) — the learning strip, the
-Ecosystem Learn beat and web3 row 3 — and `app-credits-open` (RC-03), the
-rewards strip's second figure. They are the gold-accent September design next
-to green October screens. **Re-export LE-02, LE-03 and RC-03 and drop them in
-under the same filenames.**
+### The last three, supplied the same day
+LE-02 → `app-module`, LE-03 → `app-lesson`, RC-02 → `app-credits-source`
+(947x2000 sources, transparent corners, same pipeline). **Every app screen on
+the site is now the October design.** The rewards strip is RC-02 ("Where every
+credit came from", its own footnote as caption) + RC-01 ("And where they can
+lead", the Sanctuary-contribution line verbatim). RC-03 was never needed, so
+`app-credits-open.webp` was deleted. The lesson alt now names the real lesson,
+"Timing, not counting".
 
 ### Flagged in the new screens themselves
 - QU-02, QU-03, QU-06 and JO-05 have text **cut off at the right edge** in the
