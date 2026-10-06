@@ -7204,3 +7204,86 @@ dimmed by design and documented as such above.
 `index.html` · `app.html` · `sanctuary.html` · `web3.html` · `investors.html`
 · `about.html` · **`css/trust.css`** · **`images/journey-m-01.jpg` …
 `journey-m-07.jpg` (NEW, 7 files)**. No JS file changed.
+
+---
+
+## October 2026 app screens · hero tagline under the nav · Why Now labels — 6 October 2026
+
+`index.html` · `app.html` · images. web3.html needed no markup change (same
+filenames, alts still true).
+
+### The new screens
+The founders uploaded 28 screens from the October blueprint export to the repo
+as `Screenshots Github/`. Twelve now ship, **overwriting the existing
+filenames** so every page picks them up (WebP, height 1600, q88,
+`alphaQuality:100`, alpha min 0, 53–123 KB each). The raw folder was then
+**removed from the repo** — 40 MB of PNGs that would otherwise be served
+publicly by Vercel. They are still in git history (commit 592d87a).
+
+| file | screen | used on |
+|---|---|---|
+| app-home-morning | HM-01 | app hero centre, Living Ecosystem 1, index Track ×2, web3 row 4 |
+| app-steps | QU-02 | **app hero left** (was breathing), Ecosystem Move |
+| app-sleep | QU-03 | Ecosystem Rest |
+| app-breathing | QU-15 breathe-today | Ecosystem Breathe |
+| app-hydration | QU-10 hydrate-today | Ecosystem Hydrate |
+| app-journey-map | JO-01 | app hero right, web3 row 1 |
+| app-quests | QU-01 | How It Works 01, web3 row 2 |
+| app-arrival (NEW) | JO-05 | How It Works 02 (was app-approaching) |
+| app-quest-complete (NEW) | QU-06 | How It Works 03 "Earn" (was app-credits) |
+| app-credits | RC-01 | Rewards strip, first figure (was app-credits-source) |
+| app-community | CO-01 | web3 row 5 |
+| app-marketplace | MK-01 | app marketplace scene 0, web3 row 6 + single device |
+
+Deleted as unused: `app-approaching`, `app-home-evening`, `app-credits-source`.
+
+**Copy that moved with the screens:** the Breathe row now reads "The rest stop
+at Hua Hin is open" (verbatim from QU-15); the Move alt is 4.8 of 6.0 km; the
+rewards-strip caption is drawn from RC-01. **HM-01 lost its "One small step"
+band**, so index's co2 callout is now "The next waypoint" (13 km to Hua Hin)
+and all four dots were re-anchored to the new layout (co1 15%/50% route,
+co2 14%/65% next waypoint, co3 78%/24% day card, co4 80%/84% tiles).
+Verified 0 card/card, card/image and card/running-head overlap at six desktop
+sizes.
+
+### The last three, supplied the same day
+LE-02 → `app-module`, LE-03 → `app-lesson`, RC-02 → `app-credits-source`
+(947x2000 sources, transparent corners, same pipeline). **Every app screen on
+the site is now the October design.** The rewards strip is RC-02 ("Where every
+credit came from", its own footnote as caption) + RC-01 ("And where they can
+lead", the Sanctuary-contribution line verbatim). RC-03 was never needed, so
+`app-credits-open.webp` was deleted. The lesson alt now names the real lesson,
+"Timing, not counting".
+
+### Flagged in the new screens themselves
+- QU-02, QU-03, QU-06 and JO-05 have text **cut off at the right edge** in the
+  export ("…FINISH", "…MORNING", "…YOU ARE READ"). Invisible at site size,
+  but it is in the source files.
+- MK-01 lists WHOOP 5.0 at "299 USD or in DVT" and courses priced in DVT —
+  the same pattern the previous marketplace screen had, but it is a
+  third-party product with a USD price on a page family that bans prices.
+  A content call.
+
+### Hero tagline under the nav on short laptops
+`.content` centred a stack taller than its band, so half the overflow went up
+under the fixed nav — REST · LEARN · EARN · RETURN sat 15–38px BEHIND the bar
+at 1101–1440 wide below ~720px tall. New rule for `min-width:801px and
+max-height:780px`: `justify-content: safe center`, a smaller bottom reserve,
+the headline tracking 7.2vh, and the scroll hint hidden below 620px tall
+(it touched the social row at 1101x600). Kicker now clears the nav by 17–81px
+at every short size; tall windows unchanged.
+
+### Why Now labels
+`.wn-t` 19–25 → **21–28px**, `.wn-d` 13.5 → **14.5px** (13 on short laptops),
+numerals 13px. The mark is 58px in a 100px ring and centred on the node.
+Verified 0 label overlaps and 0 escaping the field at nine sizes, 360 → 1920.
+
+### Verified
+13 pages × 7 sizes (1920x1080 → 360x640), each swept top to bottom: 0
+horizontal overflow, 0 JS errors, 0 broken images, no unexpected 404s.
+
+### Upload
+`index.html` · `app.html` · the twelve `images/app-*.webp` listed above
+(two NEW: `app-arrival.webp`, `app-quest-complete.webp`). Delete
+`images/app-approaching.webp`, `app-home-evening.webp`,
+`app-credits-source.webp` and the `Screenshots Github` folder.

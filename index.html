@@ -640,6 +640,24 @@
   .scroll-hint{position:absolute;bottom:calc(3vh + 26px + 34px);left:6%;right:auto;z-index:10;
     text-align:left;color:rgba(247,244,238,0.5);font-size:var(--t-nano);letter-spacing:0.28em;text-transform:uppercase;
     opacity:0;animation:fadeUp 1.3s ease-out forwards;animation-delay:6.55s;}
+  /* SHORT DESKTOP WINDOWS (6 October 2026). On a laptop with the browser
+     chrome showing — 1342x594 was the reported case — the stack is taller
+     than the band between the nav and the bottom padding, and
+     justify-content:center splits the overflow EQUALLY, so half of it went
+     up under the fixed nav and REST · LEARN · EARN · RETURN disappeared
+     behind it (measured 15-38px under the bar at 1101-1440 wide).
+     `safe center` sends any overflow downward instead, the bottom reserve
+     shrinks to the scroll hint's own height, and the headline tracks the
+     viewport height a little harder. Tall windows are untouched. */
+  @media (min-width:801px) and (max-height:780px){
+    .content{justify-content:safe center;
+      padding-top:calc(var(--nav-h) + 3vh);padding-bottom:calc(2vh + 52px);}
+    .h1{font-size:clamp(32px,min(4.6vw,7.2vh),78px);}
+    .scroll-hint{bottom:calc(1.6vh + 14px);}
+  }
+  /* Below ~620px tall the column runs right down to where the hint sits
+     (0px apart at 1101x600), so the hint stands down there. */
+  @media (min-width:801px) and (max-height:620px){ .scroll-hint{display:none;} }
 
   /* The hero route map (.journey-wrap, .wp-label, .wp-sub, #routeMaskPath,
      .wp-group and its five states) was removed on 3 September along with the
@@ -1486,17 +1504,19 @@
   .wn-origin{fill:#E8B88A;opacity:0.75;}
   .wn-journey{fill:none;stroke:#E8B88A;stroke-width:2;stroke-linecap:butt;}
   .wn-ring{fill:rgba(16,14,12,0.85);stroke:rgba(232,184,138,0.7);stroke-width:1;}
-  .wn-mark{position:absolute;left:0;top:0;width:28px;height:auto;pointer-events:none;
-    transform:translate(-50%,-52%);opacity:1;}
+  /* 4 Oct: 28px read as lost inside the ring — the mark is the payoff of the
+     section, so it is the size of a headline, and centred exactly */
+  .wn-mark{position:absolute;left:0;top:0;width:58px;height:auto;pointer-events:none;
+    transform:translate(-50%,-50%);opacity:1;}
   .wn-journey-l{position:absolute;left:0;top:0;transform:translate(0,-170%);white-space:nowrap;
     font-size:var(--t-nano);letter-spacing:0.24em;text-transform:uppercase;color:#D49B69;}
   .wn-shifts{list-style:none;margin:0;padding:0;}
   .wn-shift{position:absolute;left:0;top:0;transform:translateY(-14px);
     display:grid;grid-template-columns:auto 1fr;column-gap:12px;align-items:baseline;}
-  .wn-n{font-size:var(--t-nano);letter-spacing:0.18em;color:#D49B69;}
-  .wn-t{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:clamp(19px,min(1.6vw,3vh),25px);
+  .wn-n{font-size:13px;letter-spacing:0.16em;color:#D49B69;}
+  .wn-t{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:clamp(21px,min(1.8vw,3.3vh),28px);
     line-height:1.1;color:var(--warm-white);}
-  .wn-d{grid-column:2;margin-top:4px;font-size:var(--t-note);line-height:1.5;color:rgba(247,244,238,0.68);}
+  .wn-d{grid-column:2;margin-top:5px;font-size:14.5px;line-height:1.5;color:rgba(247,244,238,0.72);}
 
   /* Short laptops: the conclusion phase is the tallest thing in the copy
      column. Measured to fit at 1347x597 with these. */
@@ -1504,7 +1524,7 @@
     .wn-copy{padding-top:clamp(64px,10vh,90px);padding-bottom:3vh;}
     .wn-body{font-size:15.5px;line-height:1.6;}
     .wn-evidence{font-size:13.5px;line-height:1.55;}
-    .wn-d{font-size:12.5px;line-height:1.42;}
+    .wn-d{font-size:13px;line-height:1.42;}
   }
   @media (min-width:901px) and (max-height:640px){
     .wn-src{display:none;}
@@ -1542,10 +1562,10 @@
     .wn-live{display:block;}
     .wn-live .wn-n{display:block;margin-bottom:8px;}
     .wn-live .wn-lede{font-size:clamp(20px,5.6vw,25px);}
-    .wn-t{font-size:clamp(17px,4.6vw,21px);}
+    .wn-t{font-size:clamp(18px,5vw,22px);}
     .wn-d{display:none;}
     .wn-shift{column-gap:9px;}
-    .wn-mark{width:22px;}
+    .wn-mark{width:40px;}
     .wn-journey-l{display:none;}   /* no room beside the node on a phone */
     .wn-after{display:block;background:#100E0C;padding:6vh 6% calc(14vh + 26px);}
     .wn-after .wn-evidence{margin-top:0;font-size:var(--t-meta);}
@@ -1782,10 +1802,17 @@
      and the journey section further down this page already introduces
      DRC ("Earn DRC · Quests, learning and referrals turn effort into
      Reward Credits"), so nothing was lost by re-pointing it. */
-  .co1{left:22%;top:40%;transform:translate(-100%,-50%);}
-  .co2{left:22%;top:82%;transform:translate(-100%,-50%);}
-  .co3{left:78%;top:20%;transform:translate(0,-50%);}
-  .co4{left:78%;top:62%;transform:translate(0,-50%);}
+  /* RE-ANCHORED 6 October 2026 for the October export of HM-01, whose
+     layout moved: the journey card is now a six-stop route (dots at 50%)
+     with the next waypoint under it (64%), the habit tiles sit at 84%,
+     and there is no "One small step" band any more — co2 now names the
+     next-waypoint card, which is the screen's own replacement for it.
+     co3 sits on the day card (Hua Hin, 27C). layoutCallouts() separates
+     the two left-hand cards along their leader lines. */
+  .co1{left:15%;top:50%;transform:translate(-100%,-50%);}
+  .co2{left:14%;top:65%;transform:translate(-100%,-50%);}
+  .co3{left:78%;top:24%;transform:translate(0,-50%);}
+  .co4{left:80%;top:84%;transform:translate(0,-50%);}
   .callout.co1 .co-line,.callout.co2 .co-line,
   .callout.co3 .co-line,.callout.co4 .co-line{width:90px;}
   /* co4 is NOT in this list — it already clears the image via its own tuned
@@ -3439,8 +3466,8 @@ img{height:auto;}
       <div class="callout co-dir-left co2" id="co2">
         <div class="co-dot"></div><div class="co-line"></div>
         <div class="co-card">
-          <div class="co-label">One small step</div>
-          <div class="co-text">The day closes on the smallest possible next action. Nothing here is a streak: a day missed costs the day, never the journey.</div>
+          <div class="co-label">The next waypoint</div>
+          <div class="co-text">Thirteen kilometres to Hua Hin. The screen always shows the next place on the road rather than a target to hit, and it updates on its own as you move.</div>
         </div>
       </div>
       <div class="callout co-dir-right co3" id="co3">
@@ -3475,7 +3502,7 @@ img{height:auto;}
     <div class="tm-item"><div class="tm-label">Where you are</div><div class="tm-text">It opens on the day and the road ahead rather than a number — the direction you are going, not yesterday's total.</div></div>
     <div class="tm-item"><div class="tm-label">Your journey</div><div class="tm-text">One marker, nine hundred kilometres. Every habit you complete today moves it forward.</div></div>
     <div class="tm-item"><div class="tm-label">Today's actions</div><div class="tm-text">Move, Rest, Breathe, Hydrate, Nourish and Learn. Six habits on one screen, all feeding the same journey.</div></div>
-    <div class="tm-item"><div class="tm-label">One small step</div><div class="tm-text">The day closes on the smallest possible next action. Nothing here is a streak — a day missed costs the day, never the journey.</div></div>
+    <div class="tm-item"><div class="tm-label">The next waypoint</div><div class="tm-text">Thirteen kilometres to Hua Hin. The screen shows the next place on the road rather than a target to hit, and it updates on its own as you move.</div></div>
   </div>
 </div>
 
@@ -4481,13 +4508,15 @@ img{height:auto;}
     return 1;
   };
 
-  const S0 = 0.10, ST = 0.06, SD = 0.05;        /* strand i draws over [S0+i*ST, +SD] */
+  const S0 = 0.10, ST = 0.06, SD = 0.075;        /* strand i draws over [S0+i*ST, +SD] */
   const C0 = 0.64, CS = 0.012, CD = 0.11;       /* convergence */
   const WIN = {
-    desk: { p0:[0,0.085], p1:[0.12,0.50], p2:[0.54,0.66], p3:[0.80,1] },
-    mob:  { p0:[0,0.07],  p1:[0.47,0.53], p2:[0.565,0.66], p3:[0.82,1] }
+    /* windows sit F apart so each beat fully leaves before the next arrives;
+       F was 0.014 (~8vh of scroll), which read as a cut, not a fade */
+    desk: { p0:[0,0.075], p1:[0.145,0.49], p2:[0.565,0.64], p3:[0.79,1] },
+    mob:  { p0:[0,0.06],  p1:[0.49,0.53], p2:[0.60,0.65], p3:[0.82,1] }
   };
-  const F = 0.014;
+  const F = 0.035;
 
   let geo = null;              /* { strands:[{el,dot,L,Lp}], nx, ny, W, jl } */
   let mobile = mq.matches;
@@ -4543,14 +4572,15 @@ img{height:auto;}
     const jl = W + 2 - nx;
     journey.style.strokeDasharray = jl + ' ' + jl;
     ring.setAttribute('cx', nx); ring.setAttribute('cy', ny);
-    ring.setAttribute('r', mobile ? 22 : 30);
+    const RR = mobile ? 32 : 50;
+    ring.setAttribute('r', RR);
     glow.setAttribute('cx', nx); glow.setAttribute('cy', ny);
-    glow.setAttribute('r', mobile ? 70 : 110);
+    glow.setAttribute('r', mobile ? 100 : 170);
     mark.style.left = nx + 'px'; mark.style.top = ny + 'px';
     /* never past the field's right edge — on a phone the line from the
        node to the edge is short, so the label right-aligns to the edge */
     const jlw = jLabel.offsetWidth || 90;
-    jLabel.style.left = Math.min(nx + (mobile ? 30 : 44), W - jlw - 10) + 'px';
+    jLabel.style.left = Math.min(nx + RR + 16, W - jlw - 10) + 'px';
     jLabel.style.top = ny + 'px';
     geo = { strands, nx, ny, W, jl };
     lastT = -1;
@@ -4570,7 +4600,7 @@ img{height:auto;}
       const drawn = s.Lp * d1 + (s.L - s.Lp) * d2;
       s.el.style.strokeDashoffset = (s.L - drawn).toFixed(2);
       /* the strand being drawn is the live one; the rest step back */
-      const e = cl(1 - Math.abs(t - (a + SD * 0.6)) / 0.055);
+      const e = sm(1 - Math.abs(t - (a + SD * 0.55)) / 0.07);
       const before = 0.48 + 0.52 * e;
       const op = mix(before, 0.82, conv);
       s.el.style.opacity = (d1 > 0.001 ? op : 0).toFixed(3);
@@ -4598,7 +4628,7 @@ img{height:auto;}
     const setP = (el, o) => {
       if(!el) return;
       el.style.opacity = o.toFixed(3);
-      el.style.transform = 'translateY(' + ((1 - o) * 10).toFixed(1) + 'px)';
+      el.style.transform = 'translateY(' + ((1 - o) * 16).toFixed(1) + 'px)';
       el.style.visibility = o < 0.002 ? 'hidden' : 'visible';
       el.style.pointerEvents = o > 0.5 ? 'auto' : 'none';
     };
@@ -4611,8 +4641,8 @@ img{height:auto;}
         let o = 0, idx = liveIdx;
         for(let i = 0; i < N; i++){
           const a = S0 + i * ST;
-          const oi = win(t, a + 0.006, a + 0.044, 0.008);
-          if(t >= a - 0.008 && t <= a + 0.052){ o = oi; idx = i; }
+          const oi = win(t, a + 0.014, a + 0.036, 0.016);
+          if(t >= a - 0.002 && t <= a + 0.052){ o = oi; idx = i; }
         }
         /* the windows leave a clear gap between shifts, so a change of
            index lands while the line is (near) invisible */
