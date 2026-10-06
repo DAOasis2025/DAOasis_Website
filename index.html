@@ -319,7 +319,7 @@
      window — but it makes the hero TALLER than the viewport exactly where
      the problem bites: at 1917x920 it computes to 1093px, so the phone was
      whole and 173px of it sat below the fold, which is worse than a crop.
-     The real constraint is the source image, not this rule. images/hero.jpg?v=20261007
+     The real constraint is the source image, not this rule. images/hero.jpg?v=20261008
      is 1.777:1 and its phone fills y 3.0%-95.5%, leaving 7.5% of croppable
      height; a maximised laptop viewport is ~2.08:1 and needs ~15% removed.
      Until the photograph is re-rendered wider with real headroom around the
@@ -476,7 +476,7 @@
 
   /* HERO — full bleed, type in a strong left column.
      The placement is measured, not chosen by eye. At cover, the phone in
-     images/hero.jpg?v=20261007 occupies source x 34%-58%, which lands on screen at:
+     images/hero.jpg?v=20261008 occupies source x 34%-58%, which lands on screen at:
 
          1280  x 435-742      1440  x 463-847      1920  x 652-1113
 
@@ -552,13 +552,18 @@
         rgba(20,17,15,0.30) 88%,
         rgba(247,246,242,0.35) 97%,
         var(--warm-white) 100%),
-      url('images/hero.jpg?v=20261007');
+      url('images/hero.jpg?v=20261008');
     background-size:cover,cover,cover;
-    /* 7 Oct 2026: the October render is 16:9 and its phone fills y 8%-97%,
-       so a wide-short window MUST crop it. 18% keeps the phone's header and
-       greeting and gives the crop to the tab bar and the plinth. Interim —
-       a wider re-render with headroom (see CLAUDE.md) removes the crop. */
-    background-position:center,center,center 18%;
+    /* 7 Oct 2026, the WIDE render: 1916x821 (2.33:1), products on the
+       right (band from x 53%, phone ~62-76%, watch to ~86%), phone y
+       24.2%-91.1%, left ~50% open sky and sea for the type.
+       x 85%: below 2.33:1 the crop is horizontal, and 85% takes most of it
+       off the empty left, so the band lands at ~43% of a 1440 window — well
+       clear of the type column (6%-32%) — and the watch at ~86%.
+       y 72%: above 2.33:1 the crop is vertical, split in proportion to the
+       headroom (24.2 above : 8.9 below), so neither end clips first.
+       Re-measure both if the photograph is replaced. */
+    background-position:center,center,85% 72%;
     background-repeat:no-repeat,no-repeat,no-repeat;}
 
   /* The aspect-ratio branch that used to live here is gone. It switched
