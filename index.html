@@ -319,7 +319,7 @@
      window — but it makes the hero TALLER than the viewport exactly where
      the problem bites: at 1917x920 it computes to 1093px, so the phone was
      whole and 173px of it sat below the fold, which is worse than a crop.
-     The real constraint is the source image, not this rule. images/hero.jpg?v=20261008
+     The real constraint is the source image, not this rule. images/hero.jpg?v=20261009
      is 1.777:1 and its phone fills y 3.0%-95.5%, leaving 7.5% of croppable
      height; a maximised laptop viewport is ~2.08:1 and needs ~15% removed.
      Until the photograph is re-rendered wider with real headroom around the
@@ -476,7 +476,7 @@
 
   /* HERO — full bleed, type in a strong left column.
      The placement is measured, not chosen by eye. At cover, the phone in
-     images/hero.jpg?v=20261008 occupies source x 34%-58%, which lands on screen at:
+     images/hero.jpg?v=20261009 occupies source x 34%-58%, which lands on screen at:
 
          1280  x 435-742      1440  x 463-847      1920  x 652-1113
 
@@ -552,7 +552,7 @@
         rgba(20,17,15,0.30) 88%,
         rgba(247,246,242,0.35) 97%,
         var(--warm-white) 100%),
-      url('images/hero.jpg?v=20261008');
+      url('images/hero.jpg?v=20261009');
     background-size:cover,cover,cover;
     /* 7 Oct 2026, the WIDE render: 1916x821 (2.33:1), products on the
        right (band from x 53%, phone ~62-76%, watch to ~86%), phone y
@@ -1555,6 +1555,34 @@
      (.wn-after), because a phone frame cannot hold the conclusion, the
      evidence and a button at a readable size. */
   .wn-after{display:none;}
+  /* ══ DESKTOP, SIMPLIFIED — 6 October 2026 ══════════════════════════════
+     The frame carried ~180 words: four ledes with a paragraph each, six
+     one-line descriptions beside the strands, and the evidence block with
+     its footnotes. Too much to read while the diagram is moving. Now: one
+     short line per beat on the left, six names on the right, and the
+     figures after the pin. The animation is unchanged. Mobile untouched. */
+  .wn-dsk{display:none;}
+  .wn-figs{display:none;}
+  @media (min-width:901px){
+    .wn-dsk{display:inline;}
+    .wn-mob{display:none;}
+    .wn-body,.wn-phase-end .wn-evidence,.wn-phase-end .wn-src{display:none;}
+    .wn-lede{font-size:clamp(26px,min(2.5vw,4.6vh),40px);max-width:19ch;line-height:1.16;text-wrap:pretty;}
+    .wn-d{display:none;}
+    .wn-t{font-size:clamp(24px,min(2.15vw,4vh),36px);}
+    .wn-shift{column-gap:14px;}
+    .wn-cta{margin-top:clamp(20px,3.4vh,34px);}
+    .wn-figs{display:block;background:#100E0C;padding:4vh 8% calc(14vh + 64px);}
+    .wn-figs-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));max-width:1100px;
+      border-top:1px solid rgba(232,184,138,0.22);}
+    .wn-fig{padding:clamp(22px,3.4vh,34px) clamp(16px,2.4vw,40px) 0 0;}
+    .wn-fig + .wn-fig{padding-left:clamp(16px,2.4vw,40px);border-left:1px solid rgba(232,184,138,0.14);}
+    .wn-fig-v{display:block;font-family:'Cormorant Garamond',serif;font-weight:300;
+      font-size:clamp(40px,4vw,64px);line-height:1;letter-spacing:-0.01em;color:#E8B88A;}
+    .wn-fig-l{display:block;margin-top:12px;font-size:15px;line-height:1.5;color:rgba(247,244,238,0.74);max-width:26ch;}
+    .wn-fig-l sup,.wn-figs .wn-src sup{font-size:0.72em;vertical-align:0.45em;line-height:0;}
+    .wn-figs .wn-src{display:block;margin-top:clamp(18px,3vh,28px);max-width:none;}
+  }
   @media (max-width:900px){
     .wn{height:720vh;}
     .wn-stage{display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;
@@ -3318,7 +3346,7 @@ img{height:auto;}
                only while this phase is invisible. -->
           <div class="wn-phase wn-live" aria-hidden="true"><span class="wn-n" id="wnLiveN">01</span><p class="wn-lede" id="wnLiveD">Health is shifting from treatment to everyday prevention.</p></div>
           <div class="wn-phase" data-p="0">
-            <p class="wn-lede">Six shifts that grew up as separate markets are now arriving at the same person, on the same day.</p>
+            <p class="wn-lede"><span class="wn-dsk">Six shifts.<br>One person. One&nbsp;day.</span><span class="wn-mob">Six shifts that grew up as separate markets are now arriving at the same person, on the same day.</span></p>
             <p class="wn-body">Nobody has built for the place where they meet.</p>
           </div>
           <div class="wn-phase" data-p="1">
@@ -3366,6 +3394,18 @@ img{height:auto;}
        inside the conclusion phase). -->
   <div class="wn-after">
     <p class="wn-evidence">The wellness economy reached <strong>$6.8 trillion</strong> in 2024, and mental wellness is growing at roughly <strong>twice</strong> its pace.<sup>1</sup> Gen Z averages <strong>around nine hours</strong> of screen time a day.<sup>2</sup></p>
+    <p class="wn-src"><sup>1</sup> Global Wellness Institute, Global Wellness Economy Monitor 2025 · <sup>2</sup> Cross-referenced screen-time research, 2025</p>
+  </div>
+  <!-- DESKTOP ONLY (display:none at 900px and below, where .wn-after above
+       carries the same evidence). The figures used to sit inside the pinned
+       frame under the conclusion; they are the proof, not the story, so they
+       get their own quiet beat after it. -->
+  <div class="wn-figs">
+    <div class="wn-figs-row">
+      <div class="wn-fig"><span class="wn-fig-v">$6.8T</span><span class="wn-fig-l">The global wellness economy in 2024<sup>1</sup></span></div>
+      <div class="wn-fig"><span class="wn-fig-v">2&times;</span><span class="wn-fig-l">Mental wellness, growing at twice its pace<sup>1</sup></span></div>
+      <div class="wn-fig"><span class="wn-fig-v">~9 hrs</span><span class="wn-fig-l">Gen Z&rsquo;s average screen time, every day<sup>2</sup></span></div>
+    </div>
     <p class="wn-src"><sup>1</sup> Global Wellness Institute, Global Wellness Economy Monitor 2025 · <sup>2</sup> Cross-referenced screen-time research, 2025</p>
   </div>
 

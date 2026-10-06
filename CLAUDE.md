@@ -7386,3 +7386,29 @@ above it, vertical in proportion to the headroom. Verified by eye at 1024x768,
 size, products clear of the type column. Source is 1916px wide, so a 1920x1080
 window upscales it ~1.2x; a 2400px+ render would be sharper. The interim 18%
 note above is superseded.
+
+## Why Now simplified on desktop · new desktop hero render — 6 October 2026
+
+`index.html` and `images/hero.jpg`. **Mobile is pixel-identical** (A/B against a
+pre-change copy at 390x844 and 375x667, 0 differing pixels at three scroll
+points, same docH).
+
+### Why Now, desktop only (`@media (min-width:901px)`)
+The frame carried ~180 words while the diagram was moving. Now:
+- **Left column:** headline plus ONE short line per beat. `.wn-body` hidden.
+  Beat 1 has a desktop-only version, "Six shifts. / One person. One day."
+  (`.wn-dsk`); mobile keeps the long sentence (`.wn-mob`). The last beat is
+  "DAOasis is built where they meet." plus the CTA.
+- **Right field:** the six names only, bigger (`clamp(24px,min(2.15vw,4vh),36px)`).
+  The six `.wn-d` descriptions are hidden on desktop.
+- **The evidence moved out of the pin** into `.wn-figs`, a desktop-only strip after
+  it: three figures ($6.8T · 2× · ~9 hrs) with the same two sources. Tail is
+  `14vh + 64px` so the divider mark clears the source line (104px at 1348x601).
+  `.wn-figs .wn-src` is forced visible: the short-laptop rule hides `.wn-src`.
+- Animation, timeline and geometry untouched. 0 overlaps at 1024x768, 1348x601,
+  1440x900, 1920x1080 across four points in the section.
+
+### Desktop hero
+New 1916x821 render, same framing as the last one (phone y ~21–90%), shipped as
+`hero.jpg` q86 4:4:4, 300KB, `?v=20261009`. Position `85% 72%` unchanged; whole
+phone visible and clear of the type at 1024x768 → 2560x1080.
