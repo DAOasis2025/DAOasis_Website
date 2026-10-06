@@ -696,7 +696,7 @@
   @media (max-width:800px){
     .content{padding:calc(var(--nav-h) + 2vh) 7% 9vh;justify-content:center;}
     /* MOBILE — full bleed too, type in the upper band.
-       A different PHOTOGRAPH, not a crop: images/hero-mobile.jpg?v=20261007 is
+       A different PHOTOGRAPH, not a crop: images/hero-mobile.jpg?v=20261009 is
        941x1672 portrait with the products recomposed vertically. Cover-
        cropping the landscape frame into a phone showed only its centre
        third and lost the band and the watch entirely.
@@ -709,7 +709,7 @@
     /* MOBILE — the same composition, made for a portrait frame rather
        than shrunk from the desktop one. Full bleed, copy over the
        photograph, no panel and no split.
-       images/hero-mobile.jpg?v=20261007 is 941x1672 with the products at source y
+       images/hero-mobile.jpg?v=20261009 is 941x1672 with the products at source y
        35.5%-88.3%. Scaled to the WIDTH and anchored bottom it renders
        390x693, which puts the phone's top edge at 47% of the screen and its
        base at 92% — the phone, the band and the watch all whole, and 336px
@@ -782,8 +782,8 @@
           rgba(20,17,15,0.26) 90%,
           rgba(247,246,242,0.30) 97%,
           var(--warm-white) 100%),
-        url('images/hero-mobile.jpg?v=20261007'),
-        url('images/hero-mobile.jpg?v=20261007');
+        url('images/hero-mobile.jpg?v=20261009'),
+        url('images/hero-mobile.jpg?v=20261009');
       background-size:cover,100% auto,cover;
       /* THE PLATE IS PUSHED DOWN 5vh, AND THAT IS WHERE THE ROOM CAME FROM.
          The type block had exactly ZERO clearance above the phone at
@@ -962,7 +962,7 @@
         calc(var(--nav-h) + var(--hero-top))                                  /* 1 nav        */
         auto                                                                  /* 2 headline   */
         auto                                                                  /* 3 kicker     */
-        minmax(calc(83.9vw + var(--hero-ground) + var(--hero-clear)), 1fr)    /* 4 photograph */
+        minmax(calc(76.5vw + var(--hero-ground) + var(--hero-clear)), 1fr)    /* 4 photograph */
         auto                                                                  /* 5 buttons    */
         auto;                                                                 /* 6 follow     */
       /* Only the button band ever shows this — the plate covers everything
@@ -1035,10 +1035,10 @@
           rgba(23,20,18,0.00) 89%,
           rgba(23,20,18,0.50) 96.5%,
           var(--mineral) 100%),
-        url('images/hero-mobile.jpg?v=20261007'),
-        url('images/hero-mobile.jpg?v=20261007');
+        url('images/hero-mobile.jpg?v=20261009'),
+        url('images/hero-mobile.jpg?v=20261009');
       background-size:cover,100% auto,cover;
-      background-position:center, center bottom calc(var(--hero-ground) - 21vw), center top;
+      background-position:center, center bottom calc(var(--hero-ground) - 23.3vw), center top;
       background-repeat:no-repeat,no-repeat,no-repeat;}
     /* THE TYPE SCRIM, AND WHY IT IS A GRID ITEM RATHER THAN A PERCENTAGE.
        A veil written as a percentage of the plate cannot know where the
