@@ -7412,3 +7412,17 @@ The frame carried ~180 words while the diagram was moving. Now:
 New 1916x821 render, same framing as the last one (phone y ~21–90%), shipped as
 `hero.jpg` q86 4:4:4, 300KB, `?v=20261009`. Position `85% 72%` unchanged; whole
 phone visible and clear of the type at 1024x768 → 2560x1080.
+
+## Ecosystem "Companion App" plate — three-phone render — 6 October 2026
+
+`index.html` + `images/eco-app.jpg` (desktop only; mobile still uses
+`eco-app-mobile.jpg`, the old-design portrait frame).
+
+The supplied render is 1915x821 (2.33:1) with the phones at x 47–96%. Cover-
+cropping that into a 16:10 or 4:3 window cut the right phone off and put the
+copy over the left one. So `eco-app.jpg` is now **1915x1360**: the photograph
+sits at the bottom, and the extra 539px above it is the photo's own soft-focus
+top band, scaled and blurred, blended in over 340px. The plate is anchored
+`100% 100%`. Whole phones, clear of the copy column, at 1024x768, 1280x800,
+1348x601, 1440x900, 1920x1080 and 2560x1080. Generator: `scratchpad/ecocomp.js`
+— rebuild from the source if the render changes, do not edit the JPEG.
