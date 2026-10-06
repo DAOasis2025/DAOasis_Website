@@ -1458,12 +1458,16 @@
      conclusion) each get a full screen or more. Timeline in WN_T below. */
   .wn{position:relative;height:760vh;background:#100E0C;}
   .wn-stage{position:sticky;top:0;height:100vh;overflow:hidden;
-    display:grid;grid-template-columns:minmax(0,0.92fr) minmax(0,1.58fr);
-    align-items:center;column-gap:3vw;padding-left:8%;
+    /* 6 Oct: the copy column was 0.92fr — ~440px at 1348 and 630px at 1920
+       around ~330px of type — so the field started 590-840px in and the
+       diagram sat hard right. It is now as wide as its type needs, and the
+       field takes the rest. */
+    display:grid;grid-template-columns:minmax(0,min(400px,28vw)) minmax(0,1fr);
+    align-items:center;column-gap:clamp(32px,3.2vw,60px);padding-left:8%;
     background:
       radial-gradient(ellipse 46% 58% at 80% 50%, rgba(196,138,90,0.13) 0%, rgba(196,138,90,0.04) 48%, rgba(196,138,90,0) 72%),
       linear-gradient(180deg,#0E0C0A 0%,#13110F 52%,#100E0C 100%);}
-  .wn-copy{position:relative;z-index:3;max-width:450px;padding:clamp(70px,11vh,120px) 0 5vh;}
+  .wn-copy{position:relative;z-index:3;max-width:400px;padding:clamp(70px,11vh,120px) 0 5vh;}
   .wn-kicker{display:flex;align-items:center;gap:12px;
     font-size:var(--t-micro);letter-spacing:0.24em;text-transform:uppercase;color:#D49B69;}
   .wn-kicker::before{content:'';display:block;width:28px;height:1px;background:currentColor;opacity:0.6;}
@@ -1473,7 +1477,7 @@
   .wn-head em{font-style:italic;color:#E8B88A;}
   /* two lines, always broken in the same place: on a short laptop the
      clamp let "now." fall to a line of its own */
-  @media (min-width:901px){ .wn-head em{display:block;} }
+  @media (min-width:901px){ .wn-head{white-space:nowrap;} .wn-head em{display:block;} }
   /* The phases share ONE grid cell, so the stack is exactly as tall as its
      tallest phase and nothing reflows as they hand over. */
   .wn-phases{display:grid;margin-top:clamp(18px,3.4vh,38px);}
@@ -1506,8 +1510,9 @@
   .wn-ring{fill:rgba(16,14,12,0.85);stroke:rgba(232,184,138,0.7);stroke-width:1;}
   /* 4 Oct: 28px read as lost inside the ring — the mark is the payoff of the
      section, so it is the size of a headline, and centred exactly */
-  .wn-mark{position:absolute;left:0;top:0;width:58px;height:auto;pointer-events:none;
-    transform:translate(-50%,-50%);opacity:1;}
+  /* placed in whole pixels by layout(), on the mark's visual centre — the
+     palm's weight sits 1.5% left and 0.8% above its image box */
+  .wn-mark{position:absolute;left:0;top:0;width:60px;height:auto;pointer-events:none;opacity:1;}
   .wn-journey-l{position:absolute;left:0;top:0;transform:translate(0,-170%);white-space:nowrap;
     font-size:var(--t-nano);letter-spacing:0.24em;text-transform:uppercase;color:#D49B69;}
   .wn-shifts{list-style:none;margin:0;padding:0;}
@@ -4525,6 +4530,12 @@ img{height:auto;}
 
   function layout(){
     mobile = mq.matches;
+    /* the grid can start the field on a fractional pixel, which puts every
+       label and the mark between two pixels; nudge it back onto a whole one */
+    field.style.transform = '';
+    const r0 = field.getBoundingClientRect();
+    const fx = r0.left - Math.floor(r0.left);
+    if(fx > 0.01) field.style.transform = 'translateX(' + (-fx).toFixed(3) + 'px)';
     const r = field.getBoundingClientRect();
     const W = r.width, H = r.height;
     if(W < 10 || H < 10) return;
@@ -4536,15 +4547,15 @@ img{height:auto;}
     labW = Math.min(labW, labMax);
     if(!mobile) shifts.forEach(li => { li.style.width = labW + 'px'; });
     const x0 = labW + (mobile ? 14 : 26);
-    const nx = x0 + (W - x0) * (mobile ? 0.64 : 0.62);
+    const nx = Math.round(x0 + (W - x0) * (mobile ? 0.64 : 0.56));
     /* desktop stops at 0.81: the divider below overlays this frame's tail */
     const top = H * (mobile ? 0.08 : 0.13), bot = H * (mobile ? 0.92 : 0.81);
-    const ny = (top + bot) / 2;
+    const ny = Math.round((top + bot) / 2);
     const xp = x0 + (nx - x0) * 0.40;     /* end of the parallel, unmet run */
     gStrands.textContent = '';
     const strands = [];
     for(let i = 0; i < N; i++){
-      const y = top + (bot - top) * i / (N - 1);
+      const y = Math.round(top + (bot - top) * i / (N - 1));
       const k1 = (nx - xp) * 0.45, k2 = (nx - xp) * 0.42;
       const d = 'M' + x0 + ',' + y + ' L' + xp + ',' + y +
                 ' C' + (xp + k1) + ',' + y + ' ' + (nx - k2) + ',' + ny + ' ' + nx + ',' + ny;
@@ -4563,7 +4574,7 @@ img{height:auto;}
          box centre — otherwise it appears to come out of the sentence */
       const li = shifts[i];
       const tt = li.querySelector('.wn-t');
-      li._dy = tt ? tt.offsetTop + tt.offsetHeight / 2 : li.offsetHeight / 2;
+      li._dy = Math.round(tt ? tt.offsetTop + tt.offsetHeight / 2 : li.offsetHeight / 2);
       li.style.left = '0px';
       li.style.top = y + 'px';
     }
@@ -4576,7 +4587,9 @@ img{height:auto;}
     ring.setAttribute('r', RR);
     glow.setAttribute('cx', nx); glow.setAttribute('cy', ny);
     glow.setAttribute('r', mobile ? 100 : 170);
-    mark.style.left = nx + 'px'; mark.style.top = ny + 'px';
+    const mw = mark.offsetWidth || 60, mh = mw * 492 / 465;
+    mark.style.left = Math.round(nx - mw * 225.4 / 465) + 'px';
+    mark.style.top  = Math.round(ny - mh * 242 / 492) + 'px';
     /* never past the field's right edge — on a phone the line from the
        node to the edge is short, so the label right-aligns to the edge */
     const jlw = jLabel.offsetWidth || 90;
@@ -4612,7 +4625,7 @@ img{height:auto;}
          field */
       const lo = mix(0.2, mix(0.68 + 0.32 * e, 0.9, conv), d1);
       li.style.opacity = lo.toFixed(3);
-      li.style.transform = 'translate(' + ((1 - d1) * -6).toFixed(1) + 'px,' + (-(li._dy || 0)).toFixed(1) + 'px)';
+      li.style.transform = 'translate(' + Math.round((1 - d1) * -6) + 'px,' + (-(li._dy || 0)) + 'px)';
     }
     const nk = sm((t - 0.74) / 0.08);
     ring.style.opacity = nk.toFixed(3);
@@ -4628,7 +4641,7 @@ img{height:auto;}
     const setP = (el, o) => {
       if(!el) return;
       el.style.opacity = o.toFixed(3);
-      el.style.transform = 'translateY(' + ((1 - o) * 16).toFixed(1) + 'px)';
+      el.style.transform = o > 0.995 ? 'none' : 'translateY(' + Math.round((1 - o) * 16) + 'px)';
       el.style.visibility = o < 0.002 ? 'hidden' : 'visible';
       el.style.pointerEvents = o > 0.5 ? 'auto' : 'none';
     };
