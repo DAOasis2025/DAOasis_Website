@@ -402,7 +402,7 @@ body { overflow-x: clip; }
   transform: translate(-50%,-50%) perspective(1000px) rotateY(0deg) rotateX(0deg) rotateZ(0deg) scale(0.86);
   filter: drop-shadow(0 30px 70px rgba(0,0,0,0.65)) blur(0px);
   border-radius: 26px; opacity: 0; pointer-events: none;
-  will-change: transform, width, top, left, opacity, filter;
+  /* no will-change: it froze the raster at the first-drawn size */
 }
 #heroPhone { z-index: 6; }
 
@@ -3230,6 +3230,25 @@ function cine(el, o){
 
   function lerp(a,b,t){ return a+(b-a)*t; }
   function ease(t){ return t<0.5?2*t*t:1-Math.pow(-2*t+2,2)/2; }
+  /* SHARP AT REST (6 Oct 2026). The phones used to rest on translate(-50%)
+     of a fractional width, inside perspective(), with the outer pair at
+     rotateY(2deg) scale(0.94) and a blur(0px) filter — and will-change:
+     transform froze each layer's raster at the size it was first drawn.
+     Every one of those resamples the screenshot, which is why the screens
+     read soft. Same four faults the Sanctuary hero had in September, same
+     fix: whole-pixel boxes, the size baked into the width, and the 3D part,
+     the scale and the blur omitted entirely once they reach nothing. */
+  function placePhone(el, w, cx, cy, rot, sc, blur, shadow){
+    w = Math.max(2, Math.round(w / 2) * 2);
+    const h = Math.round(w * 1600 / 758);
+    el.style.width  = w + 'px';
+    el.style.left   = Math.round(cx - w / 2) + 'px';
+    el.style.top    = Math.round(cy - h / 2) + 'px';
+    const r3 = Math.abs(rot) < 0.05 ? '' : 'perspective(1000px) rotateY(' + rot.toFixed(2) + 'deg) ';
+    const sc2 = Math.abs(sc - 1) < 0.002 ? '' : 'scale(' + sc.toFixed(4) + ')';
+    el.style.transform = (r3 + sc2).trim() || 'none';
+    el.style.filter = shadow + (blur > 0.05 ? ' blur(' + blur.toFixed(2) + 'px)' : '');
+  }
   function clamp01(v){ return Math.max(0,Math.min(1,v)); }
 
   /* One-time typewriter into the title card, ~2s, then reveal the scroll cue */
@@ -3326,13 +3345,10 @@ function cine(el, o){
     const blurC = lerp(7, 0, Math.min(1, zoomT*1.35));
 
     /* Centre phone — the dominant object, centred in the scene */
-    const centerLeft = '50%';
+    const stage = phoneCenter.offsetParent || document.documentElement;
+    const cx = stage.clientWidth / 2, cy = stage.clientHeight / 2;
     phoneCenter.style.opacity       = appearT;
-    phoneCenter.style.width         = widthC+'px';
-    phoneCenter.style.top           = '50%';
-    phoneCenter.style.left          = centerLeft;
-    phoneCenter.style.transform     = `translate(-50%,-50%) perspective(1000px) rotateY(0deg) rotateX(0deg) scale(${centerScale})`;
-    phoneCenter.style.filter        = `drop-shadow(0 30px 70px rgba(0,0,0,0.65)) blur(${blurC}px)`;
+    placePhone(phoneCenter, widthC * centerScale, cx, cy, 0, 1, blurC, 'drop-shadow(0 30px 70px rgba(0,0,0,0.65))');
     phoneCenter.style.pointerEvents = appearT>0.6 ? 'auto' : 'none';
     phoneCenter.style.cursor        = 'pointer';
 
@@ -3350,7 +3366,7 @@ function cine(el, o){
     const sideOffsetBase = isMobile ? widthC*0.62 : endW*1.02;
     const sideOffset = lerp(sideOffsetBase*0.4, sideOffsetBase, sideEase) - parallax;
     const sideW      = widthC * (isMobile ? 0.82 : 0.88);
-    const sideRot    = lerp(2, 10, 1-sideEase);
+    const sideRot    = lerp(0, 10, 1-sideEase);   /* exactly 0 at rest */
     /* This rested at 0.4px as a depth-of-field cue. On a device mockup it
        does not read as depth, it reads as a screen that failed to load —
        these are the product, and the product should be sharp. The blur is
@@ -3358,25 +3374,19 @@ function cine(el, o){
     const sideBlur   = lerp(6, 0, sideEase);
 
     phoneLeft.style.opacity        = appearT*sideEase;
-    phoneLeft.style.width          = sideW+'px';
-    phoneLeft.style.top            = '50%';
-    phoneLeft.style.left           = `calc(${centerLeft} - ${sideOffset}px)`;
-    phoneLeft.style.transform      = `translate(-50%,-50%) perspective(1000px) rotateY(${sideRot}deg) scale(${lerp(0.82,0.94,sideEase)})`;
-    phoneLeft.style.filter         = `drop-shadow(0 26px 60px rgba(0,0,0,0.6)) blur(${sideBlur}px)`;
+    /* the 0.94 rest scale is baked into the width, so scale is 1 at rest */
+    const sideSc = lerp(0.82, 0.94, sideEase) / 0.94;
+    placePhone(phoneLeft, sideW * 0.94, cx - sideOffset, cy, sideRot, sideSc, sideBlur, 'drop-shadow(0 26px 60px rgba(0,0,0,0.6))');
     phoneLeft.style.pointerEvents  = sideEase>0.6 ? 'auto' : 'none';
     phoneLeft.style.cursor         = 'pointer';
 
     phoneRight.style.opacity        = appearT*sideEase;
-    phoneRight.style.width          = sideW+'px';
-    phoneRight.style.top            = '50%';
     /* The right phone used to carry an extra 0.18 of the base offset that
        the left did not, so the resting fan sat noticeably off centre: the
        left screen overlapped the centre one while the right stood clear.
        Symmetric now — the composition is three of a kind, and the eye
        reads any imbalance in it as a mistake rather than as style. */
-    phoneRight.style.left           = `calc(${centerLeft} + ${sideOffset}px)`;
-    phoneRight.style.transform      = `translate(-50%,-50%) perspective(1000px) rotateY(${-sideRot}deg) scale(${lerp(0.82,0.94,sideEase)})`;
-    phoneRight.style.filter         = `drop-shadow(0 26px 60px rgba(0,0,0,0.6)) blur(${sideBlur}px)`;
+    placePhone(phoneRight, sideW * 0.94, cx + sideOffset, cy, -sideRot, sideSc, sideBlur, 'drop-shadow(0 26px 60px rgba(0,0,0,0.6))');
     phoneRight.style.pointerEvents  = sideEase>0.6 ? 'auto' : 'none';
     phoneRight.style.cursor         = 'pointer';
 

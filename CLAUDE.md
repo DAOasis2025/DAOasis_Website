@@ -7287,3 +7287,35 @@ horizontal overflow, 0 JS errors, 0 broken images, no unexpected 404s.
 (two NEW: `app-arrival.webp`, `app-quest-complete.webp`). Delete
 `images/app-approaching.webp`, `app-home-evening.webp`,
 `app-credits-source.webp` and the `Screenshots Github` folder.
+
+## Sharpness: Why Now and the app hero phones — 6 October 2026 (later)
+
+Reported from a 1348x601 laptop window: the Why Now wording and the app hero
+screens looked blurry, the mark did not look centred, and the Why Now list and
+diagram sat too far right. `index.html` · `app.html`.
+
+**Blur was half-pixel geometry, both places.**
+- Why Now labels were moved with `translate(…toFixed(1)px)` off fractional
+  `_dy` / `y` values, and the grid started the field on a fractional pixel.
+  Now every label top, `_dy`, node, mark and phase offset is a whole pixel,
+  `layout()` nudges `.wn-field` back onto a whole pixel, and a phase at full
+  strength carries `transform:none`.
+- App hero phones rested on `translate(-50%)` of a fractional width inside
+  `perspective()`, the side pair at `rotateY(2deg) scale(0.94)`, all with
+  `blur(0px)` and `will-change: transform, width, filter` — the September
+  Sanctuary faults again. `placePhone()` now sets whole-pixel left/top/width
+  (even widths), bakes the rest scale into the width, and omits the 3D part,
+  the scale and the blur once they reach nothing. Side tilt rests at 0. The
+  `will-change` is gone. Verified at rest: `transform:none`, no blur, integer
+  boxes at 1327x583, 1440, 1920 and 390.
+
+**The mark** is 60px and placed on the palm's visual centre (its mass sits
+1.5% left / 0.8% up of the PNG box), not the box centre.
+
+**Layout:** `.wn-stage` columns are `min(400px,28vw)` + `1fr` (was
+0.92fr/1.58fr, i.e. 440–630px of column around ~330px of type), gap
+`clamp(32px,3.2vw,60px)`, node at 0.56 of the strand run (was 0.62). The
+headline is `nowrap` above 900px so "Why DAOasis" never breaks. At 1348 the
+list moved 590 → 522px and the node 1168 → 1115px; at 1920 the list moved
+840 → 607px. 0 label overlaps at nine sizes, headline clears the list by
+26–43px.
