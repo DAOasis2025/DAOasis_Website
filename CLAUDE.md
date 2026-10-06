@@ -7376,3 +7376,13 @@ the watch. References bumped to `?v=20261007`.
   wider re-render: ~21:9, 2400px+ wide, phone centred near 60–62% across with
   its top at ~20% and base at ~85% of the height, the left ~40% open sky and
   sea for the headline. When it arrives, re-measure and reset the 18%.
+
+### Desktop hero replaced with the wide render — same day
+`images/hero.jpg` is now **1916x821 (2.33:1)**, 303KB, `?v=20261008`. Phone at
+y **24.2%–91.1%**, products x ~53%–86%, left half open sky and sea. Position
+**85% 72%**: below 2.33:1 the crop is horizontal and mostly off the empty left;
+above it, vertical in proportion to the headroom. Verified by eye at 1024x768,
+1280x720, 1348x601, 1440x900, 1920x1080 and 2560x1080 — whole phone at every
+size, products clear of the type column. Source is 1916px wide, so a 1920x1080
+window upscales it ~1.2x; a 2400px+ render would be sharper. The interim 18%
+note above is superseded.
