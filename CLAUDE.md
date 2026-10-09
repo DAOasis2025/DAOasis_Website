@@ -7433,3 +7433,81 @@ source y ~43.9%–86.9%, so row 4's floor is now **76.5vw** and the anchor offse
 **23.3vw** (re-measure both if the image changes). Checked by eye at 360x740,
 375x667, 390x844, 430x932: phone, band and watch whole, clear of the type and
 buttons, 0 overflow, 0 errors.
+
+---
+
+## Audit fixes 2 · 3 · 4 — 9 October 2026 (branch `claude/audit-fixes-2-3-4`, NOT merged)
+
+Preserved first: the live site is commit `93e13b5`. The tag `live-2026-10-09` could
+not be pushed from the cloud session (the git proxy refuses tag pushes, HTTP 403), so
+the same commit is also kept as the branch `claude/live-2026-10-09`. Create the tag
+from GitHub's Releases page if it is still missing.
+
+### Homepage first screen (index.html)
+- **Hero copy says what DAOasis is.** Three headline + sub-line options. The markup is
+  option A and is what the live domains serve. `HERO_OPTIONS` (script at the end of
+  `<body>`) holds all three, and a small "Hero option A · B · C" switcher appears
+  **only on hosts other than `da-oasis-website.vercel.app` and `daoasis.xyz`** —
+  Vercel previews and localhost. `?hero=a|b|c` selects one there; live ignores it.
+  **Once Jamie picks: put the winner in the markup, delete the `.hero-opt` block.**
+- **The sub-line is visible at every width.** Below 481px it has its own grid row
+  (row 4); photograph, buttons and follow row moved down one (5/6/7), the scrim spans
+  rows 1–4. Headline sizes stepped down one notch per tier and `max-width` is now
+  `none` + `text-wrap:balance`, because the old em-based measures were tuned to
+  "A healthier tomorrow, together" and break new headlines badly.
+- **Intro is under 2 seconds and plays once per browser session.** Mark arrives
+  0.1–0.5s, curtain lifts at 1.25s (0.55s fade), hero CSS delays now 1.3–1.75s (were
+  6.0–6.55s). The intro statement and its flight into the hero are no longer called;
+  `revealWords`/`flyToHero` are kept, unused. `sessionStorage['daoasis-intro-seen']`
+  is set by the `<head>` script (in try/catch) and adds `html.return-visit` on any
+  later load in the session. Disclosed in `cookies.html` §03 and `privacy.html` §09.
+- **"How it works" strip** directly after the hero: app.html's `.simple` component
+  ported into index's stylesheet, driven by `.rv/.soft`. Ground `#100E0C` (the ink
+  Why Now used to bring here), so the mobile `.divider-hero` and the desktop
+  photograph → ink join are unchanged. Bottom padding `16vh + 40px` covers the
+  overlaying divider.
+- **Why Now moved** after the ecosystem and "Track what matters". Order is now hero →
+  How it works → (dark divider) → ecosystem → Track (pin3 / mobile) → (light divider,
+  inverted on mobile by the existing `.track-mobile-section + .divider` rule) → Why Now
+  → (new dark divider) → Journey. Verified: Why Now still scrubs (8/11 distinct frames
+  at 1440 and 390), every divider reveals at 390 and 1440.
+- Journey stage 01 is now **"Get Early Access"** (the app is in build); stage 05's
+  lede says DRC is *designed to* convert; stage 07 says the Sanctuary is optional,
+  planned for 2027, paid in ordinary currency, credits designed to contribute.
+
+### Contradictions fixed (the site's own versions won)
+Six habits on about/investors/privacy/terms; track names "Wellness Track / Web3 Track"
+on investors, health-data and token-disclaimer (**reversible** — the app blueprint uses
+the other names); Sanctuary payment wording on app.html; "Optional" in sanctuary's
+Simple Version; Fitbit "fully supported from day one" removed; marketplace "In
+development"; further Journeys "Future Journey" and Bangkok → Phuket "Launch Journey"
+(was "Active Now"); about.html "designed to convert" ×2; contact.html's document count;
+investors.html sections renumbered 19 Roadmap / 20 Long-term / 21 Synthesis; investors
+§06 hydration boost now states the 3 L target.
+
+### One sign-up, MailerLite (`css/signup.css`, `js/signup.js` — both NEW)
+- `<form data-su>` on index `#waitlistSection`, app `#waitlist` (`.su--dark`) and
+  sanctuary `#earlyAccess` (`.su--left`), replacing the mailto button, the mailto
+  button and the seven-field form that stored nothing. Sanctuary's "Express Your
+  Interest" button is gone.
+- **`SIGNUP_CONFIG.endpoint` in `js/signup.js` is the one place to configure it.**
+  Empty → the button reads "Join by email" and opens the visitor's email app with
+  their details (nothing collected). Set → posts `fields[email]`, `fields[name]`,
+  `fields[interests]` (comma-separated text in a custom field named `interests`),
+  optional `groups[]`, `ml-submit`, `anticsrf` to MailerLite with `fetch`. No
+  MailerLite script, no cookie. **Success is shown only when MailerLite answers
+  `{"success":true}`**; an error reply or a network failure says "you have not been
+  added yet" and offers email. All three paths verified with a mocked endpoint.
+- **Not verified against a real MailerLite account** — there is none in this session.
+  If MailerLite's endpoint ever refuses cross-origin reads, every submission will fall
+  to the honest error message, never to a false success. Test once after pasting.
+- Step-by-step setup for Jamie is in `README.md`.
+- privacy.html §02 gained `#signup` (what, why, MailerLite, retention as a visible
+  `.tbc`, unsubscribe); §09 and §10 name MailerLite; cookies.html §01/§02/§03/§06/§07
+  updated; contact.html's "Nothing on this website posts to a server" card rewritten.
+
+### Verified
+13 pages × 375/390/768/1024/1440/1920, swept top to bottom: 0 horizontal overflow,
+0 JS errors, `innerWidth` equal to the viewport everywhere. Hero options judged by eye
+at 375x667, 390x844, 1440x900, 1366x620; How it works, all three sign-up forms and
+Why Now judged by eye at 390 and 1440.
