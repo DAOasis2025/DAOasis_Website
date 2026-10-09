@@ -16,6 +16,8 @@
 .su--dark{--su-ink:#F7F4EE;--su-mute:#ADA69A;--su-line:rgba(247,244,238,0.28);--su-gold:#D49B69;
   --su-btn-bg:#F7F4EE;--su-btn-ink:#171412;--su-panel:rgba(247,244,238,0.05);}
 
+.su--left{margin:0;}
+
 .su-row{display:grid;grid-template-columns:1.25fr 1fr;gap:0 32px;}
 .su-f{margin-bottom:26px;min-width:0;}
 .su-l{display:block;font-size:10.5px;letter-spacing:0.22em;text-transform:uppercase;

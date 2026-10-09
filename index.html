@@ -1134,7 +1134,7 @@
   .simple::before{content:'';position:absolute;left:50%;top:50%;
     width:min(600px,72vw);aspect-ratio:465/492;transform:translate(-50%,-50%);
     background:url('images/img-09-white.png?v=20261006') center/contain no-repeat;
-    opacity:0.04;pointer-events:none;}
+    opacity:0.028;pointer-events:none;}
   .simple-inner{position:relative;z-index:1;max-width:1000px;margin:0 auto;text-align:center;}
   .simple-eyebrow{display:flex;align-items:center;justify-content:center;gap:14px;
     font-size:11px;letter-spacing:0.34em;text-transform:uppercase;padding-left:0.34em;
@@ -5592,6 +5592,8 @@ img{height:auto;}
   .hero-opt button{width:30px;height:30px;border-radius:50%;border:1px solid rgba(247,244,238,0.22);
     background:transparent;color:var(--warm-white);font:inherit;letter-spacing:0;cursor:pointer;}
   .hero-opt button[aria-pressed="true"]{background:#E8B88A;border-color:#E8B88A;color:#171412;}
+  @media (max-width:600px){.hero-opt{right:8px;bottom:auto;top:calc(var(--nav-h,60px) + 8px);padding:4px 4px 4px 9px;font-size:9.5px;}
+    .hero-opt button{width:26px;height:26px;}}
 </style>
 <script>
 (function(){
