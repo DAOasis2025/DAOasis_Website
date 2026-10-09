@@ -172,12 +172,17 @@ img{height:auto;}
         <div class="doc-s-n soft">01</div>
         <h2 class="soft">The short answer</h2>
         <div class="callout soft d1">
-          <div class="callout-k">As at 17 August 2026</div>
+          <div class="callout-k">As at 9 October 2026</div>
           <p>This website sets <strong>no cookies</strong>. It contains <strong>no analytics, no tracking
             pixels, no advertising tags and no third-party measurement scripts</strong> of any kind.
             Nothing on it profiles you, follows you between sites, or reports your visit to anyone.</p>
           <p>One item is stored in your browser's local storage: a single value recording whether you
-            chose the light or dark appearance. It never leaves your device.</p>
+            chose the light or dark appearance. One more is kept only for the length of your visit:
+            a note that you have already seen the home page's opening animation. Neither leaves your
+            device.</p>
+          <p>The early-access sign-up form sets no cookie and loads no third-party script. It sends
+            what you type to our email provider, MailerLite, only when you press its button — see
+            <a href="#s03">section 03</a>.</p>
         </div>
         <div class="soft d2">
           <p>We would rather say this plainly than pad it out. If that changes — and it may, since a
@@ -199,9 +204,9 @@ img{height:auto;}
             would be misleading. The related technologies:</p>
           <ul>
             <li><strong>Local storage</strong> — data kept in your browser that, unlike a cookie, is not
-              automatically sent to the server. This is the only mechanism this site uses.</li>
+              automatically sent to the server. This site uses it for one preference.</li>
             <li><strong>Session storage</strong> — the same idea, but cleared when you close the
-              tab.</li>
+              tab. This site uses it for one note, described in section 03.</li>
             <li><strong>Pixels and beacons</strong> — a tiny invisible image or script whose only purpose
               is to report that you loaded a page. None here.</li>
             <li><strong>Device and browser fingerprinting</strong> — identifying a visitor from the
@@ -236,10 +241,28 @@ img{height:auto;}
               <div class="card-m-i"><div class="card-m-k">Consent needed</div><div class="card-m-v">No &mdash; strictly a preference you set</div></div>
             </div>
           </div>
+          <div class="card-i">
+            <div class="card-h"><div class="card-t">daoasis-intro-seen</div><span class="chip chip-live">Functional</span></div>
+            <div class="card-b">Records that the home page's opening animation has already played in this
+              browser tab, so it is not shown again on every return to the home page during the same
+              visit. Its value is the single character <em>1</em>. It contains nothing that identifies
+              you.</div>
+            <div class="card-m">
+              <div class="card-m-i"><div class="card-m-k">Type</div><div class="card-m-v">Session storage, first-party</div></div>
+              <div class="card-m-i"><div class="card-m-k">Sent to a server</div><div class="card-m-v">No &mdash; never leaves your device</div></div>
+              <div class="card-m-i"><div class="card-m-k">Expires</div><div class="card-m-v">When you close the tab or browser</div></div>
+              <div class="card-m-i"><div class="card-m-k">Consent needed</div><div class="card-m-v">No &mdash; it only changes how the page plays</div></div>
+            </div>
+          </div>
         </div>
         <div class="soft d3">
-          <p>That is the entire list. There is no second entry.</p>
-          <h3>Two things that are not us</h3>
+          <p>That is the entire list. There is no third entry.</p>
+          <h3>Three things that are not us</h3>
+          <p><strong>The early-access sign-up.</strong> When you press the button on the sign-up form,
+            the email address, optional first name and interests you entered are sent to MailerLite,
+            the email service we use to run the early-access list. Nothing is sent before you press it,
+            no MailerLite script is loaded on this site, and no cookie is set. What happens to those
+            details is set out in the <a href="privacy.html#signup">Privacy Policy</a>.</p>
           <p><strong>Web fonts.</strong> This site loads its typefaces — Cormorant Garamond and Frank Ruhl
             Libre — from Google Fonts. That request goes to Google's servers and Google may log it as an
             ordinary server request. No cookie is set by it, and it is not used to track you across
@@ -329,7 +352,7 @@ img{height:auto;}
             effect is that your appearance choice is forgotten.</p>
           <h3>Wider controls</h3>
           <p>Your browser may also offer a Do Not Track or Global Privacy Control signal. This site
-            collects nothing to honour or ignore, so those signals make no difference here — but they are
+            does no tracking for those signals to switch off, so they make no difference here — but they are
             worth having switched on generally.</p>
         </div>
       </section>
@@ -343,9 +366,12 @@ img{height:auto;}
             setting anything that is not strictly necessary, and must make refusing as easy as
             accepting.</p>
           <p><strong>This website does not currently display a cookie banner, and does not currently need
-            one</strong>, because it sets no cookies and runs no analytics. The single stored item is a
-            preference you set yourself by using the appearance control, which is the kind of thing
-            consent requirements are designed to permit.</p>
+            one</strong>, because it sets no cookies and runs no analytics. The stored items are a
+            preference you set yourself by using the appearance control and a session-only note about
+            the opening animation, which are the kind of thing consent requirements are designed to
+            permit. The early-access form is something you choose to submit, not a tracking technology;
+            agreeing to be emailed is part of that form, and is covered in the
+            <a href="privacy.html#signup">Privacy Policy</a>.</p>
           <p>There is no consent management platform on this site. That is an accurate reflection of
             there being nothing to consent to, rather than a gap. If analytics or any non-essential
             technology is introduced, a compliant consent mechanism will be implemented

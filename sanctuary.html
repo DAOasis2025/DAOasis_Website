@@ -1617,6 +1617,8 @@ img{height:auto;}
 .hero-title-eyebrow { color: rgba(247,244,238,0.64); }
 .day-clock { text-shadow: 0 2px 24px rgba(10,8,6,0.6); }
 </style>
+<link rel="stylesheet" href="css/signup.css?v=20261009" />
+<script src="js/signup.js?v=20261009" defer></script>
 </head>
 <body>
 <a class="skip-link" href="#mainContent">Skip to content</a>
@@ -2102,7 +2104,6 @@ img{height:auto;}
     </div>
     <div class="btn-row soft d3">
       <a class="btn btn-light" href="#earlyAccess">Join Early Access</a>
-      <a class="btn btn-ghost" href="#earlyAccess">Express Your Interest</a>
     </div>
   </div>
 </section>
@@ -2125,35 +2126,24 @@ img{height:auto;}
       </div>
     </div>
 
-    <form class="ea-form" id="eaForm" novalidate>
-      <div class="ea-grid">
-        <div class="ea-field"><label class="ea-label" for="eaFirst">First name</label><input class="ea-input" id="eaFirst" name="firstName" type="text" autocomplete="given-name" placeholder="First name" /></div>
-        <div class="ea-field"><label class="ea-label" for="eaLast">Last name</label><input class="ea-input" id="eaLast" name="lastName" type="text" autocomplete="family-name" placeholder="Last name" /></div>
-        <div class="ea-field"><label class="ea-label" for="eaEmail">Email</label><input class="ea-input" id="eaEmail" name="email" type="email" autocomplete="email" placeholder="you@example.com" /></div>
-        <div class="ea-field"><label class="ea-label" for="eaCountry">Country</label><input class="ea-input" id="eaCountry" name="country" type="text" autocomplete="country-name" placeholder="Country" /></div>
-        <div class="ea-field">
-          <label class="ea-label" for="eaStay">Preferred stay length</label>
-          <select class="ea-select" id="eaStay" name="stayLength">
-            <option value="">Select</option><option>Seven days</option><option>Fourteen days</option><option>Twenty-one days</option><option>Longer</option><option>Not sure yet</option>
-          </select>
-        </div>
-        <div class="ea-field">
-          <label class="ea-label" for="eaInterest">What interests you most?</label>
-          <select class="ea-select" id="eaInterest" name="interest">
-            <option value="">Select</option><option>Recovery</option><option>Learning</option><option>Accountability</option><option>Community</option><option>The full DAOasis experience</option>
-          </select>
-        </div>
-        <div class="ea-field full">
-          <label class="ea-label" for="eaMessage">Message <span style="letter-spacing:0.08em;text-transform:none;">(optional)</span></label>
-          <textarea class="ea-textarea" id="eaMessage" name="message" placeholder="Anything you would like us to know"></textarea>
-        </div>
-        <div class="ea-submit-row">
-          <button class="ea-button" type="submit">Join Early Access</button>
-          <p class="ea-disclaimer">Bookings are not yet open. The first DAOasis Sanctuary pilot is planned for Phuket in 2027.</p>
-          <div class="ea-response" id="eaResponse" role="status" aria-live="polite"></div>
-        </div>
+    <!-- 9 October 2026: the seven-field form that stored nothing is
+         replaced by the shared sign-up component, Sanctuary pre-ticked.
+         The .ea-* rules are left in the stylesheet, unused. -->
+    <div class="ea-form"><form class="su" data-su action="mailto:info@daoasis.xyz?subject=Early%20access%20%E2%80%94%20DAOasis" method="post" enctype="text/plain" novalidate>
+      <div class="su-row">
+        <div class="su-f"><label class="su-l" for="su-sanctuary-email">Email</label><input class="su-i" id="su-sanctuary-email" name="email" type="email" required autocomplete="email" inputmode="email" placeholder="you@example.com" /></div>
+        <div class="su-f"><label class="su-l" for="su-sanctuary-name">First name <span class="su-opt">(optional)</span></label><input class="su-i" id="su-sanctuary-name" name="name" type="text" autocomplete="given-name" placeholder="First name" /></div>
       </div>
-    </form>
+      <fieldset class="su-int"><legend class="su-l">I&rsquo;m interested in</legend><div class="su-cs"><label class="su-c"><input type="checkbox" name="interests" value="Companion App"><span>Companion App</span></label><label class="su-c"><input type="checkbox" name="interests" value="Sanctuary" checked data-default><span>Sanctuary</span></label><label class="su-c"><input type="checkbox" name="interests" value="Community"><span>Community</span></label><label class="su-c"><input type="checkbox" name="interests" value="Investor / partner"><span>Investor / partner</span></label></div></fieldset>
+      <p class="su-consent">By joining you agree that DAOasis may email you about early access. We keep only what you enter here, use MailerLite to send the emails, and you can unsubscribe at any time. See the <a href="privacy.html#signup">Privacy Policy</a>.</p>
+      <button class="su-b" type="submit" data-fallback="Join by email">Join early access</button>
+      <div class="su-msg" role="status" aria-live="polite"></div>
+      <ul class="su-next">
+        <li data-su-first>You are added to the list, and we email you when early access opens.</li>
+        <li><strong>Companion App</strong> &mdash; in build &middot; <strong>The Sanctuary</strong> &mdash; planned for Phuket, 2027</li>
+      </ul>
+      <noscript><p class="su-consent" style="margin-top:18px;">With JavaScript off, the button opens your email app instead &mdash; or write to <a href="mailto:info@daoasis.xyz">info@daoasis.xyz</a>.</p></noscript>
+    </form></div>
   </div>
 </section>
 

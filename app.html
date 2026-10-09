@@ -2221,6 +2221,8 @@ img{height:auto;}
 .wp-stat-k { color: rgba(247,244,238,0.72); }
 .wp-stat-s { color: #b5ad9f; }
 </style>
+<link rel="stylesheet" href="css/signup.css?v=20261009" />
+<script src="js/signup.js?v=20261009" defer></script>
 </head>
 <body>
 <a class="skip-link" href="#mainContent">Skip to content</a>
@@ -3030,17 +3032,24 @@ img{height:auto;}
   <div class="s-kicker" style="color:var(--gold);">Early Access</div>
   <h2 class="s-headline" style="color:var(--warm-white);">Your journey starts<br><em>when you decide it does.</em></h2>
   <p class="s-body" style="color:#908978;text-align:center;margin:0 auto 40px;">Join a community building better habits one deliberate day at a time — and being recognised for doing it.</p>
-  <!-- WAS `href="#"` — a dead link, and the only conversion moment on this
-       page. index.html's equivalent was pointed at the inbox in September and
-       this one was missed. Same destination and same subject line, so both
-       pages land in one place.
-       There is still no form backend anywhere in this project: this hands the
-       request to the reader's own email client. If real capture is ever built,
-       privacy.html §09 and cookies.html §04/§07 must be updated in the same
-       release — both currently state that this site collects nothing. -->
-  <a class="btn-primary" href="mailto:info@daoasis.xyz?subject=Early%20access%20%E2%80%94%20DAOasis%20waitlist">Join the Waitlist</a>
-  <div class="final-note">Free to join. No crypto knowledge required.<br />
-    <span style="opacity:0.72;">This opens your email app — the list is read by a person, not a robot.</span></div>
+  <!-- 9 October 2026: the shared sign-up component (css/signup.css,
+       js/signup.js), dark variant, Companion App pre-ticked. -->
+  <form class="su su--dark" data-su action="mailto:info@daoasis.xyz?subject=Early%20access%20%E2%80%94%20DAOasis" method="post" enctype="text/plain" novalidate>
+      <div class="su-row">
+        <div class="su-f"><label class="su-l" for="su-app-email">Email</label><input class="su-i" id="su-app-email" name="email" type="email" required autocomplete="email" inputmode="email" placeholder="you@example.com" /></div>
+        <div class="su-f"><label class="su-l" for="su-app-name">First name <span class="su-opt">(optional)</span></label><input class="su-i" id="su-app-name" name="name" type="text" autocomplete="given-name" placeholder="First name" /></div>
+      </div>
+      <fieldset class="su-int"><legend class="su-l">I&rsquo;m interested in</legend><div class="su-cs"><label class="su-c"><input type="checkbox" name="interests" value="Companion App" checked data-default><span>Companion App</span></label><label class="su-c"><input type="checkbox" name="interests" value="Sanctuary"><span>Sanctuary</span></label><label class="su-c"><input type="checkbox" name="interests" value="Community"><span>Community</span></label><label class="su-c"><input type="checkbox" name="interests" value="Investor / partner"><span>Investor / partner</span></label></div></fieldset>
+      <p class="su-consent">By joining you agree that DAOasis may email you about early access. We keep only what you enter here, use MailerLite to send the emails, and you can unsubscribe at any time. See the <a href="privacy.html#signup">Privacy Policy</a>.</p>
+      <button class="su-b" type="submit" data-fallback="Join by email">Join early access</button>
+      <div class="su-msg" role="status" aria-live="polite"></div>
+      <ul class="su-next">
+        <li data-su-first>You are added to the list, and we email you when early access opens.</li>
+        <li><strong>Companion App</strong> &mdash; in build &middot; <strong>The Sanctuary</strong> &mdash; planned for Phuket, 2027</li>
+      </ul>
+      <noscript><p class="su-consent" style="margin-top:18px;">With JavaScript off, the button opens your email app instead &mdash; or write to <a href="mailto:info@daoasis.xyz">info@daoasis.xyz</a>.</p></noscript>
+    </form>
+  <div class="final-note">Free to join. No crypto knowledge required.</div>
 </section>
 
 

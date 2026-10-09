@@ -3272,6 +3272,8 @@ img{height:auto;}
   .cm-open-not{color:#6f685b;}
   .wn-journey-l{color:#E8B88A;}
 </style>
+<link rel="stylesheet" href="css/signup.css?v=20261009" />
+<script src="js/signup.js?v=20261009" defer></script>
 </head>
 <body>
 <a class="skip-link" href="#mainContent">Skip to content</a>
@@ -3964,34 +3966,26 @@ img{height:auto;}
     <div class="wl-tagline">Small actions. Consistent practice. Lasting change.</div>
     <h2 class="wl-headline rv"><span class="ln"><i>Be among the first.</i></span></h2>
     <div class="wl-sub">Join a community building a more intentional way to live, learn and grow.</div>
-    <!-- WHAT HAPPENS NEXT. Step two is the honesty note that used to sit
-         under the button as .wl-note — same words, same disclosure, moved
-         into the sequence where it reads as part of the process. There is
-         still no form backend anywhere in this project, and no date is
-         given here because none is settled. Do not add one. -->
-    <!-- Was `href="#"` — a dead link that every nav, drawer and hero CTA
-         pointed at, and the Business Plan's Annex A7 launch blocker.
-         There is still no form backend anywhere in this project, so this
-         hands off to the one published address instead of pretending to
-         capture. Because nothing is collected by the site, this does NOT
-         change the privacy or cookie position. If a real capture form is
-         ever built here, privacy.html §09 and cookies.html §04/§07 must be
-         updated in the same commit — both currently state as fact that the
-         site collects nothing and sets no cookies. -->
-    <div class="btn-row" style="justify-content:center;"><a class="btn btn-dark" href="mailto:info@daoasis.xyz?subject=Early%20access%20%E2%80%94%20DAOasis%20waitlist">Join the Waitlist</a></div>
-    <!-- WHERE THINGS ACTUALLY STAND. Three facts, every one of them already
-         published elsewhere on this site — the UK company on privacy.html
-         §01/§19 and terms.html §01/§24, the build status and the 2027 pilot
-         on investors.html and sanctuary.html. Nothing here is new and
-         nothing is a forecast.
-         The Sanctuary line must keep the word "planned": it is not
-         operational, not bookable, and no property is contracted. See the
-         Sanctuary content rules. -->
-    <div class="wl-status">
-      <span>Companion App — in build</span>
-      <span>The Sanctuary — planned for Phuket, 2027</span>
-      <span>DAOasis Global Ltd — incorporated in the UK</span>
-    </div>
+    <!-- 9 October 2026: the mailto button became the shared sign-up
+         component (css/signup.css, js/signup.js). It posts to MailerLite
+         once SIGNUP_CONFIG.endpoint is set, and until then hands off to the
+         visitor's own email app exactly as the button did. The two status
+         facts now live inside the component, under its button. -->
+    <form class="su" data-su action="mailto:info@daoasis.xyz?subject=Early%20access%20%E2%80%94%20DAOasis" method="post" enctype="text/plain" novalidate>
+      <div class="su-row">
+        <div class="su-f"><label class="su-l" for="su-home-email">Email</label><input class="su-i" id="su-home-email" name="email" type="email" required autocomplete="email" inputmode="email" placeholder="you@example.com" /></div>
+        <div class="su-f"><label class="su-l" for="su-home-name">First name <span class="su-opt">(optional)</span></label><input class="su-i" id="su-home-name" name="name" type="text" autocomplete="given-name" placeholder="First name" /></div>
+      </div>
+      <fieldset class="su-int"><legend class="su-l">I&rsquo;m interested in</legend><div class="su-cs"><label class="su-c"><input type="checkbox" name="interests" value="Companion App" checked data-default><span>Companion App</span></label><label class="su-c"><input type="checkbox" name="interests" value="Sanctuary"><span>Sanctuary</span></label><label class="su-c"><input type="checkbox" name="interests" value="Community"><span>Community</span></label><label class="su-c"><input type="checkbox" name="interests" value="Investor / partner"><span>Investor / partner</span></label></div></fieldset>
+      <p class="su-consent">By joining you agree that DAOasis may email you about early access. We keep only what you enter here, use MailerLite to send the emails, and you can unsubscribe at any time. See the <a href="privacy.html#signup">Privacy Policy</a>.</p>
+      <button class="su-b" type="submit" data-fallback="Join by email">Join early access</button>
+      <div class="su-msg" role="status" aria-live="polite"></div>
+      <ul class="su-next">
+        <li data-su-first>You are added to the list, and we email you when early access opens.</li>
+        <li><strong>Companion App</strong> &mdash; in build &middot; <strong>The Sanctuary</strong> &mdash; planned for Phuket, 2027</li>
+      </ul>
+      <noscript><p class="su-consent" style="margin-top:18px;">With JavaScript off, the button opens your email app instead &mdash; or write to <a href="mailto:info@daoasis.xyz">info@daoasis.xyz</a>.</p></noscript>
+    </form>
   </div>
 </section>
 

@@ -1,0 +1,70 @@
+/* ══ SIGN-UP — one component, three places (9 October 2026) ═══════════════
+   Used by index.html (#waitlistSection), app.html (#waitlist) and
+   sanctuary.html (#earlyAccess). Behaviour lives in js/signup.js; the
+   MailerLite address is the single constant at the top of that file.
+
+   Built from sanctuary.html's early-access form (hairline fields, tracked
+   micro-labels, a mineral pill) so it introduces no new visual language.
+   Light by default; .su--dark for app.html's dark final section.
+
+   Sizes are explicit rather than var(--t-*): the three host pages do not
+   share one type-token set, and sanctuary.html does not define --t-nano.
+   ═══════════════════════════════════════════════════════════════════════ */
+.su{--su-ink:#2B2623;--su-mute:#5A544A;--su-line:rgba(43,38,35,0.26);--su-gold:#7F4F22;
+  --su-btn-bg:#171412;--su-btn-ink:#F7F4EE;--su-panel:rgba(255,255,255,0.55);
+  max-width:620px;margin:0 auto;text-align:left;font-family:'Frank Ruhl Libre',Georgia,serif;color:var(--su-ink);}
+.su--dark{--su-ink:#F7F4EE;--su-mute:#ADA69A;--su-line:rgba(247,244,238,0.28);--su-gold:#D49B69;
+  --su-btn-bg:#F7F4EE;--su-btn-ink:#171412;--su-panel:rgba(247,244,238,0.05);}
+
+.su-row{display:grid;grid-template-columns:1.25fr 1fr;gap:0 32px;}
+.su-f{margin-bottom:26px;min-width:0;}
+.su-l{display:block;font-size:10.5px;letter-spacing:0.22em;text-transform:uppercase;
+  color:var(--su-mute);margin-bottom:10px;}
+.su-opt{letter-spacing:0.06em;text-transform:none;}
+.su-i{width:100%;background:transparent;border:none;border-bottom:1px solid var(--su-line);
+  border-radius:0;padding:12px 0;font-family:inherit;font-size:16.5px;color:var(--su-ink);
+  transition:border-color 0.35s cubic-bezier(0.22,1,0.36,1);}
+.su-i::placeholder{color:var(--su-mute);opacity:0.6;}
+.su-i:focus{outline:none;border-bottom-color:var(--su-gold);}
+.su-i:focus-visible{outline:2px solid #C48A5A;outline-offset:2px;}
+.su-i[aria-invalid="true"]{border-bottom-color:#B4532F;}
+
+.su-int{border:0;margin:0 0 22px;padding:0;min-width:0;}
+.su-int legend{padding:0;}
+.su-cs{display:flex;flex-wrap:wrap;gap:10px;}
+.su-c{position:relative;display:inline-flex;align-items:center;cursor:pointer;}
+.su-c input{position:absolute;opacity:0;width:1px;height:1px;}
+.su-c span{display:inline-flex;align-items:center;gap:9px;padding:10px 16px;border-radius:999px;
+  border:1px solid var(--su-line);font-size:13.5px;color:var(--su-ink);
+  transition:border-color 0.3s cubic-bezier(0.22,1,0.36,1),background 0.3s cubic-bezier(0.22,1,0.36,1);}
+.su-c span::before{content:'';width:9px;height:9px;border-radius:50%;border:1px solid var(--su-mute);flex:none;
+  transition:background 0.3s cubic-bezier(0.22,1,0.36,1),border-color 0.3s cubic-bezier(0.22,1,0.36,1);}
+.su-c input:checked + span{border-color:var(--su-gold);background:var(--su-panel);}
+.su-c input:checked + span::before{background:#C48A5A;border-color:#C48A5A;}
+.su-c input:focus-visible + span{outline:2px solid #C48A5A;outline-offset:2px;}
+
+.su-consent{font-size:13px;line-height:1.7;color:var(--su-mute);margin:0 0 22px;}
+.su-consent a{color:var(--su-ink);text-decoration:underline;text-decoration-color:var(--su-gold);text-underline-offset:3px;}
+
+.su-b{font-family:inherit;border:none;cursor:pointer;background:var(--su-btn-bg);color:var(--su-btn-ink);
+  padding:18px 44px;border-radius:40px;font-size:12.5px;letter-spacing:0.16em;text-transform:uppercase;
+  transition:opacity 0.3s cubic-bezier(0.22,1,0.36,1);}
+.su-b:hover{opacity:0.86;}
+.su-b:focus-visible{outline:2px solid #C48A5A;outline-offset:3px;}
+.su-b[disabled]{opacity:0.55;cursor:progress;}
+
+.su-msg{display:none;margin-top:22px;padding:18px 22px;border-left:2px solid #C48A5A;
+  background:var(--su-panel);font-size:14.5px;line-height:1.75;color:var(--su-ink);}
+.su-msg.show{display:block;}
+.su-msg a{color:inherit;}
+
+.su-next{list-style:none;margin:26px 0 0;padding:20px 0 0;border-top:1px solid var(--su-line);
+  font-size:13.5px;line-height:1.7;color:var(--su-mute);}
+.su-next li + li{margin-top:6px;}
+.su-next strong{font-weight:500;color:var(--su-ink);}
+
+@media (max-width:640px){
+  .su-row{grid-template-columns:1fr;}
+  .su-b{width:100%;}
+  .su-c span{padding:10px 14px;font-size:13px;}
+}
