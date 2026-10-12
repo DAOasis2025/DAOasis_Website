@@ -328,6 +328,10 @@ body { overflow-x: clip; }
    the pin released. The distance is now allocated beat by beat in the
    script (see HERO_ALLOT), so this number and that table move together. */
 .hero-outer { position: relative; height: 500vh; }
+/* released (12 Oct, js/cine.js): the hero is one screen of its opening card */
+.hero-outer.cine-done .hero-bridge { display: none; }
+.wp-hit { pointer-events: none; }
+.cine-done .wp-hit { pointer-events: all; }
 
 .hero {
   position: sticky; top: 0; height: 100vh; overflow: hidden;
@@ -3119,12 +3123,12 @@ img{height:auto;}
 </footer>
 
 
-<!-- Controlled Cinematic Scroll — shared pacing controller, see js/cine.js?v=20261006 -->
-<script src="js/smooth.js?v=20261006"></script>
-<script src="js/cine.js?v=20261006"></script>
+<!-- Controlled Cinematic Scroll — shared pacing controller, see js/cine.js?v=20261012 -->
+<script src="js/smooth.js?v=20261012"></script>
+<script src="js/cine.js?v=20261012"></script>
 <script>
 /* ────────────────────────────────────────────
-   CONTROLLED CINEMATIC SCROLL (js/cine.js?v=20261006)
+   CONTROLLED CINEMATIC SCROLL (js/cine.js?v=20261012)
    cine() returns a paced track whose .get() replaces a raw scroll
    fraction at the call site. Falls back to direct scroll mapping if the
    controller file is missing, so sections degrade rather than break.
@@ -3436,7 +3440,7 @@ function cine(el, o){
      `.hero-bridge`). That shape used to be broken by cine.js's
      auto-release, which could only ever find the first sticky child and
      crushed the wrapper to its height. Auto-release was removed outright
-     on 20 Aug (see the note at the top of js/cine.js?v=20261006), so no per-section
+     on 20 Aug (see the note at the top of js/cine.js?v=20261012), so no per-section
      opt-out is needed any more. */
   /* `epic` is 1500/1150ms, which is the fastest cap on the site's slowest
      section. Overridden here rather than globally: this is the one place
@@ -3475,6 +3479,8 @@ function cine(el, o){
      extra wiring. */
   const track = cine(outer, {
     mode: 'guided', pace: 'epic', states: 3, govern: true,
+    /* once scrolled past, the hero rests on its opening card (12 Oct) */
+    rest: 0,
     /* THE WHOLE HERO TAKES 9 SECONDS TO SCROLL THROUGH, set here rather
        than falling out of GOV.beatMs. This track declares three states, so
        two beats — the fewest of any section on the page — and under beat
@@ -3684,6 +3690,8 @@ function cine(el, o){
     if (!track){
       const t = cine(outer, { mode:'sticky', pace:'major', states: 6 });
       track = t;
+      /* once scrolled past, each habit row re-opens its own screen (12 Oct) */
+      if (t.pick) t.pick(rows, k => k + 1);
       t.on(() => (mq.matches ? render : renderMobile)(t.pos()));
     }
   }
@@ -3867,11 +3875,28 @@ function cine(el, o){
     mode: 'sticky',
     pace: 'major',
     /* governed on touch — 672vh of pin on a phone, same reasoning as the
-       hero above. See the governor block in js/cine.js?v=20261006. */
+       hero above. See the governor block in js/cine.js?v=20261012. */
     govern: true,
     stops: QSTOPS
   });
   qTrack.on(() => { paced = routeAt(qTrack.pos()); questScroll(); });
+  /* once scrolled past, each waypoint re-opens its card (12 Oct). The
+     circles are 6-7 units across, so each gets a larger invisible target. */
+  if (qTrack.pick) {
+    const svg = outer.querySelector('.quest-svg');
+    const hits = WPS.map((w, i) => {
+      const c = document.getElementById('wpC' + i);
+      const h = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      h.setAttribute('cx', c.getAttribute('cx')); h.setAttribute('cy', c.getAttribute('cy'));
+      h.setAttribute('r', '26'); h.setAttribute('fill', 'transparent');
+      h.setAttribute('class', 'wp-hit');
+      h.setAttribute('aria-label', 'Show waypoint ' + (i + 1));
+      svg.appendChild(h);
+      return h;
+    });
+    qTrack.pick(hits);
+    qTrack.pick(WPS.map((w, i) => document.getElementById('wpL' + i)));
+  }
 })();
 
 /* ────────────────────────────────────────────
@@ -3902,8 +3927,10 @@ function cine(el, o){
      scenes already are the states. Pacing gives each one a held beat
      instead of letting a flick crossfade through all four at once. */
   /* governed on touch — 640vh of pin on a phone, so a flick used to
-     crossfade all four scenes at once. See js/cine.js?v=20261006. */
+     crossfade all four scenes at once. See js/cine.js?v=20261012. */
   const track = cine(outer, { mode: 'sticky', pace: 'major', states: N, govern: true });
+  /* once scrolled past, the scene list re-opens each scene (12 Oct) */
+  if (track.pick) track.pick(navItems);
 
   function apply(raw){
     const pos = raw * (N - 1); // continuous scene position, 0..N-1 (each scene gets a full centred hold)

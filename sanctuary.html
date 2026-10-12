@@ -503,6 +503,10 @@ img { max-width: 100%; }
    change the two together. passMs on the track still bounds how long a
    fast wheel can be held here, whatever this height is. */
 .hero-outer { position: relative; height: 520vh; }
+/* released (12 Oct, js/cine.js): one screen of the opening card */
+.hero-outer.cine-done .hero-bridge { display: none; }
+.arc-hit { pointer-events: none; }
+.cine-done .arc-hit { pointer-events: all; cursor: pointer; }
 .hero-stage {
   position: sticky; top: 0; height: 100vh; overflow: hidden;
   display: flex; align-items: center; justify-content: center;
@@ -2220,8 +2224,8 @@ img{height:auto;}
 </footer>
 
 
-<!-- Controlled Cinematic Scroll — shared pacing controller, see js/cine.js?v=20261006 -->
-<script src="js/smooth.js?v=20261006"></script>
+<!-- Controlled Cinematic Scroll — shared pacing controller, see js/cine.js?v=20261012 -->
+<script src="js/smooth.js?v=20261012"></script>
 <script>
   /* ── ARM THE DEFERRED PHOTOGRAPHY ──────────────────────────────────────
      Three layers, because a plate that never arrives is far worse than a
@@ -2280,7 +2284,7 @@ img{height:auto;}
   })();
 </script>
 
-<script src="js/cine.js?v=20261006"></script>
+<script src="js/cine.js?v=20261012"></script>
 <script>
 /* ════════════════════════════════════════════
    HELPERS
@@ -2296,7 +2300,7 @@ function progressOf(el){
   return scrollable > 0 ? clamp01(-rect.top / scrollable) : 0;
 }
 
-/* Controlled Cinematic Scroll (js/cine.js?v=20261006). cine() returns a paced track
+/* Controlled Cinematic Scroll (js/cine.js?v=20261012). cine() returns a paced track
    whose .get() replaces progressOf() at the call site. If the controller
    file is ever missing the page degrades to direct scroll mapping rather
    than breaking, so every section still works. */
@@ -2519,7 +2523,7 @@ const lead = (window.DAO && DAO.cine && DAO.cine.lead) ? DAO.cine.lead
      That makes the hijack a bad trade. A flick outrunning the beats is a
      cosmetic loss; a page that will not scroll is not.
 
-     js/cine.js?v=20261006 now also bounds governed crossing time (GOV.maxCrossMs), so
+     js/cine.js?v=20261012 now also bounds governed crossing time (GOV.maxCrossMs), so
      if this is ever switched back on it cannot become a wall again. Flip
      the one word to re-enable — and re-test on a REAL handset. Synthetic
      touch events cannot drive native scrolling, so they only ever exercise
@@ -2537,7 +2541,8 @@ const lead = (window.DAO && DAO.cine && DAO.cine.lead) ? DAO.cine.lead
 
      Ten rather than the app hero's nine because there is more to watch:
      four plates fanning out, not three phones. */
-  const track = cine(outer, { mode: 'guided', pace: 'epic', states: 4, govern: true, passMs: 10000 });
+  /* rest:0 — once scrolled past, the hero is one screen of its title card (12 Oct) */
+  const track = cine(outer, { mode: 'guided', pace: 'epic', states: 4, govern: true, passMs: 10000, rest: 0 });
 
   /* ── THE FAN, at settle ──
      One entry per plate, left to right. Lanes are in plate-widths from the
@@ -2908,6 +2913,8 @@ const lead = (window.DAO && DAO.cine && DAO.cine.lead) ? DAO.cine.lead
      a real mobile pin it is paced like the hero rather than quietly
      reverting to "one flick and it is gone". */
   const track = cine(outer, { mode: 'sticky', pace: 'major', states: items.length, govern: true });
+  /* once scrolled past, each foundation re-opens on click (12 Oct) */
+  if(track.pick) track.pick(items);
   let mob = null;
   track.on(() => {
     if(window.innerWidth <= 900){
@@ -2999,6 +3006,11 @@ const lead = (window.DAO && DAO.cine && DAO.cine.lead) ? DAO.cine.lead
       t.setAttribute('text-anchor', 'middle'); t.setAttribute('class', 'arc-lab'); t.dataset.i = i;
       t.textContent = 'DAY ' + String(i + 1).padStart(2, '0');
       dotsG.appendChild(t);
+      /* a larger, invisible target for the day — live only once released */
+      const h = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      h.setAttribute('cx', at.x); h.setAttribute('cy', at.y + 8); h.setAttribute('r', 24);
+      h.setAttribute('fill', 'transparent'); h.setAttribute('class', 'arc-hit'); h.dataset.i = i;
+      dotsG.appendChild(h);
     }
     update();
   }
@@ -3063,6 +3075,12 @@ const lead = (window.DAO && DAO.cine && DAO.cine.lead) ? DAO.cine.lead
      inherits the pacing */
   const track = cine(outer, { mode: 'sticky', pace: 'epic', states: days.length, govern: true });
   track.on(() => { pos = track.pos(); update(); });
+  /* once scrolled past, a day on the arc re-opens that day (12 Oct). The
+     dots are rebuilt on resize, so this is delegated rather than bound. */
+  dotsG.addEventListener('click', e => {
+    const h = e.target.closest && e.target.closest('[data-i]');
+    if(h && track.show) track.show(+h.dataset.i);
+  });
   window.addEventListener('resize', build, { passive: true });
   /* NOT gated on `load`. That waits for every image, and this page carries
      roughly 15MB of day photography — so the arc had no length, no dots and

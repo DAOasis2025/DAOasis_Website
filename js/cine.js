@@ -321,6 +321,10 @@ DAO.cine = (function(){
     this.subs    = [];
     this.emitted = -1;
     this.near    = true;
+    /* RELEASE (12 Oct 2026) — see Track.prototype.release */
+    this.done    = false;
+    this.rest    = o.rest != null ? o.rest : 1;
+    this.picks   = [];
 
     var self = this;
     if('IntersectionObserver' in window){
@@ -365,6 +369,7 @@ DAO.cine = (function(){
      nearest state, not between two of them, so .get() and subscribers
      never disagree about where the story currently is. */
   Track.prototype.settle = function(){
+    if(this.done){ this.emitted = -1; this.emit(this.value); return; }
     var v = this.rawV = rawOf(this.el);
     this.goalIdx = this.nearest(v);
     /* sticky settles on the magnet-mapped position, not on the bare stop —
@@ -383,11 +388,13 @@ DAO.cine = (function(){
      synchronous layouts per frame, every frame, for the entire time any
      pinned section is moving. Separating the passes removes all of them. */
   Track.prototype.read = function(){
+    if(this.done) return;
     if(this.near) this.rawV = rawOf(this.el);
   };
 
   /* PASS 2 — compute and emit. Reads nothing from the DOM. */
   Track.prototype.tick = function(now, dt){
+    if(this.done){ this.tickDone(now); return; }
     if(!this.near) return;
     /* Bidirectional, straight off true scroll position. Scrolling back up
        unwinds a section exactly the way it played.
@@ -549,7 +556,7 @@ DAO.cine = (function(){
      Reduced motion is now handled in ONE place, times(), where it shortens
      the durations (see reducedScale). Everything still moves with the reader's
      scroll; it simply arrives sooner. */
-  Track.prototype.get   = function(){ return this.o.off ? this.rawV : this.value; };
+  Track.prototype.get   = function(){ return (this.o.off && !this.done) ? this.rawV : this.value; };
   Track.prototype.raw   = function(){ return this.rawV; };
   Track.prototype.state = function(){ return this.nearest(this.get()); };
 
@@ -583,6 +590,147 @@ DAO.cine = (function(){
     return this;
   };
   Track.prototype.refresh = function(){ this.emitted = -1; };
+
+  /* ══ RELEASE — 12 October 2026 ══════════════════════════════════════════
+     Once the reader has scrolled PAST a pinned section (its wrapper is
+     wholly above the viewport), the section stops being a pin for the rest
+     of the visit: the wrapper drops to its natural height, the sticky stage
+     becomes an ordinary block, and the scene rests on `rest` (its finished
+     frame by default; the heroes rest on their opening card). Scrolling back
+     up therefore passes ONE screen of finished picture instead of replaying
+     five screens of animation in reverse. Stages bound with .pick() become
+     clickable and re-open their state with a short eased transition.
+
+     THIS IS NOT THE 19 AUGUST AUTO-RELEASE, which is recorded above as the
+     cause of "every animation completes instantly". That version shrank a
+     wrapper while the reader was INSIDE it and did not move the scroll
+     position, so the document collapsed under them and threw them into the
+     next section. Here:
+       1. the wrapper is only touched once it is entirely ABOVE the viewport,
+          so nothing the reader can see changes size;
+       2. the scroll position is moved by exactly the height removed (measured
+          on the wrapper's own bottom edge, before and after), with the
+          browser's scroll anchoring switched off for that one frame so the
+          correction cannot be applied twice;
+       3. js/smooth.js and the touch governor are shifted by the same amount,
+          so neither drags the page back to where it was.
+     The reader sees nothing happen. Opt out per track with { release:false }. */
+  function stickyKids(el){
+    var out = [], kids = el.children || [], vh = window.innerHeight || 1;
+    for(var i = 0; i < kids.length; i++){
+      var cs; try { cs = getComputedStyle(kids[i]); } catch(e){ continue; }
+      if((cs.position === 'sticky' || cs.position === '-webkit-sticky') && kids[i].offsetHeight >= vh * 0.6) out.push(kids[i]);
+    }
+    return out;
+  }
+  function shiftScroll(d){
+    if(!d) return;
+    var y = sy() + d;
+    if(window.DAOsmooth && window.DAOsmooth.shift) window.DAOsmooth.shift(d);
+    govShift(d);
+    /* 'instant' — the page's own CSS sets scroll-behavior:smooth wherever
+       js/smooth.js is not armed (every phone), and a smooth correction is
+       a visible slide of the whole page */
+    try { window.scrollTo({ top: y, left: 0, behavior: 'instant' }); }
+    catch(e){ window.scrollTo(0, y); }
+  }
+  /* PASS 0b — before any track reads its rect */
+  Track.prototype.maybeRelease = function(){
+    if(this.done || this.o.release === false) return;
+    var w = window.innerWidth;
+    if(this._noStickW === w) return;            /* not a pin at this width */
+    var r; try { r = this.el.getBoundingClientRect(); } catch(e){ return; }
+    if(r.bottom > -2) return;                    /* not passed yet */
+    var st = stickyKids(this.el);
+    if(!st.length){ this._noStickW = w; return; }
+    var de = document.documentElement, prevA = de.style.overflowAnchor;
+    de.style.overflowAnchor = 'none';
+    var before = r.bottom, el = this.el;
+    el.classList.add('cine-done');
+    el.style.setProperty('height', 'auto', 'important');
+    el.style.setProperty('min-height', '0', 'important');
+    for(var i = 0; i < st.length; i++){
+      st[i].style.setProperty('position', 'relative', 'important');
+      st[i].style.setProperty('top', 'auto', 'important');
+    }
+    var after = el.getBoundingClientRect().bottom;
+    shiftScroll(after - before);
+    requestAnimationFrame(function(){ de.style.overflowAnchor = prevA; });
+    this.done = true;
+    this.near = true;
+    this.tw = null;
+    this.value = this.goal = this.from = this.rest;
+    this.goalIdx = this.nearest(this.rest);
+    this.emitted = -1;
+    this.emit(this.value);
+    this.markPicks();
+  };
+  Track.prototype.tickDone = function(now){
+    var tw = this.tw;
+    if(!tw) return;
+    var k = cl01((now - tw.t0) / tw.dur);
+    k = k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
+    this.value = tw.from + (tw.to - tw.from) * k;
+    if(k >= 1){ this.value = tw.to; this.tw = null; }
+    this.emit(this.value);
+  };
+  /* Re-open state i after release. Returns false while the section is
+     still a pin — there, scrolling is the way through it. */
+  Track.prototype.show = function(i){
+    if(!this.done) return false;
+    i = Math.max(0, Math.min(this.stops.length - 1, i | 0));
+    var to = this.stops[i], from = this.value;
+    var span = Math.abs(to - from) * this.N;
+    this.tw = { from: from, to: to, t0: performance.now(),
+                dur: reduced ? 1 : Math.min(1800, 520 + 300 * span) };
+    this.markPicks(i);
+    return true;
+  };
+  /* Bind stage elements: els[k] re-opens state map(k) (default k). They are
+     inert while the section is a pin, and become buttons once released. */
+  Track.prototype.pick = function(els, map){
+    var self = this;
+    Array.prototype.forEach.call(els || [], function(el, k){
+      if(!el) return;
+      var idx = map ? map(k) : k;
+      self.picks.push({ el: el, i: idx });
+      el.addEventListener('click', function(e){
+        if(!self.done) return;
+        if(e.target.closest && e.target.closest('a[href]') && e.target.closest('a[href]') !== el) return;
+        e.preventDefault();
+        self.show(idx);
+      });
+      el.addEventListener('keydown', function(e){
+        if(!self.done || (e.key !== 'Enter' && e.key !== ' ')) return;
+        e.preventDefault();
+        self.show(idx);
+      });
+    });
+    if(this.done) this.markPicks();
+    return this;
+  };
+  Track.prototype.markPicks = function(cur){
+    if(!this.done) return;
+    injectPickStyle();
+    if(cur == null) cur = this.nearest(this.value);
+    for(var i = 0; i < this.picks.length; i++){
+      var p = this.picks[i];
+      p.el.classList.add('cine-pick');
+      if(!p.el.hasAttribute('tabindex') && !/^(A|BUTTON)$/.test(p.el.tagName)) p.el.setAttribute('tabindex', '0');
+      if(!p.el.hasAttribute('role') && !/^(A|BUTTON)$/.test(p.el.tagName)) p.el.setAttribute('role', 'button');
+      if(p.i === cur) p.el.setAttribute('aria-current', 'step'); else p.el.removeAttribute('aria-current');
+    }
+  };
+  var pickStyled = false;
+  function injectPickStyle(){
+    if(pickStyled) return; pickStyled = true;
+    var st = document.createElement('style');
+    st.textContent =
+      '.cine-pick{cursor:pointer;-webkit-tap-highlight-color:transparent;}' +
+      '.cine-pick:focus:not(:focus-visible){outline:none;}' +
+      '.cine-pick:focus-visible{outline:2px solid #C48A5A;outline-offset:4px;border-radius:4px;}';
+    document.head.appendChild(st);
+  }
 
   /* ── THE SCROLL CUE ────────────────────────────────────────────────────
      Replaces the literal "· SCROLL" labels that were written into two
@@ -938,7 +1086,7 @@ DAO.cine = (function(){
     var vh = window.innerHeight || 1;
     for(var i = 0; i < tracks.length; i++){
       var t = tracks[i];
-      if(t.o.govern === false) continue;   /* opt OUT — paced by default, see GOV.beatMs */
+      if(t.o.govern === false || t.done) continue;   /* opt OUT — paced by default, see GOV.beatMs */
       if(t.el.offsetHeight - vh <= 0) continue;
       if(!isPinned(t)) continue;
       var r;
@@ -986,7 +1134,7 @@ DAO.cine = (function(){
     var vh = window.innerHeight || 1;
     for(var i = 0; i < tracks.length; i++){
       var t = tracks[i];
-      if(t.o.govern === false) continue;   /* opt OUT — paced by default, see GOV.beatMs */
+      if(t.o.govern === false || t.done) continue;   /* opt OUT — paced by default, see GOV.beatMs */
       if(t.el.offsetHeight - vh <= 0) continue;
       if(!isPinned(t)) continue;
       var r;
@@ -1052,6 +1200,9 @@ DAO.cine = (function(){
     g.wrote = cur;
   }
 
+  function govShift(d){
+    g.pos += d; g.intent += d; g.oy += d;
+  }
   function govRelease(y){
     g.own = false; g.touch = false;
     g.pos = g.intent = g.oy = y;
@@ -1327,7 +1478,7 @@ DAO.cine = (function(){
       var vh = window.innerHeight || 1, best = null, bestCover = 0;
       for(var i = 0; i < tracks.length; i++){
         var t = tracks[i];
-        if(!t.near) continue;
+        if(!t.near || t.done) continue;
         /* A section that already carries its own scroll cue opts out with
            data-no-cue, so the two never print on top of each other. */
         if(t.el && t.el.hasAttribute && t.el.hasAttribute('data-no-cue')) continue;
@@ -1351,6 +1502,7 @@ DAO.cine = (function(){
     /* PASS 0 — the governor writes window.scrollY BEFORE anything reads a
        rect, so every track sees the governed position in the same frame */
     govTick(now, dt);
+    for(var k = 0; k < tracks.length; k++) tracks[k].maybeRelease();
     /* read every track, THEN emit to every track — see Track.read */
     for(var i = 0; i < tracks.length; i++) tracks[i].read();
     for(var j = 0; j < tracks.length; j++) tracks[j].tick(now, dt);
