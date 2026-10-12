@@ -7622,8 +7622,8 @@ Generator: `scratchpad/mkemails.py` (session scratchpad) — edit the copy there
 
 - 600px table layout, inline styles, Cormorant via Google Fonts with Georgia fallback,
   `color-scheme: light only`. Footer uses MailerLite's `{$unsubscribe}` tag.
-- **Images are absolute URLs to the live site** (`images/email/email-0N.jpg`, 1200x640, and
-  `images/img-09-white.png`), so they only resolve once this branch is live.
+- **No photographs** (removed at Jamie's request — they 404'd before the branch was live). The only
+  image is the palm mark, `images/img-09-white.png`, already on the live site.
 - Copy follows the content rules: app "in build", Sanctuary optional / planned 2027 / paid in
   ordinary currency, DRC = recognition, $DVT conversion "designed to", rate not set, no
   offer/returns. Signed by Jamie.
