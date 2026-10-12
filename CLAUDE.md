@@ -7611,3 +7611,21 @@ A "visual error" check must pick a reference element that is not `position:stick
 and not `<main>`/a page wrapper — both read as huge false jumps. Programmatic scroll on a
 phone emulation must pass `behavior:'instant'` or the page's CSS smooth-scroll turns every
 `scrollBy` into an animation.
+
+## Onboarding email sequence — 12 October 2026
+
+`emails/01-…05-*.html` — five hand-coded HTML emails for a MailerLite automation
+(Email design → Custom HTML editor), triggered when a subscriber joins the
+**Early access** group: 01 Welcome (immediately) · 02 Why DAOasis exists (+2 days) ·
+03 Meet the Companion App (+2) · 04 Inside the Sanctuary (+3) · 05 The bigger picture (+3).
+Generator: `scratchpad/mkemails.py` (session scratchpad) — edit the copy there or in the files.
+
+- 600px table layout, inline styles, Cormorant via Google Fonts with Georgia fallback,
+  `color-scheme: light only`. Footer uses MailerLite's `{$unsubscribe}` tag.
+- **Images are absolute URLs to the live site** (`images/email/email-0N.jpg`, 1200x640, and
+  `images/img-09-white.png`), so they only resolve once this branch is live.
+- Copy follows the content rules: app "in build", Sanctuary optional / planned 2027 / paid in
+  ordinary currency, DRC = recognition, $DVT conversion "designed to", rate not set, no
+  offer/returns. Signed by Jamie.
+- The files are also publicly reachable on the site under `/emails/` (harmless; acts as a
+  web version).
