@@ -7629,3 +7629,10 @@ Generator: `scratchpad/mkemails.py` (session scratchpad) — edit the copy there
   offer/returns. Signed by Jamie.
 - The files are also publicly reachable on the site under `/emails/` (harmless; acts as a
   web version).
+
+## Sign-up centred everywhere — 12 October 2026
+`css/signup.css`: the form is centred inside as well as out — labels, input text, interest
+chips, consent, button and the "what happens next" lines. `.su--left` is now an alias for
+centred. sanctuary.html's early-access block (badge, headline, copy) is centred to match,
+and its badge reads **"Early access list · Join now"** — "Not yet open" read as if the list
+were closed. It names the LIST, not the Sanctuary, so it does not breach the Sanctuary rules.
