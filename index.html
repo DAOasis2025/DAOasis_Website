@@ -3341,13 +3341,11 @@ img{height:auto;}
                appeared as a strip under the calls to action — that strip
                was removed on 13 September, so the objection is spent.) -->
           <div class="kicker">Rest &middot; Learn &middot; Earn &middot; Return</div>
-          <!-- 9 October 2026: the headline and sub-line now say what DAOasis
-               IS. Three options are on review (HERO_OPTIONS in the script at
-               the end of <body>); this markup is option A and is what the
-               live domain serves. Remove the losing two and the switcher
-               once one is chosen. -->
+          <!-- 9 October 2026: the headline and sub-line say what DAOasis IS.
+               Option A was chosen on 12 October 2026 (sub-line amended by
+               Jamie); the review switcher and the other two options are gone. -->
           <h1 class="h1" id="heroH1">Every healthy habit <em>moves you forward.</em></h1>
-          <div class="sub" id="heroSub">A wellness app where movement, sleep, breathing, hydration and learning move you along a real route &mdash; Bangkok to Phuket. Built for demanding work and little structure. Free to join, no crypto needed.</div>
+          <div class="sub" id="heroSub">A wellness app where movement, sleep, breathing, hydration and learning move you along real routes &mdash; starting with Bangkok to Phuket. Built for demanding work and little structure. Free to join, no crypto needed.</div>
           <!-- The icon spans are MOBILE ONLY — hidden above 900px so the
                approved desktop hero is unchanged. See .ctas in the mobile
                block. -->
@@ -3884,78 +3882,13 @@ img{height:auto;}
   </div>
 </section>
 
-<!-- Divider: Community (warm-white) → Principle (dark) -->
+<!-- Divider: Community (warm-white) → Waitlist (warm stone). The Principle
+     and closing "DAOasis" sections that sat between them were removed on
+     12 October 2026 at the owner's request (too much content). -->
 <div class="divider light bg-ivory">
   <div class="divider-inner">
     <div class="divider-line"></div>
     <img loading="lazy" decoding="async" width="465" height="492" src="images/img-09.png?v=20261006" alt="" class="divider-mark" />
-    <div class="divider-line"></div>
-  </div>
-</div>
-
-<!-- ═══════ PRINCIPLE — image RIGHT, text LEFT ═══════ -->
-<div class="pin5" id="pin5">
-  <div class="stage5 grain">
-    <div class="pr-blob pr-blob1"></div>
-    <div class="pr-blob pr-blob2"></div>
-
-    <!-- LEFT: kicker + word-masked headline + the three statements -->
-    <div class="pr-left">
-      <div class="pr-kicker" id="prKicker">Principle</div>
-      <div class="pr-headline" id="prHeadline"><span class="pr-w"><i>Clarity</i></span> <span class="pr-w"><i><em>over</em></i></span> <span class="pr-w"><i>Noise.</i></span></div>
-
-      <div class="pr-stack">
-        <div class="pr-spine" id="prSpine"></div>
-        <p class="pr-stmt">Modern life creates constant <strong>attention demand</strong>, cognitive load and pressure without structure.</p>
-        <p class="pr-stmt">DAOasis is designed to <strong>remove what distracts</strong> before adding what improves.</p>
-        <p class="pr-stmt">Built for founders, traders, technical professionals, solo operators, creators and <strong>location independent digital nomads</strong> seeking clarity, structure and long term sustainability.</p>
-      </div>
-    </div>
-
-    <!-- RIGHT: large image — always visible on entry -->
-    <div class="pr-image-col" id="prImageCol">
-      <img fetchpriority="low" decoding="async" width="1672" height="941" class="pr-clarity-image" id="prClarityImage" src="images/clarity.jpg?v=20261006" alt="Clarity" />
-    </div>
-  </div>
-</div>
-
-<!-- Mobile fallback: Principle -->
-<div class="section principle-mobile-section on-light" id="principleMobileSection">
-  <div class="eco-kicker">Principle</div>
-  <div class="eco-headline"><span class="pr-w"><i>Clarity</i></span> <span class="pr-w"><i><em>over</em></i></span> <span class="pr-w"><i>Noise.</i></span></div>
-  <div class="pr-para">Modern life creates constant attention demand, cognitive load and pressure without structure.</div>
-  <div class="pr-para">DAOasis is designed to remove what distracts before adding what improves.</div>
-  <div class="pr-para">Built for founders, traders, technical professionals, solo operators, creators and location independent digital nomads seeking clarity, structure and long term sustainability.</div>
-</div>
-
-<!-- Divider: Principle → Closing. Light on BOTH now — the desktop pin is
-     paper and the mobile fallback was always warm stone — so it no longer
-     needs the mobile-only inversion it used to carry. -->
-<div class="divider light bg-ivory divider-after-principle">
-  <div class="divider-inner">
-    <div class="divider-line"></div>
-    <img loading="lazy" decoding="async" width="465" height="492" src="images/img-09.png?v=20261006" alt="" class="divider-mark" />
-    <div class="divider-line"></div>
-  </div>
-</div>
-
-<section class="closing-section grain" id="closingSection">
-  <div class="closing-bg" id="closingBg"></div>
-  <div class="closing-veil"></div>
-  <div class="closing-content">
-    <div class="closing-rule"></div>
-    <div class="closing-eyebrow">DAOasis</div>
-    <h2 class="closing-headline rv"><span class="ln"><i>A life built on <em>intention</em></i></span><span class="ln"><i>is the only one worth living.</i></span></h2>
-    <p class="closing-body">Wellness isn't a destination. It's a practice — one that compounds quietly, over time, when you have the right structure around you. DAOasis exists to give you that structure. Every habit tracked, every lesson completed, every credit earned is a small act of self-determination.</p>
-    <div class="closing-tagline">Rest · Learn · Earn · Return</div>
-  </div>
-</section>
-
-<!-- Divider: Closing (dark) → Waitlist (warm-stone) -->
-<div class="divider dark bg-mineral">
-  <div class="divider-inner">
-    <div class="divider-line"></div>
-    <img loading="lazy" decoding="async" width="465" height="492" src="images/img-09-white.png?v=20261006" alt="" class="divider-mark" />
     <div class="divider-line"></div>
   </div>
 </div>
@@ -4466,7 +4399,8 @@ img{height:auto;}
   const closingObs = new IntersectionObserver((entries) => {
     entries.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add('in-view'); });
   }, { threshold: 0, rootMargin: '0px 0px -15% 0px' });
-  closingObs.observe(document.getElementById('closingSection'));
+  const closingEl = document.getElementById('closingSection');
+  if(closingEl) closingObs.observe(closingEl);
 
   /* ── THE ECOSYSTEM SEQUENCE ────────────────────────────────────────────
      Replaces the three-up card grid (13 September). That grid carried a
@@ -5576,60 +5510,5 @@ img{height:auto;}
 })();
 </script>
 
-<!-- ══ HERO OPTIONS — REVIEW ONLY (9 October 2026) ═══════════════════════
-     Three candidate headline + sub-line pairs for Jamie to choose between.
-     The switcher appears ONLY on preview hosts; the live domains below never
-     show it and ignore ?hero=, so they always serve option A (the markup).
-     Once a choice is made: put the winner in the markup, delete this whole
-     block and the .hero-opt CSS beside it. -->
-<style>
-  .hero-opt{position:fixed;right:14px;bottom:14px;z-index:300;display:flex;align-items:center;gap:4px;
-    padding:6px 6px 6px 12px;border-radius:999px;background:rgba(16,14,12,0.86);
-    border:1px solid rgba(247,244,238,0.18);font-family:'Frank Ruhl Libre',Georgia,serif;
-    font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(247,244,238,0.75);
-    box-shadow:0 6px 24px rgba(0,0,0,0.35);}
-  .hero-opt span{margin-right:4px;}
-  .hero-opt button{width:30px;height:30px;border-radius:50%;border:1px solid rgba(247,244,238,0.22);
-    background:transparent;color:var(--warm-white);font:inherit;letter-spacing:0;cursor:pointer;}
-  .hero-opt button[aria-pressed="true"]{background:#E8B88A;border-color:#E8B88A;color:#171412;}
-  @media (max-width:600px){.hero-opt{right:8px;bottom:auto;top:calc(var(--nav-h,60px) + 8px);padding:4px 4px 4px 9px;font-size:9.5px;}
-    .hero-opt button{width:26px;height:26px;}}
-</style>
-<script>
-(function(){
-  var LIVE = /^(da-oasis-website\.vercel\.app|(www\.)?daoasis\.xyz)$/i;
-  if(LIVE.test(location.hostname)) return;
-  var HERO_OPTIONS = {
-    a: { h: 'Every healthy habit <em>moves you forward.</em>',
-         s: 'A wellness app where movement, sleep, breathing, hydration and learning move you along a real route \u2014 Bangkok to Phuket. Built for demanding work and little structure. Free to join, no crypto needed.' },
-    b: { h: 'Your habits, <em>made into a journey.</em>',
-         s: 'The DAOasis app turns every walk, night\u2019s sleep, breath, glass of water and lesson into real kilometres on the road from Bangkok to Phuket. For founders, operators and creators. Free to join, no crypto needed.' },
-    c: { h: 'A healthier tomorrow, <em>one kilometre at a time.</em>',
-         s: 'An app for founders, operators, creators and remote professionals. Your daily movement, sleep, breathing, hydration and learning move you along a real route. Free to join. No crypto needed.' }
-  };
-  var h1 = document.getElementById('heroH1'), sub = document.getElementById('heroSub');
-  if(!h1 || !sub) return;
-  var bar = document.createElement('div');
-  bar.className = 'hero-opt'; bar.setAttribute('role','group'); bar.setAttribute('aria-label','Hero option (preview only)');
-  bar.innerHTML = '<span>Hero option</span>';
-  Object.keys(HERO_OPTIONS).forEach(function(k){
-    var b = document.createElement('button'); b.type = 'button'; b.textContent = k.toUpperCase(); b.dataset.k = k;
-    b.addEventListener('click', function(){ apply(k, true); });
-    bar.appendChild(b);
-  });
-  function apply(k, push){
-    if(!HERO_OPTIONS[k]) k = 'a';
-    h1.innerHTML = HERO_OPTIONS[k].h; sub.textContent = HERO_OPTIONS[k].s;
-    bar.querySelectorAll('button').forEach(function(b){ b.setAttribute('aria-pressed', String(b.dataset.k === k)); });
-    try { sessionStorage.setItem('daoasis-hero-opt', k); } catch(e){}
-    if(push){ try { var u = new URL(location.href); u.searchParams.set('hero', k); history.replaceState(null, '', u); } catch(e){} }
-  }
-  var k = null;
-  try { k = (new URLSearchParams(location.search).get('hero') || '').toLowerCase(); } catch(e){}
-  if(!HERO_OPTIONS[k]){ try { k = sessionStorage.getItem('daoasis-hero-opt'); } catch(e){} }
-  document.body.appendChild(bar);
-  apply(HERO_OPTIONS[k] ? k : 'a', false);
-})();
-</script>
 </body>
 </html>

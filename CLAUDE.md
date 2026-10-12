@@ -7511,3 +7511,18 @@ investors.html sections renumbered 19 Roadmap / 20 Long-term / 21 Synthesis; inv
 0 JS errors, `innerWidth` equal to the viewport everywhere. Hero options judged by eye
 at 375x667, 390x844, 1440x900, 1366x620; How it works, all three sign-up forms and
 Why Now judged by eye at 390 and 1440.
+
+### Follow-up — 12 October 2026
+- **Hero A chosen.** Sub-line amended by Jamie to "…move you along real routes —
+  starting with Bangkok to Phuket. …". The `HERO_OPTIONS` script, the `.hero-opt`
+  switcher and options B and C are deleted. `id="heroSub"` stays as a harmless hook.
+- **Track names confirmed as "Wellness Track / Web3 Track" everywhere.** One more
+  instance aligned: web3.html's learning-module `alt` ("A Wellness Track module…").
+- **Principle (`.pin5` + `#principleMobileSection`) and the closing "DAOasis"
+  section (`#closingSection`) removed from index.html**, with the two dividers between
+  them. Community now meets the sign-up section across the single light divider that
+  already followed it. Their CSS and the two Principle scripts are left in place,
+  unused — both scripts return early when their element is missing, and the closing
+  observer is now null-guarded. Desktop page 35,800 → 29,900px at 1440x900; mobile
+  ~27.6k → 24.9k at 390x844. Verified 0 overflow / 0 JS errors at all six widths and
+  the new join judged by eye at 390 and 1440.
