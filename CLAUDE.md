@@ -7526,3 +7526,11 @@ Why Now judged by eye at 390 and 1440.
   observer is now null-guarded. Desktop page 35,800 → 29,900px at 1440x900; mobile
   ~27.6k → 24.9k at 390x844. Verified 0 overflow / 0 JS errors at all six widths and
   the new join judged by eye at 390 and 1440.
+- **Hero sub-line gained one sentence (12 Oct):** "Your progress earns rewards and,
+  over time, a say in how DAOasis grows." — the one nod to ownership in the hero,
+  without the word Web3. On phones ≤700px tall the sub is 12px / 1.4 to pay for it;
+  the first button stays above the fold at 360x640 and 375x667.
+- **MailerLite connected (12 Oct):** endpoint set in `js/signup.js` (account 2697697,
+  form 201101535693768478). `interests` is required on the MailerLite form, so an empty
+  selection is sent as "Not specified". Not tested end to end from the cloud session
+  (MailerLite is blocked by its proxy) — Jamie to test on the preview.
