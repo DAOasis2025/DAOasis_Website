@@ -27,7 +27,7 @@
    error, a blocked request, an error reply — says so and offers email.
    ═══════════════════════════════════════════════════════════════════════ */
 var SIGNUP_CONFIG = {
-  endpoint: '',
+  endpoint: 'https://assets.mailerlite.com/jsonp/2697697/forms/201101535693768478/subscribe',
   groups: {
     'Companion App':      '',
     'Sanctuary':          '',
@@ -93,7 +93,8 @@ var SIGNUP_CONFIG = {
       var data = new URLSearchParams();
       data.append('fields[email]', v);
       if(name && name.value.trim()) data.append('fields[name]', name.value.trim());
-      data.append('fields[interests]', list.join(', '));
+      /* MailerLite's form marks interests as required, so never send it empty. */
+      data.append('fields[interests]', list.length ? list.join(', ') : 'Not specified');
       list.forEach(function(i){ var g = SIGNUP_CONFIG.groups[i]; if(g) data.append('groups[]', g); });
       data.append('ml-submit', '1');
       data.append('anticsrf', 'true');
