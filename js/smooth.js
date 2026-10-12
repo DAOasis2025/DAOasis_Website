@@ -382,6 +382,9 @@
 
   /* exposed only so a page can opt out (index.html's intro locks scroll) */
   window.DAOsmooth = {
+    /* js/cine.js moves the page when a passed pin is released (12 Oct) —
+       carry the glide with it so the damper does not pull the page back */
+    shift: function (d) { cur += d; target += d; wrote += d; },
     pause: disarm,
     resume: arm,
     get armed() { return armed; }

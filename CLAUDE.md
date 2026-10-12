@@ -7545,3 +7545,69 @@ Why Now judged by eye at 390 and 1440.
   "while subscribed; on unsubscribe name and interests deleted within 30 days, email kept
   on a do-not-email list; no opens for 24 months → removed". **This creates an operational
   duty**: someone must clean unsubscribed and 24-month-inactive contacts in MailerLite.
+
+---
+
+## Pinned sections release once passed · stages clickable — 12 October 2026
+
+Jamie's decision: once a reader has scrolled PAST a pinned (sticky) section, scrolling
+back up should not hold the screen and replay it in reverse. The section shows its
+finished picture at normal height, and its stages are clickable to re-open each one.
+Fade-in reveals still play once (unchanged).
+
+### How — `js/cine.js`, `Track.prototype.maybeRelease`
+Runs every frame before the read pass. When a track's wrapper is **wholly above the
+viewport** and has a sticky direct child, it:
+1. adds `.cine-done`, sets the wrapper to `height:auto !important; min-height:0`, and the
+   sticky child(ren) to `position:relative; top:auto`;
+2. measures the wrapper's bottom edge before and after and moves the scroll position by
+   exactly the difference (`behavior:'instant'` — phones carry CSS `scroll-behavior:smooth`
+   and a smooth correction is a visible slide), with `overflow-anchor:none` for that frame;
+3. shifts `js/smooth.js` (`DAOsmooth.shift`) and the touch governor (`govShift`) by the
+   same amount;
+4. sets the value to `rest` (default 1 = finished frame; the three heroes pass `rest:0`
+   and hide `.hero-bridge`, so the top of the page is the opening card).
+It never re-pins for the rest of the visit. Opt out per track with `{ release:false }`.
+
+**This is not the 19 August auto-release** (recorded above as the cause of "every
+animation completes instantly"): that one shrank the wrapper while the reader was inside
+it and did not move the scroll. This only touches a wrapper that is entirely off screen
+above and compensates the scroll in the same frame. Verified: the element at the centre
+of the screen moves 0–7px across every release (sub-pixel/smooth-scroll noise), on all
+four pages at 1440x900 and 390x844.
+
+`track.pick(elements, map)` binds stage elements: inert while pinned, buttons once released
+(`.cine-pick`, role/tabindex, Enter/Space, `aria-current="step"`). `track.show(i)` eases to
+state i over 520–1800ms.
+
+| page | section | clickable |
+|---|---|---|
+| index | Ecosystem plates | the three step marks |
+| index | The Journey (desktop) | the seven medallions |
+| index | The Journey (mobile) | rail dots by tap position; a tap elsewhere steps on |
+| index | Why Now, Track what matters | — (finished frame shows everything) |
+| app | hero | — (rests on "Meet the App") |
+| app | Journey map | waypoint circles (26-unit invisible targets) and city names |
+| app | Living Ecosystem | the five habit rows (row k → state k+1) |
+| app | Marketplace | the scene list |
+| sanctuary | hero | — (rests on the title card) |
+| sanctuary | Four foundations | the four rows |
+| sanctuary | Seven days | the days on the arc (delegated; dots rebuild on resize) |
+| web3 | hero | — (rests on the opening frame) |
+| web3 | Where it begins | the six rows |
+| web3 | The Bridge | the five rail steps |
+| web3 | The whole system | the nodes and labels on the ring |
+
+Page length after scrolling to the bottom once (1440x900): index 29.9k → 11.2k px,
+app 32.1k → 16.0k, sanctuary 34.1k → 21.4k, web3 38.8k → 18.2k.
+
+### Fixed on the way
+- **The mobile Journey's rail dots were one stop to the right**, and the seventh had no
+  position: the `:nth-child` rules were written before the photographs and the rail were
+  added in front of the items. Positions are now set in the script.
+
+### Testing note
+A "visual error" check must pick a reference element that is not `position:sticky`/`fixed`
+and not `<main>`/a page wrapper — both read as huge false jumps. Programmatic scroll on a
+phone emulation must pass `behavior:'instant'` or the page's CSS smooth-scroll turns every
+`scrollBy` into an animation.

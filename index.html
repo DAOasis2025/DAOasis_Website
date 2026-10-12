@@ -1301,6 +1301,9 @@
   .eco-learn:hover span{transform:translateX(3px);border-color:rgba(23,21,15,0.7);}
   .eco-marks{position:absolute;left:6%;bottom:calc(4vh + 26px);z-index:5;display:flex;gap:10px;}
   .eco-mark{display:block;width:34px;}
+  .cine-done .eco-marks{pointer-events:auto;}
+  .cine-done .eco-mark{position:relative;}
+  .cine-done .eco-mark::after{content:'';position:absolute;left:-5px;right:-5px;top:-14px;bottom:-14px;}
   .eco-mark > span{display:block;height:1px;background:rgba(247,244,238,0.30);position:relative;}
   .eco-mark > span::after{content:'';position:absolute;inset:0;background:var(--warm-white);
     transform:scaleX(var(--w,0));transform-origin:left;}
@@ -2127,6 +2130,9 @@
       background:rgba(247,244,238,0.26);
       transform:translateX(-50%) scale(calc(1 + 0.75 * var(--w,0)));
       z-index:4;opacity:1;}
+    .cine-done .jm-dot{z-index:3;}
+    .cine-done .jm-dot::after{content:'';position:absolute;inset:-16px;}
+    .cine-done .jm-list{cursor:pointer;}
     .jm-item.on .jm-dot{background:var(--gold);box-shadow:0 0 12px rgba(196,138,90,0.75);}
 
     /* THE RAIL. The same two elements that used to be a vertical spine,
@@ -2178,7 +2184,7 @@
        exact fault the 1 September pass removed everywhere else. This motion
        is scroll-LINKED: it moves only while the reader moves and stops when
        they stop, so it is kept under reduced motion, the same position
-       js/cine.js?v=20261006 takes. */
+       js/cine.js?v=20261012 takes. */
   }
 
   /* THE JOURNEY */
@@ -3977,9 +3983,9 @@ img{height:auto;}
   </div>
 </footer>
 
-<!-- Controlled Cinematic Scroll — shared pacing controller, see js/cine.js?v=20261006 -->
-<script src="js/smooth.js?v=20261006"></script>
-<script src="js/cine.js?v=20261006"></script>
+<!-- Controlled Cinematic Scroll — shared pacing controller, see js/cine.js?v=20261012 -->
+<script src="js/smooth.js?v=20261012"></script>
+<script src="js/cine.js?v=20261012"></script>
 <script>
   /* ── HERO ────────────────────────────────────────────────────────────
      The route map, its five waypoints, the measured label-placement pass,
@@ -4435,6 +4441,8 @@ img{height:auto;}
     const track = (window.DAO && DAO.cine)
       ? DAO.cine.track(outer, { mode: 'sticky', pace: 'epic', states: N })
       : null;
+    /* once scrolled past, the step marks re-open their plate (12 Oct) */
+    if(track && track.pick) track.pick(marks);
 
     function progress(){
       const r = outer.getBoundingClientRect();
@@ -5036,7 +5044,7 @@ img{height:auto;}
 
      NOT ONE-WAY. The old version latched furthestActive and could only
      ever go forwards, so scrolling back up left the section showing its
-     finished state — the same fault that was removed from js/cine.js?v=20261006 on
+     finished state — the same fault that was removed from js/cine.js?v=20261012 on
      20 August. This reverses exactly. */
   const items = [...section.querySelectorAll('.jm-item')];
   const lineFill = document.getElementById('jmLineFill');
@@ -5052,6 +5060,36 @@ img{height:auto;}
   const mqJ = window.matchMedia('(max-width:1100px)');
   const c01 = v => v < 0 ? 0 : v > 1 ? 1 : v;
   let jWrote = false, jTick = false, jDead = false;
+  /* RELEASE (12 Oct). This section scrubs raw scroll itself; the cine track
+     exists only so that, once the reader has scrolled past, the runway
+     drops to one screen showing stage seven and the stages become
+     tappable: a dot re-opens its stage, a tap anywhere else steps on. */
+  const jt = (window.DAO && DAO.cine)
+    ? DAO.cine.track(section, { off: true, govern: false, states: items.length })
+    : null;
+  /* Each stage's rail dot is placed here, not by :nth-child in the CSS —
+     those rules counted from the list's first child and were written before
+     the photograph and the rail were added in front of the items, so every
+     dot sat one stop to the right and the seventh had no position at all. */
+  items.forEach((it, i) => { const d = it.querySelector('.jm-dot'); if(d) d.style.left = (i / (items.length - 1) * 100).toFixed(3) + '%'; });
+  if(jt && jt.pick){
+    jt.pick(items.map(it => it.querySelector('.jm-dot')));
+    /* The seven stages are stacked boxes, so the topmost one covers every
+       dot but its own — hit-test the rail by position instead: a tap within
+       28px of the rail opens the nearest dot's stage, anywhere else steps on. */
+    const dots = items.map(it => it.querySelector('.jm-dot'));
+    list.addEventListener('click', e => {
+      if(!jt.done) return;
+      let best = -1, bd = 1e9;
+      dots.forEach((d, i) => {
+        if(!d) return;
+        const r = d.getBoundingClientRect();
+        const dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
+        if(Math.abs(dy) <= 28 && Math.abs(dx) < bd){ bd = Math.abs(dx); best = i; }
+      });
+      jt.show(best >= 0 && bd <= 30 ? best : (Math.round(jt.pos()) + 1) % items.length);
+    });
+  }
 
   function jFrame(){
     jTick = false;
@@ -5061,7 +5099,7 @@ img{height:auto;}
     /* the stage is stuck for (section height - one viewport); progress is
        measured from the moment it pins, so nothing moves before then */
     const run = r.height - vh;
-    const p = run > 0 ? c01(-r.top / run) : (r.top <= 0 ? 1 : 0);
+    const p = (jt && jt.done) ? jt.get() : run > 0 ? c01(-r.top / run) : (r.top <= 0 ? 1 : 0);
     list.style.setProperty('--p', p.toFixed(4));
     const sp = p * (items.length - 1);
     for(let i = 0; i < items.length; i++){
@@ -5096,6 +5134,7 @@ img{height:auto;}
   window.addEventListener('resize', jReq);
   window.addEventListener('load', jReq);
   jReq();
+  if(jt && jt.on) jt.on(() => jReq());
 })();
 
 (function(){
@@ -5167,6 +5206,8 @@ img{height:auto;}
   const track = (window.DAO && DAO.cine)
     ? DAO.cine.track(pin4, { mode: 'sticky', pace: 'epic', states: 7 })
     : null;
+  /* once scrolled past, the seven medallions re-open their stage (12 Oct) */
+  if(track && track.pick) track.pick(nodes);
   let lastActive = -1;
   function tick(){
     /* Follows scroll in BOTH directions. This used to be
