@@ -7534,3 +7534,14 @@ Why Now judged by eye at 390 and 1440.
   form 201101535693768478). `interests` is required on the MailerLite form, so an empty
   selection is sent as "Not specified". Not tested end to end from the cloud session
   (MailerLite is blocked by its proxy) — Jamie to test on the preview.
+
+### Follow-up — 12 October 2026 (after the merge of PR #15)
+- **Hero follow row was clipped on short desktop windows** (34px at 1242x560, 71px at
+  1101x600) once the sub-line grew. In the `min-width:801px and max-height:780px` block
+  the hero and `.content` are now `height:auto; min-height:100vh`, so the hero grows by
+  ~50-130px instead of cutting the row off. Tall windows and mobile unchanged.
+- **Sign-up privacy filled in (privacy.html #signup):** MailerLite described as an EU-based
+  processor acting under the data processing terms in its service agreement; retention is
+  "while subscribed; on unsubscribe name and interests deleted within 30 days, email kept
+  on a do-not-email list; no opens for 24 months → removed". **This creates an operational
+  duty**: someone must clean unsubscribed and 24-month-inactive contacts in MailerLite.
