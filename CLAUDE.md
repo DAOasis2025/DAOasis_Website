@@ -7661,3 +7661,11 @@ needed no change.
 
 Verified: 0 JS errors on web3 / index / app / sanctuary at 1440x900, each
 wheeled top to bottom. Not judged by eye — feel it on a real mouse/trackpad.
+
+### Web3 hero slowed again — same day
+Still too fast. `.hero-outer` 800 → **1000vh** desktop, 450 → **560vh** mobile,
+`passMs` 12500 → **17000**. `GOV.maxCrossMs` in `js/cine.js` 14000 → **24000** —
+it is a velocity floor, and at 14000 it would have silently capped the hero at
+14s. Side effect: web3's nine-beat loop (9 × 1600 = 14.4s) is no longer floored
+to 14s. Measured: a hard continuous wheel takes **17.1s** to cross the hero.
+0 JS errors on web3 and app.
