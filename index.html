@@ -1322,8 +1322,12 @@
        0.52 phone box shows only its centre 24%, which is the phone alone.
        Items two and three have no portrait variant, so their crop is aimed
        by hand at the subject instead. */
-    .eco-item:nth-child(1) .eco-plate{background-image:url('images/eco-app-mobile.jpg?v=20261006')!important;
-      background-position:center 50%;}
+    .eco-item:nth-child(1) .eco-plate{background-image:url('images/eco-app-mobile.jpg?v=20261014')!important;
+      background-position:center 60%!important;}
+    /* 14 Oct: rebuilt from the desktop three-phone render; phones sit in the
+       lower half because plate one's copy is at the top. Short phones have
+       ~80px less plate, so anchor the top to keep the phones below the button. */
+    @media (max-height:700px){.eco-item:nth-child(1) .eco-plate{background-position:center 0%!important;}}
     .eco-item:nth-child(2) .eco-plate{background-position:32% 46%;}
     .eco-item:nth-child(3) .eco-plate{background-position:56% 52%;}
     /* The copy takes the lower band, not the centre. Centred, it printed

@@ -7669,3 +7669,13 @@ it is a velocity floor, and at 14000 it would have silently capped the hero at
 14s. Side effect: web3's nine-beat loop (9 × 1600 = 14.4s) is no longer floored
 to 14s. Measured: a hard continuous wheel takes **17.1s** to cross the hero.
 0 JS errors on web3 and app.
+
+## Mobile Companion App plate matches desktop — 14 October 2026
+`images/eco-app-mobile.jpg` (941x1672, ~210KB, `?v=20261014`) is now built from
+the desktop three-phone render (`eco-app.jpg` crop x 845–1895, extended top and
+bottom with its own blurred edges) instead of the old one-phone "hidden bay"
+design. Plate one's copy sits at the TOP, so the phones are in the lower half
+(~54–89%). Position is `center 60%`, `center 0%` below 700px tall — both need
+`!important` because the plate carries an inline `background-position`.
+Verified by eye at 390x844 and 375x667: phones whole, clear of the Learn more
+button. Desktop untouched.
