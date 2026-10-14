@@ -364,7 +364,7 @@ img { max-width: 100%; }
    full strength at exactly the end of the track, so it was only ever at
    rest inside cine's settle pad (~40vh). The descent keeps the distance it
    had; the extra 40vh is a held final frame (see HERO_END in the script). */
-.hero-outer { position: relative; height: 640vh; }
+.hero-outer { position: relative; height: 800vh; }   /* 640 -> 800 (14 Oct): slower hero */
 /* released (12 Oct, js/cine.js): one screen of the opening frame */
 .hero-outer.cine-done .hero-bridge { display: none; }
 .loop-outer.cine-done .loop-node, .loop-outer.cine-done .loop-lab { cursor: pointer; }
@@ -2715,7 +2715,7 @@ function rnd(i){ const s = Math.sin(i * 127.1 + 311.7) * 43758.5453; return s - 
      thing on the page to fling through. Desktop wheel only; touch is
      native. */
   /* rest:0 — once scrolled past, the hero is one screen of its opening frame (12 Oct) */
-  const track = cine(outer, { mode: 'guided', pace: 'epic', states: 3, passMs: 9000, rest: 0 });
+  const track = cine(outer, { mode: 'guided', pace: 'epic', states: 3, passMs: 12500, rest: 0 }   /* 9000 -> 12500 (14 Oct) */);
   /* The whole sequence completes at 90% of the track and the last 10% is a
      held frame on the statement, so it is read at rest before the pin
      releases rather than arriving on the frame it leaves. */

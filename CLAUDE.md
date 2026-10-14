@@ -7636,3 +7636,28 @@ chips, consent, button and the "what happens next" lines. `.su--left` is now an 
 centred. sanctuary.html's early-access block (badge, headline, copy) is centred to match,
 and its badge reads **"Early access list · Join now"** — "Not yet open" read as if the list
 were closed. It names the LIST, not the Sanctuary, so it does not breach the Sanctuary rules.
+
+## Desktop scroll jolts fixed · web3 hero slowed — 14 October 2026
+
+`js/smooth.js` · `web3.html`.
+
+**The jolt:** spinning the wheel inside a paced section kept adding to the
+damper's target while the page was held to the section's speed cap. The frame
+the section ended, the cap lifted and the page lurched forward to spend the
+stored-up scroll — simulated at **34–117 px/ms in a single frame**, i.e.
+thousands of pixels flown past. The cap also switched on and off in one frame.
+web3 has the most paced sections back to back, so it felt it most.
+
+Fix, in `smooth.js` only: inside a paced section the target may run at most
+`LEAD_MS` (450ms) of capped travel ahead of the page, and the speed limit
+eases on and off over `LIM_TAU` (260ms) from the page's real speed. Simulated
+worst per-frame speed change: 117 → **0.9 px/ms**. Stopping the wheel inside a
+section now stops the page there.
+
+**web3 hero:** `.hero-outer` 640 → **800vh** desktop (mobile unchanged at
+450), `passMs` 9000 → **12500**. Measured: a continuous hard wheel now takes
+**12.6s** to cross it (was ~9s). The `HERO_END` allocation is proportional and
+needed no change.
+
+Verified: 0 JS errors on web3 / index / app / sanctuary at 1440x900, each
+wheeled top to bottom. Not judged by eye — feel it on a real mouse/trackpad.
