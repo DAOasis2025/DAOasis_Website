@@ -67,6 +67,9 @@
   var MIN   = 0.4;    /* px: below this, snap and stop the loop */
   var MAXDT = 64;     /* ms: tab-return / long-frame guard */
   var STALL = 400;    /* ms: see WATCHDOG */
+  var LIM_TAU = 260;  /* ms: how gently the section speed limit eases on/off */
+  var LEAD_MS = 450;  /* ms of capped travel intent may run ahead in a section */
+  var lim = Infinity, rawLim = Infinity, lastV = 0;
 
   /* Escape accumulator for the paced sections — see PACING below. Ours,
      not cine's: the finger and the wheel keep separate state, they just
@@ -104,6 +107,7 @@
       write(cur);
       running = false;
       push = 0;
+      lim = Infinity; lastV = 0;
       return;
     }
 
@@ -137,12 +141,46 @@
          does not say. */
       var gain = (DAO.cine.GOV && typeof DAO.cine.GOV.pushGain === 'number') ? DAO.cine.GOV.pushGain : 3;
       var v = (d > 0 ? caps.fwd : caps.back) * (1 + push * gain);
-      var capPx = v * dt;
-      if (move >  capPx) move =  capPx;
-      if (move < -capPx) move = -capPx;
+
+      /* NO STORED-UP SCROLL (14 Oct). Spinning the wheel inside a paced
+         section kept adding to `target` while the page was held to the
+         cap, so thousands of px of intent piled up — and the frame the
+         section ended, the cap lifted and the page lurched forward to
+         spend it. That lurch at every section exit was the main "jolt",
+         and web3 has the most paced sections back to back. Intent may run
+         at most LEAD_MS of the cap ahead of the page. */
+      var lead = v * LEAD_MS;
+      if (target > cur + lead) target = clamp(cur + lead);
+      if (target < cur - lead) target = clamp(cur - lead);
+      d = target - cur;
+      move = d * (1 - Math.exp(-dt / TAU));
+      rawLim = v;
     } else {
       push = 0;
+      rawLim = Infinity;
     }
+
+    /* EASED SPEED LIMIT (14 Oct). The cap used to switch on and off in a
+       single frame: a free glide at several px/ms hit a section's edge and
+       dropped to ~0.5px/ms instantly, then shot back up as it left. That
+       step is the second jolt. The limit now eases toward the section's
+       cap — and back off it — over LIM_TAU, starting from the speed the
+       page is actually moving at, so entering and leaving a section is a
+       deceleration and an acceleration rather than a bump. */
+    var want = Math.abs(move) / dt;                 /* px/ms unlimited */
+    var k = 1 - Math.exp(-dt / LIM_TAU);
+    if (rawLim === Infinity) {
+      if (lim !== Infinity) { lim += (Math.max(want, lim) - lim) * k + 0.002 * dt; if (lim >= want) lim = Infinity; }
+    } else {
+      if (lim === Infinity) lim = Math.max(lastV, rawLim);
+      lim += (rawLim - lim) * k;
+    }
+    if (lim !== Infinity) {
+      var capPx = lim * dt;
+      if (move >  capPx) move =  capPx;
+      if (move < -capPx) move = -capPx;
+    }
+    lastV = Math.abs(move) / dt;
 
     cur += move;
     write(cur);
@@ -302,7 +340,7 @@
      was not enough: target is the value a clamp or an outside jump can have
      left somewhere else entirely, and a stale target is a page that yanks. */
   function rebase() {
-    if (!running) cur = target = wrote = window.scrollY;
+    if (!running) { cur = target = wrote = window.scrollY; lastV = 0; }
   }
 
   /* ── keyboard ─────────────────────────────────────────────────────────── */
