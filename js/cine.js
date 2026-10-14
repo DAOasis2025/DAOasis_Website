@@ -952,7 +952,7 @@ DAO.cine = (function(){
        the site (five states) wants 8000ms, so the backstop has to sit
        clear of that or it binds on the very sections it is meant to leave
        alone. Keep it at roughly 1.75x the longest section. */
-    maxCrossMs: 14000,
+    maxCrossMs: 24000,   /* 14000 -> 24000 (14 Oct): web3 hero passMs 17000 must not be floored */
     /* A lifted flick is worth this many ms of its own velocity. Native
        momentum on both platforms decays over roughly this long, so intent
        ends up where the page would have gone had we not intercepted. */
