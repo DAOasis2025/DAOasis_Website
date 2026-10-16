@@ -968,13 +968,18 @@ img { max-width: 100%; }
    the centre copy stays fully legible; the crest carries a faint highlight. */
 .loop-wave-b { fill: rgba(196,138,90,0.07); }
 .loop-wave-f { fill: url(#loopFillG); stroke: rgba(232,184,138,0.38); stroke-width: 1; }
-.loop-centre-s { color: rgba(247,244,238,0.72); }
-.loop-centre-t em { color: #D9A06E; }
-.loop-centre-t, .loop-centre-s { text-shadow: 0 1px 14px rgba(11,15,18,0.9), 0 0 3px rgba(11,15,18,0.6); }
-.loop-centre { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); text-align: center; width: 62%; pointer-events: none; }
-.loop-centre-t { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: clamp(26px,3.2vw,46px); color: var(--warm-white); line-height: 1.1; }
-.loop-centre-t em { font-style: italic; color: var(--gold); }
-.loop-centre-s { font-size:var(--t-nano); letter-spacing: 0.28em; text-transform: uppercase; color: rgba(247,244,238,0.5); margin-top: 18px; }
+/* 16 Oct: the centre box was 62% of the wrap but the ring is only 60.5% wide,
+   so a long subtitle ran outside it. 46% keeps every stage inside the ring,
+   and the subtitle wraps. A soft dark pool sits behind the copy so it never
+   reads directly on the amber fill. */
+.loop-centre { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); text-align: center; width: 46%; pointer-events: none; }
+.loop-centre::before { content: ''; position: absolute; left: 50%; top: 50%; width: 128%; height: 170%;
+  transform: translate(-50%,-50%); z-index: -1;
+  background: radial-gradient(closest-side, rgba(11,15,18,0.66), rgba(11,15,18,0.38) 58%, rgba(11,15,18,0)); }
+.loop-centre-t { font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: clamp(26px,3vw,44px); color: #FFFDF8; line-height: 1.08; }
+.loop-centre-t em { font-style: italic; color: #E8B88A; }
+.loop-centre-s { font-size:var(--t-micro); letter-spacing: 0.2em; text-transform: uppercase; color: rgba(247,244,238,0.88); margin: 16px auto 0; max-width: 26ch; line-height: 1.7; }
+.loop-centre-t, .loop-centre-s { text-shadow: 0 1px 2px rgba(11,15,18,0.9), 0 0 18px rgba(11,15,18,0.85); }
 .loop-mobile { display: none; }
 @media(max-width:1000px){
   .loop-outer { height: auto; background: #0b0f12; }
