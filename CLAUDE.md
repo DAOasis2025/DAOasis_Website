@@ -7716,3 +7716,9 @@ center 30%; }` because the 0.667 frame is cropped ~16.7% by the 4:5 plate.
 Verified at 375 and 1440: loads, "Portrait to follow" hidden, 0 overflow, 0 JS
 errors, judged by eye. `about.html` now lacks only `team-etiosa.jpg` and
 `about-hero-mobile.jpg`.
+
+### Jamie's portrait replaced — same day
+`images/team-jamie.jpg` is a new photograph (800x1200, 72KB, from a 1024x1536
+greyscale source). `width` 799 → 800, `?v=20261016`. The hair reaches ~7% of the
+source, so `#founder .pt img` moved 30% → **18%** to keep headroom. Verified at
+375 and 1440 and judged by eye.
