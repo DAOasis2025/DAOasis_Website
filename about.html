@@ -477,6 +477,9 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--gold); outline-
    the same way, and spends the difference on the jacket.
    Re-check this against the frame if the photograph changes again. */
 #dan .pt img { object-position: center 30%; }
+/* Nelson, added 16 October — 1024x1536, the same 0.667 frame as Dan's, so
+   the same bias keeps the crop off the top of the head. */
+#nelson .pt img { object-position: center 30%; }
 .on-dark .pt, .on-green .pt { background: #2a2521; }
 .on-dark .pt::after, .on-green .pt::after { border-color: rgba(247,244,238,0.10); }
 .on-dark .pt-mono, .on-green .pt-mono { color: rgba(247,244,238,0.14); }
@@ -1076,10 +1079,16 @@ img{height:auto;}
     </div>
 
     <div class="team team-2 rv">
-      <article class="team-i soft">
-        <!-- PORTRAIT SLOT — <img loading="lazy" decoding="async" src="images/team-nelson.jpg?v=20261006" alt="Nelson, Co-Founder and COO of DAOasis" /> -->
+      <article class="team-i soft" id="nelson">
+        <!-- Same wiring as Dan's: monogram and caption stay underneath, and
+             `onerror` falls back to the plate if the file is ever missing.
+             1024x1536 source (0.667), so it takes the same crop bias — see
+             `#nelson .pt img` in the stylesheet. -->
         <figure class="pt">
           <span class="pt-mono" aria-hidden="true">N</span>
+          <img loading="lazy" decoding="async" src="images/team-nelson.jpg?v=20261016"
+               alt="Nelson, Co-Founder, COO and Token Strategy at DAOasis"
+               width="800" height="1200" onerror="this.remove();" />
           <figcaption class="pt-tag">Portrait to follow</figcaption>
         </figure>
         <div>
