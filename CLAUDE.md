@@ -7679,3 +7679,31 @@ design. Plate one's copy sits at the TOP, so the phones are in the lower half
 `!important` because the plate carries an inline `background-position`.
 Verified by eye at 390x844 and 375x667: phones whole, clear of the Learn more
 button. Desktop untouched.
+
+## App hero — habit typography added — 16 October 2026
+
+`app.html` only. Between "Meet the App" clearing and the three phones rising,
+the hero now plays **STEPS → SLEEP → HYDRATE → BREATHE → NOURISH → LEARN**, then
+**"Small actions. / *Lasting change.*"**, which dissolves forward as the phones
+emerge. `.hero-habits` is a layer inside the existing sticky `.hero` (z 8:
+above the phones, below the title card); same Cormorant / warm-white / gold
+italic as the title card and bridge.
+
+- **Nothing in `applyFrame` changed.** The words play over a HOLD inserted into
+  the timeline on a frame where the title card is gone and the phones have not
+  begun (0.22 desktop, 0.20 mobile). `HERO_ALLOT`/`HERO_ALLOT_M` are replaced
+  by `plan()`, which works in vh of RAW scroll (`track.raw()`), so cine's 8%
+  end pads cannot lengthen the title hold or the bridge hold as the pin grows.
+- Pin 500 → **978vh** desktop, 530 → **1044vh** mobile; `passMs` is a getter
+  scaled by the same ratio, so the px/ms cap — and every original beat's pace —
+  is unchanged. 60vh per word desktop, 66 mobile; closing line in 34 / held 60
+  / out 34, its last 10vh overlapping the phones' first.
+- Words are stacked: full within 0.22 of their stop, gone by 0.5, never two
+  legible at once. Forward motion: scale 0.93 → 1.05, rise 22 → −16px, blur only
+  while faint. Reduced motion: opacity only. Released hero hides the layer.
+- **Verified** (headless Chrome, 1440x900, 1347x597, 1920x1080, 390x844,
+  375x667, motion and reduced): all 7 peak at 1.00 in order, max 1 legible,
+  0 clipped, 0 overflow, 0 JS errors, backwards replays in reverse order.
+  A/B against the pre-change page with the inserted hold skipped: title card,
+  three phones and bridge identical at 1440 (161 samples); elsewhere the only
+  differences are ≤0.01px of arrival blur from scroll rounding.

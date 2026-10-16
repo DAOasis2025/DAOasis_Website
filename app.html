@@ -327,7 +327,12 @@ body { overflow-x: clip; }
    (three wheel notches) and the bridge reached full strength on the frame
    the pin released. The distance is now allocated beat by beat in the
    script (see HERO_ALLOT), so this number and that table move together. */
-.hero-outer { position: relative; height: 500vh; }
+/* 500 -> 978vh (16 October 2026): the habit typography (STEPS ... LEARN,
+   then "Small actions. Lasting change.") is a held stretch INSERTED into
+   this pin between the title card clearing and the phones arriving. Every
+   existing beat keeps its own scroll distance — see plan() in the hero
+   script, which this number moves with. */
+.hero-outer { position: relative; height: 978vh; }
 /* released (12 Oct, js/cine.js): the hero is one screen of its opening card */
 .hero-outer.cine-done .hero-bridge { display: none; }
 .wp-hit { pointer-events: none; }
@@ -410,6 +415,40 @@ body { overflow-x: clip; }
 }
 #heroPhone { z-index: 6; }
 
+/* ── THE HABITS (16 October 2026) ─────────────────────────────────────
+   Six words and a closing line, one at a time, on the hero's own ground,
+   between the title card and the three phones. Same type as the title
+   card and the bridge (Cormorant, warm-white, gold italic for the second
+   half of the closing line). Each word is a pure function of scroll
+   position, written by the hero script; there is no transition and no
+   timer on any of it, so scrolling back up retraces the same frames.
+   The words are stacked in one box, so — as everywhere else on the site —
+   they never cross-fade: each is gone before the next arrives.
+   Resting state is hidden, like the phones and the title card. */
+.hero-habits {
+  position: absolute; inset: 0; z-index: 8; pointer-events: none;
+  display: grid; place-items: center; padding: 0 6%;
+}
+.hero-habit {
+  grid-area: 1 / 1; margin: 0; text-align: center;
+  font-family: 'Cormorant Garamond', serif; font-weight: 300;
+  text-transform: uppercase; color: var(--warm-white);
+  font-size: clamp(56px, min(10.5vw, 19vh), 168px);
+  line-height: 1; letter-spacing: 0.08em; padding-left: 0.08em;
+  opacity: 0; white-space: nowrap;
+}
+.hero-habit-close {
+  font-size: clamp(34px, min(6vw, 11vh), 96px);
+  line-height: 1.08; letter-spacing: 0.05em; padding-left: 0.05em;
+}
+.hero-habit-close span { display: block; }
+.hero-habit-close em { font-style: italic; color: var(--gold); }
+.hero-outer.cine-done .hero-habits { display: none; }
+@media (max-width: 900px){
+  .hero-habit { font-size: clamp(40px, min(14.5vw, 13vh), 76px); letter-spacing: 0.06em; padding-left: 0.06em; }
+  .hero-habit-close { font-size: clamp(26px, 8.6vw, 44px); letter-spacing: 0.03em; padding-left: 0.03em; }
+}
+
 /* Bridge */
 .hero-bridge {
   position: sticky; top: 0; height: 100vh;
@@ -464,7 +503,7 @@ body { overflow-x: clip; }
   /* 420 -> 530vh, allocated by HERO_ALLOT_M in the script. A single
      gentle swipe is ~500-800px on a phone; at 420 the settled frame was
      ~460px of scroll, so one swipe carried a reader straight past it. */
-  .hero-outer { height: 530vh; }
+  .hero-outer { height: 1044vh; }   /* 530 -> 1044vh with the habit words, see plan() */
   .hero { height: 100vh; }
   .hero-title-text { font-size: clamp(40px,12vw,64px); }
   /* Matches sanctuary's own mobile landing: the eyebrow spends tracking
@@ -2284,6 +2323,17 @@ img{height:auto;}
          Centre is the home screen — the app's real face; the flanks are the
          two things it is for, the day's walking and the route.
          Swapped to the October 2026 export (Screens uploaded to GitHub). -->
+    <!-- The habits — scroll-driven, between the title card and the phones -->
+    <div class="hero-habits" id="heroHabits">
+      <p class="hero-habit">Steps</p>
+      <p class="hero-habit">Sleep</p>
+      <p class="hero-habit">Hydrate</p>
+      <p class="hero-habit">Breathe</p>
+      <p class="hero-habit">Nourish</p>
+      <p class="hero-habit">Learn</p>
+      <p class="hero-habit hero-habit-close"><span>Small actions.</span><span><em>Lasting change.</em></span></p>
+    </div>
+
     <img fetchpriority="high" decoding="async" class="hero-phone-shot" id="heroPhoneLeft"  src="images/app-steps.webp?v=20261006" alt="DAOasis Move screen: 6,412 of 8,000 steps toward Hua Hin" width="758" height="1600" />
     <img fetchpriority="high" decoding="async" class="hero-phone-shot" id="heroPhone"      src="images/app-home-morning.webp?v=20261006" alt="DAOasis home screen, morning" width="758" height="1600" />
     <img fetchpriority="high" decoding="async" class="hero-phone-shot" id="heroPhoneRight" src="images/app-journey-map.webp?v=20261006" alt="DAOasis journey map, Bangkok to Phuket" width="758" height="1600" />
@@ -3495,7 +3545,10 @@ function cine(el, o){
 
        `step`/`back` below are inert (see the note at TIMING in cine.js);
        they are left only because removing them changes nothing. */
-    passMs: 9000,
+    /* scaled with the pin (16 Oct): the original 9s pass covered 400vh
+       (430 mobile); the same px/ms cap over the longer pin keeps every
+       original beat at its original pace */
+    get passMs(){ return 9000 * (window.innerWidth <= 900 ? 944 / 430 : 878 / 400); },
     get step(){ return window.innerWidth <= 900 ? 3400 : 2400; },
     get back(){ return window.innerWidth <= 900 ? 2600 : 1850; }
   });
@@ -3519,8 +3572,42 @@ function cine(el, o){
      pin released — so "Your progress becomes a Journey" and its buttons
      were never on screen at rest. The last row is that hold. If the pin
      height changes, recompute this table with it. */
-  const HERO_ALLOT   = [[0,0],[0.024,0.13],[0.098,0.20],[0.485,0.62],[0.783,0.80],[0.917,1],[1,1]];
-  const HERO_ALLOT_M = [[0,0],[0.016,0.12],[0.085,0.20],[0.417,0.57],[0.721,0.74],[0.943,1],[1,1]];
+  /* ── HERO PLAN (16 October 2026) — replaces HERO_ALLOT / HERO_ALLOT_M ──
+     Same idea, in vh of RAW scroll rather than cine's padded value, so the
+     title card's opening hold and the bridge's closing hold stay exactly
+     what they were when the pin grew (cine pads 8% of the TRACK at each
+     end; 8% of a taller track would have doubled both holds).
+
+     Each row is [scroll position in vh, timeline position]. Up to the
+     title card clearing and from the phones arriving onward, the rows are
+     the old tables converted one for one. Between them the timeline is
+     HELD on a frame where the title card has gone and the phones have not
+     begun (0.22 desktop, 0.20 mobile), and the habit words play over that
+     hold. Desktop, vh of scroll:
+       title held 40 · title out 31 · STEPS..LEARN 60 each ·
+       closing line in 34 / held 60 / out 34 (its last 10 overlapping the
+       phones' first) · phones arrive 124 · fan HELD 100 · bridge in 45 ·
+       bridge HELD 60
+     Mobile: the same, with 66vh per word (a swipe is longer than a wheel
+     notch). If .hero-outer's height changes, change these with it. */
+  function plan(m){
+    const W = m ? 66 : 60;                     /* vh per habit word          */
+    const hold = m ? 0.20 : 0.22;              /* title gone, phones not yet */
+    const t0 = m
+      ? [[34.40,0],[40.18,0.12],[65.10,0.20]]
+      : [[32.00,0],[40.06,0.13],[64.93,0.20],[71.12,0.22]];
+    const x0 = t0[t0.length - 1][0];
+    const hp = [[x0,-0.5],[x0 + 6*W,5.5]];
+    hp.push([hp[1][0] + 34, 5.78], [hp[1][0] + 94, 6.22], [hp[1][0] + 128, 6.5]);
+    const xr = hp[4][0] - 10;                  /* phones begin 10vh before the line is gone */
+    /* the old segment lengths from the hold onward, in vh */
+    const seg = m ? [[119.92,0.57],[109.81,0.74],[80.18,1]] : [[123.84,0.62],[100.13,0.80],[45.02,1]];
+    const tl = t0.concat([[xr, hold]]);
+    let x = xr;
+    seg.forEach(([d, v]) => { x += d; tl.push([x, v]); });
+    return { tl, hp, S: x + (m ? 54.99 : 59.89) };   /* + the bridge's closing hold */
+  }
+  const PLAN_D = plan(false), PLAN_M = plan(true);
   function allot(v, pts){
     if(v <= pts[0][0]) return pts[0][1];
     for(let i = 1; i < pts.length; i++){
@@ -3532,8 +3619,38 @@ function cine(el, o){
     return pts[pts.length-1][1];
   }
 
+  /* THE HABITS. Word k is lit by d = hp - k: full within 0.22 of its own
+     stop and gone by 0.5, so there is a clear frame between any two and
+     two words are never legible at once. Through its whole window it
+     moves FORWARD — growing 0.93 -> 1.05 and rising 22px -> -16px — so it
+     arrives from a little behind the frame and leaves past it, with a
+     slight blur only while it is faint. Reduced motion: opacity only. */
+  const habits = [...document.querySelectorAll('#heroHabits .hero-habit')];
+  const hLast = habits.map(() => '');
+  function sm(t){ return t * t * (3 - 2 * t); }
+  function drawHabits(hp){
+    for(let k = 0; k < habits.length; k++){
+      const d = hp - k, ad = Math.abs(d);
+      const a = ad >= 0.5 ? 0 : ad <= 0.22 ? 1 : sm(1 - (ad - 0.22) / 0.28);
+      let css;
+      if(a <= 0) css = 'opacity:0';
+      else if(reducedMotion) css = 'opacity:' + a.toFixed(3);
+      else {
+        const s01 = clamp01(d + 0.5);
+        const sc = 0.93 + 0.12 * s01, y = 22 - 38 * s01, b = (1 - a) * 5;
+        css = 'opacity:' + a.toFixed(3) + ';transform:translate3d(0,' + y.toFixed(1) + 'px,0) scale(' + sc.toFixed(4) + ')' +
+              (b > 0.05 ? ';filter:blur(' + b.toFixed(2) + 'px)' : '');
+      }
+      if(css !== hLast[k]){ habits[k].style.cssText = css; hLast[k] = css; }
+    }
+  }
+
   function tick(){
-    applyFrame(allot(track.get(), window.innerWidth <= 900 ? HERO_ALLOT_M : HERO_ALLOT));
+    const m = window.innerWidth <= 900, P = m ? PLAN_M : PLAN_D;
+    /* released (12 Oct): the hero rests on its opening card */
+    const x = track.done ? 0 : track.raw() * P.S;
+    applyFrame(allot(x, P.tl));
+    drawHabits(allot(x, P.hp));
     requestAnimationFrame(tick);
   }
   requestAnimationFrame(tick);
