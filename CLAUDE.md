@@ -7707,3 +7707,18 @@ italic as the title card and bridge.
   A/B against the pre-change page with the inserted hold skipped: title card,
   three phones and bridge identical at 1440 (161 samples); elsewhere the only
   differences are ≤0.01px of arrival blur from scroll rounding.
+
+## Nelson's portrait wired in — 16 October 2026
+`about.html` + `images/team-nelson.jpg` (NEW, 800x1200, 49KB, mozjpeg q82 4:4:4,
+from a 1024x1536 greyscale source). Same wiring as Dan's: monogram and caption kept
+underneath, `onerror="this.remove();"`, and `#nelson .pt img { object-position:
+center 30%; }` because the 0.667 frame is cropped ~16.7% by the 4:5 plate.
+Verified at 375 and 1440: loads, "Portrait to follow" hidden, 0 overflow, 0 JS
+errors, judged by eye. `about.html` now lacks only `team-etiosa.jpg` and
+`about-hero-mobile.jpg`.
+
+### Jamie's portrait replaced — same day
+`images/team-jamie.jpg` is a new photograph (800x1200, 72KB, from a 1024x1536
+greyscale source). `width` 799 → 800, `?v=20261016`. The hair reaches ~7% of the
+source, so `#founder .pt img` moved 30% → **18%** to keep headroom. Verified at
+375 and 1440 and judged by eye.
