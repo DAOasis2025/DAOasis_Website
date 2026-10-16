@@ -894,7 +894,7 @@ img { max-width: 100%; }
 /* veil raised 4 Oct 2026: the eyebrow measured 1.3:1 and the copy 2.5:1
    against the bright sky behind them */
 .sanct-veil { position: absolute; inset: 0; z-index: 1; background: linear-gradient(180deg, rgba(10,8,6,0.66) 0%, rgba(10,8,6,0.30) 30%, rgba(10,8,6,0.62) 52%, rgba(10,8,6,0.82) 72%, rgba(10,8,6,0.96) 100%), linear-gradient(90deg, rgba(10,8,6,0.45) 0%, rgba(10,8,6,0) 60%); }
-.sanct-inner { position: relative; z-index: 3; padding: 0 8% 14vh; max-width: 1360px; margin: 0 auto; width: 100%; }
+.sanct-inner { position: relative; z-index: 3; padding: 16vh 8% 14vh; max-width: 1360px; margin: 0 auto; width: 100%; } /* 16 Oct: top padding added — on short screens the content filled the section and the eyebrow sat on its top edge */
 /* 15ch forced BOTH authored lines to wrap at every width, so the headline
    read as four ragged lines with "doesn't" alone. 21ch holds each authored
    line whole on desktop; on a phone the balanced wrap takes over. */
@@ -908,7 +908,7 @@ img { max-width: 100%; }
    phone — see the .final-verbs note on sanctuary.html for the measurement. */
 .sanct-verbs span:not(:last-child)::after { content: '·'; display: inline-block; width: clamp(20px, 3.6vw, 40px); text-align: center; font-style: normal; color: rgba(196,138,90,0.7); }
 .sanct .btn-row { margin-top: 44px; }
-@media(max-width:900px){ .sanct { min-height: 92vh; } .sanct-inner { padding-bottom: 11vh; } }
+@media(max-width:900px){ .sanct { min-height: 92vh; } .sanct-inner { padding-top: 12vh; padding-bottom: 11vh; } }
 
 /* ══════════════════════════════════════════════
    SECTION 10 — DIGITAL SOVEREIGNTY
@@ -963,6 +963,14 @@ img { max-width: 100%; }
 .loop-lab { font-family: 'Frank Ruhl Libre', serif; font-size:14px; letter-spacing: 0.14em; fill: var(--warm-white); fill-opacity: 0.5; }
 .loop-lab.on { fill: var(--warm-white); }
 .loop-knob { fill: var(--gold); }
+/* 16 Oct 2026: the ring fills like water as the cycle completes — the reward
+   accumulating. Two wave layers, clipped inside the ring, low-opacity amber so
+   the centre copy stays fully legible; the crest carries a faint highlight. */
+.loop-wave-b { fill: rgba(196,138,90,0.07); }
+.loop-wave-f { fill: url(#loopFillG); stroke: rgba(232,184,138,0.38); stroke-width: 1; }
+.loop-centre-s { color: rgba(247,244,238,0.72); }
+.loop-centre-t em { color: #D9A06E; }
+.loop-centre-t, .loop-centre-s { text-shadow: 0 1px 14px rgba(11,15,18,0.9), 0 0 3px rgba(11,15,18,0.6); }
 .loop-centre { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); text-align: center; width: 62%; pointer-events: none; }
 .loop-centre-t { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: clamp(26px,3.2vw,46px); color: var(--warm-white); line-height: 1.1; }
 .loop-centre-t em { font-style: italic; color: var(--gold); }
@@ -1923,7 +1931,18 @@ img{height:auto;}
 
     <div class="loop-wrap">
       <svg class="loop-svg" id="loopSvg" viewBox="0 0 760 760" preserveAspectRatio="xMidYMid meet" role="img" aria-label="The DAOasis participation cycle: participate, earn DRC, convert, hold $DVT, use, contribute, build, govern, strengthen DAOasis, and participate again.">
+        <defs>
+          <clipPath id="loopClip"><circle cx="380" cy="380" r="229" /></clipPath>
+          <linearGradient id="loopFillG" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#C48A5A" stop-opacity="0.17" />
+            <stop offset="1" stop-color="#C48A5A" stop-opacity="0.05" />
+          </linearGradient>
+        </defs>
         <circle class="loop-ring" cx="380" cy="380" r="230" />
+        <g class="loop-fill" clip-path="url(#loopClip)" aria-hidden="true">
+          <path class="loop-wave-b" id="loopWaveB" d="" />
+          <path class="loop-wave-f" id="loopWaveF" d="" />
+        </g>
         <circle class="loop-arc" id="loopArc" cx="380" cy="380" r="230" transform="rotate(-90 380 380)" />
         <g id="loopNodes"></g>
         <circle class="loop-knob" id="loopKnob" cx="380" cy="150" r="5" />
@@ -2113,7 +2132,7 @@ img{height:auto;}
       <a href="privacy.html">Privacy</a><a href="health-data.html">Health Data</a><a href="terms.html">Terms</a><a href="cookies.html">Cookies</a><a href="token-disclaimer.html">Token Disclaimer</a><a href="accessibility.html">Accessibility</a>
     </div>
   </div>
-  <div class="footer-bottom"><span>© 2026 DAOasis Global Ltd. All rights reserved.</span><span>Phuket · Global</span></div>
+  <div class="footer-bottom"><span>© 2026 DAOasis Global Ltd. All rights reserved.</span></div>
 </footer>
 
 
@@ -3254,6 +3273,45 @@ function rnd(i){ const s = Math.sin(i * 127.1 + 311.7) * 43758.5453; return s - 
     ).join('') + '<div class="loop-m-end">And then you participate again.</div>';
   }
 
+  /* ── THE FILL: water rising inside the ring as the cycle completes ──
+     fillP follows the arc's progress; the waves move on their own clock,
+     but only while the section is on screen and the ring is shown. With
+     reduced motion the level still follows the scroll, but nothing drifts. */
+  const waveF = document.getElementById('loopWaveF');
+  const waveB = document.getElementById('loopWaveB');
+  const STILL = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let fillP = 0, phase = 0, raf = 0, inView = false;
+  function wavePath(level, amp, len, ph){
+    const x0 = CX - R - 24, x1 = CX + R + 24, base = CY + R + 40;
+    let d = 'M' + x0 + ' ' + base;
+    for(let x = x0; x <= x1; x += 8){
+      d += ' L' + x + ' ' + (level + amp * Math.sin((x / len) * Math.PI * 2 + ph)).toFixed(2);
+    }
+    return d + ' L' + x1 + ' ' + base + ' Z';
+  }
+  function drawWaves(){
+    if(!waveF || !waveB) return;
+    /* empty sits just below the ring; full clears the top, so the closed
+       ring is completely filled rather than showing a sliver of crest */
+    const top = CY - R - 16, bottom = CY + R + 12;
+    const level = bottom - (bottom - top) * fillP;
+    const amp = 2 + 6 * Math.sin(Math.PI * Math.min(1, Math.max(0, fillP)));  /* calmest empty and full */
+    waveB.setAttribute('d', wavePath(level + 4, amp * 0.8, 230, phase * 0.75 + 1.9));
+    waveF.setAttribute('d', wavePath(level, amp, 175, phase));
+  }
+  function tick(t){
+    phase = t / 950;
+    drawWaves();
+    raf = (inView && window.innerWidth > 1000) ? requestAnimationFrame(tick) : 0;
+  }
+  if(!STILL && 'IntersectionObserver' in window){
+    new IntersectionObserver(es => {
+      inView = es[0].isIntersecting;
+      if(inView && !raf && window.innerWidth > 1000) raf = requestAnimationFrame(tick);
+    }).observe(outer);
+  }
+  drawWaves();
+
   /* The nine stages sit at nine equally spaced points on the ring, so the
      track needs a TENTH stop for the arc to close back onto the first —
      nine stops over a full circle put every resting position between two
@@ -3264,6 +3322,8 @@ function rnd(i){ const s = Math.sin(i * 127.1 + 311.7) * 43758.5453; return s - 
   function update(p){
     if(window.innerWidth <= 1000) return;
     if(arc) arc.style.strokeDashoffset = CIRC * (1 - p);
+    fillP = p;
+    if(STILL || !raf) drawWaves();
     const a = p * Math.PI * 2 - Math.PI / 2;
     if(knob){
       knob.setAttribute('cx', CX + Math.cos(a) * R);
