@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<style>/* Light mode disabled — dark only. Remove this rule and restore the theme reads in the boot script to re-enable. */ .footer-appearance { display: none !important; }</style>
+<style>/* Light mode disabled — dark only. Remove this rule and restore the theme reads in the boot script to re-enable. */ .footer-appearance { display: none !important; }
+</style>
 <script>
   (function(){
     var t = 'dark' /* light mode disabled */;
@@ -3289,8 +3290,28 @@ img{height:auto;}
   .closing-eyebrow{color:#E8B88A;}
   .cm-open-not{color:#6f685b;}
   .wn-journey-l{color:#E8B88A;}
+/* Audit fixes: keep copy below the fixed navigation, even when it wraps. */
+@media (min-width:901px){
+  .hero{height:auto;min-height:100vh;}
+  .hero .content{height:auto;min-height:100vh;justify-content:safe center;}
+  .hero-type{flex-shrink:0;}
+}
+.hero-waitlist-note{font-size:14px;line-height:1.55;color:#F7F4EE;max-width:36ch;}
+@media (max-width:900px){
+  .hero .sub{font-size:16px;line-height:1.55;color:#F7F4EE;
+    background:rgba(15,13,11,0.82);padding:10px 12px;border-radius:4px;}
+  .hero .kicker{font-size:12px;letter-spacing:0.12em;}
+}
+@media (max-width:640px){
+  #waitlistSection{padding:28px 7% 48px;}
+  #waitlistSection .wl-kicker{margin-bottom:12px;font-size:12px;letter-spacing:0.12em;}
+  #waitlistSection .wl-headline{font-size:clamp(30px,9vw,38px);margin-bottom:12px;}
+  #waitlistSection .wl-sub{font-size:16px;line-height:1.5;margin-bottom:20px;}
+}
+.how-membership{font-size:16px;line-height:1.65;color:#D8D1C5;margin-top:24px;}
+.how-membership a{color:#F7F4EE;text-decoration:underline;text-underline-offset:3px;}
 </style>
-<link rel="stylesheet" href="css/signup.css?v=20261012" />
+<link rel="stylesheet" href="css/signup.css?v=20261018" />
 <script src="js/signup.js?v=20261012" defer></script>
 </head>
 <body>
@@ -3363,13 +3384,13 @@ img{height:auto;}
                Option A was chosen on 12 October 2026 (sub-line amended by
                Jamie); the review switcher and the other two options are gone. -->
           <h1 class="h1" id="heroH1">Every healthy habit <em>moves you forward.</em></h1>
-          <div class="sub" id="heroSub">Turn your everyday habits into journeys inspired by real places. Track movement, sleep, breathing, hydration, nutrition and learning in one wellness app, and watch your progress unfold along virtual routes&mdash;starting with Bangkok to Phuket.</div>
+          <div class="sub" id="heroSub">Move, sleep, breathe, hydrate, nourish and learn. Your daily habits advance a virtual journey inspired by real places&mdash;starting with Bangkok to Phuket.</div>
           <!-- The icon spans are MOBILE ONLY — hidden above 900px so the
                approved desktop hero is unchanged. See .ctas in the mobile
                block. -->
           <div class="ctas">
             <a class="btn btn-light" href="#waitlistSection" aria-describedby="heroWaitlistNote">Join the waitlist<span class="btn-i" aria-hidden="true">&rarr;</span></a>
-            <p class="hero-waitlist-note" id="heroWaitlistNote">The Companion App is in development. We’ll email you when early access opens.</p>
+            <p class="hero-waitlist-note" id="heroWaitlistNote">The app is in development. Join for an email when early access opens.</p>
             <a class="btn btn-ghost" href="#ecoSection">Explore the ecosystem<span class="btn-i" aria-hidden="true">&darr;</span></a>
           </div>
           <!-- AFTER the calls to action, deliberately. On mobile .hero-type is
@@ -3436,6 +3457,7 @@ img{height:auto;}
       <li class="simple-step soft d3"><span class="simple-step-n">03</span><span class="simple-step-t">Consistency is recognised</span><span class="simple-step-d">Showing up, day after day, earns DAOasis Reward Credits.</span></li>
     </ol>
     <p class="simple-lede soft d4">&ldquo;7,400 steps&rdquo; means nothing on its own. &ldquo;Eleven kilometres past Hua Hin&rdquo; is a position you can hold in your head.</p>
+    <p class="how-membership">Proposed model: the first Journey stage is free; membership continues the route. <a href="app.html#membership">See what is included</a>.</p>
   </div>
 </section>
 <!-- Divider: How it works (dark ink) → Ecosystem (warm-white). Overlays the
@@ -3831,7 +3853,7 @@ img{height:auto;}
   <div class="cm-header">
     <div class="cm-kicker">The Community</div>
     <h2 class="cm-headline rv"><span class="ln"><i>Built by many.</i></span><span class="ln"><i><em>Owned by all who show up.</em></i></span></h2>
-    <p class="cm-sub">DAOasis isn't a platform you subscribe to — it's a community you participate in building. The people who show up consistently are the people who help shape what comes next.</p>
+    <p class="cm-sub">DAOasis brings daily habits and community together, with a free starting point and a proposed membership to continue the Journey. The people who show up consistently are the people who help shape what comes next.</p>
   </div>
 
   <div class="cm-who">
@@ -3915,21 +3937,21 @@ img{height:auto;}
 <section class="waitlist-section on-light" id="waitlistSection">
   <div class="waitlist-inner">
     <div class="wl-kicker">Early Access</div>
-    <div class="wl-tagline">Small actions. Consistent practice. Lasting change.</div>
     <h2 class="wl-headline rv"><span class="ln"><i>Be among the first.</i></span></h2>
-    <div class="wl-sub">Join a community building a more intentional way to live, learn and grow.</div>
+    <div class="wl-sub">We’ll email you when the app opens.</div>
     <!-- 9 October 2026: the mailto button became the shared sign-up
          component (css/signup.css, js/signup.js). It posts to MailerLite
          once SIGNUP_CONFIG.endpoint is set, and until then hands off to the
          visitor's own email app exactly as the button did. The two status
          facts now live inside the component, under its button. -->
     <form class="su" data-su action="mailto:info@daoasis.xyz?subject=Early%20access%20%E2%80%94%20DAOasis" method="post" enctype="text/plain" novalidate>
-      <div class="su-row">
-        <div class="su-f"><label class="su-l" for="su-home-email">Email</label><input class="su-i" id="su-home-email" name="email" type="email" required autocomplete="email" inputmode="email" placeholder="you@example.com" /></div>
+      <div class="su-f"><label class="su-l" for="su-home-email">Email</label><input class="su-i" id="su-home-email" name="email" type="email" required autocomplete="email" inputmode="email" placeholder="you@example.com" /></div>
+      <details class="su-optional">
+        <summary>Name and interests <span>(optional)</span></summary>
         <div class="su-f"><label class="su-l" for="su-home-name">First name <span class="su-opt">(optional)</span></label><input class="su-i" id="su-home-name" name="name" type="text" autocomplete="given-name" placeholder="First name" /></div>
-      </div>
-      <fieldset class="su-int"><legend class="su-l">I&rsquo;m interested in</legend><div class="su-cs"><label class="su-c"><input type="checkbox" name="interests" value="Companion App" checked data-default><span>Companion App</span></label><label class="su-c"><input type="checkbox" name="interests" value="Sanctuary"><span>Sanctuary</span></label><label class="su-c"><input type="checkbox" name="interests" value="Community"><span>Community</span></label><label class="su-c"><input type="checkbox" name="interests" value="Investor / partner"><span>Investor / partner</span></label></div></fieldset>
-      <p class="su-consent">By joining you agree that DAOasis may email you about early access. We keep only what you enter here, use MailerLite to send the emails, and you can unsubscribe at any time. See the <a href="privacy.html#signup">Privacy Policy</a>.</p>
+        <fieldset class="su-int"><legend class="su-l">I&rsquo;m interested in</legend><div class="su-cs"><label class="su-c"><input type="checkbox" name="interests" value="Companion App" checked data-default><span>Companion App</span></label><label class="su-c"><input type="checkbox" name="interests" value="Sanctuary"><span>Sanctuary</span></label><label class="su-c"><input type="checkbox" name="interests" value="Community"><span>Community</span></label><label class="su-c"><input type="checkbox" name="interests" value="Investor / partner"><span>Investor / partner</span></label></div></fieldset>
+      </details>
+      <p class="su-consent">By joining, you agree to early-access emails from DAOasis via MailerLite. Unsubscribe anytime. <a href="privacy.html#signup">Privacy Policy</a>.</p>
       <button class="su-b" type="submit" data-fallback="Join by email">Join early access</button>
       <div class="su-msg" role="status" aria-live="polite"></div>
       <ul class="su-next">
@@ -3977,7 +3999,7 @@ img{height:auto;}
     </div>
     <div class="footer-col">
       <div class="footer-col-label">Resources</div>
-      <a href="investors.html#resources">Investor Pack</a><a href="investors.html#resources">Business Plan</a><a href="investors.html#resources">Whitepaper</a><a href="investors.html#resources">Brand Kit</a><a href="#waitlistSection">Waitlist</a>
+      <a href="investors.html#resources">Investor Pack</a><a href="investors.html#resources">Business Plan</a><a href="investors.html#resources">Whitepaper</a><a href="investors.html#resources">Revenue Model</a><a href="#waitlistSection">Waitlist</a>
     </div>
     <div class="footer-col">
       <div class="footer-col-label">Trust</div>
