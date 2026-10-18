@@ -20,13 +20,13 @@
 
 .su-row{display:grid;grid-template-columns:1.25fr 1fr;gap:0 32px;}
 .su-f{margin-bottom:26px;min-width:0;}
-.su-l{display:block;font-size:10.5px;letter-spacing:0.22em;text-transform:uppercase;
+.su-l{display:block;font-size:13px;letter-spacing:0.08em;text-transform:uppercase;
   color:var(--su-mute);margin-bottom:10px;}
 .su-opt{letter-spacing:0.06em;text-transform:none;}
 .su-i{width:100%;background:transparent;border:none;border-bottom:1px solid var(--su-line);
   border-radius:0;padding:12px 0;font-family:inherit;font-size:16.5px;color:var(--su-ink);text-align:center;
   transition:border-color 0.35s cubic-bezier(0.22,1,0.36,1);}
-.su-i::placeholder{color:var(--su-mute);opacity:0.6;}
+.su-i::placeholder{color:var(--su-mute);opacity:1;}
 .su-i:focus{outline:none;border-bottom-color:var(--su-gold);}
 .su-i:focus-visible{outline:2px solid #C48A5A;outline-offset:2px;}
 .su-i[aria-invalid="true"]{border-bottom-color:#B4532F;}
@@ -45,11 +45,11 @@
 .su-c input:checked + span::before{background:#C48A5A;border-color:#C48A5A;}
 .su-c input:focus-visible + span{outline:2px solid #C48A5A;outline-offset:2px;}
 
-.su-consent{font-size:13px;line-height:1.7;color:var(--su-mute);margin:0 0 22px;}
+.su-consent{font-size:14px;line-height:1.7;color:var(--su-mute);margin:0 0 22px;}
 .su-consent a{color:var(--su-ink);text-decoration:underline;text-decoration-color:var(--su-gold);text-underline-offset:3px;}
 
 .su-b{font-family:inherit;border:none;cursor:pointer;background:var(--su-btn-bg);color:var(--su-btn-ink);
-  padding:18px 44px;border-radius:40px;font-size:12.5px;letter-spacing:0.16em;text-transform:uppercase;
+  padding:18px 44px;border-radius:40px;font-size:14px;letter-spacing:0.1em;text-transform:uppercase;
   transition:opacity 0.3s cubic-bezier(0.22,1,0.36,1);}
 .su-b:hover{opacity:0.86;}
 .su-b:focus-visible{outline:2px solid #C48A5A;outline-offset:3px;}
@@ -69,4 +69,28 @@
   .su-row{grid-template-columns:1fr;}
   .su-b{width:100%;}
   .su-c span{padding:10px 14px;font-size:13px;}
+}
+
+/* Keep signup short; optional details remain available without JavaScript. */
+.su > .su-f{margin-bottom:14px;}
+.su-optional{margin:0 0 14px;text-align:left;}
+.su-optional summary{cursor:pointer;padding:10px 0;color:var(--su-ink);font-size:16px;line-height:1.5;}
+.su-optional summary span{color:var(--su-mute);}
+.su-optional summary:focus-visible{outline:2px solid var(--su-gold);outline-offset:3px;}
+.su-optional[open] > .su-f{margin-top:16px;}
+.su-optional .su-int{margin-bottom:14px;}
+.su-consent{margin-bottom:16px;}
+@media(max-width:640px){
+  .su-l{margin-bottom:6px;}
+  .su-c span{font-size:14px;min-height:44px;}
+  .su-next{margin-top:20px;padding-top:16px;font-size:14px;}
+}
+
+@media(max-width:640px){
+  #earlyAccess{padding:28px 7% 48px;scroll-margin-top:60px;}
+  #earlyAccess .form-tag{font-size:12px;letter-spacing:.12em;padding:0;border:0;margin-bottom:12px;}
+  #earlyAccess .display{font-size:clamp(28px,8.5vw,36px);line-height:1.15;margin:0 0 12px;}
+  #earlyAccess .copy{font-size:16px;line-height:1.5;margin-top:0 !important;}
+  #earlyAccess .ea-form{margin-top:20px;}
+  #earlyAccess .rv,#earlyAccess .soft,#earlyAccess .ln > i{opacity:1;transform:none;}
 }

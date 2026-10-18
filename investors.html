@@ -967,7 +967,7 @@ html[data-theme="light"] .req-in, html[data-theme="light"] .req-sel, html[data-t
 html[data-theme="light"] .req-sel option { background: var(--warm-white); color: var(--charcoal); }
 .req-err { font-size:var(--t-small); line-height: 1.6; color: #cf8f7a; }
 .req-f .btn { cursor: pointer; border: 0; font-family: 'Frank Ruhl Libre', serif; width: 100%; }
-.req-note { font-size:var(--t-micro); line-height: 1.75; color: #6f6a61; }
+.req-note { line-height: 1.75; color: #D8D1C5; margin-top:18px; font-size:16px; }
 .req-note a { color: var(--gold); }
 /* the sent state — deliberately does not claim anything was received */
 .req-done { display: none; }
@@ -1814,7 +1814,7 @@ img{height:auto;}
     </div>
     <div class="footer-col">
       <div class="footer-col-label">Resources</div>
-      <a href="#resources">Investor Pack</a><a href="#resources">Business Plan</a><a href="#resources">Whitepaper</a><a href="#resources">Brand Kit</a><a href="index.html#waitlistSection">Waitlist</a>
+      <a href="#resources">Investor Pack</a><a href="#resources">Business Plan</a><a href="#resources">Whitepaper</a><a href="#resources">Revenue Model</a><a href="index.html#waitlistSection">Waitlist</a>
     </div>
     <div class="footer-col">
       <div class="footer-col-label">Trust</div>
@@ -1842,7 +1842,8 @@ img{height:auto;}
       <p class="req-intro" id="reqIntro">Documents are issued directly rather than published openly.
       Tell us who you are and what you would like to see, and the materials will be sent to you.</p>
 
-      <form class="req-f" id="reqForm" novalidate>
+      <p class="req-note" id="reqNote">This prepares an email to info@daoasis.xyz. You must send it from your email app. Nothing is submitted or stored by this website.</p>
+      <form class="req-f" id="reqForm" aria-describedby="reqNote" novalidate>
         <label class="req-l">
           <span class="req-l-k">Requested materials</span>
           <select class="req-sel" id="reqDoc" name="resource"></select>
@@ -1864,8 +1865,7 @@ img{height:auto;}
           <textarea class="req-ta" id="reqMsg" name="message" rows="3"></textarea>
         </label>
         <div class="req-err" id="reqErr" role="alert" hidden></div>
-        <button type="submit" class="btn btn-light">Submit request</button>
-        <p class="req-note" id="reqNote"></p>
+        <button type="submit" class="btn btn-light">Prepare email request</button>
       </form>
 
       <div class="req-done" id="reqDone">
@@ -2001,9 +2001,9 @@ const INVESTOR_CONTACT = 'info@daoasis.xyz';
 
   const note = document.getElementById('reqNote');
   note.innerHTML = INVESTOR_CONTACT
-    ? 'Submitting opens your email client with this request ready to send to ' +
+    ? 'Prepare an email addressed to ' +
       '<a href="mailto:' + INVESTOR_CONTACT + '">' + INVESTOR_CONTACT + '</a>. ' +
-      'Nothing is stored by this website.'
+      'You must send it from your email app. Nothing is submitted or stored by this website.'
     : 'DAOasis has not published an investor address yet — ' +
       '<span class="tbc">investor contact to be confirmed</span>. Submitting will lay out your ' +
       'request so you can copy it. Nothing is sent or stored by this website.';
@@ -2081,10 +2081,10 @@ const INVESTOR_CONTACT = 'info@daoasis.xyz';
     const t = document.getElementById('reqDoneT');
     const b = document.getElementById('reqDoneB');
     if(INVESTOR_CONTACT){
-      t.textContent = 'Your request is ready to send.';
-      b.innerHTML = 'Your email client should have opened with the request below addressed to ' +
+      t.textContent = 'Email prepared — send it to finish.';
+      b.innerHTML = 'Nothing has been submitted to DAOasis yet. Your email app should have opened with the request addressed to ' +
         '<a href="mailto:' + INVESTOR_CONTACT + '">' + INVESTOR_CONTACT + '</a>. ' +
-        'If it did not, copy the request and send it to that address.';
+        'Press Send in your email app to finish. If it did not open, copy the request below and email it to that address.';
       window.location.href = 'mailto:' + INVESTOR_CONTACT +
         '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
     } else {

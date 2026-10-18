@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<style>/* Light mode disabled — dark only. Remove this rule and restore the theme reads in the boot script to re-enable. */ .footer-appearance { display: none !important; }</style>
+<style>/* Light mode disabled — dark only. Remove this rule and restore the theme reads in the boot script to re-enable. */ .footer-appearance { display: none !important; }
+</style>
 <script>
   (function(){
     var t = 'dark' /* light mode disabled */;
@@ -2263,8 +2264,22 @@ img{height:auto;}
 .quest-wp-info { background: rgba(24,21,18,0.96); }
 .wp-stat-k { color: rgba(247,244,238,0.72); }
 .wp-stat-s { color: #b5ad9f; }
+.membership-summary{margin-top:36px;padding-top:28px;border-top:1px solid rgba(247,244,238,.25);
+  color:#D8D1C5;font-size:16px;line-height:1.65;scroll-margin-top:100px;}
+.membership-summary h3{font-family:'Cormorant Garamond',serif;font-size:32px;line-height:1.2;color:#F7F4EE;margin:12px 0 20px;}
+.membership-summary h4{font-size:19px;color:#F7F4EE;margin:0 0 8px;}
+.membership-summary p{margin:0 0 14px;}
+.membership-status{font-size:14px;color:#E2B58A;}
+.membership-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;}
+.final-note a{color:inherit;text-decoration:underline;text-underline-offset:3px;}
+@media(max-width:640px){
+  .membership-grid{grid-template-columns:1fr;gap:12px;}
+  #waitlist{padding:28px 7% 48px;scroll-margin-top:75px;}
+  #waitlist .s-headline{font-size:34px;margin:12px auto;}
+  #waitlist .s-body{font-size:16px;line-height:1.5;margin-bottom:20px !important;color:#D8D1C5 !important;}
+}
 </style>
-<link rel="stylesheet" href="css/signup.css?v=20261012" />
+<link rel="stylesheet" href="css/signup.css?v=20261018" />
 <script src="js/signup.js?v=20261012" defer></script>
 </head>
 <body>
@@ -2372,6 +2387,16 @@ img{height:auto;}
       <li class="simple-step reveal reveal-delay-3"><span class="simple-step-n">02</span><span class="simple-step-t">Stay consistent</span><span class="simple-step-d">Your progress, visible over time rather than day to day.</span></li>
       <li class="simple-step reveal reveal-delay-3"><span class="simple-step-n">03</span><span class="simple-step-t">No crypto needed</span><span class="simple-step-d">Use the app without owning a token or understanding Web3.</span></li>
     </ol>
+    <section class="membership-summary" id="membership" aria-labelledby="membershipTitle">
+      <p class="membership-status">Proposed membership model · not yet launched</p>
+      <h3 id="membershipTitle">Free to start. Membership to continue.</h3>
+      <div class="membership-grid">
+        <div><h4>Start free</h4><p>Try the first stage of a Journey with all six habits. Without membership, keep Basecamp: your check-in, community and Reward Credits at the same earning rates.</p></div>
+        <div><h4>Membership adds</h4><p>Continue the route and access every Journey, the full learning curriculum, insights and Circles.</p></div>
+      </div>
+      <p>Pricing and the model are proposed and untested. The app is in development; joining the waitlist is free and does not start a paid membership. No wallet or crypto knowledge is needed.</p>
+    </section>
+
   </div>
 </section>
 <noscript><style>
@@ -3084,17 +3109,18 @@ img{height:auto;}
 ══════════════════════════════ -->
 <section class="final-cta" id="waitlist">
   <div class="s-kicker" style="color:var(--gold);">Early Access</div>
-  <h2 class="s-headline" style="color:var(--warm-white);">Your journey starts<br><em>when you decide it does.</em></h2>
-  <p class="s-body" style="color:#908978;text-align:center;margin:0 auto 40px;">Join a community building better habits one deliberate day at a time — and being recognised for doing it.</p>
+  <h2 class="s-headline" style="color:var(--warm-white);">Be first to hear<br><em>when the app opens.</em></h2>
+  <p class="s-body" style="color:#908978;text-align:center;margin:0 auto 40px;">We’ll email you when the app opens.</p>
   <!-- 9 October 2026: the shared sign-up component (css/signup.css,
        js/signup.js), dark variant, Companion App pre-ticked. -->
   <form class="su su--dark" data-su action="mailto:info@daoasis.xyz?subject=Early%20access%20%E2%80%94%20DAOasis" method="post" enctype="text/plain" novalidate>
-      <div class="su-row">
-        <div class="su-f"><label class="su-l" for="su-app-email">Email</label><input class="su-i" id="su-app-email" name="email" type="email" required autocomplete="email" inputmode="email" placeholder="you@example.com" /></div>
+      <div class="su-f"><label class="su-l" for="su-app-email">Email</label><input class="su-i" id="su-app-email" name="email" type="email" required autocomplete="email" inputmode="email" placeholder="you@example.com" /></div>
+      <details class="su-optional">
+        <summary>Name and interests <span>(optional)</span></summary>
         <div class="su-f"><label class="su-l" for="su-app-name">First name <span class="su-opt">(optional)</span></label><input class="su-i" id="su-app-name" name="name" type="text" autocomplete="given-name" placeholder="First name" /></div>
-      </div>
-      <fieldset class="su-int"><legend class="su-l">I&rsquo;m interested in</legend><div class="su-cs"><label class="su-c"><input type="checkbox" name="interests" value="Companion App" checked data-default><span>Companion App</span></label><label class="su-c"><input type="checkbox" name="interests" value="Sanctuary"><span>Sanctuary</span></label><label class="su-c"><input type="checkbox" name="interests" value="Community"><span>Community</span></label><label class="su-c"><input type="checkbox" name="interests" value="Investor / partner"><span>Investor / partner</span></label></div></fieldset>
-      <p class="su-consent">By joining you agree that DAOasis may email you about early access. We keep only what you enter here, use MailerLite to send the emails, and you can unsubscribe at any time. See the <a href="privacy.html#signup">Privacy Policy</a>.</p>
+        <fieldset class="su-int"><legend class="su-l">I&rsquo;m interested in</legend><div class="su-cs"><label class="su-c"><input type="checkbox" name="interests" value="Companion App" checked data-default><span>Companion App</span></label><label class="su-c"><input type="checkbox" name="interests" value="Sanctuary"><span>Sanctuary</span></label><label class="su-c"><input type="checkbox" name="interests" value="Community"><span>Community</span></label><label class="su-c"><input type="checkbox" name="interests" value="Investor / partner"><span>Investor / partner</span></label></div></fieldset>
+      </details>
+      <p class="su-consent">By joining, you agree to early-access emails from DAOasis via MailerLite. Unsubscribe anytime. <a href="privacy.html#signup">Privacy Policy</a>.</p>
       <button class="su-b" type="submit" data-fallback="Join by email">Join early access</button>
       <div class="su-msg" role="status" aria-live="polite"></div>
       <ul class="su-next">
@@ -3103,7 +3129,7 @@ img{height:auto;}
       </ul>
       <noscript><p class="su-consent" style="margin-top:18px;">With JavaScript off, the button opens your email app instead &mdash; or write to <a href="mailto:info@daoasis.xyz">info@daoasis.xyz</a>.</p></noscript>
     </form>
-  <div class="final-note">Free to join. No crypto knowledge required.</div>
+  <div class="final-note">The waitlist is free. <a href="#membership">See the proposed free and membership options</a>. No crypto knowledge required.</div>
 </section>
 
 
@@ -3153,7 +3179,7 @@ img{height:auto;}
       <a href="investors.html#resources">Investor Pack</a>
       <a href="investors.html#resources">Business Plan</a>
       <a href="investors.html#resources">Whitepaper</a>
-      <a href="investors.html#resources">Brand Kit</a>
+      <a href="investors.html#resources">Revenue Model</a>
       <a href="index.html#waitlistSection">Waitlist</a>
     </div>
     <div class="footer-col">

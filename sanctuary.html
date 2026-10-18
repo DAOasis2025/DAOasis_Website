@@ -1624,7 +1624,7 @@ img{height:auto;}
 .hero-title-eyebrow { color: rgba(247,244,238,0.64); }
 .day-clock { text-shadow: 0 2px 24px rgba(10,8,6,0.6); }
 </style>
-<link rel="stylesheet" href="css/signup.css?v=20261012" />
+<link rel="stylesheet" href="css/signup.css?v=20261018" />
 <script src="js/signup.js?v=20261012" defer></script>
 </head>
 <body>
@@ -2122,14 +2122,12 @@ img{height:auto;}
 <section class="sect bg-ivory on-light" id="earlyAccess">
   <div class="form-wrap">
     <div class="rv">
-      <div class="form-tag">Early access list · Join now</div>
+      <div class="form-tag">Early access</div>
       <h2 class="display">
-        <span class="ln"><i>Your place in the</i></span>
-        <span class="ln"><i>future Sanctuary.</i></span>
+        <span class="ln"><i>Sanctuary updates.</i></span>
       </h2>
       <div class="copy soft d2" style="margin-top:30px;">
-        <p>The Sanctuary is currently in development, with the first pilot planned for Phuket in 2027.</p>
-        <p>Join the early access list to hear when applications and bookings open.</p>
+        <p>Hear when bookings open. Phuket pilot planned for 2027; joining is not a booking.</p>
       </div>
     </div>
 
@@ -2137,12 +2135,13 @@ img{height:auto;}
          replaced by the shared sign-up component, Sanctuary pre-ticked.
          The .ea-* rules are left in the stylesheet, unused. -->
     <div class="ea-form"><form class="su" data-su action="mailto:info@daoasis.xyz?subject=Early%20access%20%E2%80%94%20DAOasis" method="post" enctype="text/plain" novalidate>
-      <div class="su-row">
-        <div class="su-f"><label class="su-l" for="su-sanctuary-email">Email</label><input class="su-i" id="su-sanctuary-email" name="email" type="email" required autocomplete="email" inputmode="email" placeholder="you@example.com" /></div>
+      <div class="su-f"><label class="su-l" for="su-sanctuary-email">Email</label><input class="su-i" id="su-sanctuary-email" name="email" type="email" required autocomplete="email" inputmode="email" placeholder="you@example.com" /></div>
+      <details class="su-optional">
+        <summary>Name and interests <span>(optional)</span></summary>
         <div class="su-f"><label class="su-l" for="su-sanctuary-name">First name <span class="su-opt">(optional)</span></label><input class="su-i" id="su-sanctuary-name" name="name" type="text" autocomplete="given-name" placeholder="First name" /></div>
-      </div>
-      <fieldset class="su-int"><legend class="su-l">I&rsquo;m interested in</legend><div class="su-cs"><label class="su-c"><input type="checkbox" name="interests" value="Companion App"><span>Companion App</span></label><label class="su-c"><input type="checkbox" name="interests" value="Sanctuary" checked data-default><span>Sanctuary</span></label><label class="su-c"><input type="checkbox" name="interests" value="Community"><span>Community</span></label><label class="su-c"><input type="checkbox" name="interests" value="Investor / partner"><span>Investor / partner</span></label></div></fieldset>
-      <p class="su-consent">By joining you agree that DAOasis may email you about early access. We keep only what you enter here, use MailerLite to send the emails, and you can unsubscribe at any time. See the <a href="privacy.html#signup">Privacy Policy</a>.</p>
+        <fieldset class="su-int"><legend class="su-l">I&rsquo;m interested in</legend><div class="su-cs"><label class="su-c"><input type="checkbox" name="interests" value="Companion App"><span>Companion App</span></label><label class="su-c"><input type="checkbox" name="interests" value="Sanctuary" checked data-default><span>Sanctuary</span></label><label class="su-c"><input type="checkbox" name="interests" value="Community"><span>Community</span></label><label class="su-c"><input type="checkbox" name="interests" value="Investor / partner"><span>Investor / partner</span></label></div></fieldset>
+      </details>
+      <p class="su-consent">By joining, you agree to early-access emails from DAOasis via MailerLite. Unsubscribe anytime. <a href="privacy.html#signup">Privacy Policy</a>.</p>
       <button class="su-b" type="submit" data-fallback="Join by email">Join early access</button>
       <div class="su-msg" role="status" aria-live="polite"></div>
       <ul class="su-next">
@@ -2216,7 +2215,7 @@ img{height:auto;}
     </div>
     <div class="footer-col">
       <div class="footer-col-label">Resources</div>
-      <a href="investors.html#resources">Investor Pack</a><a href="investors.html#resources">Business Plan</a><a href="investors.html#resources">Whitepaper</a><a href="investors.html#resources">Brand Kit</a><a href="#earlyAccess">Early Access</a><a href="index.html#waitlistSection">Waitlist</a>
+      <a href="investors.html#resources">Investor Pack</a><a href="investors.html#resources">Business Plan</a><a href="investors.html#resources">Whitepaper</a><a href="investors.html#resources">Revenue Model</a><a href="#earlyAccess">Early Access</a><a href="index.html#waitlistSection">Waitlist</a>
     </div>
     <div class="footer-col">
       <div class="footer-col-label">Trust</div>
