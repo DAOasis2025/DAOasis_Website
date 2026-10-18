@@ -634,6 +634,8 @@
   /* Desktop keeps the hero exactly as it was signed off: no icons, no
      pills. The spans exist in the markup for the mobile composition only. */
   .ctas .btn-i{display:none;}
+  .hero-waitlist-note{width:100%;max-width:36ch;margin:0;flex:none;
+    font-size:12px;line-height:1.5;color:rgba(247,244,238,0.85);}
 
   /* The REST / LEARN / EARN / RETURN strip that sat under the calls to
      action is removed. It duplicated the eyebrow above it and added a third
@@ -3361,12 +3363,13 @@ img{height:auto;}
                Option A was chosen on 12 October 2026 (sub-line amended by
                Jamie); the review switcher and the other two options are gone. -->
           <h1 class="h1" id="heroH1">Every healthy habit <em>moves you forward.</em></h1>
-          <div class="sub" id="heroSub">A wellness app where movement, sleep, breathing, hydration and learning move you along real routes &mdash; starting with Bangkok to Phuket. Built for demanding work and little structure. Your progress earns rewards and, over time, a say in how DAOasis grows. Free to join, no crypto needed.</div>
+          <div class="sub" id="heroSub">Turn your everyday habits into journeys inspired by real places. Track movement, sleep, breathing, hydration, nutrition and learning in one wellness app, and watch your progress unfold along virtual routes&mdash;starting with Bangkok to Phuket.</div>
           <!-- The icon spans are MOBILE ONLY — hidden above 900px so the
                approved desktop hero is unchanged. See .ctas in the mobile
                block. -->
           <div class="ctas">
-            <a class="btn btn-light" href="#waitlistSection">Join the waitlist<span class="btn-i" aria-hidden="true">&rarr;</span></a>
+            <a class="btn btn-light" href="#waitlistSection" aria-describedby="heroWaitlistNote">Join the waitlist<span class="btn-i" aria-hidden="true">&rarr;</span></a>
+            <p class="hero-waitlist-note" id="heroWaitlistNote">The Companion App is in development. We’ll email you when early access opens.</p>
             <a class="btn btn-ghost" href="#ecoSection">Explore the ecosystem<span class="btn-i" aria-hidden="true">&darr;</span></a>
           </div>
           <!-- AFTER the calls to action, deliberately. On mobile .hero-type is
