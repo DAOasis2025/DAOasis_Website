@@ -14,11 +14,11 @@
 <title>The Web3 Layer — DAOasis</title>
 <meta name="description" content="DAOasis recognises participation through DRC — Reward Credits designed to convert into $DVT, the on-chain layer. No wallet required to begin." />
 <meta property="og:title" content="The Web3 Layer — DAOasis" />
-<link rel="canonical" href="https://da-oasis-website.vercel.app/web3" />
-<meta property="og:url" content="https://da-oasis-website.vercel.app/web3" />
+<link rel="canonical" href="https://daoasis.xyz/web3" />
+<meta property="og:url" content="https://daoasis.xyz/web3" />
 <meta property="og:site_name" content="DAOasis" />
 <meta property="og:locale" content="en_GB" />
-<meta property="og:image" content="https://da-oasis-website.vercel.app/images/og-card.jpg" />
+<meta property="og:image" content="https://daoasis.xyz/images/og-card.jpg" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 <meta property="og:image:alt" content="DAOasis — Rest · Learn · Earn · Return" />
@@ -26,7 +26,7 @@
 <meta name="twitter:site" content="@thedaoasis" />
 <meta name="twitter:title" content="The Web3 Layer — DAOasis" />
 <meta name="twitter:description" content="DAOasis recognises meaningful participation through DRC — DAOasis Reward Credits. Over time DRC is designed to convert into $DVT, the token that connects deeper participation to the wider DAOasis ecosystem. No wallet required to begin." />
-<meta name="twitter:image" content="https://da-oasis-website.vercel.app/images/og-card.jpg" />
+<meta name="twitter:image" content="https://daoasis.xyz/images/og-card.jpg" />
 <link rel="icon" href="/favicon.ico" sizes="any" />
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
 <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
@@ -1358,6 +1358,8 @@ img{height:auto;}
 <link rel="preload" href="fonts/49521b7424b7bf05.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="css/fonts.css">
 <script src="js/menu-accessibility.js?v=20261018" defer></script>
+<link rel="stylesheet" href="css/signup.css?v=20261018" />
+<script src="js/signup.js?v=20261018" defer></script>
 </head>
 <body>
 <a class="skip-link" href="#mainContent">Skip to content</a>
@@ -1450,7 +1452,7 @@ img{height:auto;}
     <h2 class="simple-head soft d1" id="simpleHead">Web3, without the complexity.</h2>
     <p class="simple-lede soft d2">The part that turns taking part into belonging.</p>
     <ol class="simple-steps soft d2">
-      <li class="simple-step soft d2"><span class="simple-step-n">01</span><span class="simple-step-t">Take part</span><span class="simple-step-d">Use the app and the Sanctuary normally.</span></li>
+      <li class="simple-step soft d2"><span class="simple-step-n">01</span><span class="simple-step-t">Take part</span><span class="simple-step-d">Use the app normally.</span></li>
       <li class="simple-step soft d3"><span class="simple-step-n">02</span><span class="simple-step-t">Earn recognition</span><span class="simple-step-d">What you contribute is recognised, and it stays yours.</span></li>
       <li class="simple-step soft d3"><span class="simple-step-n">03</span><span class="simple-step-t">Have a say</span><span class="simple-step-d">Access and governance, introduced in stages.</span></li>
     </ol>
@@ -1871,7 +1873,7 @@ img{height:auto;}
       <span class="ln"><i>The digital layer doesn't</i></span>
       <span class="ln"><i>replace the real world.</i></span>
     </h2>
-    <p class="sanct-copy soft d2">The Sanctuary is the optional physical expression of DAOasis — planned for Phuket in 2027, and somewhere a Journey can arrive rather than somewhere every member is expected to reach. The app carries the practice before and after it. The Web3 layer is the infrastructure underneath — participation, alignment and contribution, running the whole way through.</p>
+    <p class="sanct-copy soft d2">The Sanctuary is the optional physical expression of DAOasis — tested first with a partner, and somewhere a Journey can arrive rather than somewhere every member is expected to reach. The app carries the practice before and after it. The Web3 layer is the infrastructure underneath — participation, alignment and contribution, running the whole way through.</p>
     <div class="sanct-verbs soft d3"><span>Rest</span><span>Learn</span><span>Earn</span><span>Return</span></div>
     <div class="btn-row soft d3">
       <a class="btn btn-light" href="sanctuary.html">Explore the Sanctuary</a>
@@ -2062,7 +2064,7 @@ img{height:auto;}
         </div></div>
       </div>
       <div class="faq-item">
-        <button class="faq-q" type="button" aria-expanded="false">Is DAOasis an investment?</button>
+        <button class="faq-q" type="button" aria-expanded="false">Is using DAOasis an investment?</button>
         <div class="faq-a"><div class="faq-a-inner">
           <p>No. DAOasis is a wellness and accountability ecosystem. $DVT exists to support participation and utility within it.</p>
           <p>Nothing on this page is financial advice, no return is promised or implied, and $DVT is not presented as a store of value.</p>
@@ -2093,8 +2095,25 @@ img{height:auto;}
       <span class="ln"><i>where you are.</i></span>
     </h2>
     <p class="copy soft d2">DAOasis begins with participation. The rest unfolds over time.</p>
+    <!-- 19 October 2026: the shared sign-up component, so a reader can join here
+         rather than being sent to the home page. Community pre-ticked. -->
+    <form class="su su--dark soft d3" data-su action="mailto:info@daoasis.xyz?subject=Early%20access%20%E2%80%94%20DAOasis" method="post" enctype="text/plain" novalidate>
+      <div class="su-f"><label class="su-l" for="su-web3-email">Email</label><input class="su-i" id="su-web3-email" name="email" type="email" required autocomplete="email" inputmode="email" placeholder="you@example.com" /></div>
+      <details class="su-optional">
+        <summary>Name and interests <span>(optional)</span></summary>
+        <div class="su-f"><label class="su-l" for="su-web3-name">First name <span class="su-opt">(optional)</span></label><input class="su-i" id="su-web3-name" name="name" type="text" autocomplete="given-name" placeholder="First name" /></div>
+        <fieldset class="su-int"><legend class="su-l">I&rsquo;m interested in</legend><div class="su-cs"><label class="su-c"><input type="checkbox" name="interests" value="Companion App"><span>Companion App</span></label><label class="su-c"><input type="checkbox" name="interests" value="Sanctuary"><span>Sanctuary</span></label><label class="su-c"><input type="checkbox" name="interests" value="Community" checked data-default><span>Community</span></label><label class="su-c"><input type="checkbox" name="interests" value="Investor / partner"><span>Investor / partner</span></label></div></fieldset>
+      </details>
+      <p class="su-consent">By joining, you agree to early-access emails from DAOasis via MailerLite. Unsubscribe anytime. <a href="privacy.html#signup">Privacy Policy</a>.</p>
+      <button class="su-b" type="submit" data-fallback="Join by email">Join early access</button>
+      <div class="su-msg" role="status" aria-live="polite"></div>
+      <ul class="su-next">
+        <li data-su-first>You are added to the list, and we email you when early access opens.</li>
+        <li><strong>Companion App</strong> &mdash; in build &middot; no wallet or crypto needed</li>
+      </ul>
+      <noscript><p class="su-consent" style="margin-top:18px;">With JavaScript off, the button opens your email app instead &mdash; or write to <a href="mailto:info@daoasis.xyz">info@daoasis.xyz</a>.</p></noscript>
+    </form>
     <div class="btn-row soft d3">
-      <a class="btn btn-light" href="index.html#waitlistSection">Join the Waitlist</a>
       <a class="btn btn-ghost" href="app.html">Explore the App</a>
     </div>
     <div class="final-tag soft d3">Rest · Learn · Earn · Return</div>
@@ -2109,7 +2128,7 @@ img{height:auto;}
   <div class="footer-top">
     <div>
       <div class="footer-brand-logo"><img loading="lazy" decoding="async" width="465" height="492" src="images/img-09-white.png?v=20261006" alt="DAOasis mark" /><span>DAOasis</span></div>
-      <div class="footer-tagline"><strong>Wellness meets Web3.</strong><em>Rest · Learn · Earn · Return</em></div>
+      <div class="footer-tagline"><strong>Every healthy habit moves you forward.</strong><em>Rest · Learn · Earn · Return</em></div>
       <div class="footer-social">
         <div class="footer-col-label">Community</div>
         <div class="footer-social-row">
@@ -2117,7 +2136,7 @@ img{height:auto;}
           <a class="fs-i" href="https://x.com/thedaoasis" target="_blank" rel="me noopener" aria-label="DAOasis on X"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M17.53 3h3.06l-6.69 7.64L21.75 21h-5.9l-4.62-6.04L5.94 21H2.87l7.15-8.17L2.5 3h6.05l4.18 5.52L17.53 3Zm-1.07 16.17h1.7L7.62 4.74H5.8l10.66 14.43Z"/></svg></a>
           <a class="fs-i" href="https://linkedin.com/company/daoasis" target="_blank" rel="me noopener" aria-label="DAOasis on LinkedIn"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9.25h4v11.3H3V9.25Zm6.5 0h3.83v1.55h.05c.53-.96 1.84-1.98 3.79-1.98 4.05 0 4.8 2.53 4.8 5.82v5.91h-4v-5.24c0-1.25-.02-2.86-1.8-2.86-1.8 0-2.08 1.36-2.08 2.77v5.33h-4V9.25Z"/></svg></a>
         </div>
-        <p class="footer-social-note">Open now. The DAO and its governance arrive in stages.</p>
+        <p class="footer-social-note">Follow the build. The DAO and its governance arrive in stages.</p>
       </div>
       <div class="footer-appearance">
         <div class="footer-appearance-label">Appearance</div>
@@ -2130,7 +2149,7 @@ img{height:auto;}
     </div>
     <div class="footer-col">
       <div class="footer-col-label">Resources</div>
-      <a href="investors.html#resources">Investor Pack</a><a href="investors.html#resources">Business Plan</a><a href="investors.html#resources">Whitepaper</a><a href="investors.html#resources">Revenue Model</a><a href="#faq">FAQ</a><a href="index.html#waitlistSection">Waitlist</a>
+      <a href="investors.html#resources">Investor documents</a><a href="investors.html#request">Request the documents</a><a href="#faq">FAQ</a><a href="index.html#waitlistSection">Waitlist</a>
     </div>
     <div class="footer-col">
       <div class="footer-col-label">Trust</div>
@@ -3144,7 +3163,7 @@ function rnd(i){ const s = Math.sin(i * 127.1 + 311.7) * 43758.5453; return s - 
     ['Community',      'Shared practice',      false],
     ['Governance',     'Direction',            false],
     ['Stake to Create','Contribution',         true ],
-    ['Sanctuary',      'Phuket 2027',          false]
+    ['Sanctuary',      'Partner test',         false]
   ];
 
   function build(){
