@@ -44,12 +44,27 @@ var SIGNUP_CONFIG = {
 
   function esc(t){ return String(t).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
 
-  Array.prototype.forEach.call(forms, function(form){
+  Array.prototype.forEach.call(forms, function(form, index){
     var email = form.querySelector('input[name="email"]');
     var name  = form.querySelector('input[name="name"]');
     var btn   = form.querySelector('.su-b');
     var msg   = form.querySelector('.su-msg');
     var first = form.querySelector('[data-su-first]');
+    var originalDescription = email.getAttribute('aria-describedby');
+    if(!msg.id) msg.id = (email.id || 'signup-email-' + index) + '-message';
+
+    function clearEmailError(){
+      email.removeAttribute('aria-invalid');
+      if(originalDescription) email.setAttribute('aria-describedby', originalDescription);
+      else email.removeAttribute('aria-describedby');
+    }
+    email.addEventListener('input', function(){
+      if(email.getAttribute('aria-invalid') === 'true' && /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.value.trim())){
+        clearEmailError();
+        msg.textContent = '';
+        msg.classList.remove('show');
+      }
+    });
 
     /* Until MailerLite is connected, say plainly what pressing the button does. */
     if(!LIVE){
@@ -81,11 +96,12 @@ var SIGNUP_CONFIG = {
       var v = email.value.trim();
       if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)){
         email.setAttribute('aria-invalid','true');
+        email.setAttribute('aria-describedby', (originalDescription ? originalDescription + ' ' : '') + msg.id);
         say('Please enter a valid email address.');
         email.focus();
         return;
       }
-      email.removeAttribute('aria-invalid');
+      clearEmailError();
       var list = interests();
 
       if(!LIVE){ fallbackNote(list, ''); return; }
