@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://da-oasis-website.vercel.app/sitemap.xml
+Sitemap: https://daoasis.xyz/sitemap.xml

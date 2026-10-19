@@ -7722,3 +7722,56 @@ errors, judged by eye. `about.html` now lacks only `team-etiosa.jpg` and
 greyscale source). `width` 799 → 800, `?v=20261016`. The hair reaches ~7% of the
 source, so `#founder .pt img` moved 30% → **18%** to keep headroom. Verified at
 375 and 1440 and judged by eye.
+
+---
+
+## V2 alignment and audit tidy-ups — 19 October 2026 (branch `claude/v2-alignment-tidy-ups`)
+
+Follows the strategic audit of 19 October. Jamie confirmed **V2 is canonical**: the
+US$100,000 feasibility round, the move under a BVI holding company, and a Sanctuary
+**tested first through a partner** with no date set. A Thai operating company is
+still planned. Copy only: no layout, CSS, timing or scrolling logic changed.
+
+### Rules this pass set — keep them
+- **No 2027, no "sixteen rooms", no pilot date** anywhere on the site. The Sanctuary
+  line is: optional, tested first with a hospitality partner, no property contracted,
+  no date set, paid in ordinary currency, never in token.
+- **Company structure is named only on the legal pages and Investors** (Jamie, 19 Oct).
+  Home, App, Sanctuary, Web3, About and Contact name no company, BVI or Thai entity.
+  Kept deliberately: the footer copyright line and the JSON-LD `legalName`.
+- **No streaks.** Product Logic bans the word. The App boost grid now states the real
+  mechanics: breathing opens a waypoint's story, 2 L for seven days opens the coastal
+  route from Hua Hin, 8 hours' sleep adds 5-10% to the next day's distance.
+- **"Virtual journey inspired by real places"** is the wording. The places are real,
+  the kilometres are a model. "This is not a metaphor" is gone.
+- No holder price or access benefits, no "now it pays", no "spend what you've earned".
+  Membership (proposed) is the premium route; staking may add perks, never access.
+- **Canonical host is https://daoasis.xyz** in canonicals, og:url, og:image, JSON-LD,
+  sitemap, robots and the email copies. Vercel still needs daoasis.xyz set as primary
+  with vercel.app and www redirecting to it; that is a dashboard step, not code.
+
+### Also in this pass
+- Footer, all 13 pages: "Every healthy habit moves you forward." replaces "Wellness meets
+  Web3."; Resources is "Investor documents" + "Request the documents"; the community note
+  reads "Follow the build."
+- Web3's closing section has its own sign-up form (Community pre-ticked) instead of
+  sending readers to the home page.
+- Sanctuary title card types "A place to reset." (was "Welcome to DAOasis."), the H1 has
+  its missing space, and the "Holding image" caption reads "Illustrative".
+- Legal pages dated 19 October 2026; the Cookies and Privacy text no longer describe a
+  light/dark preference the site stopped storing.
+- Security headers added in `vercel.json` (nosniff, referrer policy, SAMEORIGIN framing,
+  permissions policy). **No CSP yet**: every page relies on inline scripts and styles,
+  so a CSP needs hashes or nonces and its own browser pass.
+- Five development screenshots removed from the repo root (`herok.png`, `hp_*.png`).
+- Repo copies of onboarding emails 01 and 04 updated. **The live versions are in the
+  MailerLite automation and must be edited there too.**
+
+### `npm test` was already failing on main
+`scripts/verify.cjs` compares every inline script and style block with commit 9ee9021.
+PR #28 changed `404.html` CSS and `about.html` scripts after that commit, so the test
+fails on `main` before any of this work. It was left unchanged. Instead this branch was
+checked script-by-script against `main`: inline scripts differ only by the listed copy
+edits (the Sanctuary typewriter words, the Journey stage-07 and stage-05 detail lines,
+the App stats and modal text, the Web3 ring label, the canonical origin) and every
+`<style>` block is byte-identical. Re-baselining the test is a separate decision.
