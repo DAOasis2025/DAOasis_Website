@@ -7786,8 +7786,9 @@ allocation on an open page reads as a public offer, and "Subject to legal review
 on the Tokenomics card told every visitor the token was not cleared.
 
 - Section 07 is now "The detail, *in conversation.*" with two cards: **Whitepaper**
-  (still on request: there is no PDF in the repo; set `file` in `DOCS` to make it
-  a download) and **Start a conversation** (`CONVERSATION_CARD`). The section's
+  (a direct download, `docs/DAOasis-Whitepaper-2026.pdf`, V2 October 2026, 27 pages,
+  4.8MB) and **Start a conversation** (`CONVERSATION_CARD`). With the Whitepaper a
+  download, the panel's "Regarding" choice has one option and is hidden. The section's
   separate "Request Investor Information" CTA block is gone; the card replaces it.
 - The request panel is now framed as an enquiry: title "Start a conversation",
   select "Regarding" = *An introductory conversation* or *Whitepaper*, email
@@ -7798,3 +7799,9 @@ on the Tokenomics card told every visitor the token was not cleared.
 
 Not changed, flagged: the investors hero and body still state the raise publicly
 (US$100,000 feasibility round, SAFE, US$60,000 minimum). Worth a lawyer's view.
+
+The Whitepaper PDF itself, read in full before publishing, still says "sixteen
+rooms" (p14 and the glossary), a "sixteen-room site", calls the Tokenomics Paper
+"published in full" (p22), and its last page reads "Version 1.0, August 2026"
+under a cover that says "Version 2.0 draft". Those are fixes for the PDF's
+source, not the website.

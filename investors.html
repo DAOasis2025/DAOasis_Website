@@ -1897,7 +1897,7 @@ const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
    To publish one: drop the file into a `docs/`
    folder next to this page and set `file` to its
-   path, e.g. file: 'docs/DAOasis-Investor-Pack.pdf'.
+   path, e.g. file: 'docs/DAOasis-Whitepaper-2026.pdf'.
    The card becomes a real download link on its
    own — no other change is needed.
    Leave `file` null and the card renders in the
@@ -1911,11 +1911,11 @@ const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
    review" told every visitor the token was not cleared. Do not add them back
    here. Tokenomics may return on its own page once legal review is complete.
 
-   The Whitepaper has no file in this repo yet, so it is on request. Add the
-   PDF to a docs/ folder and set `file` (e.g. 'docs/DAOasis-Whitepaper.pdf')
-   and the card becomes a direct download with no other change. */
+   The Whitepaper is a direct download (V2, October 2026, 27 pages). To
+   replace it, overwrite docs/DAOasis-Whitepaper-2026.pdf and bump the ?v=
+   token below so cached copies refresh. */
 const DOCS = [
-  { kind: 'Protocol', title: 'Whitepaper', desc: 'The public vision and system document: how the ecosystem fits together.', file: null }
+  { kind: 'Protocol', title: 'Whitepaper', desc: 'The public vision and system document: how the ecosystem fits together. PDF, 27 pages.', file: 'docs/DAOasis-Whitepaper-2026.pdf?v=20261020' }
 ];
 
 /* The second card is the route for everything that is not public. */
@@ -1989,11 +1989,14 @@ const INVESTOR_CONTACT = 'info@daoasis.xyz';
 
   /* the select is built from the same DOCS config as the cards, so a
      document added there appears in both places automatically */
+  /* with only one subject left (the Whitepaper is a download, not a request)
+     the "Regarding" choice is hidden rather than shown with one option */
   sel.innerHTML =
     '<option value="' + PACK + '">' + PACK + '</option>' +
     DOCS.filter(d => !d.file && !d.soon)
         .map(d => '<option value="' + d.title.replace(/"/g,'&quot;') + '">' + d.title + '</option>')
         .join('');
+  if(sel.options.length < 2) sel.closest('.req-l').hidden = true;
 
   /* the closing line names the address once the constant is set, and stays
      silent rather than printing a `tbc` there — the panel already carries that */
