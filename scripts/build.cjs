@@ -15,7 +15,7 @@ function minCSS(source) {
   if (path.dirname(out) !== root || path.basename(out) !== 'dist') throw new Error('Invalid output directory');
   await fs.rm(out, { recursive: true, force: true });
   await fs.mkdir(out, { recursive: true });
-  for (const dir of ['images', 'fonts', 'css', 'js']) {
+  for (const dir of ['images', 'fonts', 'css', 'js', 'docs']) {
     await fs.cp(path.join(root, dir), path.join(out, dir), { recursive: true });
   }
   for (const file of await fs.readdir(root)) {
