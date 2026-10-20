@@ -894,11 +894,13 @@ a.doc:hover { background: #262119; }
 .docs-cta-note { font-size:var(--t-micro); letter-spacing: 0.14em; text-transform: uppercase; color: #6f6a61; }
 .docs-foot { margin-top: 48px; }
 
+/* two cards (the Whitepaper and the conversation route) sit as a pair */
+.docs.docs-2 { grid-template-columns: repeat(2,minmax(0,1fr)); }
 @media(max-width:1000px){ .docs { grid-template-columns: repeat(2,minmax(0,1fr)); } }
 /* 700 not 620: the request pill added ~54px of stack to every card, and at two
    columns below ~700px the card's content box drops under 240px, which is where
    the 24px titles start breaking mid-word. Measured, not guessed. */
-@media(max-width:700px){ .docs { grid-template-columns: minmax(0,1fr); } .doc { min-height: 0; padding: 28px 24px; } }
+@media(max-width:700px){ .docs, .docs.docs-2 { grid-template-columns: minmax(0,1fr); } .doc { min-height: 0; padding: 28px 24px; } }
 @media(max-width:560px){
   .docs-cta { margin-top: 44px; }
   /* full width, and line-height restored — below ~360px the label is two lines
@@ -1247,7 +1249,7 @@ img{height:auto;}
     </p>
     <div class="ih-ctas btn-row soft d2">
       <a class="btn btn-light" href="#opportunity">Explore the opportunity</a>
-      <button type="button" class="btn btn-ghost" data-req-open>Request the documents</button>
+      <button type="button" class="btn btn-ghost" data-req-open>Start a conversation</button>
     </div>
 
     <div class="ih-strip soft d3">
@@ -1710,23 +1712,16 @@ img{height:auto;}
       <div class="eyebrow">07 &middot; Documents</div>
       <h2 class="display" style="max-width:14ch;">
         <span class="ln"><i>The detail,</i></span>
-        <span class="ln"><i><em>on request.</em></i></span>
+        <span class="ln"><i><em>in conversation.</em></i></span>
       </h2>
       <div class="copy wide soft d1" style="margin-top:38px;">
-        <p>The documents behind this page: the business plan, the revenue model, the token
-        design and the vision. Several contain commercial detail that does not belong on a
-        public page, so they are issued directly.</p>
+        <p>The whitepaper sets out the vision and how the ecosystem fits together. Commercial
+        and financial materials are shared directly with prospective partners and investors,
+        after a first conversation.</p>
       </div>
     </div>
 
-    <div class="docs rv" id="docGrid"></div>
-
-    <div class="docs-cta rv">
-      <p class="docs-cta-lead soft">You do not need an existing contact at DAOasis. Tell us who you
-      are and which materials you want, and they will be sent to you directly.</p>
-      <button type="button" class="btn btn-light soft d1" data-req-open>Request Investor Information</button>
-      <div class="docs-cta-note soft d2">Typically the Investor Teaser and Investor Pack first</div>
-    </div>
+    <div class="docs docs-2 rv" id="docGrid"></div>
   </div>
 </section>
 
@@ -1746,12 +1741,12 @@ img{height:auto;}
       stakeholders.</p>
     </div>
     <div class="btn-row soft d2">
-      <button type="button" class="btn btn-light" data-req-open>Request investor information</button>
+      <button type="button" class="btn btn-light" data-req-open>Start a conversation</button>
       <a class="btn btn-ghost" href="app.html">See the product</a>
     </div>
     <div class="final-contact soft d3">
-      For investor enquiries and the documents,
-      <button type="button" class="linkish" data-req-open>send a request</button> — no existing
+      For investor and partner enquiries,
+      <button type="button" class="linkish" data-req-open>start a conversation</button> — no existing
       DAOasis contact needed<span id="finalContact"></span>.
     </div>
     <div class="final-tag soft d4">Rest · Learn · Earn · Return</div>
@@ -1814,7 +1809,7 @@ img{height:auto;}
     </div>
     <div class="footer-col">
       <div class="footer-col-label">Resources</div>
-      <a href="#resources">Investor Pack</a><a href="#resources">Business Plan</a><a href="#resources">Whitepaper</a><a href="#resources">Revenue Model</a><a href="index.html#waitlistSection">Waitlist</a>
+      <a href="#resources">Whitepaper</a><a href="#request">Investor enquiries</a><a href="index.html#waitlistSection">Waitlist</a>
     </div>
     <div class="footer-col">
       <div class="footer-col-label">Trust</div>
@@ -1827,9 +1822,9 @@ img{height:auto;}
 
 <!-- ══════════════════════════════════════════════
      REQUEST PANEL
-     Opened by the section CTA and by every per-card
-     "Request this resource" button, which passes its
-     own document through so the request is contextual.
+     Opened by every "Start a conversation" button and by
+     the Whitepaper card, which passes its own title through
+     so the email says what it is about.
      Deep link: /investors#request
 ══════════════════════════════════════════════ -->
 <div class="req" id="reqPanel" aria-hidden="true">
@@ -1838,14 +1833,14 @@ img{height:auto;}
     <div class="req-card" role="dialog" aria-modal="true" aria-labelledby="reqTitle" aria-describedby="reqIntro">
       <button type="button" class="req-x" data-req-close aria-label="Close">&times;</button>
       <div class="req-k">Investor relations</div>
-      <h2 class="req-t" id="reqTitle">Request investor information</h2>
-      <p class="req-intro" id="reqIntro">Documents are issued directly rather than published openly.
-      Tell us who you are and what you would like to see, and the materials will be sent to you.</p>
+      <h2 class="req-t" id="reqTitle">Start a conversation</h2>
+      <p class="req-intro" id="reqIntro">Investor materials are shared directly, after a first
+      conversation. Tell us who you are and what you would like to explore, and we will reply personally.</p>
 
       <p class="req-note" id="reqNote">This prepares an email to info@daoasis.xyz. You must send it from your email app. Nothing is submitted or stored by this website.</p>
       <form class="req-f" id="reqForm" aria-describedby="reqNote" novalidate>
         <label class="req-l">
-          <span class="req-l-k">Requested materials</span>
+          <span class="req-l-k">Regarding</span>
           <select class="req-sel" id="reqDoc" name="resource"></select>
         </label>
         <label class="req-l">
@@ -1865,7 +1860,7 @@ img{height:auto;}
           <textarea class="req-ta" id="reqMsg" name="message" rows="3"></textarea>
         </label>
         <div class="req-err" id="reqErr" role="alert" hidden></div>
-        <button type="submit" class="btn btn-light">Prepare email request</button>
+        <button type="submit" class="btn btn-light">Prepare email</button>
       </form>
 
       <div class="req-done" id="reqDone">
@@ -1902,32 +1897,33 @@ const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
    To publish one: drop the file into a `docs/`
    folder next to this page and set `file` to its
-   path, e.g. file: 'docs/DAOasis-Investor-Pack.pdf'.
+   path, e.g. file: 'docs/DAOasis-Whitepaper-2026.pdf'.
    The card becomes a real download link on its
    own — no other change is needed.
    Leave `file` null and the card renders in the
    "on request" state instead.
 ──────────────────────────────────────────── */
-/* Five of these exist as finished documents and are available on request.
-   The rest do not exist yet and say so: `soon: true` drops the request
-   button and the select entry, because a document that cannot be sent
-   must not be requestable.
+/* ONLY THE WHITEPAPER IS LISTED, by decision (20 Oct 2026). The Investor
+   Teaser, Investor Pack, Business Plan, Revenue Model and Tokenomics Paper
+   are shared privately after a first conversation and are NOT advertised on
+   the public site: listing a raise's documents and a token's supply and
+   allocation on an open page reads as a public offer, and "Subject to legal
+   review" told every visitor the token was not cleared. Do not add them back
+   here. Tokenomics may return on its own page once legal review is complete.
 
-   BRAND KIT — read this before touching that entry. The card was removed on
-   26 Aug 2026 because the only kit then in existence was the May 2026 one,
-   which positioned "The Retreat — The Core" — the retreat-first framing
-   every live document contradicts (Tokenomics Annex B6). It was reinstated
-   the same day, pointing at the NEW DAOasis Brand Kit 2026, which is
-   app-first and supersedes it. If this entry is ever restored again, confirm
-   first which kit it resolves to. The May 2026 file must never be sent. */
+   The Whitepaper is a direct download (V2, October 2026, 27 pages). To
+   replace it, overwrite docs/DAOasis-Whitepaper-2026.pdf and bump the ?v=
+   token below so cached copies refresh. */
 const DOCS = [
-  { kind: 'Summary',     title: 'Investor Teaser',     desc: 'Two pages: the opportunity, the model, where it stands and the raise.',               file: null },
-  { kind: 'Investor',    title: 'Investor Pack',       desc: 'The full investment overview in four pages.',                                          file: null },
-  { kind: 'Commercial',  title: 'Business Plan',       desc: 'The commercial case, the funding strategy, risks and open items.',                    file: null },
-  { kind: 'Financial',   title: 'Revenue Model',       desc: 'Pricing, the distance gate, illustrative cases, use of funds and runway.',             file: null },
-  { kind: 'Protocol',    title: 'Whitepaper',          desc: 'The public vision and system document — how the ecosystem fits together.',             file: null },
-  { kind: 'Token',       title: 'Tokenomics',          desc: '$DVT supply, allocation and governance. Subject to legal review.',                     file: null }
+  { kind: 'Protocol', title: 'Whitepaper', desc: 'The public vision and system document: how the ecosystem fits together. PDF, 27 pages.', file: 'docs/DAOasis-Whitepaper-2026.pdf?v=20261020' }
 ];
+
+/* The second card is the route for everything that is not public. */
+const CONVERSATION_CARD = {
+  kind: 'Partners & Investors',
+  title: 'Start a conversation',
+  desc: 'We are building DAOasis with a small circle of aligned partners. If you would like to explore working with us, start a conversation and we will share the relevant materials directly.'
+};
 
 /* ── WHERE A REQUEST GOES ─────────────────────
    The single place the investor address is configured. Set it to the
@@ -1962,18 +1958,25 @@ const INVESTOR_CONTACT = 'info@daoasis.xyz';
           ? '<div class="doc-a soon">In preparation</div>'
           : '<div class="doc-a hold">Available on request</div>' +
             '<button type="button" class="doc-req" data-req-open data-doc="' + esc(d.title) + '">' +
-            'Request this resource<span class="sr-only"> — ' + esc(d.title) + '</span></button>');
+            'Request a copy<span class="sr-only"> of the ' + esc(d.title) + '</span></button>');
     const cls = 'doc soft' + (i % 3 ? ' d' + (i % 3) : '');
     return d.file
       ? '<a class="' + cls + '" href="' + esc(d.file) + '" download>' + body + '</a>'
       : '<div class="' + cls + '">' + body + '</div>';
-  }).join('');
+  }).join('') +
+    '<div class="doc soft d1">' +
+      '<div class="doc-k">' + esc(CONVERSATION_CARD.kind) + '</div>' +
+      '<div class="doc-t">' + esc(CONVERSATION_CARD.title) + '</div>' +
+      '<div class="doc-b">' + esc(CONVERSATION_CARD.desc) + '</div>' +
+      '<div class="doc-a hold">By introduction</div>' +
+      '<button type="button" class="doc-req" data-req-open>Start a conversation</button>' +
+    '</div>';
 })();
 
 /* ── THE REQUEST PANEL ────────────────────────
-   Opened by the section CTA (no data-doc → "the full investor pack")
-   and by each card's own button (data-doc → that document, preselected
-   so the request is contextual).
+   Opened by every "Start a conversation" button (no data-doc → an
+   introductory conversation) and by the Whitepaper card (data-doc →
+   preselected so the email says what it is about).
 ──────────────────────────────────────────── */
 (function requestPanel(){
   const panel = document.getElementById('reqPanel');
@@ -1982,15 +1985,18 @@ const INVESTOR_CONTACT = 'info@daoasis.xyz';
 
   const sel = document.getElementById('reqDoc');
   const err = document.getElementById('reqErr');
-  const PACK = 'The full investor pack';
+  const PACK = 'An introductory conversation';
 
   /* the select is built from the same DOCS config as the cards, so a
      document added there appears in both places automatically */
+  /* with only one subject left (the Whitepaper is a download, not a request)
+     the "Regarding" choice is hidden rather than shown with one option */
   sel.innerHTML =
-    '<option value="' + PACK + '">' + PACK + ' (everything below)</option>' +
+    '<option value="' + PACK + '">' + PACK + '</option>' +
     DOCS.filter(d => !d.file && !d.soon)
         .map(d => '<option value="' + d.title.replace(/"/g,'&quot;') + '">' + d.title + '</option>')
         .join('');
+  if(sel.options.length < 2) sel.closest('.req-l').hidden = true;
 
   /* the closing line names the address once the constant is set, and stays
      silent rather than printing a `tbc` there — the panel already carries that */
@@ -2055,14 +2061,14 @@ const INVESTOR_CONTACT = 'info@daoasis.xyz';
   function compose(){
     const v = id => (document.getElementById(id).value || '').trim();
     const lines = [
-      'Requested materials: ' + sel.value,
+      'Regarding: ' + sel.value,
       'Name: ' + v('reqName'),
       'Email: ' + v('reqEmail')
     ];
     if(v('reqCo'))  lines.push('Company / Organisation: ' + v('reqCo'));
     if(v('reqMsg')) lines.push('', 'Message:', v('reqMsg'));
-    lines.push('', 'Sent from the DAOasis investor resources page.');
-    return { subject: 'Investor information request — ' + sel.value, body: lines.join('\n') };
+    lines.push('', 'Sent from the DAOasis investors page.');
+    return { subject: 'Investor enquiry — ' + sel.value, body: lines.join('\n') };
   }
 
   form.addEventListener('submit', e => {
@@ -2071,7 +2077,7 @@ const INVESTOR_CONTACT = 'info@daoasis.xyz';
     const mail = document.getElementById('reqEmail');
     if(!name.value.trim()){ err.textContent = 'Please add your name so we know who is asking.'; err.hidden = false; name.focus(); return; }
     if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail.value.trim())){
-      err.textContent = 'Please add an email address we can send the materials to.'; err.hidden = false; mail.focus(); return;
+      err.textContent = 'Please add an email address we can reply to.'; err.hidden = false; mail.focus(); return;
     }
     err.hidden = true;
 

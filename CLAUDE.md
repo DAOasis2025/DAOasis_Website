@@ -7775,3 +7775,33 @@ checked script-by-script against `main`: inline scripts differ only by the liste
 edits (the Sanctuary typewriter words, the Journey stage-07 and stage-05 detail lines,
 the App stats and modal text, the Web3 ring label, the canonical origin) and every
 `<style>` block is byte-identical. Re-baselining the test is a separate decision.
+
+## Investor documents taken off the public page — 20 October 2026
+
+`investors.html` · `contact.html` · the footer of all 13 pages. Decision by Jamie:
+the Investor Teaser, Investor Pack, Business Plan, Revenue Model and Tokenomics
+Paper are **no longer listed anywhere on the site**. They are shared privately
+after a first conversation. Listing a raise's documents and a token's supply and
+allocation on an open page reads as a public offer, and "Subject to legal review"
+on the Tokenomics card told every visitor the token was not cleared.
+
+- Section 07 is now "The detail, *in conversation.*" with two cards: **Whitepaper**
+  (a direct download, `docs/DAOasis-Whitepaper-2026.pdf`, V2 October 2026, 27 pages,
+  4.8MB) and **Start a conversation** (`CONVERSATION_CARD`). With the Whitepaper a
+  download, the panel's "Regarding" choice has one option and is hidden. The section's
+  separate "Request Investor Information" CTA block is gone; the card replaces it.
+- The request panel is now framed as an enquiry: title "Start a conversation",
+  select "Regarding" = *An introductory conversation* or *Whitepaper*, email
+  subject "Investor enquiry — …". Same mailto mechanism, same `INVESTOR_CONTACT`.
+- Footers: Resources reads **Whitepaper** + **Investor enquiries** everywhere.
+- **Do not add the five documents back to `DOCS`.** Tokenomics may return on its
+  own page once legal review is complete.
+
+Not changed, flagged: the investors hero and body still state the raise publicly
+(US$100,000 feasibility round, SAFE, US$60,000 minimum). Worth a lawyer's view.
+
+The Whitepaper PDF itself, read in full before publishing, still says "sixteen
+rooms" (p14 and the glossary), a "sixteen-room site", calls the Tokenomics Paper
+"published in full" (p22), and its last page reads "Version 1.0, August 2026"
+under a cover that says "Version 2.0 draft". Those are fixes for the PDF's
+source, not the website.
