@@ -1,0 +1,20 @@
+/* One footer on every page — 21 October 2026.
+   Matches sanctuary.html, the footer the founders signed off: larger
+   section labels (16px, 0.12em) and a 16px copyright line. Loaded last in
+   <head> so it settles the small per-page differences in one place. */
+footer.site-footer .footer-top{gap:40px;}
+footer.site-footer .footer-brand-logo span{color:#F7F4EE;}
+footer.site-footer .footer-tagline strong,
+footer.site-footer .footer-tagline em{font-size:13.5px;line-height:1.6;}
+footer.site-footer .footer-tagline em{color:#8f887d;}
+footer.site-footer .footer-col-label{font-size:16px;letter-spacing:0.12em;margin-bottom:18px;}
+footer.site-footer .footer-social .footer-col-label{margin-bottom:12px;}
+footer.site-footer .footer-col a{font-size:13.5px;margin-bottom:3px;}
+footer.site-footer .footer-social-note{font-size:10.5px;line-height:1.6;color:#908978;}
+footer.site-footer .footer-bottom,
+footer.site-footer .footer-bottom span{font-size:16px;letter-spacing:normal;}
+@media (max-width:900px){
+  footer.site-footer .footer-top{grid-template-columns:1fr 1fr;gap:32px;}
+  footer.site-footer .footer-top > .footer-brand{grid-column:auto;}
+  footer.site-footer .footer-bottom{flex-direction:column;gap:8px;align-items:flex-start;}
+}
