@@ -7819,12 +7819,14 @@ source, not the website.
   `.journey-mobile-section` now has a bottom padding of `14vh + 56px` (the
   divider's height + 30px) and its runway grew by the same, so pacing is
   unchanged. Rail-to-mark gap 143-188px at 375/390/430.
-- **Sanctuary "A day" on phones had no photographs.** The sticky band's
-  wrapper `<div>` was a one-column grid cell only as tall as the band, so the
-  band scrolled away at once. Mobile now sets `.day-grid{display:block}` and
-  the wrapper `display:contents`, and each entry is padded down by the band's
-  height so its text sits below the photo. Verified: all nine slots show the
-  right photo and clock, band pinned at 58px.
+- **Sanctuary "A day" on phones is a swipe carousel** (rebuilt after the
+  first fix — a pinned photo with text scrolling behind it read badly). Below
+  900px the pinned band is hidden and each `.day-entry` is a card: its photo
+  is the card's `::before` (one rule per `data-media`, deferred by `bgdefer`
+  like the layers), its words below. Native `scroll-snap` does the swiping;
+  a small script keeps "01 / 09 · 07:00", the progress dashes and the two
+  44px arrow buttons in step (arrow keys work when the list has focus).
+  Desktop's pinned plate is untouched. Checked at 320/375/390/430.
 - **Investor enquiries now SEND.** The panel posts to FormSubmit
   (`ENQUIRY_ENDPOINT` = `https://formsubmit.co/ajax/info@daoasis.xyz`), with the
   visitor's address as reply-to and a honeypot. "Thank you" shows only on

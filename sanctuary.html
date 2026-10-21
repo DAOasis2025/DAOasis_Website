@@ -1127,39 +1127,70 @@ html.bgdefer .place-map:not(.bg-on)                      { background-image: non
 .day-detail span { font-size:var(--t-meta); color: #908978; }
 .day-foot { padding: 9vh 8% 0; max-width: 1360px; margin: 9vh auto 0; font-size:var(--t-note); color: #7a746a; line-height: 1.85; border-top: 1px solid rgba(247,244,238,0.08); }
 @media(max-width:900px){
-  /* 21 Oct 2026: the photograph band never stuck on phones. A sticky
-     element can only travel inside its parent, and in a one-column grid the
-     wrapper <div> around .day-media is only as tall as the band itself — so
-     the band scrolled away at once and every entry sat on bare ground. The
-     grid becomes a plain block and the wrapper stops generating a box, so
-     the band's parent is the whole grid, list included. */
+  /* ── MOBILE: A SWIPE CAROUSEL (21 Oct 2026) ─────────────────────────
+     Phones no longer get the desktop's pinned photograph with the entries
+     scrolling past it — the type ran behind the picture. Each time slot is
+     its own card: its photograph on top, its words underneath, and the day
+     is swiped through sideways. Native scroll-snap does the swiping, so
+     there is no gesture code to break; the script only keeps the counter,
+     the dots and the two arrow buttons in step. Desktop is untouched. */
   .day-grid { display: block; }
-  .day-grid > div:first-child { display: contents; }
-  .day-media { height: 42vh; top: 58px; z-index: 2; }
-  .day-list { position: relative; z-index: 1; }
-  /* Mobile keeps the class-driven plate: the band is only 42vh and the
-     entries are read one at a time, so there is no travel to scrub through.
-     Desktop's scrubbed --w is bypassed here rather than fighting it. */
-  .day-media-layer { transition:opacity 0.9s var(--ease); transform: none; opacity: 0; }
-  .day-media-layer.on { opacity: 1; }
-  .day-clock { font-size: 40px; left: 7%; bottom: 7%; }
-  .day-list { padding: 7vh 8% 26vh; }
-  /* The plate only owns the top 42vh here, so a slot needs less than a full
-     viewport to have its moment — but still far more than its own height. */
-  .day-entry { min-height: 109vh; padding: 5.5vh 0; opacity: 1; }
-  /* The live entry's type has to sit in the open frame BELOW the pinned
-     band (42vh + its 58px offset), not behind it. Padding the top by the
-     band's own height centres the type in that frame at the midpoint of
-     the entry's turn. */
-  .day-entry, .day-entry:first-child { padding-top: calc(42vh + 58px); }
-  .day-desc { max-width: none; margin-bottom: 22px; }
-  /* The band is landscape (~1.1) where the desktop frame is portrait (~0.88),
-     so two plates need a different focal point to keep their subject whole:
-     Move would lose the head, Integrate the standing figures. */
-  .day-media-layer[data-media="move"]      { background-position: center 36%; }
-  .day-media-layer[data-media="integrate"] { background-position: center 35%; }
-  .day-media-veil { background: linear-gradient(180deg, rgba(11,9,8,0.32) 0%, rgba(11,9,8,0.08) 50%, rgba(11,9,8,0.62) 100%); }
+  .day-grid > div:first-child { display: none; }        /* the pinned band */
+  .day-list {
+    display: flex; gap: 12px; padding: 0 8% 4px;
+    overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory; scroll-padding: 0 8%;
+    -webkit-overflow-scrolling: touch; scrollbar-width: none;
+  }
+  .day-list::-webkit-scrollbar { display: none; }
+  .day-list:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; }
+  .day-entry, .day-entry:first-child {
+    flex: 0 0 82%; min-height: 0; padding: 0; opacity: 1;
+    scroll-snap-align: start; scroll-snap-stop: always;
+    display: flex; flex-direction: column; justify-content: flex-start;
+    background: rgba(247,244,238,0.035); border: 1px solid rgba(247,244,238,0.09);
+    border-radius: 3px; overflow: hidden;
+  }
+  /* the photograph is the card's own first box, so it can never sit over
+     the words — they are below it in the flow */
+  .day-entry::before {
+    content: ''; display: block; width: 100%; aspect-ratio: 4 / 5; flex: none;
+    background-color: #0b0908; background-size: cover; background-position: center 50%;
+  }
+  .day-entry[data-media="wake"]::before      { background-image: var(--img-day-wake);      background-position: center 55%; }
+  .day-entry[data-media="move"]::before      { background-image: var(--img-day-move);      background-position: center 30%; }
+  .day-entry[data-media="nourish"]::before   { background-image: var(--img-day-nourish);   background-position: center 48%; }
+  .day-entry[data-media="learn"]::before     { background-image: var(--img-day-learn);     background-position: center 80%; }
+  .day-entry[data-media="reset"]::before     { background-image: var(--img-day-reset); }
+  .day-entry[data-media="explore"]::before   { background-image: var(--img-day-explore); }
+  .day-entry[data-media="connect"]::before   { background-image: var(--img-day-connect);   background-position: center 45%; }
+  .day-entry[data-media="integrate"]::before { background-image: var(--img-day-integrate); background-position: center 40%; }
+  .day-entry[data-media="rest"]::before      { background-image: var(--img-day-rest);      background-position: center 55%; }
+  html.bgdefer .day-outer:not(.bg-on) .day-entry::before { background-image: none !important; }
+  .day-time { margin: 22px 20px 10px; }
+  .day-title { margin: 0 20px 14px; }
+  .day-desc { max-width: none; margin: 0 20px 18px; line-height: 1.7; }
+  .day-detail { margin: auto 20px 22px; gap: 6px 18px; }
+  /* a short phone gives the words room by squaring the photograph */
+  @media (max-height: 700px) { .day-entry::before { aspect-ratio: 1 / 1; } }
+
+  .day-nav { display: flex; align-items: center; gap: 14px; padding: 22px 8% 0; }
+  .day-nav-count { font-size: 13px; letter-spacing: 0.18em; color: #b8b1a4; white-space: nowrap; }
+  .day-nav-count b { color: var(--gold); font-weight: 400; }
+  .day-nav-dots { flex: 1; display: flex; gap: 6px; align-items: center; min-width: 0; }
+  .day-nav-dots i { flex: 1; height: 2px; background: rgba(247,244,238,0.16); transition: background 0.3s var(--ease); }
+  .day-nav-dots i.on { background: var(--gold); }
+  .day-nav button {
+    width: 44px; height: 44px; flex: none; border-radius: 50%; cursor: pointer;
+    border: 1px solid rgba(247,244,238,0.28); background: none; color: var(--warm-white);
+    font-size: 18px; line-height: 1; transition: opacity 0.3s var(--ease), border-color 0.3s var(--ease);
+  }
+  .day-nav button:disabled { opacity: 0.3; cursor: default; }
+  .day-nav button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+  .day-hint { padding: 0 8% 18px; font-size: 13px; letter-spacing: 0.04em; color: #a29b8f; }
+  .day-foot { margin-top: 6vh; padding-top: 5vh; }
 }
+@media (min-width: 901px) { .day-nav, .day-hint { display: none; } }
 
 /* ══════════════════════════════════════════════
    SECTION 7 — IMMERSION
@@ -1967,7 +1998,8 @@ img{height:auto;}
       </div>
     </div>
 
-    <div class="day-list" id="dayList">
+    <p class="day-hint" id="dayHint">Swipe through the day &rarr;</p>
+    <div class="day-list" id="dayList" role="region" aria-roledescription="carousel" aria-label="An average day at the Sanctuary, from 07:00 to 21:00" tabindex="0">
       <div class="day-entry on" data-time="07:00" data-media="wake"><div class="day-time">07:00</div><div class="day-title">Wake</div><p class="day-desc">The day opens without an alarm. Water, daylight and a little silence before anything is asked of you.</p><div class="day-detail"><span>Slow start</span><span>Hydration</span><span>Quiet</span></div></div>
       <div class="day-entry" data-time="08:00" data-media="move"><div class="day-time">08:00</div><div class="day-title">Move</div><p class="day-desc">A guided session to open the body — mobility, breath and an unhurried walk. Effort, never strain.</p><div class="day-detail"><span>Movement session</span><span>Walk</span><span>Mobility</span><span>Breath</span></div></div>
       <div class="day-entry" data-time="09:00" data-media="nourish"><div class="day-time">09:00</div><div class="day-title">Nourish</div><p class="day-desc">Breakfast at a long table. Simple food, cooked well, eaten slowly and in company.</p><div class="day-detail"><span>Breakfast</span><span>Nutrition</span><span>Conversation</span></div></div>
@@ -1978,6 +2010,13 @@ img{height:auto;}
       <div class="day-entry" data-time="19:00" data-media="integrate"><div class="day-time">19:00</div><div class="day-title">Integrate</div><p class="day-desc">Dinner, then reflection — what moved today, and the one thing worth carrying into tomorrow.</p><div class="day-detail"><span>Dinner</span><span>Reflection</span><span>Plan tomorrow</span></div></div>
       <div class="day-entry" data-time="21:00" data-media="rest"><div class="day-time">21:00</div><div class="day-title">Rest</div><p class="day-desc">Screens go down and the light comes low. The day closes gently, so sleep can do its work.</p><div class="day-detail"><span>Digital distance</span><span>Quiet</span><span>Sleep</span></div></div>
     </div>
+  </div>
+
+  <div class="day-nav" id="dayNav">
+    <button type="button" id="dayPrev" aria-label="Previous time of day">&larr;</button>
+    <div class="day-nav-count" aria-live="polite"><b id="dayIdx">01</b> / 09 &middot; <span id="dayNow">07:00</span></div>
+    <div class="day-nav-dots" id="dayDots" aria-hidden="true"></div>
+    <button type="button" id="dayNext" aria-label="Next time of day">&rarr;</button>
   </div>
 
   <p class="day-foot">An illustrative average day, shown to convey the rhythm of the programme. It is not a published timetable and the final operating schedule has not been set.</p>
@@ -3114,6 +3153,53 @@ const lead = (window.DAO && DAO.cine && DAO.cine.lead) ? DAO.cine.lead
   window.addEventListener('load', build);
 })();
 
+
+/* ── SECTION 6 — MOBILE CAROUSEL ──
+   Keeps the counter, dots and arrows in step with the native swipe. It
+   reads only scrollLeft and the cards' own offsets, and writes nothing to
+   the cards, so if it fails the carousel still swipes. */
+(function(){
+  const list = document.getElementById('dayList');
+  const prev = document.getElementById('dayPrev'), next = document.getElementById('dayNext');
+  const idx = document.getElementById('dayIdx'), now = document.getElementById('dayNow');
+  const dotsEl = document.getElementById('dayDots');
+  if(!list || !prev || !next || !dotsEl) return;
+  const cards = [...list.querySelectorAll('.day-entry')];
+  dotsEl.innerHTML = cards.map(() => '<i></i>').join('');
+  const dots = [...dotsEl.children];
+  let cur = -1;
+  function at(){
+    const x = list.scrollLeft, base = cards[0].offsetLeft;
+    let best = 0, d = Infinity;
+    cards.forEach((c, i) => { const dd = Math.abs(c.offsetLeft - base - x); if(dd < d){ d = dd; best = i; } });
+    /* the last card cannot reach the left edge, so the far end counts as it */
+    if(x > 0 && x + list.clientWidth >= list.scrollWidth - 2) best = cards.length - 1;
+    return best;
+  }
+  function update(){
+    const i = at();
+    if(i === cur) return;
+    cur = i;
+    idx.textContent = String(i + 1).padStart(2, '0');
+    now.textContent = cards[i].dataset.time;
+    dots.forEach((d, k) => d.classList.toggle('on', k <= i));
+    prev.disabled = i === 0; next.disabled = i === cards.length - 1;
+  }
+  function go(i){
+    i = Math.max(0, Math.min(cards.length - 1, i));
+    list.scrollTo({ left: cards[i].offsetLeft - cards[0].offsetLeft, behavior: 'smooth' });
+  }
+  prev.addEventListener('click', () => go(cur - 1));
+  next.addEventListener('click', () => go(cur + 1));
+  list.addEventListener('keydown', e => {
+    if(e.key === 'ArrowRight'){ e.preventDefault(); go(cur + 1); }
+    if(e.key === 'ArrowLeft'){ e.preventDefault(); go(cur - 1); }
+  });
+  let q = false;
+  list.addEventListener('scroll', () => { if(!q){ q = true; requestAnimationFrame(() => { q = false; update(); }); } }, { passive: true });
+  window.addEventListener('resize', () => { cur = -1; update(); });
+  update();
+})();
 
 /* ── SECTION 6 — AN AVERAGE DAY ── */
 (function(){
