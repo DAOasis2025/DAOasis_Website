@@ -87,7 +87,10 @@
 }
 
 @media(max-width:640px){
-  #earlyAccess{padding:28px 7% 48px;scroll-margin-top:60px;}
+  /* bottom: the divider below overlays the last ~6vh + 26px of this section,
+     so 48px put its palm mark on the last line (21 Oct 2026). This clears it
+     by ~64px. */
+  #earlyAccess{padding:28px 7% calc(6vh + 90px);scroll-margin-top:60px;}
   #earlyAccess .form-tag{font-size:12px;letter-spacing:.12em;padding:0;border:0;margin-bottom:12px;}
   #earlyAccess .display{font-size:clamp(28px,8.5vw,36px);line-height:1.15;margin:0 0 12px;}
   #earlyAccess .copy{font-size:16px;line-height:1.5;margin-top:0 !important;}

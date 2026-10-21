@@ -7839,3 +7839,17 @@ source, not the website.
   Journey status, revenue chips, "Where it stands" (third column is now
   "After this round") and the raise. The Important information foot is
   unchanged and still carries the full legal position.
+
+## Sanctuary trimmed · Early Access divider — 21 October 2026 (later)
+- **Removed from `sanctuary.html`** at the founders' request: Immersion
+  ("Leave the noise behind"), The Place ("Thailand · Partner test", with the
+  Phuket map) and The Point of It ("You do not come here to escape your
+  life"), with the two dividers between them. The Day section's
+  `dark · to-bleed` divider now leads straight into the pilot photograph.
+  Their CSS (`.immersion*`, `.place-*`, `.transform-*`) is left in place,
+  unused. `images/phuket-map.jpg` and `img-11.jpg` are no longer used by
+  this page.
+- **Early Access on phones:** `css/signup.css` set its bottom padding to 48px
+  at <=640px, so the overlaying divider's mark sat on the last line. It is
+  now `calc(6vh + 90px)`, clearing the text by 64px at 375 and 390.
+  `signup.css` is referenced as `?v=20261021` on all four pages that load it.
