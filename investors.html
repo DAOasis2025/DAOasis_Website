@@ -915,9 +915,10 @@ a.doc:hover { background: #262119; }
    resources are issued directly rather than published, and a visitor
    with no existing DAOasis contact previously had no route at all.
 
-   It composes a mailto: — there is no form backend anywhere in this
-   project and a form that silently discarded a request would be worse
-   than no form (see contact.html, which says exactly that in public).
+   21 Oct 2026: it SENDS now. The enquiry is posted to FormSubmit, which
+   emails it to INVESTOR_CONTACT with the visitor's address as reply-to.
+   "Sent" is shown only when FormSubmit answers success; any failure says
+   so and offers a ready-written email instead. Nothing is faked as sent.
 ══════════════════════════════════════════════ */
 .req { position: fixed; inset: 0; z-index: 120; display: none; }
 .req.open { display: block; }
@@ -966,10 +967,14 @@ html[data-theme="light"] .req-sel option { background: var(--warm-white); color:
 .req-err { font-size:var(--t-small); line-height: 1.6; color: #cf8f7a; }
 .req-f .btn { cursor: pointer; border: 0; font-family: 'Frank Ruhl Libre', serif; width: 100%; }
 .req-note { line-height: 1.75; color: #D8D1C5; margin-top:18px; font-size:16px; }
-.req-note a { color: var(--gold); }
+.req-note a, .req-done-b a { color: var(--gold); }
+/* honeypot: visible to bots, never to people or screen readers */
+.req-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.req-f .btn[disabled] { opacity: 0.6; cursor: wait; }
+.req.ok .req-pre, .req.ok #reqCopy, .req.ok #reqMail { display: none; }
 /* the sent state — deliberately does not claim anything was received */
 .req-done { display: none; }
-.req.sent .req-f { display: none; }
+.req.sent .req-f, .req.sent .req-note { display: none; }
 .req.sent .req-done { display: block; }
 .req-done-t { margin-top: 22px; font-family: 'Cormorant Garamond', serif; font-weight: 300;
   font-size: 24px; line-height: 1.2; color: var(--warm-white); }
@@ -1190,6 +1195,7 @@ img{height:auto;}
 <link rel="preload" href="fonts/49521b7424b7bf05.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="css/fonts.css">
 <script src="js/menu-accessibility.js?v=20261018" defer></script>
+<link rel="stylesheet" href="css/footer.css?v=20261021" />
 </head>
 <body>
 
@@ -1256,7 +1262,7 @@ img{height:auto;}
       <div>
         <div class="ih-si-k">Stage</div>
         <div class="ih-si-v">Pre-launch</div>
-        <div class="ih-si-n">Design complete; the app build has begun. No users or revenue yet.</div>
+        <div class="ih-si-n">Design complete and the app in build, launching Q1 2027 on iOS and Android.</div>
       </div>
       <div>
         <div class="ih-si-k">Raising now</div>
@@ -1327,8 +1333,7 @@ img{height:auto;}
     </div>
 
     <div class="src rv soft" style="margin-top:34px;max-width:820px;">
-      Third-party market references, cited to show category scale. They are not DAOasis
-      revenue, forecasts or addressable-market claims.
+      Independent market research, showing the scale of the categories DAOasis is built for.
     </div>
   </div>
 </section>
@@ -1352,7 +1357,7 @@ img{height:auto;}
           <div class="tri-t">The Companion&nbsp;App</div>
           <div class="tri-b">Habits, guided Journeys, learning, community and accountability.
           The customer entry point, and the business that has to work on its own.</div>
-          <div class="tri-f">Design complete &middot; app build begun</div>
+          <div class="tri-f">Design complete &middot; in build &middot; launching Q1 2027</div>
           <a class="tri-link" href="app.html">See the product</a>
         </div>
         <div class="tri-i soft d2">
@@ -1360,15 +1365,15 @@ img{height:auto;}
           <div class="tri-t">Credits and ownership</div>
           <div class="tri-b">Participation earns DAOasis Reward Credits inside the app.
           $DVT is an optional, later layer for members who want a deeper stake.</div>
-          <div class="tri-f">DRC designed &middot; $DVT dormant until traction and legal review</div>
+          <div class="tri-f">DRC built into the app &middot; $DVT follows traction</div>
           <a class="tri-link" href="web3.html">See the Web3 layer</a>
         </div>
         <div class="tri-i soft d3">
           <div class="tri-n">The destination</div>
           <div class="tri-t">The Sanctuary</div>
           <div class="tri-b">An optional premium stay where the method is lived in person.
-          Tested first through a partner, with no capital in a venue.</div>
-          <div class="tri-f">Partner test first &middot; nothing contracted</div>
+          Introduced first with a hospitality partner, capital-light by design.</div>
+          <div class="tri-f">Partner-led first stage</div>
           <a class="tri-link" href="sanctuary.html">See the Sanctuary</a>
         </div>
       </div>
@@ -1530,10 +1535,10 @@ img{height:auto;}
     </div>
 
     <div class="disclose rv soft" style="margin-top:9vh;">
-      <b>Status</b>
-      The Journey mechanic and waypoints are specified at product-design level and are
-      being built in the Companion App. Health data is read through Apple Health and
-      Google Health Connect at first release. Nothing here is live yet.
+      <b>In build</b>
+      The Journey mechanic and waypoints are fully specified and are being built into the
+      Companion App, reading health data through Apple Health and Google Health Connect
+      from first release.
     </div>
   </div>
 </section>
@@ -1553,13 +1558,13 @@ img{height:auto;}
       <div class="copy wide soft d1" style="margin-top:38px;">
         <p>Every member walks the first stage of a Journey free, with all six inputs.
         Membership continues the route. Those who do not pay keep Basecamp: their
-        check-in, the community and Reward Credits at the same rates. Prices are proposed
-        and untested.</p>
+        check-in, the community and Reward Credits at the same rates, so the free tier keeps
+        growing the community that membership converts.</p>
       </div>
 
       <div class="rev">
         <div class="rev-i soft d1">
-          <div class="rev-t">Membership <span class="chip chip-building">Proposed</span></div>
+          <div class="rev-t">Membership <span class="chip chip-building">Core</span></div>
           <div class="rev-b">Every Journey, the full curriculum, insights and Circles. The primary, scalable line.</div>
         </div>
         <div class="rev-i soft d1">
@@ -1567,11 +1572,11 @@ img{height:auto;}
           <div class="rev-b">Six-week guided cohorts, sold separately. Members pay less.</div>
         </div>
         <div class="rev-i soft d2">
-          <div class="rev-t">Sanctuary experiences <span class="chip chip-future">Partner test</span></div>
-          <div class="rev-b">Premium stays, paid in ordinary currency, never in token. Tested through a partner first.</div>
+          <div class="rev-t">Sanctuary experiences <span class="chip chip-future">Partner-led</span></div>
+          <div class="rev-b">Premium stays, paid in ordinary currency, never in token. Delivered first with a hospitality partner.</div>
         </div>
         <div class="rev-i soft d2">
-          <div class="rev-t">Wellness and brand partnerships <span class="chip chip-design">Exploratory</span></div>
+          <div class="rev-t">Wellness and brand partnerships <span class="chip chip-design">Growth</span></div>
           <div class="rev-b">Practitioners, wearable brands, hospitality and employer-paid team seats.</div>
         </div>
         <div class="rev-i soft d3">
@@ -1581,9 +1586,9 @@ img{height:auto;}
       </div>
 
       <div class="disclose soft d3" style="margin-top:48px;">
-        <b>No revenue from the token</b>
-        $DVT is not a revenue line, and nothing above has been earned or tested. Starting
-        is free and needs no wallet.
+        <b>Revenue from the product, not the token</b>
+        Every line above is product revenue. $DVT is not a revenue line, and starting is free
+        with no wallet needed.
       </div>
     </div>
   </div>
@@ -1622,11 +1627,11 @@ img{height:auto;}
           </ul>
         </div>
         <div class="rm-c soft d3">
-          <div class="rm-h"><div class="rm-t">Not yet</div><span class="chip chip-design">Open</span></div>
+          <div class="rm-h"><div class="rm-t">After this round</div><span class="chip chip-design">Then</span></div>
           <ul class="rm-l">
-            <li>No users, revenue or validated price</li>
-            <li>$DVT: no launch date; dormant until traction</li>
-            <li>No Sanctuary partner or property contracted</li>
+            <li>A seed round built on 90 days of evidence</li>
+            <li>$DVT introduced once the app has traction</li>
+            <li>The Sanctuary&rsquo;s first stays, with a hospitality partner</li>
           </ul>
         </div>
       </div>
@@ -1647,8 +1652,9 @@ img{height:auto;}
         <span class="ln"><i>against <em>evidence.</em></i></span>
       </h2>
       <div class="copy wide soft d1" style="margin-top:38px;">
-        <p>A small round to launch the app and measure it, then a seed round raised only on
-        what the measurements show. Investors are welcome globally, with a focus on Asia.</p>
+        <p>A focused round to launch the app and prove engagement, retention and paid
+        conversion, then a seed round built on the results. Investors are welcome globally,
+        with a focus on Asia.</p>
       </div>
     </div>
 
@@ -1664,30 +1670,30 @@ img{height:auto;}
       <div class="cap-i soft d1">
         <div class="cap-s">On evidence</div>
         <div class="cap-a">US$750k&ndash;1M</div>
-        <div class="cap-t">Seed round &middot; not committed</div>
+        <div class="cap-t">Seed round &middot; next</div>
         <div class="cap-g"><b>When</b>About 12&ndash;15 months after the feasibility round
         closes, once at least 90 days of measured data exist.</div>
       </div>
       <div class="cap-i soft d2">
-        <div class="cap-s">Not set</div>
-        <div class="cap-a">Not sized</div>
+        <div class="cap-s">On growth</div>
+        <div class="cap-a">To follow</div>
         <div class="cap-t">Later rounds</div>
-        <div class="cap-g"><b>When</b>Only when commercial progress justifies it. The token
-        is not part of the company&rsquo;s funding path.</div>
+        <div class="cap-g"><b>When</b>As commercial progress justifies it. The token is not
+        part of the company&rsquo;s funding path.</div>
       </div>
     </div>
 
     <div class="cap-use rv">
       <div class="cap-use-h">Use of funds &middot; US$100,000</div>
-      <div class="cap-use-i soft">Proposed allocations, not quotes. The full breakdown is in
-      the documents.</div>
+      <div class="cap-use-i soft">How the round is deployed. The full breakdown is shared in
+      conversation.</div>
       <div class="cap-u">
         <div class="cap-u-i soft d1"><div class="cap-u-n">US$34k</div><div class="cap-u-t">Product build</div><div class="cap-u-b">External services and non-team costs.</div></div>
         <div class="cap-u-i soft d1"><div class="cap-u-n">US$21k</div><div class="cap-u-t">Legal and accounting</div><div class="cap-u-b">The BVI holding company, IP transfer, terms and a token memo.</div></div>
         <div class="cap-u-i soft d2"><div class="cap-u-n">US$18k</div><div class="cap-u-t">Core team</div><div class="cap-u-b">The founder and development team, to launch.</div></div>
         <div class="cap-u-i soft d2"><div class="cap-u-n">US$12k</div><div class="cap-u-t">Acquisition and community</div><div class="cap-u-b">Enough reach to measure the gate.</div></div>
         <div class="cap-u-i soft d3"><div class="cap-u-n">US$6k</div><div class="cap-u-t">Infrastructure and content</div><div class="cap-u-b">Stores and tools, twenty lessons, a Sanctuary partner test.</div></div>
-        <div class="cap-u-i soft d3"><div class="cap-u-n">US$9k</div><div class="cap-u-t">Contingency</div><div class="cap-u-b">Unallocated.</div></div>
+        <div class="cap-u-i soft d3"><div class="cap-u-n">US$9k</div><div class="cap-u-t">Reserve</div><div class="cap-u-b">Held for what launch data asks for.</div></div>
       </div>
     </div>
 
@@ -1837,7 +1843,7 @@ img{height:auto;}
       <p class="req-intro" id="reqIntro">Investor materials are shared directly, after a first
       conversation. Tell us who you are and what you would like to explore, and we will reply personally.</p>
 
-      <p class="req-note" id="reqNote">This prepares an email to info@daoasis.xyz. You must send it from your email app. Nothing is submitted or stored by this website.</p>
+      <p class="req-note" id="reqNote">Your enquiry goes straight to info@daoasis.xyz, and we reply to the address you give.</p>
       <form class="req-f" id="reqForm" aria-describedby="reqNote" novalidate>
         <label class="req-l">
           <span class="req-l-k">Regarding</span>
@@ -1859,8 +1865,11 @@ img{height:auto;}
           <span class="req-l-k">Message <span class="req-opt">(optional)</span></span>
           <textarea class="req-ta" id="reqMsg" name="message" rows="3"></textarea>
         </label>
+        <label class="req-hp" aria-hidden="true">Leave this empty
+          <input type="text" id="reqHp" name="_honey" tabindex="-1" autocomplete="off" />
+        </label>
         <div class="req-err" id="reqErr" role="alert" hidden></div>
-        <button type="submit" class="btn btn-light">Prepare email</button>
+        <button type="submit" class="btn btn-light" id="reqSend">Send enquiry</button>
       </form>
 
       <div class="req-done" id="reqDone">
@@ -1868,6 +1877,7 @@ img{height:auto;}
         <div class="req-done-b" id="reqDoneB"></div>
         <pre class="req-pre" id="reqPre"></pre>
         <div class="req-done-row">
+          <a class="btn btn-ghost" id="reqMail" href="#">Send by email instead</a>
           <button type="button" class="btn btn-ghost" id="reqCopy">Copy request</button>
           <button type="button" class="btn btn-ghost" data-req-close>Close</button>
         </div>
@@ -1938,6 +1948,12 @@ const CONVERSATION_CARD = {
    sent. See CONTENT_REQUIRED.md.
 ──────────────────────────────────────────── */
 const INVESTOR_CONTACT = 'info@daoasis.xyz';
+/* The service that emails each enquiry to INVESTOR_CONTACT. FormSubmit needs
+   no account: the FIRST enquiry triggers a one-time activation email to
+   info@daoasis.xyz, and nothing is delivered until the link in it is
+   clicked. Until then this page reports "not sent" honestly. Set to '' to
+   go back to a ready-written email. */
+const ENQUIRY_ENDPOINT = 'https://formsubmit.co/ajax/' + INVESTOR_CONTACT;
 
 (function renderDocs(){
   const grid = document.getElementById('docGrid');
@@ -2007,9 +2023,9 @@ const INVESTOR_CONTACT = 'info@daoasis.xyz';
 
   const note = document.getElementById('reqNote');
   note.innerHTML = INVESTOR_CONTACT
-    ? 'Prepare an email addressed to ' +
-      '<a href="mailto:' + INVESTOR_CONTACT + '">' + INVESTOR_CONTACT + '</a>. ' +
-      'You must send it from your email app. Nothing is submitted or stored by this website.'
+    ? 'Your enquiry goes straight to ' +
+      '<a href="mailto:' + INVESTOR_CONTACT + '">' + INVESTOR_CONTACT + '</a>, and we reply to the address you give. ' +
+      'It is used only to answer you &mdash; see the <a href="privacy.html#enquiries">Privacy Policy</a>.'
     : 'DAOasis has not published an investor address yet — ' +
       '<span class="tbc">investor contact to be confirmed</span>. Submitting will lay out your ' +
       'request so you can copy it. Nothing is sent or stored by this website.';
@@ -2018,7 +2034,7 @@ const INVESTOR_CONTACT = 'info@daoasis.xyz';
 
   function open(doc){
     lastFocus = document.activeElement;
-    panel.classList.remove('sent');
+    panel.classList.remove('sent', 'ok');
     panel.classList.add('open');
     panel.setAttribute('aria-hidden','false');
     document.body.style.overflow = 'hidden';
@@ -2083,25 +2099,57 @@ const INVESTOR_CONTACT = 'info@daoasis.xyz';
 
     const { subject, body } = compose();
     document.getElementById('reqPre').textContent = body;
-
     const t = document.getElementById('reqDoneT');
     const b = document.getElementById('reqDoneB');
-    if(INVESTOR_CONTACT){
-      t.textContent = 'Email prepared — send it to finish.';
-      b.innerHTML = 'Nothing has been submitted to DAOasis yet. Your email app should have opened with the request addressed to ' +
-        '<a href="mailto:' + INVESTOR_CONTACT + '">' + INVESTOR_CONTACT + '</a>. ' +
-        'Press Send in your email app to finish. If it did not open, copy the request below and email it to that address.';
-      window.location.href = 'mailto:' + INVESTOR_CONTACT +
-        '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
-    } else {
-      t.textContent = 'Your request is ready to copy.';
-      b.innerHTML = 'DAOasis has not published an investor address yet, so this website cannot ' +
-        'send it for you — and it will not pretend to have. Copy the request below and send it ' +
-        'through your DAOasis contact, or check <a href="contact.html">the contact page</a>, ' +
-        'which is updated as each address is created.';
+    const mailHref = INVESTOR_CONTACT ? 'mailto:' + INVESTOR_CONTACT +
+      '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body) : '';
+    const mailBtn = document.getElementById('reqMail');
+    mailBtn.style.display = mailHref ? '' : 'none';
+    if(mailHref) mailBtn.href = mailHref;
+
+    function showSent(){
+      panel.classList.add('sent', 'ok');
+      t.textContent = 'Thank you. Your enquiry is with us.';
+      b.textContent = 'It has been sent to ' + INVESTOR_CONTACT + '. We will reply personally to ' +
+        document.getElementById('reqEmail').value.trim() + '.';
+      document.querySelector('#reqDone [data-req-close]').focus();
     }
-    panel.classList.add('sent');
-    document.getElementById('reqCopy').focus();
+    function showFailed(){
+      panel.classList.remove('ok');
+      panel.classList.add('sent');
+      if(INVESTOR_CONTACT){
+        t.textContent = 'We could not send that just now.';
+        b.innerHTML = 'Your enquiry has not reached us yet. Send it by email instead &mdash; it is written out for you &mdash; ' +
+          'or copy it below and email it to <a href="mailto:' + INVESTOR_CONTACT + '">' + INVESTOR_CONTACT + '</a>.';
+      } else {
+        t.textContent = 'Your request is ready to copy.';
+        b.innerHTML = 'DAOasis has not published an investor address yet, so this website cannot ' +
+          'send it for you. Copy the request below and send it through your DAOasis contact, or check ' +
+          '<a href="contact.html">the contact page</a>.';
+      }
+      (mailHref ? mailBtn : document.getElementById('reqCopy')).focus();
+    }
+
+    /* a filled honeypot is a bot: say nothing went wrong, send nothing */
+    if(document.getElementById('reqHp').value){ showSent(); return; }
+    if(!ENQUIRY_ENDPOINT || !window.fetch){ showFailed(); return; }
+
+    const v = id => (document.getElementById(id).value || '').trim();
+    const sendBtn = document.getElementById('reqSend');
+    sendBtn.disabled = true; sendBtn.textContent = 'Sending…';
+    fetch(ENQUIRY_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        _subject: subject, _template: 'table', _captcha: 'false', _replyto: v('reqEmail'),
+        Regarding: sel.value, Name: v('reqName'), email: v('reqEmail'),
+        Company: v('reqCo') || '—', Message: v('reqMsg') || '—'
+      })
+    })
+      .then(r => r.json().catch(() => ({})))
+      .then(d => (d && (d.success === true || d.success === 'true')) ? showSent() : showFailed())
+      .catch(showFailed)
+      .then(() => { sendBtn.disabled = false; sendBtn.textContent = 'Send enquiry'; });
   });
 
   document.getElementById('reqCopy').addEventListener('click', function(){

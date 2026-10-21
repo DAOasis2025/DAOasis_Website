@@ -7805,3 +7805,35 @@ rooms" (p14 and the glossary), a "sixteen-room site", calls the Tokenomics Paper
 "published in full" (p22), and its last page reads "Version 1.0, August 2026"
 under a cover that says "Version 2.0 draft". Those are fixes for the PDF's
 source, not the website.
+
+## Mobile fixes from Jamie's phone review — 21 October 2026 (branch `claude/mobile-view-fixes-jpm63q`)
+
+- **One footer.** `css/footer.css` (NEW) is linked last in `<head>` on all 13
+  pages and makes every footer match `sanctuary.html`'s: 16px / 0.12em section
+  labels, a 16px copyright line, and the 2 x 2 mobile grid (index had stacked
+  its brand column full width). Sanctuary's larger labels came from its
+  undefined `--t-nano`; Jamie preferred them, so they are now the standard.
+  **Do not "fix" sanctuary's `--t-nano` without checking the footer.**
+- **Home hero:** "Launching Q1 2027…" is centred under the buttons at <=600px.
+- **Home mobile Journey:** the rail ran into the next divider's palm mark.
+  `.journey-mobile-section` now has a bottom padding of `14vh + 56px` (the
+  divider's height + 30px) and its runway grew by the same, so pacing is
+  unchanged. Rail-to-mark gap 143-188px at 375/390/430.
+- **Sanctuary "A day" on phones had no photographs.** The sticky band's
+  wrapper `<div>` was a one-column grid cell only as tall as the band, so the
+  band scrolled away at once. Mobile now sets `.day-grid{display:block}` and
+  the wrapper `display:contents`, and each entry is padded down by the band's
+  height so its text sits below the photo. Verified: all nine slots show the
+  right photo and clock, band pinned at 58px.
+- **Investor enquiries now SEND.** The panel posts to FormSubmit
+  (`ENQUIRY_ENDPOINT` = `https://formsubmit.co/ajax/info@daoasis.xyz`), with the
+  visitor's address as reply-to and a honeypot. "Thank you" shows only on
+  `success:true`; any failure says so and offers a ready-written email.
+  **The first real enquiry sends a one-time activation email to
+  info@daoasis.xyz — someone must click it, or nothing is delivered.**
+  Privacy (#enquiries, s10), Cookies and Contact updated to name FormSubmit.
+- **Investor copy made more confident**: repeated "not tested / not proved /
+  nothing is live" lines removed from the hero strip, the three pillars, the
+  Journey status, revenue chips, "Where it stands" (third column is now
+  "After this round") and the raise. The Important information foot is
+  unchanged and still carries the full legal position.

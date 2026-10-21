@@ -2041,12 +2041,16 @@
       /* the runway. 78vh a stage is deliberately generous — the brief was
          to slow everything down, and this is the section that had least
          room per beat of anything on the page. */
-      min-height:calc(7 * 78vh + 100vh);
+      min-height:calc(7 * 78vh + 100vh + 14vh + 56px);
       /* .section gives this 16vh 8%. The stage must be full bleed, so the
          side padding comes off the section and goes onto the two elements
          that still want it — measured, with it left on, the rail ran 275px
          inside a 327px box and the photograph band was inset by 31px. */
-      padding:16vh 0 0;
+      /* 21 Oct 2026: the bottom padding is the divider's own height
+         (14vh + 26px) plus 30px. The divider below overlays the tail of
+         this section, and with no tail its palm mark landed on the rail.
+         The runway above grew by the same amount, so pacing is unchanged. */
+      padding:16vh 0 calc(14vh + 56px);
       /* flat ground: the photograph moves onto the stage itself, because a
          band painted on a 6.5-screen section would only ever be visible in
          its first screen */
@@ -3294,6 +3298,8 @@ img{height:auto;}
   .hero-type{flex-shrink:0;}
 }
 .hero-waitlist-note{font-size:14px;line-height:1.55;color:#F7F4EE;max-width:36ch;}
+/* 21 Oct 2026: centred under the buttons on phones. */
+@media (max-width:600px){.hero .ctas .hero-waitlist-note{text-align:center;margin-left:auto;margin-right:auto;}}
 @media (max-width:900px){
   .hero .sub{font-size:16px;line-height:1.55;color:#F7F4EE;
     background:rgba(15,13,11,0.82);padding:10px 12px;border-radius:4px;}
@@ -3314,6 +3320,7 @@ img{height:auto;}
 <link rel="preload" href="fonts/49521b7424b7bf05.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="css/fonts.css">
 <script src="js/menu-accessibility.js?v=20261018" defer></script>
+<link rel="stylesheet" href="css/footer.css?v=20261021" />
 </head>
 <body>
 <a class="skip-link" href="#mainContent">Skip to content</a>

@@ -1127,8 +1127,16 @@ html.bgdefer .place-map:not(.bg-on)                      { background-image: non
 .day-detail span { font-size:var(--t-meta); color: #908978; }
 .day-foot { padding: 9vh 8% 0; max-width: 1360px; margin: 9vh auto 0; font-size:var(--t-note); color: #7a746a; line-height: 1.85; border-top: 1px solid rgba(247,244,238,0.08); }
 @media(max-width:900px){
-  .day-grid { grid-template-columns: 1fr; }
-  .day-media { height: 42vh; top: 58px; }
+  /* 21 Oct 2026: the photograph band never stuck on phones. A sticky
+     element can only travel inside its parent, and in a one-column grid the
+     wrapper <div> around .day-media is only as tall as the band itself — so
+     the band scrolled away at once and every entry sat on bare ground. The
+     grid becomes a plain block and the wrapper stops generating a box, so
+     the band's parent is the whole grid, list included. */
+  .day-grid { display: block; }
+  .day-grid > div:first-child { display: contents; }
+  .day-media { height: 42vh; top: 58px; z-index: 2; }
+  .day-list { position: relative; z-index: 1; }
   /* Mobile keeps the class-driven plate: the band is only 42vh and the
      entries are read one at a time, so there is no travel to scrub through.
      Desktop's scrubbed --w is bypassed here rather than fighting it. */
@@ -1139,6 +1147,11 @@ html.bgdefer .place-map:not(.bg-on)                      { background-image: non
   /* The plate only owns the top 42vh here, so a slot needs less than a full
      viewport to have its moment — but still far more than its own height. */
   .day-entry { min-height: 109vh; padding: 5.5vh 0; opacity: 1; }
+  /* The live entry's type has to sit in the open frame BELOW the pinned
+     band (42vh + its 58px offset), not behind it. Padding the top by the
+     band's own height centres the type in that frame at the midpoint of
+     the entry's turn. */
+  .day-entry, .day-entry:first-child { padding-top: calc(42vh + 58px); }
   .day-desc { max-width: none; margin-bottom: 22px; }
   /* The band is landscape (~1.1) where the desktop frame is portrait (~0.88),
      so two plates need a different focal point to keep their subject whole:
@@ -1626,6 +1639,7 @@ img{height:auto;}
 <link rel="preload" href="fonts/49521b7424b7bf05.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="css/fonts.css">
 <script src="js/menu-accessibility.js?v=20261018" defer></script>
+<link rel="stylesheet" href="css/footer.css?v=20261021" />
 </head>
 <body>
 <a class="skip-link" href="#mainContent">Skip to content</a>
